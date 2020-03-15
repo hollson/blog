@@ -1,5 +1,5 @@
 # 基础设置
-baseurl = "https://mafool.com"
+baseurl = "https://hollson.github.io"
 title = "码夫庄园"
 theme = "hugo-theme-cleanwhite"           #主题
 languageCode = "zh"
@@ -11,9 +11,11 @@ paginate = 10                              #分页设置
 paginatePath ="page"
 hasCJKLanguage = true
 
+
 # 构建输出 ["HTML", "RSS", "Algolia"]
 [outputs]
 home = ["HTML", "Algolia"]
+
 
 [params]
   header_image = "img/home-bg-jeep.jpg"
@@ -44,9 +46,11 @@ home = ["HTML", "Algolia"]
   featured_tags = true 
   featured_condition_size = 1
 
+
 # 谷歌分析
   ba_track_id = ""
   
+
 # 评论功能(国内无法访问，需要配置代理)
   # Follow https://github.com/mafool/disqus-php-api to set up your own disqus proxy
   disqus_proxy = ""
@@ -86,7 +90,7 @@ home = ["HTML", "Algolia"]
   #twitter       = "full profile url in twitter"
   #gitlab        = "full profile url in gitlab"
   
-  
+
 # 友情链接
   [[params.friend_link]]
   title = "Github博客"
@@ -132,3 +136,4 @@ params = ["categories", "tags"]
     startLevel = 1
    [markup.highlight]
     style = "dracula"
+

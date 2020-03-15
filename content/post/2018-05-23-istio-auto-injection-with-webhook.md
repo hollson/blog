@@ -6,7 +6,7 @@ subtitle:   "Kubernetes webhook扩展机制解析"
 description: "Kubernets 1.9版本引入了Admission Webhook(web 回调)扩展机制，通过Webhook,开发者可以非常灵活地对Kubernets API Server的功能进行扩展，在API Server创建资源时对资源进行验证或者修改。 Istio 0.7版本就利用了Kubernets webhook实现了sidecar的自动注入。"
 excerpt: "Kubernets 1.9版本引入了Admission Webhook(web 回调)扩展机制，通过Webhook,开发者可以非常灵活地对Kubernets API Server的功能进行扩展，在API Server创建资源时对资源进行验证或者修改。 Istio 0.7版本就利用了Kubernets webhook实现了sidecar的自动注入。"
 date:    2018-05-23
-author:     "赵化冰"
+author:     "史宏生"
 image: "https://img.zhaohuabing.com/in-post/2018-4-25-istio-auto-injection-with-webhook/lion.jpg"
 published: true 
 tags:

@@ -37,7 +37,8 @@ categories:  ["Tech" ]
 </center>
 
 
-<br/>
+<BR>
+<BR>
 
 # 二. 单机安装
 ## **Linux安装Etcd**
@@ -387,17 +388,31 @@ func delMember (cli *clientv3.Client, memberId uint64) {
 
 > 参考：
 > https://www.jianshu.com/p/2966b6ef5d10
+>
 > https://mritd.me/2016/09/01/Etcd-%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/
+>
 > https://blog.csdn.net/ShouTouDeXingFu/article/details/81167302
+>
 > https://blog.csdn.net/bbwangj/article/details/82584988
+>
 > https://www.liwenzhou.com/posts/Go/go_etcd/
+>
 > http://www.iigrowing.cn/etcd_shi_yong_ru_men.html
+>
 > https://www.jianshu.com/p/8e4bbe7e276c
+>
 > https://segmentfault.com/a/1190000014045625
+>
 > https://www.cnblogs.com/davygeek/p/7154780.html
+>
 > https://www.cnblogs.com/zhenghongxin/p/7029173.html
+>
 > https://blog.csdn.net/zhaominpro/article/details/82630528
+>
 > https://blog.csdn.net/weixin_34080571/article/details/93621638
+>
 > https://www.orchome.com/620
+>
 > https://www.cnblogs.com/linuxws/p/11194403.html  配置
+>
 > https://www.jianshu.com/p/71f4af1815d9
