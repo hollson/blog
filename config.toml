@@ -2,14 +2,14 @@
 baseurl = "https://hollson.github.io"
 title = "码夫庄园"
 theme = "hugo-theme-cleanwhite"           #主题
-languageCode = "zh"
-defaultContentLanguage ="zh"
+languageCode = "zh-CN"                    #语言编码
+defaultContentLanguage ="zh-CN"              #默认内容语言
 disqusShortname = ""                      #评论功能
 googleAnalytics = ""                      #谷歌分析
-preserveTaxonomyNames = true
-paginate = 10                              #分页设置
+preserveTaxonomyNames = true              #标签转换，如："Hello world"转换成“hello-world`
+paginate = 10                             #分页设置
 paginatePath ="page"
-hasCJKLanguage = true
+hasCJKLanguage = true                     #检测是否包含中文/日文/韩文（会影响摘要和字数统计功能）
 
 
 # 构建输出 ["HTML", "RSS", "Algolia"]
@@ -39,7 +39,7 @@ home = ["HTML", "Algolia"]
   algolia_indexName = ""
   algolia_apiKey = ""
 
-  # Sidebar settings
+  # 侧边栏设置
   sidebar_about_description = "一介码农，喜欢乐器、艺术、写博客,乐与大家分享经验"
   sidebar_avatar = "img/hollson.png"     
 
@@ -62,6 +62,8 @@ home = ["HTML", "Algolia"]
   friends = true           #友情链接
   bookmarks = true         #书签功能
   about_me = true          #关于作者
+  enableRobotsTXT =true    #创建robots.txt
+  enableEmoji =true        #启用Emoji; see emoji-cheat-sheet.com
 
   # Include any custom CSS and/or JS files, url or relative to /static folder
   custom_css = ["css/lightbox.css", "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css", "css/main.css"]
@@ -75,6 +77,11 @@ home = ["HTML", "Algolia"]
   [[params.addtional_menus]]
   title =  "关于"
   href =  "/top/about/"
+
+# 文档路径
+# /:monthname/:day/:weekday/:weekdayname/:yearday/:section/:title/:slug/:filename/
+  [permalinks]
+  post = "/:year/:month/:title/"
 
 
 # 社交连接
@@ -101,7 +108,10 @@ home = ["HTML", "Algolia"]
   [[params.friend_link]]
   title = "博客园"
   href =  "https://www.cnblogs.com/hollson/"
-
+  [[params.friend_link]]
+  title = "Hugo"
+  href =  "https://gohugo.io/about/"
+  
 
 # 书签链接
   [[params.bookmark_link]]
