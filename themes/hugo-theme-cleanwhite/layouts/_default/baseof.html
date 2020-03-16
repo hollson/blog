@@ -1,8 +1,9 @@
 <!DOCTYPE html>
+<!-- 整体母版 -->
 <html lang="{{ .Site.LanguageCode }}">
 {{ partial "head.html" . }}
 {{ partial "nav.html" . }}
-<!-- Page Header -->
+
 {{ block "header" .}}
 <header class="intro-header" style="background-image: url('{{ .Site.Params.header_image | relURL }}')">
     <div class="container">
@@ -11,7 +12,7 @@
                 <div class="site-heading">
                     <h1>{{ .Site.Title}} </h1>
                     <!--<hr class="small">-->
-		    <span class="subheading">{{ .Site.Params.slogan }}</span>
+                    <span class="subheading">{{ .Site.Params.slogan }}</span>
                 </div>
             </div>
         </div>
@@ -24,4 +25,5 @@
 
 {{ partial "footer.html" . }}
 </body>
+
 </html>

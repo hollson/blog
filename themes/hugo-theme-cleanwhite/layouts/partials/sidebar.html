@@ -6,25 +6,14 @@
     col-xs-12
     sidebar-container
 ">
-    <!-- Featured Tags -->
-    {{ if .Site.Params.featured_tags }}
-    <section>
-        <hr class="hidden-sm hidden-xs">
-        <h5>专题标签</h5>
-        <div class="tags">
-            {{ $featured_condition_size := .Site.Params.featured_condition_size }}
-            {{ range $name, $taxonomy := .Site.Taxonomies.tags }}
-            {{ if gt (len $taxonomy.Pages) $featured_condition_size }}
-            <a href="{{ "/tags/" | relLangURL }}{{ $name | urlize }}" title="{{ $name }}">
-                {{ $name }}
-            </a>
-            {{ end }}
-            {{ end }}
-        </div>
-    </section>
-    {{ end }}
 
-    <!-- Short About -->
+    <section>
+        <hr>
+        <h5>公告信息</h5>
+        <span> 有钱的捧个钱场，没钱的捧个人场</span>
+    </section>
+
+    <!-- 关于作者 -->
     {{ if .Site.Params.about_me }}
     <section class="visible-md visible-lg">
         <hr>
@@ -225,20 +214,68 @@
         </div>
     </section>
     {{ end }}
-    <!-- Friends Blog -->
-    {{ if .Site.Params.friends }}
+
+    <section>
+        <div class="card">
+            <div class="card-content">
+                <hr class="hidden-sm hidden-xs">
+                <h5>分类专栏</h5>
+                <ul class="widget-list">
+                    {{ range .Site.Taxonomies.categories }}
+                    <li><a href="{{ .Page.Permalink }}">{{ .Page.Title }} ({{ .Count }})</a></li>
+                    {{ end }}
+                </ul>
+            </div>
+        </div>
+
+
+    </section>
+
+    <section>
+        <div class="card">
+            <div class="card-content">
+                <hr class="hidden-sm hidden-xs">
+                <h5>文章归档</h5>
+                {{ range (where .Site.RegularPages "Section" "post").GroupByDate "2006" }}
+                <a href="{{ "archives" | absURL }}/{{ .Key }}">{{ .Key }}</a> ({{ len .Pages }})
+                <br>
+                {{ end }}
+            </div>
+        </div>
+    </section>
+
+    <!-- 友情链接 -->
+    {{ if .Site.Params.archives }}
     <section>
         <hr class="hidden-sm hidden-xs">
         <h5>友情链接</h5>
         <ul class="list-inline">
             {{ range .Site.Params.friend_link }}
-            <li><a target="_blank" href="{{.href | relLangURL}}">{{.title}}</a></li>
+            <li><a target="_blank" href="{{.href | relLangURL}}">{{.title}}</a></li><br>
             {{ end }}
         </ul>
     </section>
     {{ end }}
 
-    <!-- Bookmarks -->
+    <!-- 特色标签 -->
+    {{ if .Site.Params.featured_tags }}
+    <section>
+        <hr class="hidden-sm hidden-xs">
+        <h5>特色标签</h5>
+        <div class="tags">
+            {{ $featured_condition_size := .Site.Params.featured_condition_size }}
+            {{ range $name, $taxonomy := .Site.Taxonomies.tags }}
+            {{ if gt (len $taxonomy.Pages) $featured_condition_size }}
+            <a href="{{ "/tags/" | relLangURL }}{{ $name | urlize }}" title="{{ $name }}">
+                {{ $name }}
+            </a>
+            {{ end }}
+            {{ end }}
+        </div>
+    </section>
+    {{ end }}
+
+    <!-- 我的书签 -->
     {{ if .Site.Params.bookmarks }}
     <section>
         <hr>
@@ -250,4 +287,18 @@
         </ul>
     </section>
     {{ end }}
+
+    <!-- 友情链接 -->
+    {{ if .Site.Params.friends }}
+    <section>
+        <hr class="hidden-sm hidden-xs">
+        <h5>友情链接</h5>
+        <ul class="list-inline">
+            {{ range .Site.Params.friend_link }}
+            <li><a target="_blank" href="{{.href | relLangURL}}">{{.title}}</a></li><br>
+            {{ end }}
+        </ul>
+    </section>
+    {{ end }}
+
 </div>

@@ -6,7 +6,7 @@ date:        2020-03-13
 author:      "史宏生"
 image:       "img/sample-hero-image.jpg"
 tags:        ["分布式", "微服务"]
-categories:  ["Tech" ]
+categories:  ["Tech","golang" ]
 ---
 
 

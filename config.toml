@@ -3,14 +3,13 @@ baseurl = "https://hollson.github.io"
 title = "码夫庄园"
 theme = "hugo-theme-cleanwhite"           #主题
 languageCode = "zh-CN"                    #语言编码
-defaultContentLanguage ="zh-CN"              #默认内容语言
+defaultContentLanguage ="zh-CN"           #默认内容语言
 disqusShortname = ""                      #评论功能
 googleAnalytics = ""                      #谷歌分析
-preserveTaxonomyNames = true              #标签转换，如："Hello world"转换成“hello-world`
+preserveTaxonomyNames = false             #标签转换，如："Hello world"转换成“hello-world`
 paginate = 10                             #分页设置
 paginatePath ="page"
 hasCJKLanguage = true                     #检测是否包含中文/日文/韩文（会影响摘要和字数统计功能）
-
 
 # 构建输出 ["HTML", "RSS", "Algolia"]
 [outputs]
@@ -26,7 +25,6 @@ home = ["HTML", "Algolia"]
 
   image_404 = "img/404-bg.jpg"
   title_404 = "你来到了没有知识的荒原 :("
-  omit_categories = true
 
   # leancloud storage for page view counter
   page_view_conter = false 
@@ -64,19 +62,27 @@ home = ["HTML", "Algolia"]
   about_me = true          #关于作者
   enableRobotsTXT =true    #创建robots.txt
   enableEmoji =true        #启用Emoji; see emoji-cheat-sheet.com
+  archives=true            #显示归档
+  omit_categories=false    #关闭分类导航吗 
 
   # Include any custom CSS and/or JS files, url or relative to /static folder
   custom_css = ["css/lightbox.css", "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css", "css/main.css"]
   custom_js = ["js/lightbox.js", "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js", "js/main.js"]
 
-
 # 目录导航
-  [[params.addtional_menus]]
-  title =  "书籍"
-  href =  "/top/books/"
+  # [[params.addtional_menus]]
+  # title =  "书籍"
+  # href =  "/top/books/"
   [[params.addtional_menus]]
   title =  "关于"
-  href =  "/top/about/"
+  href =  "/about/"
+
+# 分类体系
+# 分类体系（Taxonomies）表示作者对内容的一套或多套分类。比如标签（tags）、类目（categories）、归档（archives）等
+[taxonomies]
+    tag = "tags"
+    category = "categories"
+    archive = "archives"
 
 # 文档路径
 # /:monthname/:day/:weekday/:weekdayname/:yearday/:section/:title/:slug/:filename/
@@ -84,19 +90,22 @@ home = ["HTML", "Algolia"]
   post = "/:year/:month/:title/"
 
 
-# 社交连接
+# 博客连接
   [params.social]
-  github         = "https://github.com/yourgithub"
-  wechat         = "your wechat qr code image"
+  github         = "https://github.com/hollson"
+  wechat         = "/img/wechat_qrcode.jpeg"
   rss            = true 
   email          = "hollson@qq.com"
-  linkedin       = "https://www.linkedin.com/in/yourlinkedinid"
+  linkedin       = "https://www.linkedin.com/in/hollson"
   #stackoverflow  = "https://stackoverflow.com/users/yourstackoverflowid"
   #instagram     = "full profile url in instagram"
   #facebook      = "full profile url in facebook"
   #twitter       = "full profile url in twitter"
   #gitlab        = "full profile url in gitlab"
-  
+
+# 文件归档
+# archives//
+
 
 # 友情链接
   [[params.friend_link]]
@@ -109,9 +118,9 @@ home = ["HTML", "Algolia"]
   title = "博客园"
   href =  "https://www.cnblogs.com/hollson/"
   [[params.friend_link]]
-  title = "Hugo"
+  title = "Hugo主页"
   href =  "https://gohugo.io/about/"
-  
+    
 
 # 书签链接
   [[params.bookmark_link]]
