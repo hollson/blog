@@ -12,6 +12,7 @@ if [ $# -eq 1 ]
 fi
 git commit -m "$msg"
 git push origin master
+echo "源码推送成功！！！"
 
 # 推送发布
 cd public
@@ -21,4 +22,5 @@ if [ $# -eq 1 ]
 fi
 git commit -m "$msg"
 git push origin master
+echo "项目发布成功！！！"
 cd ..
