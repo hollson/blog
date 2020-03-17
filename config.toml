@@ -25,7 +25,7 @@ home = ["HTML", "Algolia"]
 
   # image_404 = "img/404-bg.jpg"
   image_404 = "https://cdn.pixabay.com/photo/2016/08/06/18/45/adac-1574932_1280.jpg"
-  title_404 = "404 ：你来到了没有知识的荒原 :("
+  title_404 = "你来到了没有知识的荒原 :("
 
   # leancloud storage for page view counter
   page_view_conter = false 
