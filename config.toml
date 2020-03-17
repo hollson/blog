@@ -15,16 +15,17 @@ hasCJKLanguage = true                     #检测是否包含中文/日文/韩�
 [outputs]
 home = ["HTML", "Algolia"]
 
-
+# 首页设置
 [params]
-  header_image = "img/home-bg-jeep.jpg"
+  header_image = "img/farm.jpg"
   SEOTitle = "专注于Golang、Docker、K8s、云计算等前沿技术"
   description = "。。。。。。。。。。。。。。。。。。。。"
   keyword = "Blog, Golang 博客, 个人网站, 互联网, Web, PaaS, Istio, Kubernetes, 微服务, Microservice"
   slogan = "提升码农亩产，掰直码农方向，授人以渔，功德无量，利在千秋 ."
 
-  image_404 = "img/404-bg.jpg"
-  title_404 = "你来到了没有知识的荒原 :("
+  # image_404 = "img/404-bg.jpg"
+  image_404 = "https://cdn.pixabay.com/photo/2016/08/06/18/45/adac-1574932_1280.jpg"
+  title_404 = "404 ：你来到了没有知识的荒原 :("
 
   # leancloud storage for page view counter
   page_view_conter = false 
@@ -75,7 +76,7 @@ home = ["HTML", "Algolia"]
   # href =  "/top/books/"
   [[params.addtional_menus]]
   title =  "关于"
-  href =  "/about/"
+  href =  "top/about/"
 
 # 分类体系
 # 分类体系（Taxonomies）表示作者对内容的一套或多套分类。比如标签（tags）、类目（categories）、归档（archives）等

@@ -21,3 +21,8 @@ $ hugo server -t hyde --buildDrafts --baseURL=http://xxx.com  --bind=0.0.0.0 --p
 -v, --verbose[=false]: 输出详细信息
 ```
 > 注意：当时发布的文章被视为【未来发布的文章】，所以-F有时候就显得很有必要
+
+素材：
+//https://cdn.pixabay.com/photo/2020/01/16/03/36/coastguard-4769562_1280.jpg
+//https://cdn.pixabay.com/photo/2017/09/30/22/18/bloody-rail-2803727_1280.jpg
+//https://cdn.pixabay.com/photo/2016/08/06/18/45/adac-1574932_1280.jpg
