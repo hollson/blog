@@ -1,7 +1,7 @@
 # 基础设置
-baseurl = "https://hollson.github.io"
+baseurl = "https://mafool.gitee.io"      #默认发布到码云，推动Github请查看“deploy_github.sh”
 title = "码夫庄园"
-theme = "hugo-theme-cleanwhite"           #主题
+theme = "hollson"           #主题
 languageCode = "zh-CN"                    #语言编码
 defaultContentLanguage ="zh-CN"           #默认内容语言
 disqusShortname = ""                      #评论功能
@@ -10,6 +10,7 @@ preserveTaxonomyNames = false             #标签转换，如："Hello world"转
 paginate = 10                             #分页设置
 paginatePath ="page"
 hasCJKLanguage = true                     #检测是否包含中文/日文/韩文（会影响摘要和字数统计功能）
+publishdir = "public"                     #静态页生成目录
 
 # 构建输出 ["HTML", "RSS", "Algolia"]
 [outputs]

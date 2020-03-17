@@ -9,7 +9,7 @@ if [ $# -eq 1 ]; then
 fi
 git commit -m "$msg"
 git push origin master
-echo "【Gitee】源码推送成功！！！"
+echo "【Github】源码推送成功！！！"
 
 # Hugo编译
 hugo # if using a theme, replace with `hugo -t <YOURTHEME>`
@@ -22,5 +22,5 @@ if [ $# -eq 1 ]; then
 fi
 git commit -m "$msg"
 git push origin master
-echo "【Gitee】项目发布成功！！！"
+echo "【Github】项目发布成功！！！"
 cd ..
