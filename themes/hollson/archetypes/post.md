@@ -8,7 +8,6 @@ image:       "https://hollson.github.io/img/sample-hero-image.jpg"
 tags:        ["tag1", "tag2"]
 categories:  ["分类"]
 archives:    "{{ slicestr .Date}}"
-tttttts:    "{{ slicestr .Date}}"
 ---
 
 # 一. XXX介绍
