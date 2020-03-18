@@ -1,7 +1,7 @@
 # 基础设置
-baseurl = "https://hollson.github.io"      #默认发布到码云，推动Github请查看“deploy_github.sh”
+baseurl = "https://mafool.gitee.io"      #默认发布到码云，推动Github请查看“deploy_github.sh”
 title = "码夫庄园"
-theme = "hollson"           #主题
+theme = "hollson"                         #主题
 languageCode = "zh-CN"                    #语言编码
 defaultContentLanguage ="zh-CN"           #默认内容语言
 disqusShortname = ""                      #评论功能
@@ -10,7 +10,7 @@ preserveTaxonomyNames = false             #标签转换，如："Hello world"转
 paginate = 15                             #分页设置
 paginatePath ="page"
 hasCJKLanguage = true                     #检测是否包含中文/日文/韩文（会影响摘要和字数统计功能）
-publishdir = "public_github"                     #静态页生成目录
+# publishdir = "public"                     #静态页生成目录
 
 # 构建输出 ["HTML", "RSS", "Algolia"]
 [outputs]
@@ -20,12 +20,12 @@ home = ["HTML", "Algolia"]
 [params]
   header_image = "img/farm.jpg"
   SEOTitle = "专注于Golang、Docker、K8s、云计算等前沿技术"
-  description = "。。。。。。。。。。。。。。。。。。。。"
+  # description = "。。。。。。。。。。。。。。。。。。。。"
   keyword = "Blog, Golang 博客, 个人网站, 互联网, Web, PaaS, Istio, Kubernetes, 微服务, Microservice"
   slogan = "提升码农亩产，掰直码农方向，授人以渔，功德无量，利在千秋 ."
 
-  # image_404 = "img/404-bg.jpg"
-  image_404 = "https://cdn.pixabay.com/photo/2016/08/06/18/45/adac-1574932_1280.jpg"
+  image_404 = "img/404-bg.jpg"
+  # image_404 = "https://cdn.pixabay.com/photo/2016/08/06/18/45/adac-1574932_1280.jpg"
   title_404 = "你来到了没有知识的荒原 :("
 
   # leancloud storage for page view counter
@@ -41,7 +41,7 @@ home = ["HTML", "Algolia"]
 
   # 侧边栏设置
   sidebar_about_description = "一介码农，喜欢乐器、艺术、写博客,乐与大家分享经验"
-  sidebar_avatar = "img/hollson.png"     
+  sidebar_avatar = "img/dou.png"     
 
   featured_tags = true 
   featured_condition_size = 1
@@ -65,7 +65,7 @@ home = ["HTML", "Algolia"]
   enableRobotsTXT =true    #创建robots.txt
   enableEmoji =true        #启用Emoji; see emoji-cheat-sheet.com
   archives=true            #显示归档
-  omit_categories=false    #关闭分类导航吗 
+  omit_categories=true    #关闭分类导航吗 
 
   # Include any custom CSS and/or JS files, url or relative to /static folder
   custom_css = ["css/lightbox.css", "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css", "css/main.css"]

@@ -1,0 +1,18 @@
+#!/bin/bash
+echo -e "\033[0;32mDeploying updates to GitHub...\033[0m"
+
+# 发布到Gitee（码云）
+rm -rf ./public_gitee/*
+hugo -v --baseURL="https://mafool.gitee.io" -d public_gitee
+
+cd public_gitee
+
+git add .
+msg="rebuilding site $(date)"
+if [ $# -eq 1 ]; then
+  msg="$1"
+fi
+git commit -m "$msg"
+git push origin master
+echo "【Gitee】项目发布成功！！！"
+cd ..
