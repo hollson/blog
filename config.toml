@@ -1,5 +1,5 @@
 # 基础设置
-baseurl = "https://mafool.gitee.com"      #默认发布到码云，推动Github请查看“deploy_github.sh”
+baseurl = "https://mafool.gitee.io"      #默认发布到码云，推动Github请查看“deploy_github.sh”
 title = "码夫庄园"
 theme = "hollson"           #主题
 languageCode = "zh-CN"                    #语言编码
