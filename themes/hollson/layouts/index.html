@@ -1,5 +1,0 @@
-{{ define "main" }}
-<!-- 定义主页 -->
-{{ $paginator := .Paginate (where (where .Site.Pages "Type" "post") "IsPage" true) }}
-{{ partial "posts.html" . }}
-{{ end }}
