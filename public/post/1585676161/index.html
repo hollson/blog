@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>码夫庄园-Go Mod依赖管理</title>
+    <meta name="keywords"
+        content='依赖管理,gomod'>
+    <meta name="description" content="" />
+
+    
+    <meta name="baidu-site-verification" content="v9szEmQLra" />
+    <meta name="360-site-verification" content="d8e961f98fb655e4b8cf9439cfd9ac7f" />
+    <meta name="sogou_site_verification" content="40NC9EdZDC" />
+    <meta name="shenma-site-verification" content="3200e3042e92157713a3b0aceeecb20a_1586020187" />
+    <meta name="google-site-verification" content="r8987bkunZHJeKut3ocu5NIJ5QEu53NA6Q_r7RrZ46c" />
+    <meta name="msvalidate.01" content="893A2865ABC54AC2782D118536831056" />
+
+    
+    <link rel="shortcut icon" href="http://www.mafool.com/img/res/favicon.ico">
+    
+
+    
+
+    <link crossorigin="anonymous" integrity="sha384-5kGFOAqgEKnuF6c2jk2JANKHZgYVt38Wn2dVJENtq1EBCP54/1uzXU5mpxqL8WjN"
+        href="https://lib.baomitu.com/bulma/0.8.0/css/bulma.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="http://www.mafool.com/css/dooz.blog.css" />
+    <script crossorigin="anonymous" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh"
+        src="https://lib.baomitu.com/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/jquery.share.min.js"></script>
+    
+
+    
+
+    
+    
+<link rel="stylesheet" href="http://www.mafool.com/css/reward.css">
+
+
+    <link href="http://www.mafool.com/css/fonts.googleapi.css" rel="stylesheet">
+    <script src=http://www.mafool.com/js/dooz.blog.js></script>
+
+    
+    <script>
+        $(document).ready(function () {
+            $('.content a[href^="http"]').each(function () {
+                $(this).attr('target', '_blank');
+            });
+        });
+
+        $(document).on('click', '.modal-wechat', function () {
+            $(".modal").addClass("is-active");
+        });
+
+        $(document).on('click', '.modal-background', function () {
+            $(".modal").removeClass("is-active");
+        });
+    </script>
+</head>
+
+<body>
+    
+    
+<section class="hero is-info is-medium"
+    style="background-image: url('/img/res/bg3.jpg');">
+    <div class="hero-head">
+        <nav class="navbar is-transparent container has-text-white">
+    <div class="navbar-brand">
+        <div class="navbar-item">
+            <a class="title is-5 is-white" href="http://www.mafool.com/">码夫庄园</a>
+        </div>
+
+        
+        <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <div id="navbarExampleTransparentExample" class="navbar-menu has-text-dark">
+        
+
+        <div class="navbar-end">
+            <a class="navbar-item" href='http://www.mafool.com/'>首页</a>
+            <a class="navbar-item" href='http://www.mafool.com/archives'>归档 </a>
+            <a class="navbar-item" href='http://www.mafool.com/about'>关于</a>
+            <span class="navbar-item">
+                <a class="button is-primary is-inverted" href="https://github.com/hollson/hugo-theme-dooz">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>主题</span>
+                </a>
+            </span>
+        </div>
+    </div>
+</nav>
+    </div>
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <div class='container has-text-left column is-7'>
+                
+                <h1 class="title is-size-2" style="margin-bottom:0.2rem;">
+                    
+                    Go Mod依赖管理
+                    
+                </h1>
+                
+                <span class="title is-size-6" style="font-style: italic;"> </span><br>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    
+    <div class="container">
+        <div class="section">
+            
+<div class="columns">
+    <div class="column is-9">
+        <div class="tile is-child box">
+            <div class="content">
+                
+                <nav class="level">
+                    
+                    <div class="level-left">
+                        <div class="level-item">
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2019年8月14日,
+    星期三 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 3分钟阅读
+</p>
+                        </div>
+                    </div>
+
+                    
+                    
+                    <div class="share-component level-right" data-disabled="google,diandian,tencent,qzone"
+                        data-description="Share.js - 一键分享到微博，QQ空间，腾讯微博，人人，豆瓣"
+                        data-mobile-sites="weibo,qq,qzone,tencent">
+                    </div>
+                    
+                </nav>
+                <hr>
+                
+                <header>
+                    <h2>目录</h2>
+                </header>
+                <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一-发展历史">一. 发展历史</a></li>
+    <li><a href="#二-vendor机制">二. Vendor机制</a></li>
+    <li><a href="#三-gomod机制">三. GoMod机制</a></li>
+    <li><a href="#四-gomod示例">四. GoMod示例</a></li>
+  </ul>
+</nav>
+                
+                <hr>
+                <h2 id="一-发展历史">一. 发展历史</h2>
+<ul>
+<li><code>GOPATH时代</code>：所有代码都放到GOPATH下，对于没有任何外部依赖管理（淘汰）</li>
+<li><code>Vendor时代</code>：vendor目录下的包会被优先使用，但没有版本号等信息管理（淘汰）</li>
+<li><code>Module时代</code>：通过<code>go.mod</code>配置文件，管理版本信息，依赖包目录等（推荐）</li>
+<li>包管理趋势：<code>支持锁定版本</code>，<code>支持server</code>，<code>本地多版本缓存</code>（优化性能）</li>
+</ul>
+<!-- raw HTML omitted -->
+<h2 id="二-vendor机制">二. Vendor机制</h2>
+<p>项目目录下，如果有vender目录，会优先加载vender目录下的依赖包。</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-py" data-lang="py"><span style="color:#a00;background-color:#faa">$</span> go get github<span style="color:#555">.</span>com<span style="color:#555">/</span>tools<span style="color:#555">/</span>godep
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>godep命令：</strong></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-py" data-lang="py"><span style="color:#a00;background-color:#faa">$</span> godep save     <span style="color:#09f;font-style:italic">#将依赖项输出并复制到Godeps.json文件中</span>
+<span style="color:#a00;background-color:#faa">$</span> godep go       <span style="color:#09f;font-style:italic">#使用保存的依赖项运行go工具</span>
+<span style="color:#a00;background-color:#faa">$</span> godep get      <span style="color:#09f;font-style:italic">#下载并安装具有指定依赖项的包</span>
+<span style="color:#a00;background-color:#faa">$</span> godep path     <span style="color:#09f;font-style:italic">#打印依赖的GOPATH路径</span>
+<span style="color:#a00;background-color:#faa">$</span> godep restore  <span style="color:#09f;font-style:italic">#在GOPATH中拉取依赖的版本</span>
+<span style="color:#a00;background-color:#faa">$</span> godep update   <span style="color:#09f;font-style:italic">#更新选定的包或go版本</span>
+<span style="color:#a00;background-color:#faa">$</span> godep diff     <span style="color:#09f;font-style:italic">#显示当前和以前保存的依赖项集之间的差异</span>
+<span style="color:#a00;background-color:#faa">$</span> godep version  <span style="color:#09f;font-style:italic">#查看版本信息</span>
+</code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>在项目目录下执行<code>godep save</code>命令，会在当前项目中创建<code>Godeps</code>和<code>vender</code>两个文件夹。</p>
+</blockquote>
+<!-- raw HTML omitted -->
+<h2 id="三-gomod机制">三. GoMod机制</h2>
+<ul>
+<li>Go1.11中推荐用<code>go module</code>模块化编程的方式，管理<code>源代码交换 ( interchange ) 和版本化控制</code>。</li>
+<li>模块可以包含其他模块，在这种情况下，它们的内容将从父模块中排除。</li>
+<li><code>go module</code>可以在任何目录下，而不再强调项目必须在<code>GOPATH</code>目录下。<br>
+<img src="https://img-blog.csdnimg.cn/20190814020115531.png" alt="gomod"></li>
+</ul>
+<p><strong>1.开启module：</strong>  <em>新版本中默认已是开启状态</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">$ echo $GO111MODULE      #查看状态
+$ export GO111MODULE=on  #开启mod
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>2.设置代理：</strong>  参考<a href="https://goproxy.io/zh/"> GOPROXY 官网</a></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-bash" data-lang="bash">$ <span style="color:#366">export</span> <span style="color:#033">GOPROXY</span><span style="color:#555">=</span>https://goproxy.io/
+</code></pre></td></tr></table>
+</div>
+</div><p>或者，可以把上面的命令写到 .bashrc 或 .bash_profile 文件当中。</p>
+<p><strong>3.gomod命令：</strong></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-py" data-lang="py"><span style="color:#a00;background-color:#faa">$</span> go mod download   <span style="color:#09f;font-style:italic">#下载依赖的module到本地cache。“go env”查看GOCACHE，“go clean -cache”清理缓存</span>
+<span style="color:#a00;background-color:#faa">$</span> go mod edit       <span style="color:#09f;font-style:italic">#编辑go.mod文件</span>
+<span style="color:#a00;background-color:#faa">$</span> go mod graph      <span style="color:#09f;font-style:italic">#打印模块依赖图</span>
+<span style="color:#a00;background-color:#faa">$</span> go mod init       <span style="color:#09f;font-style:italic">#初始化当前文件夹, 创建go.mod文件</span>
+<span style="color:#a00;background-color:#faa">$</span> go mod tidy       <span style="color:#09f;font-style:italic">#增加缺少的module，删除无用的module</span>
+<span style="color:#a00;background-color:#faa">$</span> go mod vendor     <span style="color:#09f;font-style:italic">#将依赖复制到vendor下</span>
+<span style="color:#a00;background-color:#faa">$</span> go mod verify     <span style="color:#09f;font-style:italic">#校验依赖</span>
+<span style="color:#a00;background-color:#faa">$</span> go mod why        <span style="color:#09f;font-style:italic">#解释为什么需要依赖</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>4.初始化mod：</strong></p>
+<ul>
+<li>在<code>非GOPATH</code>目录下创建案例项目，执行初始化命令，即可生成<code>go.mod </code>文件</li>
+<li>执行<code>go get</code>、<code>go build</code>或<code>go run</code>命令，会自动下载依赖包并生成<code>go.sum</code>文件(哈希摘要校验)</li>
+</ul>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-py" data-lang="py">[root<span style="color:#99f">@mypro</span>] <span style="color:#a00;background-color:#faa">$</span> go mod init github<span style="color:#555">.</span>com<span style="color:#555">/</span>xxx<span style="color:#555">/</span>mypro
+go: creating new go<span style="color:#555">.</span>mod: module mypro
+go: copying requirements <span style="color:#069;font-weight:bold">from</span> <span style="color:#0cf;font-weight:bold">Godeps</span><span style="color:#555">/</span>Godeps<span style="color:#555">.</span>json
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-bash" data-lang="bash"><span style="color:#555">[</span>root@mypro<span style="color:#555">]</span> $ go get	<span style="color:#09f;font-style:italic">#下载依赖项，生成go.sum</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>5.配置依赖项：</strong></p>
+<ul>
+<li>包含<code>包名</code>、<code>Go版本</code>、<code>依赖项</code>、<code>替换项</code>、<code>排除项</code>、<code>配置注解</code>。</li>
+</ul>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-py" data-lang="py">module github<span style="color:#555">.</span>com<span style="color:#555">/</span>xxx<span style="color:#555">/</span>mypro
+
+go <span style="color:#f60">1.12</span>
+
+<span style="color:#555">//</span><span style="color:#a00;background-color:#faa">依赖项</span>
+require (
+   github<span style="color:#555">.</span>com<span style="color:#555">/</span>lunny<span style="color:#555">/</span>log v0<span style="color:#555">.</span><span style="color:#f60">0.0</span><span style="color:#555">-</span><span style="color:#f60">20160921050905</span><span style="color:#555">-</span><span style="color:#f60">7887</span>c61bf0de
+   github<span style="color:#555">.</span>com<span style="color:#555">/</span>pkg<span style="color:#555">/</span>errors v0<span style="color:#555">.</span><span style="color:#f60">0.0</span><span style="color:#555">-</span><span style="color:#f60">20190227000051</span><span style="color:#555">-</span><span style="color:#f60">27936</span>f6d90f9
+)
+
+<span style="color:#555">//</span><span style="color:#a00;background-color:#faa">替换项</span>
+replace golang<span style="color:#555">.</span>org<span style="color:#555">/</span>x<span style="color:#555">/</span>text v0<span style="color:#555">.</span><span style="color:#f60">3.0</span> <span style="color:#555">=&gt;</span> github<span style="color:#555">.</span>com<span style="color:#555">/</span>golang<span style="color:#555">/</span>text v0<span style="color:#555">.</span><span style="color:#f60">3.0</span>
+
+<span style="color:#555">//</span><span style="color:#a00;background-color:#faa">排除项目</span>
+exclude old<span style="color:#555">/</span>thing v1<span style="color:#555">.</span><span style="color:#f60">2.3</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>6.常用命令：</strong></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-py" data-lang="py"><span style="color:#a00;background-color:#faa">$</span> go mod edit <span style="color:#555">-</span>fmt        <span style="color:#09f;font-style:italic">#格式化</span>
+<span style="color:#a00;background-color:#faa">$</span> go mod edit <span style="color:#555">-</span>require<span style="color:#555">=</span>golang<span style="color:#555">.</span>org<span style="color:#555">/</span>x<span style="color:#555">/</span>text        <span style="color:#09f;font-style:italic">#添加依赖项</span>
+<span style="color:#a00;background-color:#faa">$</span> go mod edit <span style="color:#555">-</span>droprequire<span style="color:#555">=</span>golang<span style="color:#555">.</span>org<span style="color:#555">/</span>x<span style="color:#555">/</span>text    <span style="color:#09f;font-style:italic">#移除依赖项</span>
+</code></pre></td></tr></table>
+</div>
+</div><!-- raw HTML omitted -->
+<h2 id="四-gomod示例">四. GoMod示例</h2>
+<p><strong>1.创建项目：</strong></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-py" data-lang="py"><span style="color:#a00;background-color:#faa">$</span> mkdir <span style="color:#555">~/</span>mypro <span style="color:#555">&amp;&amp;</span> cd <span style="color:#555">~/</span>mypro <span style="color:#555">&amp;&amp;</span> touch main<span style="color:#555">.</span>go  <span style="color:#09f;font-style:italic">#非GOPATH目录</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>2.编辑示例代码：main.go</strong></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">package</span> main
+
+<span style="color:#069;font-weight:bold">import</span> <span style="color:#c30">&#34;github.com/sirupsen/logrus&#34;</span> <span style="color:#09f;font-style:italic">//测试依赖包
+</span><span style="color:#09f;font-style:italic"></span>
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+   logrus.<span style="color:#c0f">Info</span>(<span style="color:#c30">&#34;mod test ok&#34;</span>)
+}
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>3.初始化mod：</strong></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-py" data-lang="py"><span style="color:#a00;background-color:#faa">$</span> go mod init github<span style="color:#555">.</span>com<span style="color:#555">/</span>xxx<span style="color:#555">/</span>mypro
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>4.测试运行</strong></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-py" data-lang="py"><span style="color:#a00;background-color:#faa">$</span> go run main<span style="color:#555">.</span>go
+</code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>此时，项目在不依赖GOPATH的情况下，由<code>go mod</code>完成了项目的依赖管理。</p>
+</blockquote>
+<!-- raw HTML omitted -->
+
+                
+                
+                <hr> 
+
+<div class="entry-shang text-center">
+    
+    <p> 「真诚赞赏，手留余香」</p>
+    
+    <button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+    <div class="zs-modal-head">
+        <button type="button" class="close">×</button>
+        <span class="author">
+            <a href="http://www.mafool.com">
+                <img src="http://www.mafool.com/img/reward/hollson.png" alt="史布斯" />码夫庄园
+            </a>
+        </span>
+        
+        <p class="tip"><i></i><span>嗯，我的梦想是被读者的稿费包养~</span></p>
+        
+
+    </div>
+    <div class="zs-modal-body">
+        <div class="zs-modal-btns">
+            <button class="btn btn-blink" data-num="2">2元</button>
+            <button class="btn btn-blink" data-num="5">5元</button>
+            <button class="btn btn-blink" data-num="10">10元</button>
+            <button class="btn btn-blink" data-num="50">50元</button>
+            <button class="btn btn-blink" data-num="100">100元</button>
+            <button class="btn btn-blink" data-num="1">任意金额</button>
+        </div>
+        <div class="zs-modal-pay">
+            <button class="btn btn-bred" id="pay-text">2元</button>
+            <p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+            <img src="http://www.mafool.com/img/reward/wechat-2.png" alt="史布斯" id="pay-image" />
+        </div>
+    </div>
+    <div class="zs-modal-footer">
+        <label>
+            <span class="zs-wechat"></span>
+            <input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked">
+            <img src="http://www.mafool.com/img/reward/wechat-btn.png" alt="史布斯" />
+            </span>&nbsp;
+            <span>
+                <input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay">
+                <img src="http://www.mafool.com/img/reward/alipay-btn.png" alt="史布斯" />
+            </span>
+        </label>
+    </div>
+</div>
+
+ 
+
+                <br>
+                <br>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="column is-3">
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">最近发布</h2>
+        
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/0742b474a643d63a774461726a6201203/">Go语言中的原子操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年12月2日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/1600330472/">Go基础笔记 - 2.3 常量</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月10日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/15996311192/">Go - Gin框架快速入门</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月9日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480249/">Gorm快速指南</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480218/">18. Go语言MySQL数据库操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+    </div>
+</div>
+<br>
+        
+
+
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">标签</h2>
+        <div>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/atomic">atomic</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/blog">blog</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cgo">cgo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cloud">cloud</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/config">config</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/copy">copy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/docker">docker</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/exam">exam</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/gin">gin</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/git">git</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/golang">golang</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/hugo">hugo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/install">install</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/istio">istio</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/jenkins">jenkins</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/kubernetes">kubernetes</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/map">map</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/microservice">microservice</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/mycat">mycat</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/nginx">nginx</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/plan9">plan9</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/posix">posix</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/proxy">proxy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/raft">raft</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ssh">ssh</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/tips">tips</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ymal">ymal</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%B8%BB%E4%BB%8E">主从</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BA%8B%E5%8A%A1">事务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BB%A3%E7%90%86">代理</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BD%9C%E7%94%A8%E5%9F%9F">作用域</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%86%85%E5%AD%98">内存</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%8B%E7%BC%A9">压缩</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%88%9B">原创</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%AD%90">原子</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%91%BD%E4%BB%A4%E8%A1%8C">命令行</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%93%A8%E5%85%B5">哨兵</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%AD%98%E5%82%A8">存储</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B8%B8%E9%87%8F">常量</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B9%B6%E5%8F%91">并发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BC%82%E5%B8%B8">异常</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1">微服务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%88%E6%9D%83%E8%AE%A4%E8%AF%81">授权认证</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%92%E5%BA%8F">排序</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%A5%E5%8F%A3">接口</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%97%A5%E5%BF%97">日志</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%9D%83%E9%99%90">权限</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE1">标签1</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE2">标签2</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%AD%A3%E5%88%99">正则</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%81%E9%87%8F%E5%88%86%E5%8F%91">流量分发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%8B%E8%AF%95">测试</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%BA%90%E7%A0%81">源码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%8A%B6%E6%80%81%E7%A0%81">状态码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%AE%97%E6%B3%95">算法</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%BC%8F">编程模式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%80%81%E5%A6%96%E7%AC%94%E8%AE%B0">老妖笔记</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%BF%87%E6%BB%A4%E5%99%A8">过滤器</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%80%83%E9%80%B8">逃逸</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%85%8D%E7%BD%AE">配置</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%86%99">重写</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%AE%9A%E5%90%91">重定向</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9B%86%E7%BE%A4">集群</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9D%A2%E8%AF%95">面试</a>
+            </span>
+            
+        </div>
+    </div>
+</div>
+<br>
+    </div>
+</div>
+
+        </div>
+    </div>
+
+    
+    <footer class="footer has-background-grey-darker has-text-white">
+    <div class="content has-text-centered">
+        <p>
+            <span class="icon is-large">
+                <a href="https://twitter.com/" class="mysocial" rel="me">
+                    <i class="fab fa-twitter fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://www.youtube.com/" class="mysocial" rel="me">
+                    <i class="fab fa-youtube fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://github.com/" class="mysocial" rel="me">
+                    <i class="fab fa-github fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <br><br>
+            友情链接：
+            
+            <a class="mysocial" href="http://www.mafool.com" target="_blank">Mafool</a>
+            
+            <a class="mysocial" href="https://gohugo.io/documentation/" target="_blank">Hugo</a>
+            
+            <a class="mysocial" href="https://bulma.io/" target="_blank">Bulma</a>
+            
+            <a class="mysocial" href="https://bootstrapious.com/" target="_blank">Bootstrapious</a>
+            
+            <a class="mysocial" href="https://youzhixueyuan.com/" target="_blank">Youzhixueyuan</a>
+            
+            <br><br />
+            版权所有 &copy; 码夫庄园 2021
+            - <a class="mysocial" href="https://github.com/hollson/hugo-theme-dooz">Hugo Theme</a>
+        </p>
+    </div>
+</footer>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='http://www.mafool.com/js/dooz.totop.js?v=0.0.0' async=""></script>
+
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = 'https://hm.baidu.com/hm.js?f185359ec6b829a6a93e1e1f2597f6d9';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DK042XSJ2J"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-DK042XSJ2J');
+</script>
+
+    
+    
+<script type="text/javascript" src="http://www.mafool.com/js/reward.js"></script>
+
+    
+    <script defer src="https://cdn.staticfile.org/font-awesome/5.13.0/js/all.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>码夫庄园-Nginx自测 - 课后练习题</title>
+    <meta name="keywords"
+        content='关键字1,关键字2'>
+    <meta name="description" content="Nginx---Ngine X，是一款免费的、自由的、开源的、高性能HTTP服务器和反向代理服务器；也是一个IMAP、POP3、SMTP代理服务器；Nginx以其高性能、稳定性、丰富的功能、简单的配置和低资源消耗而闻名。" />
+
+    
+    <meta name="baidu-site-verification" content="v9szEmQLra" />
+    <meta name="360-site-verification" content="d8e961f98fb655e4b8cf9439cfd9ac7f" />
+    <meta name="sogou_site_verification" content="40NC9EdZDC" />
+    <meta name="shenma-site-verification" content="3200e3042e92157713a3b0aceeecb20a_1586020187" />
+    <meta name="google-site-verification" content="r8987bkunZHJeKut3ocu5NIJ5QEu53NA6Q_r7RrZ46c" />
+    <meta name="msvalidate.01" content="893A2865ABC54AC2782D118536831056" />
+
+    
+    <link rel="shortcut icon" href="http://www.mafool.com/img/res/favicon.ico">
+    
+
+    
+
+    <link crossorigin="anonymous" integrity="sha384-5kGFOAqgEKnuF6c2jk2JANKHZgYVt38Wn2dVJENtq1EBCP54/1uzXU5mpxqL8WjN"
+        href="https://lib.baomitu.com/bulma/0.8.0/css/bulma.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="http://www.mafool.com/css/dooz.blog.css" />
+    <script crossorigin="anonymous" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh"
+        src="https://lib.baomitu.com/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/jquery.share.min.js"></script>
+    
+
+    
+
+    
+    
+<link rel="stylesheet" href="http://www.mafool.com/css/reward.css">
+
+
+    <link href="http://www.mafool.com/css/fonts.googleapi.css" rel="stylesheet">
+    <script src=http://www.mafool.com/js/dooz.blog.js></script>
+
+    
+    <script>
+        $(document).ready(function () {
+            $('.content a[href^="http"]').each(function () {
+                $(this).attr('target', '_blank');
+            });
+        });
+
+        $(document).on('click', '.modal-wechat', function () {
+            $(".modal").addClass("is-active");
+        });
+
+        $(document).on('click', '.modal-background', function () {
+            $(".modal").removeClass("is-active");
+        });
+    </script>
+</head>
+
+<body>
+    
+    
+<section class="hero is-info is-medium"
+    style="background-image: url('/img/res/bg1.jpg');">
+    <div class="hero-head">
+        <nav class="navbar is-transparent container has-text-white">
+    <div class="navbar-brand">
+        <div class="navbar-item">
+            <a class="title is-5 is-white" href="http://www.mafool.com/">码夫庄园</a>
+        </div>
+
+        
+        <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <div id="navbarExampleTransparentExample" class="navbar-menu has-text-dark">
+        
+
+        <div class="navbar-end">
+            <a class="navbar-item" href='http://www.mafool.com/'>首页</a>
+            <a class="navbar-item" href='http://www.mafool.com/archives'>归档 </a>
+            <a class="navbar-item" href='http://www.mafool.com/about'>关于</a>
+            <span class="navbar-item">
+                <a class="button is-primary is-inverted" href="https://github.com/hollson/hugo-theme-dooz">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>主题</span>
+                </a>
+            </span>
+        </div>
+    </div>
+</nav>
+    </div>
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <div class='container has-text-left column is-7'>
+                
+                <span>
+                    <a class="bar_tag" href="http://www.mafool.com/tags/nginx" title="Nginx">Nginx</a>
+                </span>
+                
+                <span>
+                    <a class="bar_tag" href="http://www.mafool.com/tags/exam" title="Exam">Exam</a>
+                </span>
+                
+                <h1 class="title is-size-2" style="margin-bottom:0.2rem;">
+                    
+                    Nginx自测 - 课后练习题
+                    
+                </h1>
+                
+                <span class="title is-size-6" style="font-style: italic;"> </span><br>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    
+    <div class="container">
+        <div class="section">
+            
+<div class="columns">
+    <div class="column is-9">
+        <div class="tile is-child box">
+            <div class="content">
+                
+                <nav class="level">
+                    
+                    <div class="level-left">
+                        <div class="level-item">
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2019年5月8日,
+    星期三 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 6分钟阅读
+</p>
+                        </div>
+                    </div>
+
+                    
+                    
+                    <div class="share-component level-right" data-disabled="google,diandian,tencent,qzone"
+                        data-description="Share.js - 一键分享到微博，QQ空间，腾讯微博，人人，豆瓣"
+                        data-mobile-sites="weibo,qq,qzone,tencent">
+                    </div>
+                    
+                </nav>
+                <hr>
+                
+                <header>
+                    <h2>目录</h2>
+                </header>
+                <nav id="TableOfContents">
+  <ul>
+    <li><a href="#1什么是nginx">1、什么是Nginx?</a></li>
+    <li><a href="#2列举nginx的特性">2、列举Nginx的特性</a></li>
+    <li><a href="#4nginx如何处理http请求">4、Nginx如何处理HTTP请求?</a></li>
+    <li><a href="#5如何使用未定义的服务器来阻止请求">5、如何使用未定义的服务器来阻止请求?</a></li>
+    <li><a href="#6-反向代理的优点是什么">6、 反向代理的优点是什么?</a></li>
+    <li><a href="#7请列举nginx最佳用途">7、请列举Nginx最佳用途。</a></li>
+    <li><a href="#8master和worker进程分别是什么">8、Master和Worker进程分别是什么?</a></li>
+    <li><a href="#9什么是正向代理和反向代理">9、什么是正向代理和反向代理?</a></li>
+    <li><a href="#10能否将nginx的错误替换为502错误503">10、能否将Nginx的错误替换为502错误、503?</a></li>
+    <li><a href="#11nginx如何保留url中的双斜线">11、Nginx如何保留URL中的双斜线?</a></li>
+    <li><a href="#12ngx_http_upstream_module的作用是什么">12、ngx_http_upstream_module的作用是什么?</a></li>
+    <li><a href="#13什么是c10k问题">13、什么是C10K问题?</a></li>
+    <li><a href="#14stub_status和sub_filter作用是什么">14、stub_status和sub_filter作用是什么?</a></li>
+    <li><a href="#15nginx是否支持将请求压缩到上游">15、Nginx是否支持将请求压缩到上游?</a></li>
+    <li><a href="#16如何获得当前的时间">16、如何获得当前的时间?</a></li>
+    <li><a href="#17解释-s参数的作用是什么">17、解释-s参数的作用是什么?</a></li>
+    <li><a href="#18如何在nginx上添加模块">18、如何在Nginx上添加模块?</a></li>
+    <li><a href="#参考链接">参考链接</a></li>
+  </ul>
+</nav>
+                
+                <hr>
+                <h2 id="1什么是nginx">1、什么是Nginx?</h2>
+<blockquote>
+<p>Nginx是一款开源的、高性能的<code>HTTP服务器</code>、<code>反向代理服务器</code>和<code>邮件代理服务器</code>,具有<code>负载均衡器</code>和<code>HTTP缓存</code>的能力。<br>
+Nginx使用<code>Epoll</code>作为<code>IO多路复用机制</code>，它是一种异步、非阻塞的事件驱动机制，很好的解决了C10K问题。</p>
+</blockquote>
+<h2 id="2列举nginx的特性">2、列举Nginx的特性</h2>
+<ul>
+<li><code>跨平台</code>：可以在大多数Unix like 系统编译运行。而且也有Windows的移植版本。</li>
+<li><code>配置简单</code>：非常的简单，易上手。</li>
+<li><code>高并发</code>：数据复制时，磁盘I/O的第一阶段是非阻塞的。官方测试能支持5万并发连接。</li>
+<li><code>无需长连接</code>：Nginx代理和后端Web服务器间无需长连接；</li>
+<li><code>异步请求</code>:Nginx接收用户请求是异步的，即先将用户请求全部接收下来，再一次性发送到后端Web服务器，极大减轻后端Web服务器的压力。</li>
+<li><code>响应快</code>：发送响应报文时，是边接收来自后端Web服务器的数据，边发送给客户端。</li>
+<li><code>网络依赖性低</code>: 理论上只要能够ping通就可以实施负载均衡，而且可以有效区分内网、外网流量。</li>
+<li><code>故障检测</code>: Nginx能够根据应用服务器处理页面返回的状态码、超时信息等检测服务器是否出现故障，并及时返回错误的请求重新提交到其它节点上。</li>
+<li><code>成本低</code>：内存消耗小、成本低廉（比F5硬件负载均衡器廉价太多）、节省带宽、稳定性高等特点。</li>
+</ul>
+<h2 id="4nginx如何处理http请求">4、Nginx如何处理HTTP请求?</h2>
+<blockquote>
+<p><strong>多进程机制</strong>:<br>
+当收到一个客户端时，就由<code>master进程</code>生成一个<code>worker进程</code>来和客户端建立连接，直到连接断开，该子进程就结束了。<br>
+使用进程的好处是各个<code>进程相互独立</code>，<code>无需加锁</code>，同时<code>降低编程的复杂度</code>;缺点是生成子进程需要<code>内存复制</code>等操作，当有大量请求时，会导致系统性能下降 。</p>
+</blockquote>
+<blockquote>
+<p><strong>异步非阻塞机制</strong>:<br>
+每个工作进程使用异步非阻塞方式，可以处理多个客户端请求 。<br>
+当某个工作进程接收到客户端的请求以后，调用IO进行处理，如果不能立即得到结果，就去处理其他请求（即为非阻塞）;而客户端在此期间也无需等待响应，可以去处理其他事情（即为异步）。<br>
+当IO返回时，就会通知此工作进程 ；该进程得到通知，暂时挂起当前处理的事务去响应客户端请求 。</p>
+</blockquote>
+<h2 id="5如何使用未定义的服务器来阻止请求">5、如何使用未定义的服务器来阻止请求?</h2>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-nginx" data-lang="nginx"><span style="color:#069;font-weight:bold">server</span> {
+    <span style="color:#069;font-weight:bold">listen</span> <span style="color:#f60">80</span>;
+    <span style="color:#069;font-weight:bold">server_name</span> <span style="color:#c30">&#34;&#34;</span>;
+
+    <span style="color:#09f;font-style:italic"># https://httpstatuses.com/
+</span><span style="color:#09f;font-style:italic"></span>    <span style="color:#069;font-weight:bold">return</span> <span style="color:#f60">444</span>;   <span style="color:#09f;font-style:italic">#Connection Closed Without Response 
+</span><span style="color:#09f;font-style:italic"></span>}
+</code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>服务器名被保留为一个空字符串，它将在没有“主机”头字段的情况下匹配请求，而一个特殊的Nginx的非标准代码444被返回，从而终止连接。</p>
+</blockquote>
+<h2 id="6-反向代理的优点是什么">6、 反向代理的优点是什么?</h2>
+<blockquote>
+<p>1.隐藏真实服务器，提高了Web服务安全性。<br>
+2.可实现动静资源分离，加速了对网站访问速度。<br>
+3.可节约了有限的IP地址资源，服务器分配私有地址，采用虚拟主机的方式对外提供服务。</p>
+</blockquote>
+<h2 id="7请列举nginx最佳用途">7、请列举Nginx最佳用途。</h2>
+<blockquote>
+<p>Nginx服务器的最佳用法是在网络上部署动态HTTP内容，使用SCGI、WSGI应用程序服务器、用于脚本的FastCGI处理程序。</p>
+</blockquote>
+<h2 id="8master和worker进程分别是什么">8、Master和Worker进程分别是什么?</h2>
+<blockquote>
+<p>主程序<code>Master process</code>启动后，通过一个<code>for</code>循环来接收和处理外部信号 ；<br>
+主进程通过<code>fork()</code>函数产生worker子进程 ，每个子进程执行一个for循环来实现Nginx服务器对事件的接收和处理 。<br>
+一般推荐 worker 进程数与CPU内核数一致，避免进程之间竞争CPU资源和进程切换的开销。</p>
+</blockquote>
+<blockquote>
+<p>对于<code>每个请求，有且只有一个worker进程对其处理</code>,每个worker进程都是从master进程fork过来。<br>
+当一个worker进程在accept这个连接之后，就开始读取请求、解析请求、处理请求，产生数据后，再返回给客户端，最后才断开连接。<br>
+在Nginx服务器的运行过程中，主进程和工作进程需要进程交互。交互依赖于<code>Socket管道</code>来实现。</p>
+</blockquote>
+<h2 id="9什么是正向代理和反向代理">9、什么是正向代理和反向代理?</h2>
+<blockquote>
+<p>正向代理是作为客户端的角色出现，在浏览器端配置，如VPN代理等。<br>
+反向代理部署在服务端，隐藏了实际服务器信息，是为服务器“代言”。</p>
+</blockquote>
+<h2 id="10能否将nginx的错误替换为502错误503">10、能否将Nginx的错误替换为502错误、503?</h2>
+<blockquote>
+<p>可以(502 =错误网关;503 =服务器超载), 但确保<code>fastcgi_intercept_errors</code>被设置为<code>ON</code>，并使用错误页面指令。</p>
+</blockquote>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-nginx" data-lang="nginx"><span style="color:#069;font-weight:bold">location</span> <span style="color:#c30">/</span>{
+    <span style="color:#069;font-weight:bold">fastcgi_pass</span> 127.0.0.1:<span style="color:#f60">8080</span>;
+    <span style="color:#069;font-weight:bold">fastcgi_intercept_errors</span> <span style="color:#360">on</span>;
+    <span style="color:#069;font-weight:bold">error_page</span> <span style="color:#f60">502</span>=<span style="color:#f60">503</span><span style="color:#c30">/error_page.html</span>;
+}
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="11nginx如何保留url中的双斜线">11、Nginx如何保留URL中的双斜线?</h2>
+<blockquote>
+<p>要在URL中保留双斜线，就必须使用<code>merge_slashes_off</code>;<br>
+语法:merge_slashes [on/off]</p>
+</blockquote>
+<h2 id="12ngx_http_upstream_module的作用是什么">12、ngx_http_upstream_module的作用是什么?</h2>
+<blockquote>
+<p>ngx_http_upstream_module用于定义可通过fastcgi传递、proxy传递、uwsgi传递、memcached传递和scgi传递指令来引用的服务器组。</p>
+</blockquote>
+<h2 id="13什么是c10k问题">13、什么是C10K问题?</h2>
+<ul>
+<li><code>进程是操作系统最昂贵的资源</code>，单机不能无限创建TCP进程。如果超过1万个进程，那么操作系统是无法承受的。</li>
+<li>解决C10K瓶颈的思路就是<code>IO多路复用</code>，通过异步编程和事件触发机制替换轮训，IO 采用非阻塞的方式，减少不必要的性能损耗。底层的相关技术包括<code>epoll</code>、<code>kqueue</code>、<code>libevent</code>等，应用层面的解决方案包括<code>OpenResty、Golang、Node.js</code>等</li>
+<li>但C10K还需要考虑「最弱链接」问题。也就是说单机超过1万个链接时，哪怕只有一个要素没有考虑周到，都会导致问题的发生。</li>
+</ul>
+<blockquote>
+<p>如果往两端用力拉一条由很多环 （连接）组成的锁链，其中最脆弱的一个连接会先断掉。因此，锁链整体的强度取决于其中最脆弱的一环。</p>
+</blockquote>
+<h2 id="14stub_status和sub_filter作用是什么">14、stub_status和sub_filter作用是什么?</h2>
+<blockquote>
+<p>Stub_status：用于了解Nginx当前状态，如当前的<code>活动连接，接受和处理当前读/写/等待连接的总数</code>；<br>
+Sub_filter：它用于搜索和替换响应中的内容，并快速修复陈旧的数据；</p>
+</blockquote>
+<h2 id="15nginx是否支持将请求压缩到上游">15、Nginx是否支持将请求压缩到上游?</h2>
+<blockquote>
+<p>可以使用gunzip将请求压缩到上游。<code>gunzip模块是一个过滤器</code>，它可以对不支持“gzip”编码方法的客户机或服务器使用“内容编码:gzip”来解压缩响应。</p>
+</blockquote>
+<h2 id="16如何获得当前的时间">16、如何获得当前的时间?</h2>
+<blockquote>
+<p>使用SSI模块、$date_gmt和$date_local的变量。Proxy_set_header THE-TIME $date_gmt;<br>
+该<code>ngx_http_ssi_module</code>模块是一个过滤器，用于处理通过它的响应中的SSI（服务器端包含）命令。</p>
+</blockquote>
+<h2 id="17解释-s参数的作用是什么">17、解释-s参数的作用是什么?</h2>
+<blockquote>
+<p>向master进程发送信号(<code>send signal to a master process: stop, quit, reopen, reload</code>)</p>
+</blockquote>
+<h2 id="18如何在nginx上添加模块">18、如何在Nginx上添加模块?</h2>
+<blockquote>
+<p>安装编译时，加入要编译的模块，如<code>--with-http_stub_status_module</code>表示统计模块，类似的还有<code>防盗链</code>模块，<code>哈希一致性</code>、<code>redis</code>等模块。</p>
+</blockquote>
+<h2 id="参考链接">参考链接</h2>
+<blockquote>
+<p><a href="https://httpstatuses.com/">https://httpstatuses.com/</a> 状态码<br>
+<a href="https://medium.com/@chijianqiang/%E7%A8%8B%E5%BA%8F%E5%91%98%E6%80%8E%E4%B9%88%E4%BC%9A%E4%B8%8D%E7%9F%A5%E9%81%93-c10k-%E9%97%AE%E9%A2%98%E5%91%A2-d024cb7880f3">程序员怎么会不知道 C10K 问题呢？</a></p>
+</blockquote>
+
+                
+                
+                <hr> 
+
+<div class="entry-shang text-center">
+    
+    <p> 「真诚赞赏，手留余香」</p>
+    
+    <button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+    <div class="zs-modal-head">
+        <button type="button" class="close">×</button>
+        <span class="author">
+            <a href="http://www.mafool.com">
+                <img src="http://www.mafool.com/img/reward/hollson.png" alt="史布斯" />码夫庄园
+            </a>
+        </span>
+        
+        <p class="tip"><i></i><span>嗯，我的梦想是被读者的稿费包养~</span></p>
+        
+
+    </div>
+    <div class="zs-modal-body">
+        <div class="zs-modal-btns">
+            <button class="btn btn-blink" data-num="2">2元</button>
+            <button class="btn btn-blink" data-num="5">5元</button>
+            <button class="btn btn-blink" data-num="10">10元</button>
+            <button class="btn btn-blink" data-num="50">50元</button>
+            <button class="btn btn-blink" data-num="100">100元</button>
+            <button class="btn btn-blink" data-num="1">任意金额</button>
+        </div>
+        <div class="zs-modal-pay">
+            <button class="btn btn-bred" id="pay-text">2元</button>
+            <p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+            <img src="http://www.mafool.com/img/reward/wechat-2.png" alt="史布斯" id="pay-image" />
+        </div>
+    </div>
+    <div class="zs-modal-footer">
+        <label>
+            <span class="zs-wechat"></span>
+            <input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked">
+            <img src="http://www.mafool.com/img/reward/wechat-btn.png" alt="史布斯" />
+            </span>&nbsp;
+            <span>
+                <input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay">
+                <img src="http://www.mafool.com/img/reward/alipay-btn.png" alt="史布斯" />
+            </span>
+        </label>
+    </div>
+</div>
+
+ 
+
+                <br>
+                <br>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="column is-3">
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">最近发布</h2>
+        
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/0742b474a643d63a774461726a6201203/">Go语言中的原子操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年12月2日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/1600330472/">Go基础笔记 - 2.3 常量</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月10日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/15996311192/">Go - Gin框架快速入门</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月9日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480249/">Gorm快速指南</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480218/">18. Go语言MySQL数据库操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+    </div>
+</div>
+<br>
+        
+
+
+
+
+<div class="card">
+  <div class="card-content">
+    <h2 class="title is-6">相关文章</h2>
+    
+    
+    <h2><a href="http://www.mafool.com/post/1585721646/">Kafka面试自测系列1</a></h2>
+    <time class="has-text-grey-light is-size-7">8 May 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585721666/">Kafka面试自测系列2</a></h2>
+    <time class="has-text-grey-light is-size-7">8 May 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585721669/">Kafka面试自测系列3</a></h2>
+    <time class="has-text-grey-light is-size-7">8 May 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585725111/">Nginx面试自测系列3</a></h2>
+    <time class="has-text-grey-light is-size-7">8 May 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585726239/">Go精编100道题</a></h2>
+    <time class="has-text-grey-light is-size-7">9 April 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585725972/">Go面试自测系列</a></h2>
+    <time class="has-text-grey-light is-size-7">9 April 2019</time>
+    
+    <h2><a href="http://www.mafool.com/posts/99a7e89b9b8052e68f39909ef7fc0fc1/">面试题汇总</a></h2>
+    <time class="has-text-grey-light is-size-7">11 August 2018</time>
+    
+  </div>
+</div>
+<br>
+
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">标签</h2>
+        <div>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/atomic">atomic</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/blog">blog</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cgo">cgo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cloud">cloud</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/config">config</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/copy">copy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/docker">docker</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/exam">exam</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/gin">gin</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/git">git</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/golang">golang</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/hugo">hugo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/install">install</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/istio">istio</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/jenkins">jenkins</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/kubernetes">kubernetes</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/map">map</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/microservice">microservice</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/mycat">mycat</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/nginx">nginx</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/plan9">plan9</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/posix">posix</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/proxy">proxy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/raft">raft</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ssh">ssh</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/tips">tips</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ymal">ymal</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%B8%BB%E4%BB%8E">主从</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BA%8B%E5%8A%A1">事务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BB%A3%E7%90%86">代理</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BD%9C%E7%94%A8%E5%9F%9F">作用域</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%86%85%E5%AD%98">内存</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%8B%E7%BC%A9">压缩</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%88%9B">原创</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%AD%90">原子</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%91%BD%E4%BB%A4%E8%A1%8C">命令行</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%93%A8%E5%85%B5">哨兵</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%AD%98%E5%82%A8">存储</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B8%B8%E9%87%8F">常量</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B9%B6%E5%8F%91">并发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BC%82%E5%B8%B8">异常</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1">微服务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%88%E6%9D%83%E8%AE%A4%E8%AF%81">授权认证</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%92%E5%BA%8F">排序</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%A5%E5%8F%A3">接口</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%97%A5%E5%BF%97">日志</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%9D%83%E9%99%90">权限</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE1">标签1</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE2">标签2</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%AD%A3%E5%88%99">正则</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%81%E9%87%8F%E5%88%86%E5%8F%91">流量分发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%8B%E8%AF%95">测试</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%BA%90%E7%A0%81">源码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%8A%B6%E6%80%81%E7%A0%81">状态码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%AE%97%E6%B3%95">算法</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%BC%8F">编程模式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%80%81%E5%A6%96%E7%AC%94%E8%AE%B0">老妖笔记</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%BF%87%E6%BB%A4%E5%99%A8">过滤器</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%80%83%E9%80%B8">逃逸</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%85%8D%E7%BD%AE">配置</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%86%99">重写</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%AE%9A%E5%90%91">重定向</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9B%86%E7%BE%A4">集群</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9D%A2%E8%AF%95">面试</a>
+            </span>
+            
+        </div>
+    </div>
+</div>
+<br>
+    </div>
+</div>
+
+        </div>
+    </div>
+
+    
+    <footer class="footer has-background-grey-darker has-text-white">
+    <div class="content has-text-centered">
+        <p>
+            <span class="icon is-large">
+                <a href="https://twitter.com/" class="mysocial" rel="me">
+                    <i class="fab fa-twitter fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://www.youtube.com/" class="mysocial" rel="me">
+                    <i class="fab fa-youtube fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://github.com/" class="mysocial" rel="me">
+                    <i class="fab fa-github fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <br><br>
+            友情链接：
+            
+            <a class="mysocial" href="http://www.mafool.com" target="_blank">Mafool</a>
+            
+            <a class="mysocial" href="https://gohugo.io/documentation/" target="_blank">Hugo</a>
+            
+            <a class="mysocial" href="https://bulma.io/" target="_blank">Bulma</a>
+            
+            <a class="mysocial" href="https://bootstrapious.com/" target="_blank">Bootstrapious</a>
+            
+            <a class="mysocial" href="https://youzhixueyuan.com/" target="_blank">Youzhixueyuan</a>
+            
+            <br><br />
+            版权所有 &copy; 码夫庄园 2021
+            - <a class="mysocial" href="https://github.com/hollson/hugo-theme-dooz">Hugo Theme</a>
+        </p>
+    </div>
+</footer>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='http://www.mafool.com/js/dooz.totop.js?v=0.0.0' async=""></script>
+
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = 'https://hm.baidu.com/hm.js?f185359ec6b829a6a93e1e1f2597f6d9';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DK042XSJ2J"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-DK042XSJ2J');
+</script>
+
+    
+    
+<script type="text/javascript" src="http://www.mafool.com/js/reward.js"></script>
+
+    
+    <script defer src="https://cdn.staticfile.org/font-awesome/5.13.0/js/all.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>码夫庄园-Git入门</title>
+    <meta name="keywords"
+        content='git,vcs,版本管理'>
+    <meta name="description" content="" />
+
+    
+    <meta name="baidu-site-verification" content="v9szEmQLra" />
+    <meta name="360-site-verification" content="d8e961f98fb655e4b8cf9439cfd9ac7f" />
+    <meta name="sogou_site_verification" content="40NC9EdZDC" />
+    <meta name="shenma-site-verification" content="3200e3042e92157713a3b0aceeecb20a_1586020187" />
+    <meta name="google-site-verification" content="r8987bkunZHJeKut3ocu5NIJ5QEu53NA6Q_r7RrZ46c" />
+    <meta name="msvalidate.01" content="893A2865ABC54AC2782D118536831056" />
+
+    
+    <link rel="shortcut icon" href="http://www.mafool.com/img/res/favicon.ico">
+    
+
+    
+
+    <link crossorigin="anonymous" integrity="sha384-5kGFOAqgEKnuF6c2jk2JANKHZgYVt38Wn2dVJENtq1EBCP54/1uzXU5mpxqL8WjN"
+        href="https://lib.baomitu.com/bulma/0.8.0/css/bulma.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="http://www.mafool.com/css/dooz.blog.css" />
+    <script crossorigin="anonymous" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh"
+        src="https://lib.baomitu.com/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/jquery.share.min.js"></script>
+    
+
+    
+
+    
+    
+<link rel="stylesheet" href="http://www.mafool.com/css/reward.css">
+
+
+    <link href="http://www.mafool.com/css/fonts.googleapi.css" rel="stylesheet">
+    <script src=http://www.mafool.com/js/dooz.blog.js></script>
+
+    
+    <script>
+        $(document).ready(function () {
+            $('.content a[href^="http"]').each(function () {
+                $(this).attr('target', '_blank');
+            });
+        });
+
+        $(document).on('click', '.modal-wechat', function () {
+            $(".modal").addClass("is-active");
+        });
+
+        $(document).on('click', '.modal-background', function () {
+            $(".modal").removeClass("is-active");
+        });
+    </script>
+</head>
+
+<body>
+    
+    
+<section class="hero is-info is-medium"
+    style="background-image: url('/img/res/blog.jpg');">
+    <div class="hero-head">
+        <nav class="navbar is-transparent container has-text-white">
+    <div class="navbar-brand">
+        <div class="navbar-item">
+            <a class="title is-5 is-white" href="http://www.mafool.com/">码夫庄园</a>
+        </div>
+
+        
+        <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <div id="navbarExampleTransparentExample" class="navbar-menu has-text-dark">
+        
+
+        <div class="navbar-end">
+            <a class="navbar-item" href='http://www.mafool.com/'>首页</a>
+            <a class="navbar-item" href='http://www.mafool.com/archives'>归档 </a>
+            <a class="navbar-item" href='http://www.mafool.com/about'>关于</a>
+            <span class="navbar-item">
+                <a class="button is-primary is-inverted" href="https://github.com/hollson/hugo-theme-dooz">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>主题</span>
+                </a>
+            </span>
+        </div>
+    </div>
+</nav>
+    </div>
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <div class='container has-text-left column is-7'>
+                
+                <span>
+                    <a class="bar_tag" href="http://www.mafool.com/tags/git" title="Git">Git</a>
+                </span>
+                
+                <h1 class="title is-size-2" style="margin-bottom:0.2rem;">
+                    
+                    Git入门
+                    
+                </h1>
+                
+                <span class="title is-size-6" style="font-style: italic;"> </span><br>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    
+    <div class="container">
+        <div class="section">
+            
+<div class="columns">
+    <div class="column is-9">
+        <div class="tile is-child box">
+            <div class="content">
+                
+                <nav class="level">
+                    
+                    <div class="level-left">
+                        <div class="level-item">
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年5月21日,
+    星期四 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 12分钟阅读
+</p>
+                        </div>
+                    </div>
+
+                    
+                    
+                    <div class="share-component level-right" data-disabled="google,diandian,tencent,qzone"
+                        data-description="Share.js - 一键分享到微博，QQ空间，腾讯微博，人人，豆瓣"
+                        data-mobile-sites="weibo,qq,qzone,tencent">
+                    </div>
+                    
+                </nav>
+                <hr>
+                
+                <header>
+                    <h2>目录</h2>
+                </header>
+                <nav id="TableOfContents">
+  <ul>
+    <li><a href="#版本管理的挑战">版本管理的挑战</a></li>
+    <li><a href="#git-flow">Git Flow</a>
+      <ul>
+        <li><a href="#git-flow常用的分支">Git Flow常用的分支</a></li>
+        <li><a href="#git-flow如何工作">Git Flow如何工作</a>
+          <ul>
+            <li><a href="#初始分支">初始分支</a></li>
+            <li><a href="#feature-分支">Feature 分支</a></li>
+            <li><a href="#release分支">Release分支</a></li>
+            <li><a href="#维护分支-hotfix">维护分支 Hotfix</a></li>
+          </ul>
+        </li>
+        <li><a href="#git-flow代码示例">Git Flow代码示例</a></li>
+        <li><a href="#git-flow工具">Git flow工具</a>
+          <ul>
+            <li><a href="#安装">安装</a></li>
+            <li><a href="#使用">使用</a></li>
+          </ul>
+        </li>
+        <li><a href="#git-flow-gui">Git Flow GUI</a>
+          <ul>
+            <li><a href="#sourcetree">SourceTree</a></li>
+            <li><a href="#git-flow-for-visual-studio">Git flow for visual studio</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#git基础知识">GIT基础知识：</a></li>
+  </ul>
+</nav>
+                
+                <hr>
+                <p><a href="https://oscimg.oschina.net/oscnet/99c82f109b10b170870caff0690c69d2588.jpg">https://oscimg.oschina.net/oscnet/99c82f109b10b170870caff0690c69d2588.jpg</a></p>
+<p><strong>Git 仓库</strong></p>
+<p><strong>1.1Git 基本概念</strong></p>
+<p>​    在Git中，我们将需要进行版本控制的文件目录叫做一个<strong>仓库（repository）</strong>，每个仓库可以简单理解成一个目录，这个目录里面的所有文件都通过Git来实现版本管理，Git都能跟踪并记录在该目录中发生的所有更新。</p>
+<p>​    现在我们已经知道什么是repository（缩写repo）了，假如我们现在建立一个仓库（repo），那么在建立仓库的这个目录中有一个“.git”的文件夹。这个文件夹非常重要，所有的版本信息，更新记录，以及Git进行仓库管理的相关信息</p>
+<p>全部保存在这个文件夹里面。所以，不要修改/删除其中的文件，以免造成数据的丢失。</p>
+<p>​    进一步的讲解请参考下面一张图，大概展示出了我们需要了解的基本知识。</p>
+<p>　　　<img src="https://images2015.cnblogs.com/blog/1048430/201610/1048430-20161025094251906-2007066023.png" alt="img"></p>
+<p>根据上面的图片，下面给出了每个部分的简要说明：</p>
+<ul>
+<li>
+<p>Directory：使用Git管理的一个目录，也就是一个仓库，包含我们的工作空间和Git的管理空间。</p>
+</li>
+<li>
+<p>WorkSpace：需要通过Git进行版本控制的目录和文件，这些目录和文件组成了工作空间，除了.git之外的都属于工作区。</p>
+</li>
+<li>
+<p>.git：存放Git管理信息的目录，初始化仓库的时候自动创建。</p>
+</li>
+<li>
+<p>Index/Stage：暂存区，或者叫待提交更新区，在提交进入repo之前，我们可以把所有的更新放在暂存区。</p>
+</li>
+<li>
+<p>Local Repo：本地仓库，一个存放在本地的版本库；HEAD会只是当前的开发分支（branch）。</p>
+</li>
+<li>
+<p>Stash：是一个工作状态保存栈，用于保存/恢复WorkSpace中的临时状态。</p>
+<p>有了上面概念的了解，下面简单介绍仓库的文件结构。</p>
+</li>
+</ul>
+<p><img src="https://images2015.cnblogs.com/blog/1048430/201610/1048430-20161025142309375-836689242.png" alt="img"></p>
+<p>​    该目录下有可能还有其他文件，但这是一个全新的 git init 生成的库，所以默认情况下这些就是你能看到的结构。新版本的 Git 不再使用 branches 目录，description 文件仅供 GitWeb 程序使用，所以不用关心这些内容。config 文件包含了项目特有的配置选项，info 目录保存了一份不希望在 .gitignore 文件中管理的忽略模式 (ignored patterns) 的全局可执行文件。hooks 目录保存了客户端或服务端钩子脚本。</p>
+<p>另外还有四个重要的文件或目录：HEAD 及 index 文件，objects 及 refs 目录。这些是 Git 的核心部分。</p>
+<ul>
+<li>
+<p>objects 目录存储所有数据内容</p>
+</li>
+<li>
+<p>refs 目录存储指向数据 (分支) 的提交对象的指针,里面即有stash栈指针以及tag等</p>
+</li>
+<li>
+<p>HEAD 文件指向当前分支</p>
+</li>
+<li>
+<p>index 文件保存了暂存区域信息</p>
+<p><strong>1.2 简单的代码提交流程</strong></p>
+</li>
+</ul>
+<p>​    这里不对每一条命令做详尽的解释，这些命令或类似命令贯穿我们顺利的一个完整提交，关于其他情况以及这些命令的详细解释留待后面叙述。</p>
+<p>​    （1）git status //查看工作区代码相对于暂存区的差别，</p>
+<p>​    （2）git add . // 将当前目录下修改的所有代码从工作区添加到暂存区 . 代表当前目录</p>
+<p>​    （3）git commit -m “commit-message” //将暂存区的代码提交到本地版本库</p>
+<p>​    （4）git push origin master // 将本地版本库推送到远程服务器，origin是远程主机，master表示是远程服务器上的master分支，分支名是可以修改的。</p>
+<p>　　<strong>1.3 GIT的基本操作：</strong></p>
+<p>　　<img src="https://images2017.cnblogs.com/blog/596671/201712/596671-20171218153904318-560889426.png" alt="img"></p>
+<h2 id="版本管理的挑战">版本管理的挑战</h2>
+<p>虽然有这么优秀的版本管理工具，但是我们面对版本管理的时候，依然有非常大得挑战，我们都知道大家工作在同一个仓库上，那么彼此的代码协作必然带来很多问题和挑战，如下：</p>
+<ol>
+<li>如何开始一个Feature的开发，而不影响别的Feature？</li>
+<li>由于很容易创建新分支，分支多了如何管理，时间久了，如何知道每个分支是干什么的？</li>
+<li>哪些分支已经合并回了主干？</li>
+<li>如何进行Release的管理？开始一个Release的时候如何冻结Feature, 如何在Prepare Release的时候，开发人员可以继续开发新的功能？</li>
+<li>线上代码出Bug了，如何快速修复？而且修复的代码要包含到开发人员的分支以及下一个Release?</li>
+</ol>
+<p>大部分开发人员现在使用Git就只是用三个甚至两个分支，一个是Master, 一个是Develop, 还有一个是基于Develop打得各种分支。这个在小项目规模的时候还勉强可以支撑，因为很多人做项目就只有一个Release, 但是人员一多，而且项目周期一长就会出现各种问题。</p>
+<h2 id="git-flow">Git Flow</h2>
+<p>就像代码需要代码规范一样，代码管理同样需要一个清晰的流程和规范</p>
+<p>Vincent Driessen 同学为了解决这个问题提出了 <a href="http://nvie.com/posts/a-successful-git-branching-model/">A Successful Git Branching Model</a></p>
+<p>下面是Git Flow的流程图</p>
+<p><img src="https://images.cnblogs.com/cnblogs_com/cnblogsfans/771108/o_git-flow-nvie.png" alt="img"></p>
+<p>上面的图你理解不了？ 没关系，这不是你的错，我觉得这张图本身有点问题，这张图应该左转90度，大家应该就很用以理解了。</p>
+<h3 id="git-flow常用的分支">Git Flow常用的分支</h3>
+<ul>
+<li>Production 分支</li>
+</ul>
+<p>也就是我们经常使用的Master分支，这个分支最近发布到生产环境的代码，最近发布的Release， 这个分支只能从其他分支合并，不能在这个分支直接修改</p>
+<ul>
+<li>Develop 分支</li>
+</ul>
+<p>这个分支是我们是我们的主开发分支，包含所有要发布到下一个Release的代码，这个主要合并与其他分支，比如Feature分支</p>
+<ul>
+<li>Feature 分支</li>
+</ul>
+<p>这个分支主要是用来开发一个新的功能，一旦开发完成，我们合并回Develop分支进入下一个Release</p>
+<ul>
+<li>Release分支</li>
+</ul>
+<p>当你需要一个发布一个新Release的时候，我们基于Develop分支创建一个Release分支，完成Release后，我们合并到Master和Develop分支</p>
+<ul>
+<li>Hotfix分支</li>
+</ul>
+<p>当我们在Production发现新的Bug时候，我们需要创建一个Hotfix, 完成Hotfix后，我们合并回Master和Develop分支，所以Hotfix的改动会进入下一个Release</p>
+<h3 id="git-flow如何工作">Git Flow如何工作</h3>
+<h4 id="初始分支">初始分支</h4>
+<p>所有在Master分支上的Commit应该Tag</p>
+<p><img src="https://images.cnblogs.com/cnblogs_com/cnblogsfans/771108/o_git-workflow-release-cycle-1historical.png" alt="img"></p>
+<h4 id="feature-分支">Feature 分支</h4>
+<p>分支名 feature/*</p>
+<p>Feature分支做完后，必须合并回Develop分支, 合并完分支后一般会删点这个Feature分支，但是我们也可以保留</p>
+<p><img src="https://images.cnblogs.com/cnblogs_com/cnblogsfans/771108/o_git-workflow-release-cycle-2feature.png" alt="img"></p>
+<h4 id="release分支">Release分支</h4>
+<p>分支名 release/*</p>
+<p>Release分支基于Develop分支创建，打完Release分之后，我们可以在这个Release分支上测试，修改Bug等。同时，其它开发人员可以基于开发新的Feature (记住：一旦打了Release分支之后不要从Develop分支上合并新的改动到Release分支)</p>
+<p>发布Release分支时，合并Release到Master和Develop， 同时在Master分支上打个Tag记住Release版本号，然后可以删除Release分支了。</p>
+<p><img src="https://images.cnblogs.com/cnblogs_com/cnblogsfans/771108/o_git-workflow-release-cycle-3release.png" alt="img"></p>
+<h4 id="维护分支-hotfix">维护分支 Hotfix</h4>
+<p>分支名 hotfix/*</p>
+<p>hotfix分支基于Master分支创建，开发完后需要合并回Master和Develop分支，同时在Master上打一个tag</p>
+<p><img src="https://images.cnblogs.com/cnblogs_com/cnblogsfans/771108/o_git-workflow-release-cycle-4maintenance.png" alt="img"></p>
+<h3 id="git-flow代码示例">Git Flow代码示例</h3>
+<p>a. 创建develop分支</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">git branch develop
+git push -u origin develop    
+</code></pre></td></tr></table>
+</div>
+</div><p>b. 开始新Feature开发</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">git checkout -b some-feature develop
+# Optionally, push branch to origin:
+git push -u origin some-feature    
+
+# 做一些改动    
+git status
+git add some-file
+git commit    
+</code></pre></td></tr></table>
+</div>
+</div><p>c. 完成Feature</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">git pull origin develop
+git checkout develop
+git merge --no-ff some-feature
+git push origin develop
+
+git branch -d some-feature
+
+# If you pushed branch to origin:
+git push origin --delete some-feature    
+</code></pre></td></tr></table>
+</div>
+</div><p>d. 开始Relase</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">git checkout -b release-0.1.0 develop
+
+# Optional: Bump version number, commit
+# Prepare release, commit
+</code></pre></td></tr></table>
+</div>
+</div><p>e. 完成Release</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">git checkout master
+git merge --no-ff release-0.1.0
+git push
+
+git checkout develop
+git merge --no-ff release-0.1.0
+git push
+
+git branch -d release-0.1.0
+
+# If you pushed branch to origin:
+git push origin --delete release-0.1.0   
+
+
+git tag -a v0.1.0 master
+git push --tags
+</code></pre></td></tr></table>
+</div>
+</div><p>f. 开始Hotfix</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">git checkout -b hotfix-0.1.1 master    
+</code></pre></td></tr></table>
+</div>
+</div><p>g. 完成Hotfix</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">git checkout master
+git merge --no-ff hotfix-0.1.1
+git push
+
+
+git checkout develop
+git merge --no-ff hotfix-0.1.1
+git push
+
+git branch -d hotfix-0.1.1
+
+git tag -a v0.1.1 master
+git push --tags
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="git-flow工具">Git flow工具</h3>
+<p>实际上，当你理解了上面的流程后，你完全不用使用工具，但是实际上我们大部分人很多命令就是记不住呀，流程就是记不住呀，肿么办呢？</p>
+<p>总有聪明的人创造好的工具给大家用, 那就是Git flow script.</p>
+<h4 id="安装">安装</h4>
+<ul>
+<li>OS X</li>
+</ul>
+<p>brew install git-flow</p>
+<ul>
+<li>Linux</li>
+</ul>
+<p>apt-get install git-flow</p>
+<ul>
+<li>Windows</li>
+</ul>
+<p>wget -q -O - &ndash;no-check-certificate <a href="https://github.com/nvie/gitflow/raw/develop/contrib/gitflow-installer.sh">https://github.com/nvie/gitflow/raw/develop/contrib/gitflow-installer.sh</a> | bash</p>
+<h4 id="使用">使用</h4>
+<ul>
+<li><strong>初始化:</strong> git flow init</li>
+<li><strong>开始新Feature:</strong> git flow feature start MYFEATURE</li>
+<li><strong>Publish一个Feature(也就是push到远程):</strong> git flow feature publish MYFEATURE</li>
+<li><strong>获取Publish的Feature:</strong> git flow feature pull origin MYFEATURE</li>
+<li><strong>完成一个Feature:</strong> git flow feature finish MYFEATURE</li>
+<li><strong>开始一个Release:</strong> git flow release start RELEASE [BASE]</li>
+<li><strong>Publish一个Release:</strong> git flow release publish RELEASE</li>
+<li><strong>发布Release:</strong> git flow release finish RELEASE<br>
+别忘了git push &ndash;tags</li>
+<li><strong>开始一个Hotfix:</strong> git flow hotfix start VERSION [BASENAME]</li>
+<li><strong>发布一个Hotfix:</strong> git flow hotfix finish VERSION</li>
+</ul>
+<p><img src="https://images.cnblogs.com/cnblogs_com/cnblogsfans/771108/o_git-flow-commands.png" alt="img"></p>
+<h3 id="git-flow-gui">Git Flow GUI</h3>
+<p>上面讲了这么多，我知道还有人记不住，那么又有人做出了GUI 工具，你只需要点击下一步就行，工具帮你干这些事！！！</p>
+<h4 id="sourcetree">SourceTree</h4>
+<p>当你用Git-flow初始化后，基本上你只需要点击git flow菜单选择start feature, release或者hotfix, 做完后再次选择git flow菜单，点击Done Action. 我勒个去，我实在想不到还有比这更简单的了。</p>
+<p>目前SourceTree支持Mac, Windows, Linux.</p>
+<p>这么好的工具请问多少钱呢？ <strong>免费!!!!</strong></p>
+<p><img src="https://images.cnblogs.com/cnblogs_com/cnblogsfans/771108/o_source-tree-git-flow-init.png" alt="img"></p>
+<p><img src="https://images.cnblogs.com/cnblogs_com/cnblogsfans/771108/o_sourcetree-hero-mac-log.png" alt="img"></p>
+<h4 id="git-flow-for-visual-studio">Git flow for visual studio</h4>
+<p>广大VS的福音<br>
+<a href="https://visualstudiogallery.msdn.microsoft.com/27f6d087-9b6f-46b0-b236-d72907b54683">GitFlow for Visual Studio</a></p>
+<p><img src="https://images.cnblogs.com/cnblogs_com/cnblogsfans/771108/o_gf_init-vs.png" alt="img"></p>
+<p><img src="https://images.cnblogs.com/cnblogs_com/cnblogsfans/771108/o_gf_features.png" alt="img"></p>
+<p><img src="https://images.cnblogs.com/cnblogs_com/cnblogsfans/771108/o_gf_finishfeature.png" alt="img"></p>
+<p><img src="https://images.cnblogs.com/cnblogs_com/cnblogsfans/771108/o_gf_features.png" alt="img"></p>
+<h2 id="git基础知识">GIT基础知识：</h2>
+<p>1.文件系统：我们可以把硬盘理解成一本汉语词典，词典前面的目录索引就是文件系 统，能帮助我们快速找到文件内容的具体位置，通常我们也只会通过索引去找文件，windows中的我的电脑就是一个索引系统，索引里面没有的文件我们就 “找不到”。我们知道从操作系统删除文件，其实只是删除了索引，具体文件内容还是存在硬盘上的，虽然我们通过索引找不到，但是我们可以通过内容去查找（利 用一些恢复工具）。</p>
+<p>2.git仓库：就是用来存放备份文件的地方，但是备份文件存入仓库的时候会压缩， 这些压缩的备份文件存放在.git/objects目录中，直接打开是乱码，而且为了节省空间，仓库不会存放重复的文件，只有新增和修改过的文件才会存入 git仓库，删除的时候并不会从仓库移除文件，不然我们怎么恢复呢。</p>
+<p>3.HEAD：git的版本日志或版本号，通过git log 我们可以看到很多的编号，我们通过修改head指针来切换版本，每个版本关联一份快照，每个关照关联一系列文件，就是“HEAD-&gt;快照-&gt;仓库文件”这样一个关系链，我们可以很轻松的通过移动HEAD指针来改变我们的工作区文件。</p>
+<p>4.暂存区/缓冲区：暂存区并不存放文件内容，暂存区仅仅是一份处于编辑状态的快照（索引文件），这份快照没有编号。commit就是把暂存区保存到版本库，并给版本日志新增一个编号（HEAD/版本号）指向这个快照副本。</p>
+<p>5.git快照：我们知道git是通过快照来管理版本的，快照就是git的文件系统，就是我们说的汉语词典的索引，每次commit就是创建一份快照，并给快照起一个编号，这个编号就是HEAD。</p>
+<p>6.工作区：工作区就是除开.git目录的其他东西。通过操作系统的文件索引来管理的内容。就是我们正常使用电脑的时候所看到，能编辑的内容。</p>
+<p>7.分支：分支其实就是上面说到的版本日志,一个分支就是一个版本分组，每个分支记录该分支上的所有HEAD，“分支-&gt;HEAD-&gt;快照-&gt;仓库文件”</p>
+<p>同学们可以通过下面的图片来理解以上几个概念，下图中的每个方块都是存放在硬盘上的文件,git就是建立了这样一个关系库来管理版本的（途中的缓冲区就是暂存区）。</p>
+<p><img src="http://www.techug.com/wordpress/wp-content/uploads/2017/01/1015958-20170112184019072-954175979-1000x1023.jpg" alt="看完这篇文章才对【GIT】有了大彻大悟的认识0"></p>
+<p>大家不要被上图的复杂线条缩困扰，你只需要弄清HEAD就行了，我们移动HEAD指针其实就是通过HEAD编号找到快照，再通过快照找到这个HEAD的所有文件。</p>
+<p>git命令的理解：</p>
+<p>1、status</p>
+<p>1.1、对比暂存区跟工作区，对比结果主要存在3种情况：</p>
+<p>1.1.1、【删】暂存区记录的文件在工作区没有，add的时候会从暂存区移除对应的文件索引，但并不影响git仓库的内容。</p>
+<p>1.1.2、【增】工作区已有的文件在暂存区没有记录的，add的时候会把对应的文件拷贝到仓库中，并在暂存区建立一条索引指向仓库中对应的文件。</p>
+<p>1.1.3、【改】对工作区的文件内容进行算法得出校验值与暂存区记录的校验值不同，add的时候会把对应的文件拷贝到仓库中，并更新暂存区该条索引的信息。</p>
+<p>1.2、对比暂存区与当前HEAD所指向的快照，对比结果也是增、删、改3种情况</p>
+<p>2、add</p>
+<p>add会执行2个任务，第一是把【增】【改】的文件拷贝到仓库，第二个是维护暂存区索引，保证暂存区索引跟操作系统的文件索引内容一致，快照索引指向的是仓库中的文件，操作系统索引指向的是工作区的文件。</p>
+<p>3、commit</p>
+<p>commit做的事情就简单些了，先对比暂存区与工作区，当暂存区与工作区内容相同的时候，直接保存暂存区为一份新的快照、并给这个快照生成1个编号，并把当前分支HEAD改成这个编号。</p>
+<p><img src="http://www.techug.com/wordpress/wp-content/uploads/2017/01/1015958-20170112195526525-2140207722-1000x589.png" alt="看完这篇文章才对【GIT】有了大彻大悟的认识1"></p>
+<p>4、reset</p>
+<p>reset分2情况：</p>
+<p>4.1、reset文件：reset  b86563  b.txt ，将b86563这份快照中b.txt索引复制到暂存区的b.txt的索引。仅仅是对暂存区的索引进行修改，不影响文件内容，仅仅是修改了文件的关联。</p>
+<p>4.2、reset HEAD：reset  b86563</p>
+<p>4.2.1、参数–soft：仅仅修改HEAD/版本号。</p>
+<p>4.2.2、参数–mixed：默认参数，修改当前HEAD/版本号，然后用指定的快照覆盖暂存区，工作区不变。</p>
+<p>4.2.3、参数–hard：修改当前分支HEAD，用参数HEAD关联 的快照覆盖暂存区，并把工作区恢复到快照创建时的工作区状态，实际就是对比这份“历史快照”与工作区，快照中没有的文件，从工作区删除，校验码不同以及工 作区没有的文件，通过快照找到关联的文件（仓库中的），并复制到工作区。</p>
+<p>5、checkout</p>
+<p>reset分2情况：</p>
+<p>4.1、checkout HEAD：用HEAD关联的快照覆盖暂存区，并把工作区恢复到快照创建时的工作区状态，checkout 快照与reset –hard的区别就是：checkout是可恢复，reset是不可恢复（后期会删除仓库中的文件，checkout不会）</p>
+<p>4.2、checkout分支：checkout  dev ，切换到dev分支，并修改当前版本号为dev上最后一个版本号。如果dev分支不存在，创建一个名为dev的分支，版本号不变。</p>
+<p>6、revert</p>
+<p>revert就是创建一个新快照，并把分支HEAD修改为新创建快照的编号，用该快照覆盖暂存区，并把工作区恢复到快照创建时的工作区状态。checkout和reset会“丢弃”一些版本日志，cover不会。</p>
+<p>总结：</p>
+<p>1.暂存区、快照=git的文件系统=索引；仓库、工作区=我们真正需要的文件内容。</p>
+<p>2.安全性：revert&gt;checkout&gt;reset，revert不会影响过去，checkout会丢弃掉一些版本号，reset会丢弃版本号和仓库中的某些备份文件。</p>
+<p>7、远程仓库</p>
+<p>工作区的文件是可以编辑的，git仓库的文件是不能编辑的，git上传到远程仓库或从远程仓库下载的时候，并不是下载或上传全部文件。</p>
+<p>7.1、上传的时候，远程仓库的最新快照编号肯定是包含在本地的快照日志中的， 如果不存在，则证明远程仓库在上次下载后有改动，这时候要求先pull。反之，git会把本地新增的文件上传到远程仓库，并把新增的快照上传到远程快照。 通过图1，我们可以看出git是怎么通过HEAD轻松的找到新增的快照和文件的。</p>
+<p>7.2、下载的时候与上传同理…</p>
+<p><a href="https://www.cnblogs.com/jiangzhaowei/p/7879916.html">https://www.cnblogs.com/jiangzhaowei/p/7879916.html</a><br>
+<a href="https://nvie.com/posts/a-successful-git-branching-model/">https://nvie.com/posts/a-successful-git-branching-model/</a></p>
+
+                
+                
+                <hr> 
+
+<div class="entry-shang text-center">
+    
+    <p> 「真诚赞赏，手留余香」</p>
+    
+    <button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+    <div class="zs-modal-head">
+        <button type="button" class="close">×</button>
+        <span class="author">
+            <a href="http://www.mafool.com">
+                <img src="http://www.mafool.com/img/reward/hollson.png" alt="史布斯" />码夫庄园
+            </a>
+        </span>
+        
+        <p class="tip"><i></i><span>嗯，我的梦想是被读者的稿费包养~</span></p>
+        
+
+    </div>
+    <div class="zs-modal-body">
+        <div class="zs-modal-btns">
+            <button class="btn btn-blink" data-num="2">2元</button>
+            <button class="btn btn-blink" data-num="5">5元</button>
+            <button class="btn btn-blink" data-num="10">10元</button>
+            <button class="btn btn-blink" data-num="50">50元</button>
+            <button class="btn btn-blink" data-num="100">100元</button>
+            <button class="btn btn-blink" data-num="1">任意金额</button>
+        </div>
+        <div class="zs-modal-pay">
+            <button class="btn btn-bred" id="pay-text">2元</button>
+            <p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+            <img src="http://www.mafool.com/img/reward/wechat-2.png" alt="史布斯" id="pay-image" />
+        </div>
+    </div>
+    <div class="zs-modal-footer">
+        <label>
+            <span class="zs-wechat"></span>
+            <input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked">
+            <img src="http://www.mafool.com/img/reward/wechat-btn.png" alt="史布斯" />
+            </span>&nbsp;
+            <span>
+                <input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay">
+                <img src="http://www.mafool.com/img/reward/alipay-btn.png" alt="史布斯" />
+            </span>
+        </label>
+    </div>
+</div>
+
+ 
+
+                <br>
+                <br>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="column is-3">
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">最近发布</h2>
+        
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/0742b474a643d63a774461726a6201203/">Go语言中的原子操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年12月2日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/1600330472/">Go基础笔记 - 2.3 常量</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月10日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/15996311192/">Go - Gin框架快速入门</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月9日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480249/">Gorm快速指南</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480218/">18. Go语言MySQL数据库操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+    </div>
+</div>
+<br>
+        
+
+
+
+
+<div class="card">
+  <div class="card-content">
+    <h2 class="title is-6">相关文章</h2>
+    
+    
+    <h2><a href="http://www.mafool.com/posts/199ea5b7cf7372f8ce9886fdbd3d6aae/">Jenkins- 构建Go项目</a></h2>
+    <time class="has-text-grey-light is-size-7">21 April 2020</time>
+    
+    <h2><a href="http://www.mafool.com/posts/ac0ed12649b48c40b6bdaa9e07f11039/">Git - 搭建Gitlab</a></h2>
+    <time class="has-text-grey-light is-size-7">12 December 2019</time>
+    
+    <h2><a href="http://www.mafool.com/posts/0d78ecbaabf7de26111f39aa46e471fe/">Git - 常用命令</a></h2>
+    <time class="has-text-grey-light is-size-7">21 April 2018</time>
+    
+    <h2><a href="http://www.mafool.com/posts/38cbcea795d75f092237689286080b6a/">Git - 基础入门</a></h2>
+    <time class="has-text-grey-light is-size-7">21 April 2018</time>
+    
+  </div>
+</div>
+<br>
+
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">标签</h2>
+        <div>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/atomic">atomic</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/blog">blog</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cgo">cgo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cloud">cloud</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/config">config</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/copy">copy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/docker">docker</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/exam">exam</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/gin">gin</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/git">git</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/golang">golang</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/hugo">hugo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/install">install</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/istio">istio</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/jenkins">jenkins</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/kubernetes">kubernetes</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/map">map</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/microservice">microservice</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/mycat">mycat</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/nginx">nginx</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/plan9">plan9</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/posix">posix</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/proxy">proxy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/raft">raft</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ssh">ssh</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/tips">tips</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ymal">ymal</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%B8%BB%E4%BB%8E">主从</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BA%8B%E5%8A%A1">事务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BB%A3%E7%90%86">代理</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BD%9C%E7%94%A8%E5%9F%9F">作用域</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%86%85%E5%AD%98">内存</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%8B%E7%BC%A9">压缩</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%88%9B">原创</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%AD%90">原子</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%91%BD%E4%BB%A4%E8%A1%8C">命令行</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%93%A8%E5%85%B5">哨兵</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%AD%98%E5%82%A8">存储</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B8%B8%E9%87%8F">常量</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B9%B6%E5%8F%91">并发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BC%82%E5%B8%B8">异常</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1">微服务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%88%E6%9D%83%E8%AE%A4%E8%AF%81">授权认证</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%92%E5%BA%8F">排序</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%A5%E5%8F%A3">接口</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%97%A5%E5%BF%97">日志</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%9D%83%E9%99%90">权限</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE1">标签1</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE2">标签2</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%AD%A3%E5%88%99">正则</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%81%E9%87%8F%E5%88%86%E5%8F%91">流量分发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%8B%E8%AF%95">测试</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%BA%90%E7%A0%81">源码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%8A%B6%E6%80%81%E7%A0%81">状态码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%AE%97%E6%B3%95">算法</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%BC%8F">编程模式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%80%81%E5%A6%96%E7%AC%94%E8%AE%B0">老妖笔记</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%BF%87%E6%BB%A4%E5%99%A8">过滤器</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%80%83%E9%80%B8">逃逸</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%85%8D%E7%BD%AE">配置</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%86%99">重写</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%AE%9A%E5%90%91">重定向</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9B%86%E7%BE%A4">集群</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9D%A2%E8%AF%95">面试</a>
+            </span>
+            
+        </div>
+    </div>
+</div>
+<br>
+    </div>
+</div>
+
+        </div>
+    </div>
+
+    
+    <footer class="footer has-background-grey-darker has-text-white">
+    <div class="content has-text-centered">
+        <p>
+            <span class="icon is-large">
+                <a href="https://twitter.com/" class="mysocial" rel="me">
+                    <i class="fab fa-twitter fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://www.youtube.com/" class="mysocial" rel="me">
+                    <i class="fab fa-youtube fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://github.com/" class="mysocial" rel="me">
+                    <i class="fab fa-github fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <br><br>
+            友情链接：
+            
+            <a class="mysocial" href="http://www.mafool.com" target="_blank">Mafool</a>
+            
+            <a class="mysocial" href="https://gohugo.io/documentation/" target="_blank">Hugo</a>
+            
+            <a class="mysocial" href="https://bulma.io/" target="_blank">Bulma</a>
+            
+            <a class="mysocial" href="https://bootstrapious.com/" target="_blank">Bootstrapious</a>
+            
+            <a class="mysocial" href="https://youzhixueyuan.com/" target="_blank">Youzhixueyuan</a>
+            
+            <br><br />
+            版权所有 &copy; 码夫庄园 2021
+            - <a class="mysocial" href="https://github.com/hollson/hugo-theme-dooz">Hugo Theme</a>
+        </p>
+    </div>
+</footer>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='http://www.mafool.com/js/dooz.totop.js?v=0.0.0' async=""></script>
+
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = 'https://hm.baidu.com/hm.js?f185359ec6b829a6a93e1e1f2597f6d9';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DK042XSJ2J"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-DK042XSJ2J');
+</script>
+
+    
+    
+<script type="text/javascript" src="http://www.mafool.com/js/reward.js"></script>
+
+    
+    <script defer src="https://cdn.staticfile.org/font-awesome/5.13.0/js/all.min.js"></script>
+</body>
+
+</html>

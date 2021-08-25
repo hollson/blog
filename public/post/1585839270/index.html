@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>码夫庄园-分布式理论(六) - 一致性协议Raft</title>
+    <meta name="keywords"
+        content='分布式,cap,架构,分区,一致性,raft'>
+    <meta name="description" content="Raft通过领导者方法实现共识。群集只有一个选举产生的领导者，它完全负责管理群集其他服务器上的日志复制。这意味着领导者可以决定新条目的位置以及在它与其他服务器之间的数据流的建立，而无需咨询其他服务器。领导者领导直到失败或断开连接为止，在这种情况下，将选举新的领导者。" />
+
+    
+    <meta name="baidu-site-verification" content="v9szEmQLra" />
+    <meta name="360-site-verification" content="d8e961f98fb655e4b8cf9439cfd9ac7f" />
+    <meta name="sogou_site_verification" content="40NC9EdZDC" />
+    <meta name="shenma-site-verification" content="3200e3042e92157713a3b0aceeecb20a_1586020187" />
+    <meta name="google-site-verification" content="r8987bkunZHJeKut3ocu5NIJ5QEu53NA6Q_r7RrZ46c" />
+    <meta name="msvalidate.01" content="893A2865ABC54AC2782D118536831056" />
+
+    
+    <link rel="shortcut icon" href="http://www.mafool.com/img/res/favicon.ico">
+    
+
+    
+
+    <link crossorigin="anonymous" integrity="sha384-5kGFOAqgEKnuF6c2jk2JANKHZgYVt38Wn2dVJENtq1EBCP54/1uzXU5mpxqL8WjN"
+        href="https://lib.baomitu.com/bulma/0.8.0/css/bulma.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="http://www.mafool.com/css/dooz.blog.css" />
+    <script crossorigin="anonymous" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh"
+        src="https://lib.baomitu.com/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/jquery.share.min.js"></script>
+    
+
+    
+
+    
+    
+<link rel="stylesheet" href="http://www.mafool.com/css/reward.css">
+
+
+    <link href="http://www.mafool.com/css/fonts.googleapi.css" rel="stylesheet">
+    <script src=http://www.mafool.com/js/dooz.blog.js></script>
+
+    
+    <script>
+        $(document).ready(function () {
+            $('.content a[href^="http"]').each(function () {
+                $(this).attr('target', '_blank');
+            });
+        });
+
+        $(document).on('click', '.modal-wechat', function () {
+            $(".modal").addClass("is-active");
+        });
+
+        $(document).on('click', '.modal-background', function () {
+            $(".modal").removeClass("is-active");
+        });
+    </script>
+</head>
+
+<body>
+    
+    
+<section class="hero is-info is-medium"
+    style="background-image: url('http://www.rayootech.com/images/ecom/fenbu/fenbu.png');">
+    <div class="hero-head">
+        <nav class="navbar is-transparent container has-text-white">
+    <div class="navbar-brand">
+        <div class="navbar-item">
+            <a class="title is-5 is-white" href="http://www.mafool.com/">码夫庄园</a>
+        </div>
+
+        
+        <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <div id="navbarExampleTransparentExample" class="navbar-menu has-text-dark">
+        
+
+        <div class="navbar-end">
+            <a class="navbar-item" href='http://www.mafool.com/'>首页</a>
+            <a class="navbar-item" href='http://www.mafool.com/archives'>归档 </a>
+            <a class="navbar-item" href='http://www.mafool.com/about'>关于</a>
+            <span class="navbar-item">
+                <a class="button is-primary is-inverted" href="https://github.com/hollson/hugo-theme-dooz">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>主题</span>
+                </a>
+            </span>
+        </div>
+    </div>
+</nav>
+    </div>
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <div class='container has-text-left column is-7'>
+                
+                <span>
+                    <a class="bar_tag" href="http://www.mafool.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F" title="分布式">分布式</a>
+                </span>
+                
+                <h1 class="title is-size-2" style="margin-bottom:0.2rem;">
+                    
+                    分布式理论(六) - 一致性协议Raft
+                    
+                </h1>
+                
+                <span class="title is-size-6" style="font-style: italic;"> </span><br>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    
+    <div class="container">
+        <div class="section">
+            
+<div class="columns">
+    <div class="column is-9">
+        <div class="tile is-child box">
+            <div class="content">
+                
+                <nav class="level">
+                    
+                    <div class="level-left">
+                        <div class="level-item">
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2019年7月1日,
+    星期一 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 6分钟阅读
+</p>
+                        </div>
+                    </div>
+
+                    
+                    
+                    <div class="share-component level-right" data-disabled="google,diandian,tencent,qzone"
+                        data-description="Share.js - 一键分享到微博，QQ空间，腾讯微博，人人，豆瓣"
+                        data-mobile-sites="weibo,qq,qzone,tencent">
+                    </div>
+                    
+                </nav>
+                <hr>
+                
+                <header>
+                    <h2>目录</h2>
+                </header>
+                <nav id="TableOfContents">
+  <ul>
+    <li><a href="#小试牛刀">小试牛刀</a></li>
+    <li><a href="#什么是raft协议">什么是Raft协议</a></li>
+    <li><a href="#leader选举过程">Leader选举过程</a></li>
+    <li><a href="#leader对一致性的影响">Leader对一致性的影响</a>
+      <ul>
+        <li><a href="#1-情形1">1. 情形1</a></li>
+        <li><a href="#2-情形2">2. 情形2</a></li>
+        <li><a href="#3-情形3">3. 情形3</a></li>
+        <li><a href="#4-情形4">4. 情形4</a></li>
+        <li><a href="#5-情形5">5. 情形5</a></li>
+        <li><a href="#6-情形6">6. 情形6</a></li>
+        <li><a href="#7-情形7">7. 情形7</a></li>
+        <li><a href="#验证结果">验证结果</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+                
+                <hr>
+                <h1 id="分布式理论六---一致性协议raft">分布式理论(六) - 一致性协议Raft</h1>
+<h1 id="前言">前言</h1>
+<p><code>Raft</code> 也是一个 <strong>一致性算法</strong>，和 <code>Paxos</code> 目标相同。但它还有另一个名字 - <strong>易于理解的一致性算法</strong>。<code>Paxos</code> 和 <code>Raft</code> 都是为了实现 <strong>一致性</strong> 产生的。这个过程如同选举一样，<strong>参选者</strong> 需要说服 <strong>大多数选民</strong> (服务器) 投票给他，一旦选定后就跟随其操作。<code>Paxos</code> 和 <code>Raft</code> 的区别在于选举的 <strong>具体过程</strong> 不同。</p>
+<h1 id="正文">正文</h1>
+<h2 id="小试牛刀">小试牛刀</h2>
+<p>在进入正题前，给大家分享一个《数学发散思维》中的一个故事，站在不同思维角度上，了解对一个问题理解的差异性。</p>
+<blockquote>
+<p>问题: 甲乙两人轮流在一张圆桌上平放黑白围棋子，每次放一子，棋子不许重叠，谁先没有地方放就输。请问怎样放才能赢？</p>
+</blockquote>
+<p>这个问题有两层意思，第一，有没有一种放法保证必赢？第二，如果有怎么证明？</p>
+<p><img src="https://user-gold-cdn.xitu.io/2018/6/17/1640dfa00a54943b?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt="img"></p>
+<p>上图回答了这个问题，那就是先行者必胜，这里使用了三种不同的思维方式来阐述:</p>
+<ol>
+<li>假如桌子只有一个围棋子那么大。</li>
+<li>假如桌子无限大，先行者先占住圆心。由于圆是对称图形，所以只要对手还能找到位置放，你总能在对称的另一面找到位置放。</li>
+<li>一个圆中可画单数个直径相等且互切的小圆。</li>
+</ol>
+<p>三种不同的思维方式在可理解性难度上逐渐加深。</p>
+<ol>
+<li>第一种是 <strong>极简化思维</strong>，但数学上是 <strong>不严谨</strong> 的。</li>
+<li>第二种是 <strong>极限思维</strong>，和第一种结合起来就是 <strong>数学归纳法</strong>，在数学上是 <strong>严谨</strong> 的。</li>
+<li>第三种是 <strong>形象思维</strong>，使用了 <strong>几何学概念</strong>，但对于没有几何学基础知识的人就很难理解了。</li>
+</ol>
+<h2 id="什么是raft协议">什么是Raft协议</h2>
+<p><code>Raft</code> 协议将 <code>Server</code> 进程分成三类，分别是 <code>Leader</code>，<code>Candidate</code>，<code>Follower</code>。一个 <code>Server</code> 进程在某一时刻，只能是其中 <strong>一种类型</strong>，但这不是固定的。不同的时刻，它可能拥有不同的类型，一个 <code>Server</code> 进程的类型是如何改变的，后面会有解释。</p>
+<p>在一个由 <code>Raft</code> 协议组织的集群中有三类角色：</p>
+<ul>
+<li><strong>Leader（领袖）</strong></li>
+<li><strong>Follower（群众）</strong></li>
+<li><strong>Candidate（候选人）</strong></li>
+</ul>
+<p>就像一个民主社会，领袖由民众投票选出。刚开始没有 <strong>领袖</strong>，所有集群中的 <strong>参与者</strong> 都是 <strong>群众</strong>，那么首先开启一轮大选。在大选期间 <strong>所有群众</strong> 都能参与竞选，这时所有群众的角色就变成了 <strong>候选人</strong>，民主投票选出领袖后就开始了这届领袖的任期，然后选举结束，所有除 <strong>领袖</strong> 的 <strong>候选人</strong> 又变回 <strong>群众角色</strong> 服从领袖领导。</p>
+<p>这里提到一个概念 <strong>「任期」</strong>，用术语 <code>Term</code> 表达。关于 <code>Raft</code> 协议的核心概念和术语就这么多，而且和现实民主制度非常匹配，所以很容易理解。</p>
+<p>三类角色的变迁图如下，结合后面的选举过程来看很容易理解。</p>
+<p>![img](data:image/svg+xml;utf8,<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->)</p>
+<h2 id="leader选举过程">Leader选举过程</h2>
+<p>在极简的思维下，一个最小的 <code>Raft</code> 民主集群需要 <strong>三个参与者</strong>（如下图：<code>A</code>、<code>B</code>、<code>C</code>），这样才可能投出多数票。</p>
+<p>初始状态 <code>ABC</code> 都是 <code>Follower</code>，然后发起选举这时有 <strong>三种</strong> 可能的情形发生。下图中前二种都能选出 <code>Leader</code>，第三种则表明 <strong>本轮投票无效</strong>（<code>Split Votes</code>）。对于第三种，每方都投给了自己，结果没有任何一方获得多数票。之后 <strong>每个参与方</strong> 随机休息一阵（<code>Election Timeout</code>）重新发起投票直到一方获得多数票。这里的关键就是随机 <code>timeout</code>，最先从 <code>timeout</code> 中恢复发起投票的一方，向还在 <code>timeout</code> 中的另外两方 <strong>请求投票</strong>，这时它就只能投给自己，导致很快达成一致。</p>
+<p>![img](data:image/svg+xml;utf8,<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->)</p>
+<p>选出 <code>Leader</code> 后，<code>Leader</code> 通过 <strong>定期</strong> 向所有 <code>Follower</code> 发送 <strong>心跳信息</strong> 维持其统治。若 <code>Follower</code> 一段时间未收到 <code>Leader</code> 的 <strong>心跳</strong>，则认为 <code>Leader</code> 可能已经挂了，然后再次发起 <strong>选举</strong> 过程。</p>
+<h2 id="leader对一致性的影响">Leader对一致性的影响</h2>
+<p><code>Raft</code> 协议 <strong>强依赖</strong> <code>Leader</code> 节点的 <strong>可用性</strong>，以确保集群 <strong>数据的一致性</strong>。<strong>数据的流向</strong> 只能从 <code>Leader</code> 节点向 <code>Follower</code> 节点转移。具体过程如下：</p>
+<p>![img](data:image/svg+xml;utf8,<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->)</p>
+<ol>
+<li>当 <code>Client</code> 向集群 <code>Leader</code> 节点 <strong>提交数据</strong> 后，<code>Leader</code> 节点 <strong>接收到的数据</strong> 处于 <strong>未提交状态</strong>（<code>Uncommitted</code>）。</li>
+<li>接着 <code>Leader</code> 节点会 <strong>并发地</strong> 向所有 <code>Follower</code> 节点 <strong>复制数据</strong> 并 <strong>等待接收响应</strong>。</li>
+<li>集群中至少 <strong>超过半数</strong> 的节点 <strong>已接收</strong> 到数据后， <code>Leader</code> 再向 <code>Client</code> 确认数据 <strong>已接收</strong>。</li>
+<li>一旦向 <code>Client</code> 发出数据接收 <code>Ack</code> 响应后，表明此时 <strong>数据状态</strong> 进入 <strong>已提交</strong>（<code>Committed</code>），<code>Leader</code> 节点再向 <code>Follower</code> 节点发通知告知该 <strong>数据状态已提交</strong>。</li>
+</ol>
+<p>在这个过程中，<strong>主节点</strong> 可能在 <strong>任意阶段</strong> 挂掉，看下 <code>Raft</code> 协议如何针对不同阶段保障 <strong>数据一致性</strong> 的。</p>
+<h3 id="1-情形1">1. 情形1</h3>
+<blockquote>
+<p>数据到达 Leader 节点前，这个阶段 Leader 挂掉不影响一致性，不用多说。</p>
+</blockquote>
+<p>![img](data:image/svg+xml;utf8,<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->)</p>
+<h3 id="2-情形2">2. 情形2</h3>
+<blockquote>
+<p>数据到达 Leader 节点，但未复制到 Follower 节点。</p>
+</blockquote>
+<p>这个阶段 <code>Leader</code> 挂掉，数据属于 <strong>未提交状态</strong>，<code>Client</code> 不会收到 <code>Ack</code> 会认为 <strong>超时失败</strong> 可安全发起 <strong>重试</strong>。</p>
+<p>![img](data:image/svg+xml;utf8,<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->)</p>
+<p><code>Follower</code> 节点上没有该数据，<strong>重新选主</strong> 后 <code>Client</code> 重试 <strong>重新提交</strong> 可成功。原来的 <code>Leader</code> 节点 <strong>恢复</strong> 后作为 <code>Follower</code> 加入集群，重新从 <strong>当前任期</strong> 的新 <code>Leader</code> 处 <strong>同步数据</strong>，强制保持和 <code>Leader</code> <strong>数据一致</strong>。</p>
+<h3 id="3-情形3">3. 情形3</h3>
+<blockquote>
+<p>数据到达 Leader 节点，成功复制到 Follower 所有节点，但 Follower 还未向 Leader 响应接收。</p>
+</blockquote>
+<p>这个阶段 <code>Leader</code> 挂掉，虽然数据在 <code>Follower</code> 节点处于 <strong>未提交状态</strong>（<code>Uncommitted</code>），但是 <strong>保持一致</strong> 的。重新选出 <code>Leader</code> 后可完成 <strong>数据提交</strong>。</p>
+<p>![img](data:image/svg+xml;utf8,<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->)</p>
+<p>此时 <code>Client</code> 由于不知到底提交成功没有，可重试提交。针对这种情况 <code>Raft</code> 要求 <code>RPC</code> 请求实现 <strong>幂等性</strong>，也就是要实现 <strong>内部去重机制</strong>。</p>
+<h3 id="4-情形4">4. 情形4</h3>
+<blockquote>
+<p>数据到达 Leader 节点，成功复制到 Follower 的部分节点，但这部分 Follower 节点还未向 Leader 响应接收。</p>
+</blockquote>
+<p>这个阶段 <code>Leader</code> 挂掉，数据在 <code>Follower</code> 节点处于 <strong>未提交状态</strong>（<code>Uncommitted</code>）且 <strong>不一致</strong>。</p>
+<p><img src="https://user-gold-cdn.xitu.io/2018/6/17/1640dfa02e12b5ab?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt="img"></p>
+<p><code>Raft</code> 协议要求投票只能投给拥有 <strong>最新数据</strong> 的节点。所以拥有最新数据的节点会被选为 <code>Leader</code>，然后再 <strong>强制同步数据</strong> 到其他 <code>Follower</code>，保证 <strong>数据不会丢失</strong>并 <strong>最终一致</strong>。</p>
+<h3 id="5-情形5">5. 情形5</h3>
+<blockquote>
+<p>数据到达 Leader 节点，成功复制到 Follower 所有或多数节点，数据在 Leader 处于已提交状态，但在 Follower 处于未提交状态。</p>
+</blockquote>
+<p>这个阶段 <code>Leader</code> 挂掉，<strong>重新选出</strong> 新的 <code>Leader</code> 后的处理流程和阶段 <code>3</code> 一样。</p>
+<p><img src="https://user-gold-cdn.xitu.io/2018/6/17/1640dfa02df3a5d0?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt="img"></p>
+<h3 id="6-情形6">6. 情形6</h3>
+<blockquote>
+<p>数据到达 Leader 节点，成功复制到 Follower 所有或多数节点，数据在所有节点都处于已提交状态，但还未响应 Client。</p>
+</blockquote>
+<p>这个阶段 <code>Leader</code> 挂掉，集群内部数据其实已经是 <strong>一致的</strong>，<code>Client</code> 重复重试基于幂等策略对 <strong>一致性无影响</strong>。</p>
+<p><img src="https://user-gold-cdn.xitu.io/2018/6/17/1640dfa02f46c0a5?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt="img"></p>
+<h3 id="7-情形7">7. 情形7</h3>
+<blockquote>
+<p>网络分区导致的脑裂情况，出现双 Leader 的现象。</p>
+</blockquote>
+<p><strong>网络分区</strong> 将原先的 <code>Leader</code> 节点和 <code>Follower</code> 节点分隔开，<code>Follower</code> 收不到 <code>Leader</code> 的 <strong>心跳</strong> 将 <strong>重新</strong> 发起选举产生新的 <code>Leader</code>，这时就产生了 <strong>双Leader</strong> 现象。</p>
+<p>![img](data:image/svg+xml;utf8,<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted -->)</p>
+<p>原先的 <code>Leader</code> 独自在一个区，向它提交数据不可能复制到多数节点所以永远提交不成功。向新的 <code>Leader</code> 提交数据可以提交成功。</p>
+<p><strong>网络恢复</strong> 后，旧的 <code>Leader</code> 发现集群中有 <strong>更新任期</strong>（<code>Term</code>）的新 <code>Leader</code> ，则 <strong>自动降级</strong> 为 <code>Follower</code> 并从新 <code>Leader</code> 处 <strong>同步数据</strong> 达成集群 <strong>数据一致</strong>。</p>
+<h3 id="验证结果">验证结果</h3>
+<p>综上穷举分析了 <strong>最小集群</strong>（<code>3</code> 节点）面临的所有情况，可以看出 <code>Raft</code> 协议都能很好的应对 <strong>一致性问题</strong>，并且很容易理解。</p>
+<h1 id="小结">小结</h1>
+<p><code>Paxos</code> 算法是 <code>Leslie Lamport</code> 在 <code>1990</code> 年就公开发表在了自己的网站上，想想我们是什么时候才听说的？什么时候才有一个可用的实现？而 <code>Raft</code> 算法是 <code>2013</code> 年发表的，大家在参考 <a href="https://raft.github.io/#implementations">Raft开源实现库</a>，可以看到有很多基于不同语言的 <strong>开源实现库</strong>，这就是 <strong>可理解性</strong> 的重要性。</p>
+<h1 id="相关链接">相关链接</h1>
+<ol>
+<li><a href="https://juejin.im/post/5b26634b6fb9a00e765e75d1">分布式理论(一) - CAP定理</a></li>
+<li><a href="https://juejin.im/post/5b2663fcf265da59a401e6f8">分布式理论(二) - BASE理论</a></li>
+<li><a href="https://juejin.im/post/5b2664446fb9a00e4a53136e">分布式理论(三) - 2PC协议</a></li>
+<li><a href="https://juejin.im/post/5b26648e5188257494641b9f">分布式理论(四) - 3PC协议</a></li>
+<li><a href="https://juejin.im/post/5b2664bd51882574874d8a76">分布式理论(五) - 一致性算法Paxos</a></li>
+<li><a href="https://juejin.im/post/5b2664e2f265da59584d8c90">分布式理论(六) - 一致性协议Raft</a></li>
+</ol>
+
+                
+                
+                <hr> 
+
+<div class="entry-shang text-center">
+    
+    <p> 「真诚赞赏，手留余香」</p>
+    
+    <button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+    <div class="zs-modal-head">
+        <button type="button" class="close">×</button>
+        <span class="author">
+            <a href="http://www.mafool.com">
+                <img src="http://www.mafool.com/img/reward/hollson.png" alt="史布斯" />码夫庄园
+            </a>
+        </span>
+        
+        <p class="tip"><i></i><span>嗯，我的梦想是被读者的稿费包养~</span></p>
+        
+
+    </div>
+    <div class="zs-modal-body">
+        <div class="zs-modal-btns">
+            <button class="btn btn-blink" data-num="2">2元</button>
+            <button class="btn btn-blink" data-num="5">5元</button>
+            <button class="btn btn-blink" data-num="10">10元</button>
+            <button class="btn btn-blink" data-num="50">50元</button>
+            <button class="btn btn-blink" data-num="100">100元</button>
+            <button class="btn btn-blink" data-num="1">任意金额</button>
+        </div>
+        <div class="zs-modal-pay">
+            <button class="btn btn-bred" id="pay-text">2元</button>
+            <p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+            <img src="http://www.mafool.com/img/reward/wechat-2.png" alt="史布斯" id="pay-image" />
+        </div>
+    </div>
+    <div class="zs-modal-footer">
+        <label>
+            <span class="zs-wechat"></span>
+            <input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked">
+            <img src="http://www.mafool.com/img/reward/wechat-btn.png" alt="史布斯" />
+            </span>&nbsp;
+            <span>
+                <input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay">
+                <img src="http://www.mafool.com/img/reward/alipay-btn.png" alt="史布斯" />
+            </span>
+        </label>
+    </div>
+</div>
+
+ 
+
+                <br>
+                <br>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="column is-3">
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">最近发布</h2>
+        
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/0742b474a643d63a774461726a6201203/">Go语言中的原子操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年12月2日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/1600330472/">Go基础笔记 - 2.3 常量</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月10日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/15996311192/">Go - Gin框架快速入门</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月9日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480249/">Gorm快速指南</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480218/">18. Go语言MySQL数据库操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+    </div>
+</div>
+<br>
+        
+
+
+
+
+<div class="card">
+  <div class="card-content">
+    <h2 class="title is-6">相关文章</h2>
+    
+    
+    <h2><a href="http://www.mafool.com/posts/d40cede24573717edfd927aad8bb5042/">分布式系统概述</a></h2>
+    <time class="has-text-grey-light is-size-7">8 April 2020</time>
+    
+    <h2><a href="http://www.mafool.com/posts/aff3b81a3477dddf3a0e9115dd348b11/">Etcd - 搭建伪集群</a></h2>
+    <time class="has-text-grey-light is-size-7">13 March 2020</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585819046/">Go操作Zookeeper</a></h2>
+    <time class="has-text-grey-light is-size-7">8 January 2020</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585838490/">CAP定理和分布式数据库管理系统</a></h2>
+    <time class="has-text-grey-light is-size-7">11 November 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585749845/">Redis哨兵模式和集群搭建</a></h2>
+    <time class="has-text-grey-light is-size-7">1 November 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585839366/">分布式理论(一) - CAP定理</a></h2>
+    <time class="has-text-grey-light is-size-7">6 July 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585838938/">分布式理论(二) - BASE理论</a></h2>
+    <time class="has-text-grey-light is-size-7">5 July 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585839040/">分布式理论(三) - 2PC协议</a></h2>
+    <time class="has-text-grey-light is-size-7">4 July 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585839114/">分布式理论(四) - 3PC协议</a></h2>
+    <time class="has-text-grey-light is-size-7">3 July 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585839221/">分布式理论(五) 一致性算法Paxos</a></h2>
+    <time class="has-text-grey-light is-size-7">2 July 2019</time>
+    
+  </div>
+</div>
+<br>
+
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">标签</h2>
+        <div>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/atomic">atomic</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/blog">blog</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cgo">cgo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cloud">cloud</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/config">config</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/copy">copy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/docker">docker</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/exam">exam</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/gin">gin</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/git">git</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/golang">golang</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/hugo">hugo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/install">install</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/istio">istio</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/jenkins">jenkins</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/kubernetes">kubernetes</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/map">map</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/microservice">microservice</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/mycat">mycat</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/nginx">nginx</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/plan9">plan9</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/posix">posix</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/proxy">proxy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/raft">raft</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ssh">ssh</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/tips">tips</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ymal">ymal</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%B8%BB%E4%BB%8E">主从</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BA%8B%E5%8A%A1">事务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BB%A3%E7%90%86">代理</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BD%9C%E7%94%A8%E5%9F%9F">作用域</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%86%85%E5%AD%98">内存</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%8B%E7%BC%A9">压缩</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%88%9B">原创</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%AD%90">原子</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%91%BD%E4%BB%A4%E8%A1%8C">命令行</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%93%A8%E5%85%B5">哨兵</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%AD%98%E5%82%A8">存储</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B8%B8%E9%87%8F">常量</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B9%B6%E5%8F%91">并发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BC%82%E5%B8%B8">异常</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1">微服务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%88%E6%9D%83%E8%AE%A4%E8%AF%81">授权认证</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%92%E5%BA%8F">排序</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%A5%E5%8F%A3">接口</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%97%A5%E5%BF%97">日志</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%9D%83%E9%99%90">权限</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE1">标签1</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE2">标签2</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%AD%A3%E5%88%99">正则</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%81%E9%87%8F%E5%88%86%E5%8F%91">流量分发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%8B%E8%AF%95">测试</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%BA%90%E7%A0%81">源码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%8A%B6%E6%80%81%E7%A0%81">状态码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%AE%97%E6%B3%95">算法</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%BC%8F">编程模式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%80%81%E5%A6%96%E7%AC%94%E8%AE%B0">老妖笔记</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%BF%87%E6%BB%A4%E5%99%A8">过滤器</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%80%83%E9%80%B8">逃逸</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%85%8D%E7%BD%AE">配置</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%86%99">重写</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%AE%9A%E5%90%91">重定向</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9B%86%E7%BE%A4">集群</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9D%A2%E8%AF%95">面试</a>
+            </span>
+            
+        </div>
+    </div>
+</div>
+<br>
+    </div>
+</div>
+
+        </div>
+    </div>
+
+    
+    <footer class="footer has-background-grey-darker has-text-white">
+    <div class="content has-text-centered">
+        <p>
+            <span class="icon is-large">
+                <a href="https://twitter.com/" class="mysocial" rel="me">
+                    <i class="fab fa-twitter fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://www.youtube.com/" class="mysocial" rel="me">
+                    <i class="fab fa-youtube fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://github.com/" class="mysocial" rel="me">
+                    <i class="fab fa-github fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <br><br>
+            友情链接：
+            
+            <a class="mysocial" href="http://www.mafool.com" target="_blank">Mafool</a>
+            
+            <a class="mysocial" href="https://gohugo.io/documentation/" target="_blank">Hugo</a>
+            
+            <a class="mysocial" href="https://bulma.io/" target="_blank">Bulma</a>
+            
+            <a class="mysocial" href="https://bootstrapious.com/" target="_blank">Bootstrapious</a>
+            
+            <a class="mysocial" href="https://youzhixueyuan.com/" target="_blank">Youzhixueyuan</a>
+            
+            <br><br />
+            版权所有 &copy; 码夫庄园 2021
+            - <a class="mysocial" href="https://github.com/hollson/hugo-theme-dooz">Hugo Theme</a>
+        </p>
+    </div>
+</footer>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='http://www.mafool.com/js/dooz.totop.js?v=0.0.0' async=""></script>
+
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = 'https://hm.baidu.com/hm.js?f185359ec6b829a6a93e1e1f2597f6d9';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DK042XSJ2J"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-DK042XSJ2J');
+</script>
+
+    
+    
+<script type="text/javascript" src="http://www.mafool.com/js/reward.js"></script>
+
+    
+    <script defer src="https://cdn.staticfile.org/font-awesome/5.13.0/js/all.min.js"></script>
+</body>
+
+</html>

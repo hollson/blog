@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>码夫庄园-Istio及Bookinfo示例程序安装试用笔记</title>
+    <meta name="keywords"
+        content='码农,hugo,theme,blog,coder,geek,github,golang,技术,源码,代码,编程,程序员,主题,个人,博客,微服务,容器'>
+    <meta name="description" content="Istio是来自Google，IBM和Lyft的一个Service Mesh（服务网格）开源项目，是Google继Kubernetes之后的又一大作,本文将演示如何从裸机开始从零搭建Istio及Bookinfo示例程序。" />
+
+    
+    <meta name="baidu-site-verification" content="v9szEmQLra" />
+    <meta name="360-site-verification" content="d8e961f98fb655e4b8cf9439cfd9ac7f" />
+    <meta name="sogou_site_verification" content="40NC9EdZDC" />
+    <meta name="shenma-site-verification" content="3200e3042e92157713a3b0aceeecb20a_1586020187" />
+    <meta name="google-site-verification" content="r8987bkunZHJeKut3ocu5NIJ5QEu53NA6Q_r7RrZ46c" />
+    <meta name="msvalidate.01" content="893A2865ABC54AC2782D118536831056" />
+
+    
+    <link rel="shortcut icon" href="http://www.mafool.com/img/res/favicon.ico">
+    
+
+    
+
+    <link crossorigin="anonymous" integrity="sha384-5kGFOAqgEKnuF6c2jk2JANKHZgYVt38Wn2dVJENtq1EBCP54/1uzXU5mpxqL8WjN"
+        href="https://lib.baomitu.com/bulma/0.8.0/css/bulma.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="http://www.mafool.com/css/dooz.blog.css" />
+    <script crossorigin="anonymous" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh"
+        src="https://lib.baomitu.com/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/jquery.share.min.js"></script>
+    
+
+    
+
+    
+    
+<link rel="stylesheet" href="http://www.mafool.com/css/reward.css">
+
+
+    <link href="http://www.mafool.com/css/fonts.googleapi.css" rel="stylesheet">
+    <script src=http://www.mafool.com/js/dooz.blog.js></script>
+
+    
+    <script>
+        $(document).ready(function () {
+            $('.content a[href^="http"]').each(function () {
+                $(this).attr('target', '_blank');
+            });
+        });
+
+        $(document).on('click', '.modal-wechat', function () {
+            $(".modal").addClass("is-active");
+        });
+
+        $(document).on('click', '.modal-background', function () {
+            $(".modal").removeClass("is-active");
+        });
+    </script>
+</head>
+
+<body>
+    
+    
+<section class="hero is-info is-medium"
+    style="background-image: url('https://img.zhaohuabing.com/in-post/istio-install_and_example/post-bg.jpg');">
+    <div class="hero-head">
+        <nav class="navbar is-transparent container has-text-white">
+    <div class="navbar-brand">
+        <div class="navbar-item">
+            <a class="title is-5 is-white" href="http://www.mafool.com/">码夫庄园</a>
+        </div>
+
+        
+        <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <div id="navbarExampleTransparentExample" class="navbar-menu has-text-dark">
+        
+
+        <div class="navbar-end">
+            <a class="navbar-item" href='http://www.mafool.com/'>首页</a>
+            <a class="navbar-item" href='http://www.mafool.com/archives'>归档 </a>
+            <a class="navbar-item" href='http://www.mafool.com/about'>关于</a>
+            <span class="navbar-item">
+                <a class="button is-primary is-inverted" href="https://github.com/hollson/hugo-theme-dooz">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>主题</span>
+                </a>
+            </span>
+        </div>
+    </div>
+</nav>
+    </div>
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <div class='container has-text-left column is-7'>
+                
+                <span>
+                    <a class="bar_tag" href="http://www.mafool.com/tags/istio" title="Istio">Istio</a>
+                </span>
+                
+                <h1 class="title is-size-2" style="margin-bottom:0.2rem;">
+                    
+                    Istio及Bookinfo示例程序安装试用笔记
+                    
+                </h1>
+                
+                <span class="title is-size-6" style="font-style: italic;"> 手把手教你从零搭建Istio及Bookinfo示例程序</span><br>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    
+    <div class="container">
+        <div class="section">
+            
+<div class="columns">
+    <div class="column is-9">
+        <div class="tile is-child box">
+            <div class="content">
+                
+                <nav class="level">
+                    
+                    <div class="level-left">
+                        <div class="level-item">
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2018年11月4日,
+    星期日 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 12分钟阅读
+</p>
+                        </div>
+                    </div>
+
+                    
+                    
+                    <div class="share-component level-right" data-disabled="google,diandian,tencent,qzone"
+                        data-description="Share.js - 一键分享到微博，QQ空间，腾讯微博，人人，豆瓣"
+                        data-mobile-sites="weibo,qq,qzone,tencent">
+                    </div>
+                    
+                </nav>
+                <hr>
+                
+                <header>
+                    <h2>目录</h2>
+                </header>
+                <nav id="TableOfContents">
+  <ul>
+    <li><a href="#服务网格简介">服务网格简介</a></li>
+    <li><a href="#安装kubernetes">安装Kubernetes</a>
+      <ul>
+        <li><a href="#在server和工作节点上安装docker">在server和工作节点上安装docker</a></li>
+        <li><a href="#启动rancher-server">启动Rancher server</a></li>
+        <li><a href="#登录rancher管理界面创建k8s集群">登录Rancher管理界面，创建k8s集群</a></li>
+        <li><a href="#安装并配置kubectl">安装并配置kubectl</a></li>
+      </ul>
+    </li>
+    <li><a href="#安装istio">安装Istio</a></li>
+    <li><a href="#部署bookinfo示例程序">部署Bookinfo示例程序</a></li>
+    <li><a href="#理解istio-proxy实现原理">理解Istio Proxy实现原理</a></li>
+    <li><a href="#测试路由规则">测试路由规则</a></li>
+    <li><a href="#分布式调用追踪">分布式调用追踪</a></li>
+    <li><a href="#性能指标监控">性能指标监控</a></li>
+    <li><a href="#参考">参考</a></li>
+  </ul>
+</nav>
+                
+                <hr>
+                <h2 id="服务网格简介">服务网格简介</h2>
+<p><strong>服务网格</strong>（Service Mesh）是为解决微服务的通信和治理而出现的一种<strong>架构模式</strong>。</p>
+<p>服务网格将服务间通讯以及与此相关的管理控制功能从业务程序中下移到一个基础设施层，从而彻底隔离了业务逻辑和服务通讯两个关注点。采用服务网格后，应用开发者只需要关注并实现应用业务逻辑。服务之间的通信，包括服务发现，通讯的可靠性，通讯的安全性，服务路由等由服务网格层进行处理，并对应用程序透明。</p>
+<p>让我们来回顾一下微服务架构的发展过程。在出现服务网格之前，我们在微服务应用程序进程内处理服务通讯逻辑，包括服务发现，熔断，重试，超时等逻辑，如下图所示：<br>
+<img src="https://img.zhaohuabing.com/in-post/istio-install_and_example/5-a.png" alt=""><br>
+通过对这部分负责服务通讯的逻辑进行抽象和归纳，可以形成一个代码库供应用程序调用。但应用程序还是需要处理和各种语言代码库的调用细节，并且各种代码库互不兼容，导致对应用程序使用的语言和代码框架有较大限制。</p>
+<p>如果我们更进一步，将这部分逻辑从应用程序进程中抽取出来，作为一个单独的进程进行部署，并将其作为服务间的通信代理，如下图所示：<br>
+<img src="https://img.zhaohuabing.com/in-post/istio-install_and_example/6-a.png" alt=""><br>
+因为通讯代理进程和应用进程一起部署，因此形象地把这种部署方式称为“sidecar”（三轮摩托的挎斗）。<br>
+<img src="https://img.zhaohuabing.com/in-post/istio-install_and_example/sidecar.jpg" alt=""><br>
+应用间的所有流量都需要经过代理，由于代理以sidecar方式和应用部署在同一台主机上，应用和代理之间的通讯被认为是可靠的。然后由代理来负责找到目的服务并负责通讯的可靠性和安全等问题。</p>
+<p>当服务大量部署时，随着服务部署的sidecar代理之间的连接形成了一个如下图所示的网格，被称之为Service Mesh（服务网格），从而得出如下的服务网格定义。</p>
+<p><em>服务网格是一个基础设施层，用于处理服务间通信。云原生应用有着复杂的服务拓扑，服务网格保证请求可以在这些拓扑中可靠地穿梭。在实际应用当中，服务网格通常是由一系列轻量级的网络代理组成的，它们与应用程序部署在一起，但应用程序不需要知道它们的存在。</em></p>
+<p>_William Morgan <em><a href="https://buoyant.io/2017/04/25/whats-a-service-mesh-and-why-do-i-need-one/"><em>WHAT’S A SERVICE MESH? AND WHY DO I NEED ONE?</em></a></em>                                               _</p>
+<p><img src="https://img.zhaohuabing.com/in-post/istio-install_and_example/mesh1.png" alt=""></p>
+<p>了解了服务网格的基本概念，下一步介绍一下<a href="https://istio.io/">Istio</a>。Istio是来自Google，IBM和Lyft的一个Service Mesh（服务网格）开源项目，是Google继Kubernetes之后的又一大作，Istio架构先进，设计合理，刚一宣布就获得了Linkerd，nginmesh等其他Service Mesh项目的合作以及Red hat/Pivotal/Weaveworks/Tigera/Datawire等的积极响应。<br>
+<img src="https://img.zhaohuabing.com/in-post/istio-install_and_example/Istio-Architecture.PNG" alt=""><br>
+可以设想，在不久的将来，微服务的标准基础设施将是采用kubernetes进行服务部署和集群管理，采用Istio处理服务通讯和治理，两者相辅相成，缺一不可。</p>
+<h2 id="安装kubernetes">安装Kubernetes</h2>
+<p>Istio是微服务通讯和治理的基础设施层，本身并不负责服务的部署和集群管理，因此需要和Kubernetes等服务编排工具协同工作。</p>
+<p>Istio在架构设计上支持各种服务部署平台，包括kubernetes，cloud foundry，Mesos等，但Istio作为Google亲儿子，对自家兄弟Kubernetes的支持肯定是首先考虑的。目前版本的0.2版本的手册中也只有Kubernetes集成的安装说明，其它部署平台和Istio的集成将在后续版本中支持。</p>
+<p>从Istio控制面Pilot的架构图可以看到各种部署平台可以通过插件方式集成到Istio中，为Istio提供服务注册和发现功能。</p>
+<p><img src="https://img.zhaohuabing.com/in-post/istio-install_and_example/PilotAdapters.PNG" alt=""></p>
+<p>kubernetes集群的部署较为复杂，<a href="http://rancher.com">Rancher</a>提供了kubernetes部署模板，通过一键式安装，可以大大简化kubernetes集群的安装部署过程。</p>
+<p>本文的测试环境为两台虚机组成的集群，操作系统是Ubuntu 16.04.3 LTS。两台虚机的地址分别为：<br>
+Rancher Server: 10.12.25.60<br>
+工作节点: 10.12.25.116</p>
+<p>通过Rancher安装Kubernetes集群的简要步骤如下：</p>
+<h3 id="在server和工作节点上安装docker">在server和工作节点上安装docker</h3>
+<p>因为k8s并不支持最新版本的docker，因此需根据该页面安装指定版本的docker<br>
+<a href="http://rancher.com/docs/rancher/v1.6/en/hosts/">http://rancher.com/docs/rancher/v1.6/en/hosts/</a> ,目前是1.12版本。</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">curl https://releases.rancher.com/install-docker/1.12.sh | sh
+</code></pre></td></tr></table>
+</div>
+</div><p>如果需要以非root用户执行docker命令，参考<a href="http://zhaohuabing.com/2018/02/09/docker-without-sudo/">如何使用非root用户执行docker命令</a>。</p>
+<h3 id="启动rancher-server">启动Rancher server</h3>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">sudo docker run -d --restart=always -p 8080:8080 rancher/server
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="登录rancher管理界面创建k8s集群">登录Rancher管理界面，创建k8s集群</h3>
+<p>Rancher 管理界面的缺省端口为8080，在浏览器中打开该界面，通过菜单Default-&gt;Manage Environment-&gt;Add Environment添加一个kubernetes集群。这里需要输入名称kubernetes，描述，然后选择kubernetes template，点击create，创建Kubernetes环境。<img src="https://img.zhaohuabing.com/in-post/istio-install_and_example/Rancher.PNG" alt=""></p>
+<p>点击菜单切换到kubernetes Environment，然后点击右上方的Add a host，添加一台host到kubernetes集群中。注意添加到集群中的host上必须先安装好符合要求的docker版本。</p>
+<p>然后根据Rancher页面上的提示在host上执行脚本启动Rancher agent，以将host加入ranch cluster。注意脚本中包含了rancher server的地址，在host上必须可以ping通该地址。<img src="https://img.zhaohuabing.com/in-post/istio-install_and_example/Rancher-add-host.PNG" alt=""></p>
+<p>host加入cluster后Rancher会在host上pull kubernetes的images并启动kubernetes相关服务，根据安装环境所在网络情况不同需要等待几分钟到几十分钟不等。</p>
+<h3 id="安装并配置kubectl">安装并配置kubectl</h3>
+<p>待Rancher界面提示kubernetes创建成功后，安装kubernetes命令行工具kubectl</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.7.4/bin/linux/amd64/kubectl
+
+chmod +x ./kubectl
+
+sudo mv ./kubectl /usr/local/bin/kubectl
+</code></pre></td></tr></table>
+</div>
+</div><p>登录Rancher管理界面, 将 All Environments-&gt;kubernetes-&gt;KUBERNETES-&gt;CLI create config 的内容拷贝到~/.kube/config 中，以配置Kubectl和kubernetes server的连接信息。<img src="https://img.zhaohuabing.com/in-post/istio-install_and_example/Rancher-kubectl.PNG" alt=""></p>
+<h2 id="安装istio">安装Istio</h2>
+<p>Istio提供了安装脚本，该脚本会根据操作系统下载相应的Istio安装包并解压到当前目录。</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback"> curl -L https://git.io/getLatestIstio | sh -
+</code></pre></td></tr></table>
+</div>
+</div><p>根据脚本的提示将Istio命令行所在路径加入到系统PATH环境变量中</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">export PATH=&#34;$PATH:/home/ubuntu/istio-0.2.10/bin&#34;
+</code></pre></td></tr></table>
+</div>
+</div><p>在kubernetes集群中部署Istio控制面服务</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">kubectl apply -f istio-0.2.10/install/kubernetes/istio.yaml
+</code></pre></td></tr></table>
+</div>
+</div><p>确认Istio控制面服务已成功部署。Kubernetes会创建一个istio-system namespace，将Istio相关服务部署在该namespace中。</p>
+<p>确认Istio相关Service的部署状态</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">kubectl get svc -n istio-system
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">NAME            CLUSTER-IP      EXTERNAL-IP        PORT(S)                                                  AGE
+istio-egress    10.43.192.74    &lt;none&gt;             80/TCP                                                   25s
+istio-ingress   10.43.16.24     10.12.25.116,...   80:30984/TCP,443:30254/TCP                               25s
+istio-mixer     10.43.215.250   &lt;none&gt;             9091/TCP,9093/TCP,9094/TCP,9102/TCP,9125/UDP,42422/TCP   26s
+istio-pilot     10.43.211.140   &lt;none&gt;             8080/TCP,443/TCP                                         25s
+</code></pre></td></tr></table>
+</div>
+</div><p>确认Istio相关Pod的部署状态</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">kubectl get pods -n istio-system
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">NAME                             READY     STATUS    RESTARTS   AGE
+istio-ca-367485603-qvbfl         1/1       Running   0          2m
+istio-egress-3571786535-gwbgk    1/1       Running   0          2m
+istio-ingress-2270755287-phwvq   1/1       Running   0          2m
+istio-mixer-1505455116-9hmcw     2/2       Running   0          2m
+istio-pilot-2278433625-68l34     1/1       Running   0          2m
+</code></pre></td></tr></table>
+</div>
+</div><p>从上面的输出可以看到，这里部署的主要是Istio控制面的服务，而数据面的网络代理要如何部署呢？<br>
+根据前面服务网格的架构介绍可以得知，网络代理是随着应用程序以sidecar的方式部署的，在下面部署Bookinfo示例程序时会演示如何部署网络代理。</p>
+<h2 id="部署bookinfo示例程序">部署Bookinfo示例程序</h2>
+<p>在下载的Istio安装包的samples目录中包含了示例应用程序。</p>
+<p>通过下面的命令部署Bookinfo应用</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">kubectl apply -f &lt;(istioctl kube-inject -f istio-0.2.10/samples/bookinfo/kube/bookinfo.yaml)
+</code></pre></td></tr></table>
+</div>
+</div><p>确认Bookinfo服务已经启动</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">kubectl get services
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">NAME          CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+details       10.43.175.204   &lt;none&gt;        9080/TCP   6m
+kubernetes    10.43.0.1       &lt;none&gt;        443/TCP    5d
+productpage   10.43.19.154    &lt;none&gt;        9080/TCP   6m
+ratings       10.43.50.160    &lt;none&gt;        9080/TCP   6m
+reviews       10.43.219.248   &lt;none&gt;        9080/TCP   6m
+</code></pre></td></tr></table>
+</div>
+</div><p>在浏览器中打开应用程序页面，地址为istio-ingress的External IP</p>
+<p><code>http://10.12.25.116/productpage</code><br>
+<img src="https://img.zhaohuabing.com/in-post/istio-install_and_example/Bookinfo.PNG" alt=""></p>
+<h2 id="理解istio-proxy实现原理">理解Istio Proxy实现原理</h2>
+<p>服务网格相对于sprint cloud等微服务代码库的一大优势是其对应用程序无侵入，在不修改应用程序代码的前提下对应用服务之间的通信进行接管，Istio是如何做到这点的呢？下面通过示例程序的部署剖析其中的原理。</p>
+<p>如果熟悉kubernetes的应用部署过程，我们知道Bookinfo应用程序的标准部署方式是这样的：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">kubectl apply -f istio-0.2.10/samples/bookinfo/kube/bookinfo.yaml
+</code></pre></td></tr></table>
+</div>
+</div><p>但从上面的部署过程可以看到，kubectl apply命令的输入并不是一个kubernetes yaml文件，而是<code>istioctl kube-inject -f istio-0.2.10/samples/bookinfo/kube/bookinfo.yaml</code>命令的输出。</p>
+<p>这段命令在这里起到了什么作用呢？通过单独运行该命令并将输出保存到文件中，我们可以查看istioctl kube-inject命令到底在背后搞了什么小动作。</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">istioctl kube-inject -f istio-0.2.10/samples/bookinfo/kube/bookinfo.yaml &gt;&gt; bookinfo_with_sidecar.yaml
+</code></pre></td></tr></table>
+</div>
+</div><p>对比bookinfo/_with/_sidecar.yaml文件和bookinfo.yaml，可以看到该命令在bookinfo.yaml的基础上做了如下改动：</p>
+<ul>
+<li>
+<p>为每个pod增加了一个代理container，该container用于处理应用container之间的通信，包括服务发现，路由规则处理等。从下面的配置文件中可以看到proxy container通过15001端口进行监听，接收应用container的流量。</p>
+</li>
+<li>
+<p>为每个pod增加了一个init-container，该container用于配置iptable，将应用container的流量导入到代理container中。</p>
+</li>
+</ul>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">  #注入istio 网络代理
+  image: docker.io/istio/proxy_debug:0.2.10
+        imagePullPolicy: IfNotPresent
+        name: istio-proxy
+        resources: {}
+        securityContext:
+          privileged: true
+          readOnlyRootFilesystem: false
+          runAsUser: 1337
+        volumeMounts:
+        - mountPath: /etc/istio/proxy
+          name: istio-envoy
+        - mountPath: /etc/certs/
+          name: istio-certs
+          readOnly: true
+      #使用init container修改iptable
+      initContainers:
+      - args:
+        - -p
+        - &#34;15001&#34;
+        - -u
+        - &#34;1337&#34;
+        image: docker.io/istio/proxy_init:0.2.10
+        imagePullPolicy: IfNotPresent
+        name: istio-init
+</code></pre></td></tr></table>
+</div>
+</div><p>从上面的分析，我们可以看出Istio的kube-inject工具的用途即是将代理sidecar注入了Bookinfo的kubernetes yaml部署文件中。通过该方式，不需要用户手动修改kubernetes的部署文件，即可在部署服务时将sidecar和应用一起部署。</p>
+<p>通过命令查看pod中部署的docker container，确认是否部署了Istio代理</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">kubectl get pods
+
+NAME                              READY     STATUS    RESTARTS   AGE
+details-v1-3688945616-8hv8x       2/2       Running   0          1d
+productpage-v1-2055622944-cslw1   2/2       Running   0          1d
+ratings-v1-233971408-8dcnp        2/2       Running   0          1d
+reviews-v1-1360980140-474x6       2/2       Running   0          1d
+reviews-v2-1193607610-cfhb5       2/2       Running   0          1d
+reviews-v3-3340858212-b5c8k       2/2       Running   0          1d
+</code></pre></td></tr></table>
+</div>
+</div><p>查看reviews pod的中的container，可以看到pod中除reviews container外还部署了一个istio-proxy container</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">kubectl get pod reviews-v3-3340858212-b5c8k -o jsonpath=&#39;{.spec.containers[*].name}&#39;
+
+reviews istio-proxy
+</code></pre></td></tr></table>
+</div>
+</div><p>而应用container的流量是如何被导入到istio-proxy中的呢？</p>
+<p>原理是Istio proxy在端口15001进行监听，pod中应用container的流量通过iptables规则被重定向到15001端口中。下面我们进入pod内部，通过相关命令来验证这一点。</p>
+<p>先通过命令行找到ratings-v1-233971408-8dcnp pod的PID，以用于查看其network namespace內的iptables规则。</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">CONTAINER_ID=$(kubectl get po ratings-v1-233971408-8dcnp -o jsonpath=&#39;{.status.containerStatuses[0].containerID}&#39; | cut -c 10-21)
+
+PID=$(sudo docker inspect --format &#39;{{ .State.Pid }}&#39; $CONTAINER_ID)
+</code></pre></td></tr></table>
+</div>
+</div><p>可以使用nsenter命令来进入pod的network namespace执行命令。<br>
+使用netstat命令可以看到istio proxy代理的监听端口15001</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">sudo nsenter -t ${PID} -n netstat -all | grep 15001
+
+tcp        0      0 *:15001                 *:*                     LISTEN
+</code></pre></td></tr></table>
+</div>
+</div><p>使用iptables命令可以查看到下面的规则</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">sudo nsenter -t ${PID} -n iptables -t nat -L -n -v
+
+Chain PREROUTING (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destination
+   16   960 ISTIO_REDIRECT  all  --  *      *       0.0.0.0/0            0.0.0.0/0            /* istio/install-istio-prerouting */
+
+Chain INPUT (policy ACCEPT 16 packets, 960 bytes)
+ pkts bytes target     prot opt in     out     source               destination
+
+Chain OUTPUT (policy ACCEPT 84838 packets, 7963K bytes)
+ pkts bytes target     prot opt in     out     source               destination
+ 1969  118K ISTIO_OUTPUT  tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            /* istio/install-istio-output */
+
+Chain POSTROUTING (policy ACCEPT 84838 packets, 7963K bytes)
+ pkts bytes target     prot opt in     out     source               destination
+
+Chain ISTIO_OUTPUT (1 references)
+ pkts bytes target     prot opt in     out     source               destination
+    0     0 ISTIO_REDIRECT  all  --  *      lo      0.0.0.0/0           !127.0.0.1            /* istio/redirect-implicit-loopback */
+ 1969  118K RETURN     all  --  *      *       0.0.0.0/0            0.0.0.0/0            owner UID match 1337 /* istio/bypass-envoy */
+    0     0 RETURN     all  --  *      *       0.0.0.0/0            127.0.0.1            /* istio/bypass-explicit-loopback */
+    0     0 ISTIO_REDIRECT  all  --  *      *       0.0.0.0/0            0.0.0.0/0            /* istio/redirect-default-outbound */
+
+Chain ISTIO_REDIRECT (3 references)
+ pkts bytes target     prot opt in     out     source               destination
+   16   960 REDIRECT   tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            /* istio/redirect-to-envoy-port */ redir ports 15001
+</code></pre></td></tr></table>
+</div>
+</div><p>从pod所在network namespace的iptables规则中可以看到，pod的入口和出口流量分别通过PREROUTING和OUTPUT chain指向了自定义的ISTIO/_REDIRECT chain，而ISTIO/_REDIRECT chain中的规则将所有流量都重定向到了istio proxy正在监听的15001端口中。从而实现了对应用透明的通信代理。</p>
+<h2 id="测试路由规则">测试路由规则</h2>
+<p>多次刷新Bookinfo应用的productpage页面，我们会发现该页面中显示的Book Reviews有时候有带红星的评价信息，有时有带黑星的评价信息，有时只有文字评价信息。<br>
+这是因为Bookinfo应用程序部署了3个版本的Reviews服务，每个版本的返回结果不同，在没有设置路由规则时，缺省的路由会将请求随机路由到每个版本的服务上，如下图所示：</p>
+<p><img src="https://img.zhaohuabing.com/in-post/istio-install_and_example/withistio.svg" alt=""></p>
+<p>通过创建一条路由规则route-rule.yaml，将请求流量都引导到Reviews-v1服务上</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">apiVersion: config.istio.io/v1alpha2
+kind: RouteRule
+metadata:
+  name: reviews-default
+spec:
+  destination:
+    name: reviews
+  precedence: 1
+  route:
+  - labels:
+      version: v1
+</code></pre></td></tr></table>
+</div>
+</div><p>启用该路由规则</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">istioctl create -f route-rule.yaml -n default
+</code></pre></td></tr></table>
+</div>
+</div><p>再次打开productpage页面, 无论刷新多少次，显示的页面将始终是v1版本的输出，即不带星的评价内容。<br>
+<img src="https://img.zhaohuabing.com/in-post/istio-install_and_example/Bookinfo-no-star.PNG" alt=""><br>
+删除该路由规则</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">istioctl delete -f route_rule.yaml -n default
+</code></pre></td></tr></table>
+</div>
+</div><p>继续刷新productpage页面,将重新随机出现三个版本的评价内容页面。</p>
+<h2 id="分布式调用追踪">分布式调用追踪</h2>
+<p>首先修改安装包中的 <code>istio-0.2.10/install/kubernetes/addons/zipkin.yaml</code> 部署文件，增加Nodeport,以便能在kubernetes集群外部访问zipkin界面。</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">apiVersion: v1
+kind: Service
+metadata:
+  name: zipkin
+  namespace: istio-system
+spec:
+  ports:
+  - name: http
+    port: 9411
+    nodePort: 30001
+  selector:
+    app: zipkin
+  type: NodePort
+</code></pre></td></tr></table>
+</div>
+</div><p>部署zipkin服务。</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">kubectl apply -f istio-0.2.10/install/kubernetes/addons/zipkin.yaml
+</code></pre></td></tr></table>
+</div>
+</div><p>在浏览器中打开zipkin页面，可以追踪一个端到端调用经过了哪些服务，以及各个服务花费的时间等详细信息，如下图所示：<br>
+<code>http://10.12.25.116:30001</code><br>
+<img src="https://img.zhaohuabing.com/in-post/istio-install_and_example/zipkin.PNG" alt=""></p>
+<h2 id="性能指标监控">性能指标监控</h2>
+<p>首先修改安装包中的 <code>istio-0.2.10/install/kubernetes/addons/grafana.yaml</code> 部署文件，增加Nodeport,以便能在kubernetes集群外部访问grafana界面。</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+  namespace: istio-system
+spec:
+  ports:
+  - port: 3000
+    protocol: TCP
+    name: http
+    nodePort: 30002
+  selector:
+    app: grafana
+  type: NodePort
+</code></pre></td></tr></table>
+</div>
+</div><p>prometheus用于收集和存储信息指标，grafana用于将性能指标信息进行可视化呈现，需要同时部署prometheus和grafana服务。</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">kubectl apply -f istio-0.2.10/install/kubernetes/addons/prometheus.yaml
+
+kubectl apply -f istio-0.2.10/install/kubernetes/addons/grafana.yaml
+</code></pre></td></tr></table>
+</div>
+</div><p>首先在浏览器中打开Bookinfo的页面<code>http://10.12.25.116/productpage</code>，刷新几次，以制造一些性能指标数据。</p>
+<p>然后打开grafana页面查看性能指标<code>http://10.12.25.116:30002/dashboard/db/istio-dashboard</code>，如下图所示：<br>
+<img src="https://img.zhaohuabing.com/in-post/istio-install_and_example/grafana.PNG" alt=""></p>
+<h2 id="参考">参考</h2>
+<ul>
+<li><a href="https://istio.io/docs/">Istio官方文档</a></li>
+<li><a href="http://philcalcado.com/2017/08/03/pattern_service_mesh.html">Pattern: Service Mesh</a></li>
+<li><a href="https://buoyant.io/2017/04/25/whats-a-service-mesh-and-why-do-i-need-one/">WHAT’S A SERVICE MESH? AND WHY DO I NEED ONE?</a></li>
+<li><a href="https://thenewstack.io/hackers-guide-kubernetes-networking/">A Hacker’s Guide to Kubernetes Networking</a></li>
+</ul>
+                
+                
+                <hr> 
+
+<div class="entry-shang text-center">
+    
+    <p> 「真诚赞赏，手留余香」</p>
+    
+    <button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+    <div class="zs-modal-head">
+        <button type="button" class="close">×</button>
+        <span class="author">
+            <a href="http://www.mafool.com">
+                <img src="http://www.mafool.com/img/reward/hollson.png" alt="史布斯" />码夫庄园
+            </a>
+        </span>
+        
+        <p class="tip"><i></i><span>嗯，我的梦想是被读者的稿费包养~</span></p>
+        
+
+    </div>
+    <div class="zs-modal-body">
+        <div class="zs-modal-btns">
+            <button class="btn btn-blink" data-num="2">2元</button>
+            <button class="btn btn-blink" data-num="5">5元</button>
+            <button class="btn btn-blink" data-num="10">10元</button>
+            <button class="btn btn-blink" data-num="50">50元</button>
+            <button class="btn btn-blink" data-num="100">100元</button>
+            <button class="btn btn-blink" data-num="1">任意金额</button>
+        </div>
+        <div class="zs-modal-pay">
+            <button class="btn btn-bred" id="pay-text">2元</button>
+            <p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+            <img src="http://www.mafool.com/img/reward/wechat-2.png" alt="史布斯" id="pay-image" />
+        </div>
+    </div>
+    <div class="zs-modal-footer">
+        <label>
+            <span class="zs-wechat"></span>
+            <input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked">
+            <img src="http://www.mafool.com/img/reward/wechat-btn.png" alt="史布斯" />
+            </span>&nbsp;
+            <span>
+                <input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay">
+                <img src="http://www.mafool.com/img/reward/alipay-btn.png" alt="史布斯" />
+            </span>
+        </label>
+    </div>
+</div>
+
+ 
+
+                <br>
+                <br>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="column is-3">
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">最近发布</h2>
+        
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/0742b474a643d63a774461726a6201203/">Go语言中的原子操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年12月2日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/1600330472/">Go基础笔记 - 2.3 常量</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月10日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/15996311192/">Go - Gin框架快速入门</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月9日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480249/">Gorm快速指南</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480218/">18. Go语言MySQL数据库操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+    </div>
+</div>
+<br>
+        
+
+
+
+
+<div class="card">
+  <div class="card-content">
+    <h2 class="title is-6">相关文章</h2>
+    
+    
+    <h2><a href="http://www.mafool.com/2018/11/08/istio-canary-release/">采用Istio实现灰度发布(金丝雀发布)</a></h2>
+    <time class="has-text-grey-light is-size-7">8 November 2018</time>
+    
+    <h2><a href="http://www.mafool.com/2018/11/07/istio-traffic-shifting/">使用Istio实现应用流量转移</a></h2>
+    <time class="has-text-grey-light is-size-7">7 November 2018</time>
+    
+    <h2><a href="http://www.mafool.com/2018/06/04/introducing-the-istio-v1alpha3-routing-api/">Istio v1aplha3 routing API介绍(译文）</a></h2>
+    <time class="has-text-grey-light is-size-7">4 June 2018</time>
+    
+    <h2><a href="http://www.mafool.com/2018/06/02/istio08/">Istio 0.8 Release发布</a></h2>
+    <time class="has-text-grey-light is-size-7">2 June 2018</time>
+    
+    <h2><a href="http://www.mafool.com/2018/05/23/istio-auto-injection-with-webhook/">Istio Sidecar自动注入原理</a></h2>
+    <time class="has-text-grey-light is-size-7">23 May 2018</time>
+    
+    <h2><a href="http://www.mafool.com/2018/03/29/what-is-service-mesh-and-istio/">谈谈微服务架构中的基础设施：Service Mesh与Istio</a></h2>
+    <time class="has-text-grey-light is-size-7">29 March 2018</time>
+    
+    <h2><a href="http://www.mafool.com/2018/01/02/nginmesh-install/">Nginx开源Service Mesh组件Nginmesh安装指南</a></h2>
+    <time class="has-text-grey-light is-size-7">2 January 2018</time>
+    
+  </div>
+</div>
+<br>
+
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">标签</h2>
+        <div>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/atomic">atomic</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/blog">blog</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cgo">cgo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cloud">cloud</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/config">config</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/copy">copy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/docker">docker</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/exam">exam</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/gin">gin</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/git">git</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/golang">golang</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/hugo">hugo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/install">install</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/istio">istio</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/jenkins">jenkins</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/kubernetes">kubernetes</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/map">map</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/microservice">microservice</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/mycat">mycat</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/nginx">nginx</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/plan9">plan9</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/posix">posix</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/proxy">proxy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/raft">raft</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ssh">ssh</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/tips">tips</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ymal">ymal</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%B8%BB%E4%BB%8E">主从</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BA%8B%E5%8A%A1">事务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BB%A3%E7%90%86">代理</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BD%9C%E7%94%A8%E5%9F%9F">作用域</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%86%85%E5%AD%98">内存</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%8B%E7%BC%A9">压缩</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%88%9B">原创</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%AD%90">原子</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%91%BD%E4%BB%A4%E8%A1%8C">命令行</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%93%A8%E5%85%B5">哨兵</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%AD%98%E5%82%A8">存储</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B8%B8%E9%87%8F">常量</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B9%B6%E5%8F%91">并发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BC%82%E5%B8%B8">异常</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1">微服务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%88%E6%9D%83%E8%AE%A4%E8%AF%81">授权认证</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%92%E5%BA%8F">排序</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%A5%E5%8F%A3">接口</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%97%A5%E5%BF%97">日志</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%9D%83%E9%99%90">权限</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE1">标签1</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE2">标签2</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%AD%A3%E5%88%99">正则</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%81%E9%87%8F%E5%88%86%E5%8F%91">流量分发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%8B%E8%AF%95">测试</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%BA%90%E7%A0%81">源码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%8A%B6%E6%80%81%E7%A0%81">状态码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%AE%97%E6%B3%95">算法</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%BC%8F">编程模式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%80%81%E5%A6%96%E7%AC%94%E8%AE%B0">老妖笔记</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%BF%87%E6%BB%A4%E5%99%A8">过滤器</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%80%83%E9%80%B8">逃逸</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%85%8D%E7%BD%AE">配置</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%86%99">重写</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%AE%9A%E5%90%91">重定向</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9B%86%E7%BE%A4">集群</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9D%A2%E8%AF%95">面试</a>
+            </span>
+            
+        </div>
+    </div>
+</div>
+<br>
+    </div>
+</div>
+
+        </div>
+    </div>
+
+    
+    <footer class="footer has-background-grey-darker has-text-white">
+    <div class="content has-text-centered">
+        <p>
+            <span class="icon is-large">
+                <a href="https://twitter.com/" class="mysocial" rel="me">
+                    <i class="fab fa-twitter fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://www.youtube.com/" class="mysocial" rel="me">
+                    <i class="fab fa-youtube fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://github.com/" class="mysocial" rel="me">
+                    <i class="fab fa-github fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <br><br>
+            友情链接：
+            
+            <a class="mysocial" href="http://www.mafool.com" target="_blank">Mafool</a>
+            
+            <a class="mysocial" href="https://gohugo.io/documentation/" target="_blank">Hugo</a>
+            
+            <a class="mysocial" href="https://bulma.io/" target="_blank">Bulma</a>
+            
+            <a class="mysocial" href="https://bootstrapious.com/" target="_blank">Bootstrapious</a>
+            
+            <a class="mysocial" href="https://youzhixueyuan.com/" target="_blank">Youzhixueyuan</a>
+            
+            <br><br />
+            版权所有 &copy; 码夫庄园 2021
+            - <a class="mysocial" href="https://github.com/hollson/hugo-theme-dooz">Hugo Theme</a>
+        </p>
+    </div>
+</footer>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='http://www.mafool.com/js/dooz.totop.js?v=0.0.0' async=""></script>
+
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = 'https://hm.baidu.com/hm.js?f185359ec6b829a6a93e1e1f2597f6d9';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DK042XSJ2J"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-DK042XSJ2J');
+</script>
+
+    
+    
+<script type="text/javascript" src="http://www.mafool.com/js/reward.js"></script>
+
+    
+    <script defer src="https://cdn.staticfile.org/font-awesome/5.13.0/js/all.min.js"></script>
+</body>
+
+</html>

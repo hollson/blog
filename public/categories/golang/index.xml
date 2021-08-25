@@ -1,0 +1,24 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Golang on 码夫庄园</title>
+    <link>http://www.mafool.com/categories/golang/</link>
+    <description>Recent content in Golang on 码夫庄园</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <copyright>版权所有</copyright>
+    <lastBuildDate>Thu, 09 Jul 2020 21:34:07 +0800</lastBuildDate>
+    
+        <atom:link href="http://www.mafool.com/categories/golang/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Option编程模式</title>
+      <link>http://www.mafool.com/posts/848cd59ca42c13602cf7b0ddf6ca1d1f/</link>
+      <pubDate>Thu, 09 Jul 2020 21:34:07 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/posts/848cd59ca42c13602cf7b0ddf6ca1d1f/</guid>
+      <description>什么是Option模式 Option模式的专业术语为：Functional Options Pattern（函数式选项模式） Option模式为golang的开</description>
+    </item>
+    
+  </channel>
+</rss>

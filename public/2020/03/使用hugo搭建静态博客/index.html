@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>码夫庄园-使用Hugo搭建静态博客</title>
+    <meta name="keywords"
+        content='码农,hugo,theme,blog,coder,geek,github,golang,技术,源码,代码,编程,程序员,主题,个人,博客,微服务,容器'>
+    <meta name="description" content="Hugo是由Go语言实现的静态网站生成器。具有简单、易用、高效、易扩展、快速部署等特点，是企业建站、旅行创作、个人写作和IT技术爱好者的必备神器。" />
+
+    
+    <meta name="baidu-site-verification" content="v9szEmQLra" />
+    <meta name="360-site-verification" content="d8e961f98fb655e4b8cf9439cfd9ac7f" />
+    <meta name="sogou_site_verification" content="40NC9EdZDC" />
+    <meta name="shenma-site-verification" content="3200e3042e92157713a3b0aceeecb20a_1586020187" />
+    <meta name="google-site-verification" content="r8987bkunZHJeKut3ocu5NIJ5QEu53NA6Q_r7RrZ46c" />
+    <meta name="msvalidate.01" content="893A2865ABC54AC2782D118536831056" />
+
+    
+    <link rel="shortcut icon" href="http://www.mafool.com/img/res/favicon.ico">
+    
+
+    
+
+    <link crossorigin="anonymous" integrity="sha384-5kGFOAqgEKnuF6c2jk2JANKHZgYVt38Wn2dVJENtq1EBCP54/1uzXU5mpxqL8WjN"
+        href="https://lib.baomitu.com/bulma/0.8.0/css/bulma.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="http://www.mafool.com/css/dooz.blog.css" />
+    <script crossorigin="anonymous" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh"
+        src="https://lib.baomitu.com/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/jquery.share.min.js"></script>
+    
+
+    
+
+    
+    
+<link rel="stylesheet" href="http://www.mafool.com/css/reward.css">
+
+
+    <link href="http://www.mafool.com/css/fonts.googleapi.css" rel="stylesheet">
+    <script src=http://www.mafool.com/js/dooz.blog.js></script>
+
+    
+    <script>
+        $(document).ready(function () {
+            $('.content a[href^="http"]').each(function () {
+                $(this).attr('target', '_blank');
+            });
+        });
+
+        $(document).on('click', '.modal-wechat', function () {
+            $(".modal").addClass("is-active");
+        });
+
+        $(document).on('click', '.modal-background', function () {
+            $(".modal").removeClass("is-active");
+        });
+    </script>
+</head>
+
+<body>
+    
+    
+<section class="hero is-info is-medium"
+    style="background-image: url('/img/res/farm.jpg');">
+    <div class="hero-head">
+        <nav class="navbar is-transparent container has-text-white">
+    <div class="navbar-brand">
+        <div class="navbar-item">
+            <a class="title is-5 is-white" href="http://www.mafool.com/">码夫庄园</a>
+        </div>
+
+        
+        <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <div id="navbarExampleTransparentExample" class="navbar-menu has-text-dark">
+        
+
+        <div class="navbar-end">
+            <a class="navbar-item" href='http://www.mafool.com/'>首页</a>
+            <a class="navbar-item" href='http://www.mafool.com/archives'>归档 </a>
+            <a class="navbar-item" href='http://www.mafool.com/about'>关于</a>
+            <span class="navbar-item">
+                <a class="button is-primary is-inverted" href="https://github.com/hollson/hugo-theme-dooz">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>主题</span>
+                </a>
+            </span>
+        </div>
+    </div>
+</nav>
+    </div>
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <div class='container has-text-left column is-7'>
+                
+                <span>
+                    <a class="bar_tag" href="http://www.mafool.com/tags/hugo" title="hugo">hugo</a>
+                </span>
+                
+                <h1 class="title is-size-2" style="margin-bottom:0.2rem;">
+                    
+                    使用Hugo搭建静态博客
+                    
+                </h1>
+                
+                <span class="title is-size-6" style="font-style: italic;"> 最受欢迎的开源静态站点生成器</span><br>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    
+    <div class="container">
+        <div class="section">
+            
+<div class="columns">
+    <div class="column is-9">
+        <div class="tile is-child box">
+            <div class="content">
+                
+                <nav class="level">
+                    
+                    <div class="level-left">
+                        <div class="level-item">
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年3月22日,
+    星期日 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 5分钟阅读
+</p>
+                        </div>
+                    </div>
+
+                    
+                    
+                    <div class="share-component level-right" data-disabled="google,diandian,tencent,qzone"
+                        data-description="Share.js - 一键分享到微博，QQ空间，腾讯微博，人人，豆瓣"
+                        data-mobile-sites="weibo,qq,qzone,tencent">
+                    </div>
+                    
+                </nav>
+                <hr>
+                
+                <header>
+                    <h2>目录</h2>
+                </header>
+                <nav id="TableOfContents">
+  <ul>
+    <li><a href="#url管理">URL管理</a></li>
+    <li><a href="#内容摘要">内容摘要</a></li>
+    <li><a href="#shortcodes">Shortcodes</a></li>
+    <li><a href="#分类系统">分类系统</a></li>
+  </ul>
+</nav>
+                
+                <hr>
+                <h1 id="hugo介绍">Hugo介绍</h1>
+<p>Hugo是由Go语言实现的<strong>静态网站生成器</strong>。简单、易用、高效、易扩展、快速部署。</p>
+<h1 id="安装hugo">安装Hugo</h1>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell"><span style="color:#09f;font-style:italic"># Mac安装</span>
+$ brew install hugo
+
+<span style="color:#09f;font-style:italic"># 查看版本</span>
+$ hugo version
+
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>帮助文档：</strong></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell"><span style="color:#09f;font-style:italic"># 查看帮助文档</span>
+$ hugo <span style="color:#366">help</span>
+
+命令格式:
+  hugo
+  hugo <span style="color:#555">[</span>flags<span style="color:#555">]</span>
+  hugo <span style="color:#555">[</span>command<span style="color:#555">]</span>
+  hugo <span style="color:#555">[</span>command<span style="color:#555">]</span> <span style="color:#555">[</span>flags<span style="color:#555">]</span>
+
+常用command:
+  new         <span style="color:#09f;font-style:italic">#为你的站点创建新的内容</span>
+  server      <span style="color:#09f;font-style:italic">#一个高性能的web服务器</span>
+
+常用flags:
+  -D, --buildDrafts                <span style="color:#09f;font-style:italic">#包括被标记为draft的文章</span>
+  -E, --buildExpired               <span style="color:#09f;font-style:italic">#包括已过期的文章</span>
+  -F, --buildFuture                <span style="color:#09f;font-style:italic">#包括将在未来发布的文章</span>
+
+命令示例:
+  hugo -D                          <span style="color:#09f;font-style:italic">#生成静态文件并包括draft为true的文章</span>
+  hugo new post/new-content.md     <span style="color:#09f;font-style:italic">#新建一篇文章</span>
+  hugo new site mysite             <span style="color:#09f;font-style:italic">#新建一个称为mysite的站点</span>
+  hugo server --buildExpired       <span style="color:#09f;font-style:italic">#启动服务器并包括已过期的文章</span>
+</code></pre></td></tr></table>
+</div>
+</div><!-- raw HTML omitted -->
+<h1 id="创建站点">创建站点</h1>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell"><span style="color:#09f;font-style:italic"># 创建一个博客站点</span>
+$ hugo new site ~/hugo/shongsheng
+
+<span style="color:#09f;font-style:italic"># 站点目录结构</span>
+$ tree ~/hugo/shongsheng
+/Users/sybs/hugo/shongsheng
+├── archetypes
+│   └── default.md
+├── config.toml
+├── content
+├── data
+├── layouts
+├── static
+└── themes
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>目录说明：</strong></p>
+<ul>
+<li><strong>archetypes</strong>: 储存<code>.md</code>的模板文件，类似于<code>hexo</code>的<code>scaffolds</code>，该文件夹的优先级高于主题下的<code>/archetypes</code>文件夹</li>
+<li><strong>config.toml</strong>: 配置文件</li>
+<li><strong>content</strong>: 储存网站的所有内容，类似于<code>hexo</code>的<code>source</code></li>
+<li><strong>data</strong>: 储存数据文件供模板调用，类似于<code>hexo</code>的<code>source/_data</code></li>
+<li><strong>layouts</strong>: 储存<code>.html</code>模板，该文件夹的优先级高于主题下的<code>/layouts</code>文件夹</li>
+<li><strong>static</strong>: 储存图片,css,js等静态文件，该目录下的文件会直接拷贝到<code>/public</code>，该文件夹的优先级高于主题下的<code>/static</code>文件夹</li>
+<li><strong>themes</strong>: 储存主题</li>
+<li><strong>public</strong>: 执行<code>hugo</code>命令后，储存生成的静态文件</li>
+</ul>
+<h1 id="创建主题">创建主题</h1>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">$ <span style="color:#366">cd</span> ~/hugo/shongsheng
+$ git clone https://github.com/spf13/hyde.git ./themes/hyde
+
+git clone git@github.com:olOwOlo/hugo-theme-even.git themes/even
+git submodule add https://github.com/budparr/gohugo-theme-ananke.git themes/ananke
+https://themes.gohugo.io/hugo-theme-easybook/
+</code></pre></td></tr></table>
+</div>
+</div><h1 id="创建文章">创建文章</h1>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">$ <span style="color:#366">cd</span> ~/hugo/shongsheng
+
+<span style="color:#09f;font-style:italic"># 创建名为first的文章</span>
+$ hugo new post/first.md
+$ vim ./content/post/first.md
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-markdown" data-lang="markdown">---
+title: &#34;First&#34;
+date: 2020-03-13T13:57:40+08:00
+draft: true
+---
+<span style="color:#069;font-weight:bold">-</span> hello
+</code></pre></td></tr></table>
+</div>
+</div><h1 id="启动站点">启动站点</h1>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell"><span style="color:#09f;font-style:italic"># 启动站点</span>
+$ hugo server --theme<span style="color:#555">=</span>hyde --buildDrafts
+
+<span style="color:#09f;font-style:italic"># 浏览器打开</span>
+$ open http://localhost:1313
+</code></pre></td></tr></table>
+</div>
+</div><h1 id="配置hugo">配置Hugo</h1>
+<p>编辑<code>config.toml</code>站点配置你文件。完整的配置文件可以参考<a href="https://gohugo.io/getting-started/configuration/#toml-configuration">官方文档</a>。</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-toml" data-lang="toml"><span style="color:#09f;font-style:italic"># 主机名 例如: http://spf13.com/</span>
+baseURL =                     <span style="color:#c30">&#34;blog.mafool.com&#34;</span>
+<span style="color:#09f;font-style:italic"># 语言编码(中文: zh-CN)</span>
+languageCode =                <span style="color:#c30">&#34;zh-CN&#34;</span>
+<span style="color:#09f;font-style:italic"># 默认的内容语言</span>
+defaultContentLanguage =      <span style="color:#c30">&#34;&#34;</span>
+
+<span style="color:#09f;font-style:italic"># 自动检测是否包含中文/日文/韩文，该参数会影响摘要和字数统计功能，建议设置为true</span>
+hasCJKLanguage =              <span style="color:#069;font-weight:bold">false</span>
+
+<span style="color:#09f;font-style:italic"># 若为 false，`Getting Started` 这样的英文标签将会被转换为 `getting-started`</span>
+preserveTaxonomyNames =       <span style="color:#069;font-weight:bold">true</span>
+
+<span style="color:#09f;font-style:italic"># 设置使用的主题名称 (默认储存在 /themes/THEMENAME/)</span>
+theme = 										<span style="color:#c30">&#34;ananke&#34;</span>        
+
+<span style="color:#09f;font-style:italic"># 分页</span>
+paginate =                    <span style="color:#f60">10</span>
+paginatePath =                <span style="color:#c30">&#34;page&#34;</span>
+
+<span style="color:#09f;font-style:italic"># 启用 Emoji; see emoji-cheat-sheet.com</span>
+enableEmoji =                 <span style="color:#069;font-weight:bold">false</span>
+
+<span style="color:#09f;font-style:italic"># 创建robots.txt，建议设置为true</span>
+enableRobotsTXT =             <span style="color:#069;font-weight:bold">false</span>
+
+<span style="color:#09f;font-style:italic"># 定义文章访问路径，详细见下文&#34;URL管理&#34; See &#34;content-management/urls/&#34;</span>
+permalinks =                  <span style="color:#c30">&#34;/blogs&#34;</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="url管理">URL管理</h2>
+<p>正如前文所言，<code>hugo</code>会将<code>content/</code>目录下的结构反映到生成的静态网站中，但<code>config.toml</code>中的<code>permalinks</code>参数允许你自由更改内容的URL。例如：你想从<code>hexo</code>迁移到<code>hugo</code>，你可以将<code>permalinks</code>定义为下面这种形式以适应之前的URL。</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-toml" data-lang="toml">[permalinks]
+  post = <span style="color:#c30">&#34;/:year/:month/:title/&#34;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>上面的配置将改变<code>content/post/</code>文件夹下所有文章的URL。</p>
+<p>举个栗子，<code>content/post/sample-entry.md</code>的URL将从默认的<code>https://example.com/post/sample-entry/</code>改变为<code>https://example.com/2013/11/sample-entry/</code>。</p>
+<p>所有可用的属性如下：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-toml" data-lang="toml"><span style="color:#a00;background-color:#faa">/:</span>monthname<span style="color:#a00;background-color:#faa">/:</span>day<span style="color:#a00;background-color:#faa">/:</span>weekday<span style="color:#a00;background-color:#faa">/:</span>weekdayname<span style="color:#a00;background-color:#faa">/:</span>yearday<span style="color:#a00;background-color:#faa">/:</span>section<span style="color:#a00;background-color:#faa">/:</span>title<span style="color:#a00;background-color:#faa">/:</span>slug<span style="color:#a00;background-color:#faa">/:</span>filename<span style="color:#a00;background-color:#faa">/</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="内容摘要">内容摘要</h2>
+<p>Hugo会自动提取文章的前70个字符作为摘要。（注意：该功能在中文环境下需要在<code>config.toml</code>中添加<code>hasCJKLanguage = true</code>才能发挥更好的效果。）</p>
+<p>当然你也可以在文章内使用<code>针对文章手动进行摘要提取，在</code>之前出现的内容都会作为摘要使用，且能够保持渲染后的结构而不是纯文字版本。</p>
+<h2 id="shortcodes">Shortcodes</h2>
+<p>Shortcodes帮助你在编写markdown时快捷的插入HTML代码，功能上类似于Hexo的<a href="https://hexo.io/zh-cn/docs/tag-plugins.html">标签插件</a>。</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell"><span style="color:#555">{</span> <span style="color:#555">{</span>&lt; ref <span style="color:#c30">&#34;blog/post.md&#34;</span> &gt;<span style="color:#555">}}</span> <span style="color:#555">=</span>&gt; https://example.com/blog/post/
+<span style="color:#555">{</span> <span style="color:#555">{</span>&lt; ref <span style="color:#c30">&#34;post.md#tldr&#34;</span> &gt;<span style="color:#555">}}</span> <span style="color:#555">=</span>&gt; https://example.com/blog/post/#tldr:caffebad
+<span style="color:#555">{</span> <span style="color:#555">{</span>&lt; relref <span style="color:#c30">&#34;post.md&#34;</span> &gt;<span style="color:#555">}}</span> <span style="color:#555">=</span>&gt; /blog/post/
+<span style="color:#555">{</span> <span style="color:#555">{</span>&lt; relref <span style="color:#c30">&#34;blog/post.md#tldr&#34;</span> &gt;<span style="color:#555">}}</span> <span style="color:#555">=</span>&gt; /blog/post/#tldr:caffebad
+<span style="color:#555">{</span> <span style="color:#555">{</span>&lt; ref <span style="color:#c30">&#34;#tldr&#34;</span> &gt;<span style="color:#555">}}</span> <span style="color:#555">=</span>&gt; <span style="color:#09f;font-style:italic">#tldr:badcaffe</span>
+<span style="color:#555">{</span> <span style="color:#555">{</span>&lt; relref <span style="color:#c30">&#34;#tldr&#34;</span> &gt;<span style="color:#555">}}</span> <span style="color:#555">=</span>&gt; <span style="color:#09f;font-style:italic">#tldr:badcaffe</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>上述代码通过内置的<code>rel</code>与<code>relref</code>帮助你快速引用站点内的其他文章。</p>
+<p><em>注意: 如果你的 <code>content/</code> 目录下有多个同名的文件，引用该文章必须使用 <code>blog/post.md</code> 这样的相对路径而不是只提供 <code>post.md</code> 这样的文件名。</em></p>
+<p><code>hugo</code>还内置了<code>instagram</code>、<code>tweet</code>、<code>youtube</code>等Shortcodes，可以阅读<a href="https://gohugo.io/content-management/shortcodes/#use-hugo-s-built-in-shortcodes">官方文档</a>了解更多信息，你使用的主题可能也会提供Shortcodes，当然你也可以<a href="https://gohugo.io/templates/shortcode-templates/">定制你自己的Shortcodes</a>。</p>
+<h2 id="分类系统">分类系统</h2>
+<p>默认情况下即<code>tags</code>与<code>categories</code>，通常来说这已经足够我们使用了，但你也可以在<code>config.toml</code>文件中添加下面的代码来添加更多的分类。</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-toml" data-lang="toml">[taxonomies]
+  tag = <span style="color:#c30">&#34;tags&#34;</span>
+  category = <span style="color:#c30">&#34;categories&#34;</span>
+  series = <span style="color:#c30">&#34;series&#34;</span>
+</code></pre></td></tr></table>
+</div>
+</div><h1 id="部署hugo">部署Hugo</h1>
+<p>在GitHub上创建一个名为<code>shongsheng.github.io</code>的  Repository (shongsheng是你的github用户名), 并在根目录执行如下命令，生成最终页面：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-bash" data-lang="bash">$ hugo --theme<span style="color:#555">=</span>hyde --baseUrl<span style="color:#555">=</span><span style="color:#c30">&#34;http://coderzh.github.io/&#34;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>注意，以上命令并不会生成草稿页面，如果未生成任何文章，请去掉文章头部的 <code>draft=true</code> 再重新生成。）</p>
+<p>如果一切顺利，所有静态页面都会生成到 <code>public</code> 目录，将pubilc目录里所有文件 <code>push</code> 到刚创建的Repository的 <code>master</code> 分支。</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">$ <span style="color:#366">cd</span> public
+$ git init
+$ git remote add origin https://github.com/coderzh/coderzh.github.io.git
+$ git add -A
+$ git commit -m <span style="color:#c30">&#34;first commit&#34;</span>
+$ git push -u origin master
+</code></pre></td></tr></table>
+</div>
+</div><hr>
+<!-- raw HTML omitted -->
+<blockquote>
+<p>参考</p>
+<p><a href="https://themes.gohugo.io">https://themes.gohugo.io</a></p>
+<p><a href="https://www.gohugo.org/theme">https://www.gohugo.org/theme</a>  hugo主题</p>
+<p><a href="https://www.jianshu.com/p/6d9ea6994a36">https://www.jianshu.com/p/6d9ea6994a36</a> 参考</p>
+<p><a href="https://blog.olowolo.com/post/hugo-quick-start/">https://blog.olowolo.com/post/hugo-quick-start/</a></p>
+<p><a href="https://segmentfault.com/a/1190000012975914">https://segmentfault.com/a/1190000012975914</a></p>
+<p><a href="https://gohugo.io/getting-started">https://gohugo.io/getting-started</a> #官方文档</p>
+</blockquote>
+
+                
+                
+                <hr> 
+
+<div class="entry-shang text-center">
+    
+    <p> 「真诚赞赏，手留余香」</p>
+    
+    <button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+    <div class="zs-modal-head">
+        <button type="button" class="close">×</button>
+        <span class="author">
+            <a href="http://www.mafool.com">
+                <img src="http://www.mafool.com/img/reward/hollson.png" alt="史布斯" />码夫庄园
+            </a>
+        </span>
+        
+        <p class="tip"><i></i><span>嗯，我的梦想是被读者的稿费包养~</span></p>
+        
+
+    </div>
+    <div class="zs-modal-body">
+        <div class="zs-modal-btns">
+            <button class="btn btn-blink" data-num="2">2元</button>
+            <button class="btn btn-blink" data-num="5">5元</button>
+            <button class="btn btn-blink" data-num="10">10元</button>
+            <button class="btn btn-blink" data-num="50">50元</button>
+            <button class="btn btn-blink" data-num="100">100元</button>
+            <button class="btn btn-blink" data-num="1">任意金额</button>
+        </div>
+        <div class="zs-modal-pay">
+            <button class="btn btn-bred" id="pay-text">2元</button>
+            <p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+            <img src="http://www.mafool.com/img/reward/wechat-2.png" alt="史布斯" id="pay-image" />
+        </div>
+    </div>
+    <div class="zs-modal-footer">
+        <label>
+            <span class="zs-wechat"></span>
+            <input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked">
+            <img src="http://www.mafool.com/img/reward/wechat-btn.png" alt="史布斯" />
+            </span>&nbsp;
+            <span>
+                <input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay">
+                <img src="http://www.mafool.com/img/reward/alipay-btn.png" alt="史布斯" />
+            </span>
+        </label>
+    </div>
+</div>
+
+ 
+
+                <br>
+                <br>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="column is-3">
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">最近发布</h2>
+        
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/0742b474a643d63a774461726a6201203/">Go语言中的原子操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年12月2日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/1600330472/">Go基础笔记 - 2.3 常量</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月10日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/15996311192/">Go - Gin框架快速入门</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月9日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480249/">Gorm快速指南</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480218/">18. Go语言MySQL数据库操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+    </div>
+</div>
+<br>
+        
+
+
+
+
+<div class="card">
+  <div class="card-content">
+    <h2 class="title is-6">相关文章</h2>
+    
+    
+    <h2><a href="http://www.mafool.com/2020/03/hugo%E5%88%9B%E5%BB%BA%E7%AB%99%E5%86%85%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E/">Hugo创建站内搜索引擎</a></h2>
+    <time class="has-text-grey-light is-size-7">22 March 2020</time>
+    
+  </div>
+</div>
+<br>
+
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">标签</h2>
+        <div>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/atomic">atomic</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/blog">blog</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cgo">cgo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cloud">cloud</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/config">config</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/copy">copy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/docker">docker</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/exam">exam</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/gin">gin</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/git">git</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/golang">golang</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/hugo">hugo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/install">install</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/istio">istio</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/jenkins">jenkins</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/kubernetes">kubernetes</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/map">map</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/microservice">microservice</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/mycat">mycat</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/nginx">nginx</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/plan9">plan9</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/posix">posix</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/proxy">proxy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/raft">raft</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ssh">ssh</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/tips">tips</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ymal">ymal</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%B8%BB%E4%BB%8E">主从</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BA%8B%E5%8A%A1">事务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BB%A3%E7%90%86">代理</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BD%9C%E7%94%A8%E5%9F%9F">作用域</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%86%85%E5%AD%98">内存</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%8B%E7%BC%A9">压缩</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%88%9B">原创</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%AD%90">原子</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%91%BD%E4%BB%A4%E8%A1%8C">命令行</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%93%A8%E5%85%B5">哨兵</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%AD%98%E5%82%A8">存储</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B8%B8%E9%87%8F">常量</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B9%B6%E5%8F%91">并发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BC%82%E5%B8%B8">异常</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1">微服务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%88%E6%9D%83%E8%AE%A4%E8%AF%81">授权认证</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%92%E5%BA%8F">排序</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%A5%E5%8F%A3">接口</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%97%A5%E5%BF%97">日志</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%9D%83%E9%99%90">权限</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE1">标签1</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE2">标签2</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%AD%A3%E5%88%99">正则</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%81%E9%87%8F%E5%88%86%E5%8F%91">流量分发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%8B%E8%AF%95">测试</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%BA%90%E7%A0%81">源码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%8A%B6%E6%80%81%E7%A0%81">状态码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%AE%97%E6%B3%95">算法</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%BC%8F">编程模式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%80%81%E5%A6%96%E7%AC%94%E8%AE%B0">老妖笔记</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%BF%87%E6%BB%A4%E5%99%A8">过滤器</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%80%83%E9%80%B8">逃逸</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%85%8D%E7%BD%AE">配置</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%86%99">重写</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%AE%9A%E5%90%91">重定向</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9B%86%E7%BE%A4">集群</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9D%A2%E8%AF%95">面试</a>
+            </span>
+            
+        </div>
+    </div>
+</div>
+<br>
+    </div>
+</div>
+
+        </div>
+    </div>
+
+    
+    <footer class="footer has-background-grey-darker has-text-white">
+    <div class="content has-text-centered">
+        <p>
+            <span class="icon is-large">
+                <a href="https://twitter.com/" class="mysocial" rel="me">
+                    <i class="fab fa-twitter fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://www.youtube.com/" class="mysocial" rel="me">
+                    <i class="fab fa-youtube fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://github.com/" class="mysocial" rel="me">
+                    <i class="fab fa-github fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <br><br>
+            友情链接：
+            
+            <a class="mysocial" href="http://www.mafool.com" target="_blank">Mafool</a>
+            
+            <a class="mysocial" href="https://gohugo.io/documentation/" target="_blank">Hugo</a>
+            
+            <a class="mysocial" href="https://bulma.io/" target="_blank">Bulma</a>
+            
+            <a class="mysocial" href="https://bootstrapious.com/" target="_blank">Bootstrapious</a>
+            
+            <a class="mysocial" href="https://youzhixueyuan.com/" target="_blank">Youzhixueyuan</a>
+            
+            <br><br />
+            版权所有 &copy; 码夫庄园 2021
+            - <a class="mysocial" href="https://github.com/hollson/hugo-theme-dooz">Hugo Theme</a>
+        </p>
+    </div>
+</footer>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='http://www.mafool.com/js/dooz.totop.js?v=0.0.0' async=""></script>
+
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = 'https://hm.baidu.com/hm.js?f185359ec6b829a6a93e1e1f2597f6d9';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DK042XSJ2J"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-DK042XSJ2J');
+</script>
+
+    
+    
+<script type="text/javascript" src="http://www.mafool.com/js/reward.js"></script>
+
+    
+    <script defer src="https://cdn.staticfile.org/font-awesome/5.13.0/js/all.min.js"></script>
+</body>
+
+</html>

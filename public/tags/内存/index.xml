@@ -1,0 +1,24 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>内存 on 码夫庄园</title>
+    <link>http://www.mafool.com/tags/%E5%86%85%E5%AD%98/</link>
+    <description>Recent content in 内存 on 码夫庄园</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <copyright>版权所有</copyright>
+    <lastBuildDate>Tue, 14 Apr 2020 16:53:27 +0800</lastBuildDate>
+    
+        <atom:link href="http://www.mafool.com/tags/%E5%86%85%E5%AD%98/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Go - 内存分配原理</title>
+      <link>http://www.mafool.com/posts/4f1b039fa5fd1a09e83a47bfac1fef0f/</link>
+      <pubDate>Tue, 14 Apr 2020 16:53:27 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/posts/4f1b039fa5fd1a09e83a47bfac1fef0f/</guid>
+      <description>深入理解GO语言之内存详解 一. 前言 Go语言内置运行时（就是runtime），抛弃了传统的内存分配方式，改为自主管理。这样可以自主地实现更好的</description>
+    </item>
+    
+  </channel>
+</rss>

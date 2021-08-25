@@ -1,0 +1,1393 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>码夫庄园-Cgo编程笔记 - 2.3 类型转换</title>
+    <meta name="keywords"
+        content='码农,hugo,theme,blog,coder,geek,github,golang,技术,源码,代码,编程,程序员,主题,个人,博客,微服务,容器'>
+    <meta name="description" content="最初CGO是为了达到方便从Go语言函数调用C语言函数（用C语言实现Go语言声明的函数）以复用C语言资源这一目的而出现的（因为C语言还会涉及回调函数，自然也会涉及到从C语言函数调用Go语言函数（用Go语言实现C语言声明的函数））。" />
+
+    
+    <meta name="baidu-site-verification" content="v9szEmQLra" />
+    <meta name="360-site-verification" content="d8e961f98fb655e4b8cf9439cfd9ac7f" />
+    <meta name="sogou_site_verification" content="40NC9EdZDC" />
+    <meta name="shenma-site-verification" content="3200e3042e92157713a3b0aceeecb20a_1586020187" />
+    <meta name="google-site-verification" content="r8987bkunZHJeKut3ocu5NIJ5QEu53NA6Q_r7RrZ46c" />
+    <meta name="msvalidate.01" content="893A2865ABC54AC2782D118536831056" />
+
+    
+    <link rel="shortcut icon" href="http://www.mafool.com/img/res/favicon.ico">
+    
+
+    
+
+    <link crossorigin="anonymous" integrity="sha384-5kGFOAqgEKnuF6c2jk2JANKHZgYVt38Wn2dVJENtq1EBCP54/1uzXU5mpxqL8WjN"
+        href="https://lib.baomitu.com/bulma/0.8.0/css/bulma.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="http://www.mafool.com/css/dooz.blog.css" />
+    <script crossorigin="anonymous" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh"
+        src="https://lib.baomitu.com/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/jquery.share.min.js"></script>
+    
+
+    
+
+    
+    
+<link rel="stylesheet" href="http://www.mafool.com/css/reward.css">
+
+
+    <link href="http://www.mafool.com/css/fonts.googleapi.css" rel="stylesheet">
+    <script src=http://www.mafool.com/js/dooz.blog.js></script>
+
+    
+    <script>
+        $(document).ready(function () {
+            $('.content a[href^="http"]').each(function () {
+                $(this).attr('target', '_blank');
+            });
+        });
+
+        $(document).on('click', '.modal-wechat', function () {
+            $(".modal").addClass("is-active");
+        });
+
+        $(document).on('click', '.modal-background', function () {
+            $(".modal").removeClass("is-active");
+        });
+    </script>
+</head>
+
+<body>
+    
+    
+<section class="hero is-info is-medium"
+    style="background-image: url('/img/res/blog.jpg');">
+    <div class="hero-head">
+        <nav class="navbar is-transparent container has-text-white">
+    <div class="navbar-brand">
+        <div class="navbar-item">
+            <a class="title is-5 is-white" href="http://www.mafool.com/">码夫庄园</a>
+        </div>
+
+        
+        <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <div id="navbarExampleTransparentExample" class="navbar-menu has-text-dark">
+        
+
+        <div class="navbar-end">
+            <a class="navbar-item" href='http://www.mafool.com/'>首页</a>
+            <a class="navbar-item" href='http://www.mafool.com/archives'>归档 </a>
+            <a class="navbar-item" href='http://www.mafool.com/about'>关于</a>
+            <span class="navbar-item">
+                <a class="button is-primary is-inverted" href="https://github.com/hollson/hugo-theme-dooz">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>主题</span>
+                </a>
+            </span>
+        </div>
+    </div>
+</nav>
+    </div>
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <div class='container has-text-left column is-7'>
+                
+                <span>
+                    <a class="bar_tag" href="http://www.mafool.com/tags/cgo" title="Cgo">Cgo</a>
+                </span>
+                
+                <h1 class="title is-size-2" style="margin-bottom:0.2rem;">
+                    
+                    Cgo编程笔记 - 2.3 类型转换
+                    
+                </h1>
+                
+                <span class="title is-size-6" style="font-style: italic;"> </span><br>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    
+    <div class="container">
+        <div class="section">
+            
+<div class="columns">
+    <div class="column is-9">
+        <div class="tile is-child box">
+            <div class="content">
+                
+                <nav class="level">
+                    
+                    <div class="level-left">
+                        <div class="level-item">
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2019年12月16日,
+    星期一 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 13分钟阅读
+</p>
+                        </div>
+                    </div>
+
+                    
+                    
+                    <div class="share-component level-right" data-disabled="google,diandian,tencent,qzone"
+                        data-description="Share.js - 一键分享到微博，QQ空间，腾讯微博，人人，豆瓣"
+                        data-mobile-sites="weibo,qq,qzone,tencent">
+                    </div>
+                    
+                </nav>
+                <hr>
+                
+                <header>
+                    <h2>目录</h2>
+                </header>
+                <nav id="TableOfContents">
+  <ul>
+    <li><a href="#231-数值类型">2.3.1 数值类型</a></li>
+    <li><a href="#232-go-字符串和切片">2.3.2 Go 字符串和切片</a></li>
+    <li><a href="#233-结构体联合枚举类型">2.3.3 结构体、联合、枚举类型</a></li>
+    <li><a href="#234-数组字符串和切片">2.3.4 数组、字符串和切片</a></li>
+    <li><a href="#235-指针间的转换">2.3.5 指针间的转换</a></li>
+    <li><a href="#236-数值和指针的转换">2.3.6 数值和指针的转换</a></li>
+    <li><a href="#237-切片间的转换">2.3.7 切片间的转换</a></li>
+  </ul>
+</nav>
+                
+                <hr>
+                <blockquote>
+<p>本文为Go学习笔记，感谢<a href="https://github.com/chai2010/advanced-go-programming-book">《Go语言高级编程》</a>开源图书</p>
+</blockquote>
+<h1 id="23-类型转换">2.3 类型转换</h1>
+<p>最初CGO是为了达到方便从Go语言函数调用C语言函数（用C语言实现Go语言声明的函数）以复用C语言资源这一目的而出现的（因为C语言还会涉及回调函数，自然也会涉及到从C语言函数调用Go语言函数（用Go语言实现C语言声明的函数））。现在，它已经演变为C语言和Go语言双向通讯的桥梁。要想利用好CGO特性，自然需要了解此二语言类型之间的转换规则，这是本节要讨论的问题。</p>
+<h2 id="231-数值类型">2.3.1 数值类型</h2>
+<p>在Go语言中访问C语言的符号时，一般是通过虚拟的“C”包访问，比如<code>C.int</code>对应C语言的<code>int</code>类型。有些C语言的类型是由多个关键字组成，但通过虚拟的“C”包访问C语言类型时名称部分不能有空格字符，比如<code>unsigned int</code>不能直接通过<code>C.unsigned int</code>访问。因此CGO为C语言的基础数值类型都提供了相应转换规则，比如<code>C.uint</code>对应C语言的<code>unsigned int</code>。</p>
+<p>Go语言中数值类型和C语言数据类型基本上是相似的，以下是它们的对应关系表2-1所示。</p>
+<table>
+<thead>
+<tr>
+<th>C语言类型</th>
+<th>CGO类型</th>
+<th>Go语言类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>char</td>
+<td>C.char</td>
+<td>byte</td>
+</tr>
+<tr>
+<td>singed char</td>
+<td>C.schar</td>
+<td>int8</td>
+</tr>
+<tr>
+<td>unsigned char</td>
+<td>C.uchar</td>
+<td>uint8</td>
+</tr>
+<tr>
+<td>short</td>
+<td>C.short</td>
+<td>int16</td>
+</tr>
+<tr>
+<td>unsigned short</td>
+<td>C.ushort</td>
+<td>uint16</td>
+</tr>
+<tr>
+<td>int</td>
+<td>C.int</td>
+<td>int32</td>
+</tr>
+<tr>
+<td>unsigned int</td>
+<td>C.uint</td>
+<td>uint32</td>
+</tr>
+<tr>
+<td>long</td>
+<td>C.long</td>
+<td>int32</td>
+</tr>
+<tr>
+<td>unsigned long</td>
+<td>C.ulong</td>
+<td>uint32</td>
+</tr>
+<tr>
+<td>long long int</td>
+<td>C.longlong</td>
+<td>int64</td>
+</tr>
+<tr>
+<td>unsigned long long int</td>
+<td>C.ulonglong</td>
+<td>uint64</td>
+</tr>
+<tr>
+<td>float</td>
+<td>C.float</td>
+<td>float32</td>
+</tr>
+<tr>
+<td>double</td>
+<td>C.double</td>
+<td>float64</td>
+</tr>
+<tr>
+<td>size_t</td>
+<td>C.size_t</td>
+<td>uint</td>
+</tr>
+</tbody>
+</table>
+<p><em>表 2-1 Go语言和C语言类型对比</em></p>
+<p>需要注意的是，虽然在C语言中<code>int</code>、<code>short</code>等类型没有明确定义内存大小，但是在CGO中它们的内存大小是确定的。在CGO中，C语言的<code>int</code>和<code>long</code>类型都是对应4个字节的内存大小，<code>size_t</code>类型可以当作Go语言<code>uint</code>无符号整数类型对待。</p>
+<p>CGO中，虽然C语言的<code>int</code>固定为4字节的大小，但是Go语言自己的<code>int</code>和<code>uint</code>却在32位和64位系统下分别对应4个字节和8个字节大小。如果需要在C语言中访问Go语言的<code>int</code>类型，可以通过<code>GoInt</code>类型访问，<code>GoInt</code>类型在CGO工具生成的<code>_cgo_export.h</code>头文件中定义。其实在<code>_cgo_export.h</code>头文件中，每个基本的Go数值类型都定义了对应的C语言类型，它们一般都是以单词Go为前缀。下面是64位环境下，<code>_cgo_export.h</code>头文件生成的Go数值类型的定义，其中<code>GoInt</code>和<code>GoUint</code>类型分别对应<code>GoInt64</code>和<code>GoUint64</code>：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-c" data-lang="c"><span style="color:#069;font-weight:bold">typedef</span> <span style="color:#078;font-weight:bold">signed</span> <span style="color:#078;font-weight:bold">char</span> GoInt8;
+<span style="color:#069;font-weight:bold">typedef</span> <span style="color:#078;font-weight:bold">unsigned</span> <span style="color:#078;font-weight:bold">char</span> GoUint8;
+<span style="color:#069;font-weight:bold">typedef</span> <span style="color:#078;font-weight:bold">short</span> GoInt16;
+<span style="color:#069;font-weight:bold">typedef</span> <span style="color:#078;font-weight:bold">unsigned</span> <span style="color:#078;font-weight:bold">short</span> GoUint16;
+<span style="color:#069;font-weight:bold">typedef</span> <span style="color:#078;font-weight:bold">int</span> GoInt32;
+<span style="color:#069;font-weight:bold">typedef</span> <span style="color:#078;font-weight:bold">unsigned</span> <span style="color:#078;font-weight:bold">int</span> GoUint32;
+<span style="color:#069;font-weight:bold">typedef</span> <span style="color:#078;font-weight:bold">long</span> <span style="color:#078;font-weight:bold">long</span> GoInt64;
+<span style="color:#069;font-weight:bold">typedef</span> <span style="color:#078;font-weight:bold">unsigned</span> <span style="color:#078;font-weight:bold">long</span> <span style="color:#078;font-weight:bold">long</span> GoUint64;
+<span style="color:#069;font-weight:bold">typedef</span> GoInt64 GoInt;
+<span style="color:#069;font-weight:bold">typedef</span> GoUint64 GoUint;
+<span style="color:#069;font-weight:bold">typedef</span> <span style="color:#078;font-weight:bold">float</span> GoFloat32;
+<span style="color:#069;font-weight:bold">typedef</span> <span style="color:#078;font-weight:bold">double</span> GoFloat64;
+</code></pre></td></tr></table>
+</div>
+</div><p>除了<code>GoInt</code>和<code>GoUint</code>之外，我们并不推荐直接访问<code>GoInt32</code>、<code>GoInt64</code>等类型。更好的做法是通过C语言的C99标准引入的<code>&lt;stdint.h&gt;</code>头文件。为了提高C语言的可移植性，在<code>&lt;stdint.h&gt;</code>文件中，不但每个数值类型都提供了明确内存大小，而且和Go语言的类型命名更加一致。Go语言类型<code>&lt;stdint.h&gt;</code>头文件类型对比如表2-2所示。</p>
+<table>
+<thead>
+<tr>
+<th>C语言类型</th>
+<th>CGO类型</th>
+<th>Go语言类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>int8_t</td>
+<td>C.int8_t</td>
+<td>int8</td>
+</tr>
+<tr>
+<td>uint8_t</td>
+<td>C.uint8_t</td>
+<td>uint8</td>
+</tr>
+<tr>
+<td>int16_t</td>
+<td>C.int16_t</td>
+<td>int16</td>
+</tr>
+<tr>
+<td>uint16_t</td>
+<td>C.uint16_t</td>
+<td>uint16</td>
+</tr>
+<tr>
+<td>int32_t</td>
+<td>C.int32_t</td>
+<td>int32</td>
+</tr>
+<tr>
+<td>uint32_t</td>
+<td>C.uint32_t</td>
+<td>uint32</td>
+</tr>
+<tr>
+<td>int64_t</td>
+<td>C.int64_t</td>
+<td>int64</td>
+</tr>
+<tr>
+<td>uint64_t</td>
+<td>C.uint64_t</td>
+<td>uint64</td>
+</tr>
+</tbody>
+</table>
+<p><em>表 2-2 <code>&lt;stdint.h&gt;</code>类型对比</em></p>
+<p>前文说过，如果C语言的类型是由多个关键字组成，则无法通过虚拟的“C”包直接访问(比如C语言的<code>unsigned short</code>不能直接通过<code>C.unsigned short</code>访问)。但是，在<code>&lt;stdint.h&gt;</code>中通过使用C语言的<code>typedef</code>关键字将<code>unsigned short</code>重新定义为<code>uint16_t</code>这样一个单词的类型后，我们就可以通过<code>C.uint16_t</code>访问原来的<code>unsigned short</code>类型了。对于比较复杂的C语言类型，推荐使用<code>typedef</code>关键字提供一个规则的类型命名，这样更利于在CGO中访问。</p>
+<h2 id="232-go-字符串和切片">2.3.2 Go 字符串和切片</h2>
+<p>在CGO生成的<code>_cgo_export.h</code>头文件中还会为Go语言的字符串、切片、字典、接口和管道等特有的数据类型生成对应的C语言类型：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-c" data-lang="c"><span style="color:#069;font-weight:bold">typedef</span> <span style="color:#069;font-weight:bold">struct</span> { <span style="color:#069;font-weight:bold">const</span> <span style="color:#078;font-weight:bold">char</span> <span style="color:#555">*</span>p; GoInt n; } GoString;
+<span style="color:#069;font-weight:bold">typedef</span> <span style="color:#078;font-weight:bold">void</span> <span style="color:#555">*</span>GoMap;
+<span style="color:#069;font-weight:bold">typedef</span> <span style="color:#078;font-weight:bold">void</span> <span style="color:#555">*</span>GoChan;
+<span style="color:#069;font-weight:bold">typedef</span> <span style="color:#069;font-weight:bold">struct</span> { <span style="color:#078;font-weight:bold">void</span> <span style="color:#555">*</span>t; <span style="color:#078;font-weight:bold">void</span> <span style="color:#555">*</span>v; } GoInterface;
+<span style="color:#069;font-weight:bold">typedef</span> <span style="color:#069;font-weight:bold">struct</span> { <span style="color:#078;font-weight:bold">void</span> <span style="color:#555">*</span>data; GoInt len; GoInt cap; } GoSlice;
+</code></pre></td></tr></table>
+</div>
+</div><p>不过需要注意的是，其中只有字符串和切片在CGO中有一定的使用价值，因为CGO为他们的某些GO语言版本的操作函数生成了C语言版本，因此二者可以在Go调用C语言函数时马上使用;而CGO并未针对其他的类型提供相关的辅助函数，且Go语言特有的内存模型导致我们无法保持这些由Go语言管理的内存指针，所以它们C语言环境并无使用的价值。</p>
+<p>在导出的C语言函数中我们可以直接使用Go字符串和切片。假设有以下两个导出函数：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#09f;font-style:italic">//export helloString
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">helloString</span>(s <span style="color:#078;font-weight:bold">string</span>) {}
+
+<span style="color:#09f;font-style:italic">//export helloSlice
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">helloSlice</span>(s []<span style="color:#078;font-weight:bold">byte</span>) {}
+</code></pre></td></tr></table>
+</div>
+</div><p>CGO生成的<code>_cgo_export.h</code>头文件会包含以下的函数声明：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-c" data-lang="c"><span style="color:#069;font-weight:bold">extern</span> <span style="color:#078;font-weight:bold">void</span> <span style="color:#c0f">helloString</span>(GoString p0);
+<span style="color:#069;font-weight:bold">extern</span> <span style="color:#078;font-weight:bold">void</span> <span style="color:#c0f">helloSlice</span>(GoSlice p0);
+</code></pre></td></tr></table>
+</div>
+</div><p>不过需要注意的是，如果使用了GoString类型则会对<code>_cgo_export.h</code>头文件产生依赖，而这个头文件是动态输出的。</p>
+<p>Go1.10针对Go字符串增加了一个<code>_GoString_</code>预定义类型，可以降低在cgo代码中可能对<code>_cgo_export.h</code>头文件产生的循环依赖的风险。我们可以调整helloString函数的C语言声明为：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-c" data-lang="c"><span style="color:#069;font-weight:bold">extern</span> <span style="color:#078;font-weight:bold">void</span> <span style="color:#c0f">helloString</span>(_GoString_ p0);
+</code></pre></td></tr></table>
+</div>
+</div><p>因为<code>_GoString_</code>是预定义类型，我们无法通过此类型直接访问字符串的长度和指针等信息。Go1.10同时也增加了以下两个函数用于获取字符串结构中的长度和指针信息：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-c" data-lang="c">size_t <span style="color:#c0f">_GoStringLen</span>(_GoString_ s);
+<span style="color:#069;font-weight:bold">const</span> <span style="color:#078;font-weight:bold">char</span> <span style="color:#555">*</span><span style="color:#c0f">_GoStringPtr</span>(_GoString_ s);
+</code></pre></td></tr></table>
+</div>
+</div><p>更严谨的做法是为C语言函数接口定义严格的头文件，然后基于稳定的头文件实现代码。</p>
+<h2 id="233-结构体联合枚举类型">2.3.3 结构体、联合、枚举类型</h2>
+<p>C语言的结构体、联合、枚举类型不能作为匿名成员被嵌入到Go语言的结构体中。在Go语言中，我们可以通过<code>C.struct_xxx</code>来访问C语言中定义的<code>struct xxx</code>结构体类型。结构体的内存布局按照C语言的通用对齐规则，在32位Go语言环境C语言结构体也按照32位对齐规则，在64位Go语言环境按照64位的对齐规则。对于指定了特殊对齐规则的结构体，无法在CGO中访问。</p>
+<p>结构体的简单用法如下：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#09f;font-style:italic">/*
+</span><span style="color:#09f;font-style:italic">struct A {
+</span><span style="color:#09f;font-style:italic">	int i;
+</span><span style="color:#09f;font-style:italic">	float f;
+</span><span style="color:#09f;font-style:italic">};
+</span><span style="color:#09f;font-style:italic">*/</span>
+<span style="color:#069;font-weight:bold">import</span> <span style="color:#c30">&#34;C&#34;</span>
+<span style="color:#069;font-weight:bold">import</span> <span style="color:#c30">&#34;fmt&#34;</span>
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+	<span style="color:#069;font-weight:bold">var</span> a C.struct_A
+	fmt.<span style="color:#c0f">Println</span>(a.i)
+	fmt.<span style="color:#c0f">Println</span>(a.f)
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>如果结构体的成员名字中碰巧是Go语言的关键字，可以通过在成员名开头添加下划线来访问：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#09f;font-style:italic">/*
+</span><span style="color:#09f;font-style:italic">struct A {
+</span><span style="color:#09f;font-style:italic">	int type; // type 是 Go 语言的关键字
+</span><span style="color:#09f;font-style:italic">};
+</span><span style="color:#09f;font-style:italic">*/</span>
+<span style="color:#069;font-weight:bold">import</span> <span style="color:#c30">&#34;C&#34;</span>
+<span style="color:#069;font-weight:bold">import</span> <span style="color:#c30">&#34;fmt&#34;</span>
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+	<span style="color:#069;font-weight:bold">var</span> a C.struct_A
+	fmt.<span style="color:#c0f">Println</span>(a._type) <span style="color:#09f;font-style:italic">// _type 对应 type
+</span><span style="color:#09f;font-style:italic"></span>}
+</code></pre></td></tr></table>
+</div>
+</div><p>但是如果有2个成员：一个是以Go语言关键字命名，另一个刚好是以下划线和Go语言关键字命名，那么以Go语言关键字命名的成员将无法访问（被屏蔽）：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#09f;font-style:italic">/*
+</span><span style="color:#09f;font-style:italic">struct A {
+</span><span style="color:#09f;font-style:italic">	int   type;  // type 是 Go 语言的关键字
+</span><span style="color:#09f;font-style:italic">	float _type; // 将屏蔽CGO对 type 成员的访问
+</span><span style="color:#09f;font-style:italic">};
+</span><span style="color:#09f;font-style:italic">*/</span>
+<span style="color:#069;font-weight:bold">import</span> <span style="color:#c30">&#34;C&#34;</span>
+<span style="color:#069;font-weight:bold">import</span> <span style="color:#c30">&#34;fmt&#34;</span>
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+	<span style="color:#069;font-weight:bold">var</span> a C.struct_A
+	fmt.<span style="color:#c0f">Println</span>(a._type) <span style="color:#09f;font-style:italic">// _type 对应 _type
+</span><span style="color:#09f;font-style:italic"></span>}
+</code></pre></td></tr></table>
+</div>
+</div><p>C语言结构体中位字段对应的成员无法在Go语言中访问，如果需要操作位字段成员，需要通过在C语言中定义辅助函数来完成。对应零长数组的成员，无法在Go语言中直接访问数组的元素，但其中零长的数组成员所在位置的偏移量依然可以通过<code>unsafe.Offsetof(a.arr)</code>来访问。</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#09f;font-style:italic">/*
+</span><span style="color:#09f;font-style:italic">struct A {
+</span><span style="color:#09f;font-style:italic">	int   size: 10; // 位字段无法访问
+</span><span style="color:#09f;font-style:italic">	float arr[];    // 零长的数组也无法访问
+</span><span style="color:#09f;font-style:italic">};
+</span><span style="color:#09f;font-style:italic">*/</span>
+<span style="color:#069;font-weight:bold">import</span> <span style="color:#c30">&#34;C&#34;</span>
+<span style="color:#069;font-weight:bold">import</span> <span style="color:#c30">&#34;fmt&#34;</span>
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+	<span style="color:#069;font-weight:bold">var</span> a C.struct_A
+	fmt.<span style="color:#c0f">Println</span>(a.size) <span style="color:#09f;font-style:italic">// 错误: 位字段无法访问
+</span><span style="color:#09f;font-style:italic"></span>	fmt.<span style="color:#c0f">Println</span>(a.arr)  <span style="color:#09f;font-style:italic">// 错误: 零长的数组也无法访问
+</span><span style="color:#09f;font-style:italic"></span>}
+</code></pre></td></tr></table>
+</div>
+</div><p>在C语言中，我们无法直接访问Go语言定义的结构体类型。</p>
+<p>对于联合类型，我们可以通过<code>C.union_xxx</code>来访问C语言中定义的<code>union xxx</code>类型。但是Go语言中并不支持C语言联合类型，它们会被转为对应大小的字节数组。</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#09f;font-style:italic">/*
+</span><span style="color:#09f;font-style:italic">#include &lt;stdint.h&gt;
+</span><span style="color:#09f;font-style:italic">
+</span><span style="color:#09f;font-style:italic">union B1 {
+</span><span style="color:#09f;font-style:italic">	int i;
+</span><span style="color:#09f;font-style:italic">	float f;
+</span><span style="color:#09f;font-style:italic">};
+</span><span style="color:#09f;font-style:italic">
+</span><span style="color:#09f;font-style:italic">union B2 {
+</span><span style="color:#09f;font-style:italic">	int8_t i8;
+</span><span style="color:#09f;font-style:italic">	int64_t i64;
+</span><span style="color:#09f;font-style:italic">};
+</span><span style="color:#09f;font-style:italic">*/</span>
+<span style="color:#069;font-weight:bold">import</span> <span style="color:#c30">&#34;C&#34;</span>
+<span style="color:#069;font-weight:bold">import</span> <span style="color:#c30">&#34;fmt&#34;</span>
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+	<span style="color:#069;font-weight:bold">var</span> b1 C.union_B1;
+	fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;%T\n&#34;</span>, b1) <span style="color:#09f;font-style:italic">// [4]uint8
+</span><span style="color:#09f;font-style:italic"></span>
+	<span style="color:#069;font-weight:bold">var</span> b2 C.union_B2;
+	fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;%T\n&#34;</span>, b2) <span style="color:#09f;font-style:italic">// [8]uint8
+</span><span style="color:#09f;font-style:italic"></span>}
+</code></pre></td></tr></table>
+</div>
+</div><p>如果需要操作C语言的联合类型变量，一般有三种方法：第一种是在C语言中定义辅助函数；第二种是通过Go语言的&quot;encoding/binary&quot;手工解码成员(需要注意大端小端问题)；第三种是使用<code>unsafe</code>包强制转型为对应类型(这是性能最好的方式)。下面展示通过<code>unsafe</code>包访问联合类型成员的方式：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#09f;font-style:italic">/*
+</span><span style="color:#09f;font-style:italic">#include &lt;stdint.h&gt;
+</span><span style="color:#09f;font-style:italic">
+</span><span style="color:#09f;font-style:italic">union B {
+</span><span style="color:#09f;font-style:italic">	int i;
+</span><span style="color:#09f;font-style:italic">	float f;
+</span><span style="color:#09f;font-style:italic">};
+</span><span style="color:#09f;font-style:italic">*/</span>
+<span style="color:#069;font-weight:bold">import</span> <span style="color:#c30">&#34;C&#34;</span>
+<span style="color:#069;font-weight:bold">import</span> <span style="color:#c30">&#34;fmt&#34;</span>
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+	<span style="color:#069;font-weight:bold">var</span> b C.union_B;
+	fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;b.i:&#34;</span>, <span style="color:#555">*</span>(<span style="color:#555">*</span>C.<span style="color:#078;font-weight:bold">int</span>)(unsafe.<span style="color:#c0f">Pointer</span>(<span style="color:#555">&amp;</span>b)))
+	fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;b.f:&#34;</span>, <span style="color:#555">*</span>(<span style="color:#555">*</span>C.<span style="color:#078;font-weight:bold">float</span>)(unsafe.<span style="color:#c0f">Pointer</span>(<span style="color:#555">&amp;</span>b)))
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>虽然<code>unsafe</code>包访问最简单、性能也最好，但是对于有嵌套联合类型的情况处理会导致问题复杂化。对于复杂的联合类型，推荐通过在C语言中定义辅助函数的方式处理。</p>
+<p>对于枚举类型，我们可以通过<code>C.enum_xxx</code>来访问C语言中定义的<code>enum xxx</code>结构体类型。</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#09f;font-style:italic">/*
+</span><span style="color:#09f;font-style:italic">enum C {
+</span><span style="color:#09f;font-style:italic">	ONE,
+</span><span style="color:#09f;font-style:italic">	TWO,
+</span><span style="color:#09f;font-style:italic">};
+</span><span style="color:#09f;font-style:italic">*/</span>
+<span style="color:#069;font-weight:bold">import</span> <span style="color:#c30">&#34;C&#34;</span>
+<span style="color:#069;font-weight:bold">import</span> <span style="color:#c30">&#34;fmt&#34;</span>
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+	<span style="color:#069;font-weight:bold">var</span> c C.enum_C = C.TWO
+	fmt.<span style="color:#c0f">Println</span>(c)
+	fmt.<span style="color:#c0f">Println</span>(C.ONE)
+	fmt.<span style="color:#c0f">Println</span>(C.TWO)
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>在C语言中，枚举类型底层对应<code>int</code>类型，支持负数类型的值。我们可以通过<code>C.ONE</code>、<code>C.TWO</code>等直接访问定义的枚举值。</p>
+<h2 id="234-数组字符串和切片">2.3.4 数组、字符串和切片</h2>
+<p>在C语言中，数组名其实对应于一个指针，指向特定类型特定长度的一段内存，但是这个指针不能被修改；当把数组名传递给一个函数时，实际上传递的是数组第一个元素的地址。为了讨论方便，我们将一段特定长度的内存统称为数组。C语言的字符串是一个char类型的数组，字符串的长度需要根据表示结尾的NULL字符的位置确定。C语言中没有切片类型。</p>
+<p>在Go语言中，数组是一种值类型，而且数组的长度是数组类型的一个部分。Go语言字符串对应一段长度确定的只读byte类型的内存。Go语言的切片则是一个简化版的动态数组。</p>
+<p>Go语言和C语言的数组、字符串和切片之间的相互转换可以简化为Go语言的切片和C语言中指向一定长度内存的指针之间的转换。</p>
+<p>CGO的C虚拟包提供了以下一组函数，用于Go语言和C语言之间数组和字符串的双向转换：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#09f;font-style:italic">// Go string to C string
+</span><span style="color:#09f;font-style:italic">// The C string is allocated in the C heap using malloc.
+</span><span style="color:#09f;font-style:italic">// It is the caller&#39;s responsibility to arrange for it to be
+</span><span style="color:#09f;font-style:italic">// freed, such as by calling C.free (be sure to include stdlib.h
+</span><span style="color:#09f;font-style:italic">// if C.free is needed).
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> C.<span style="color:#c0f">CString</span>(<span style="color:#078;font-weight:bold">string</span>) <span style="color:#555">*</span>C.char
+
+<span style="color:#09f;font-style:italic">// Go []byte slice to C array
+</span><span style="color:#09f;font-style:italic">// The C array is allocated in the C heap using malloc.
+</span><span style="color:#09f;font-style:italic">// It is the caller&#39;s responsibility to arrange for it to be
+</span><span style="color:#09f;font-style:italic">// freed, such as by calling C.free (be sure to include stdlib.h
+</span><span style="color:#09f;font-style:italic">// if C.free is needed).
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> C.<span style="color:#c0f">CBytes</span>([]<span style="color:#078;font-weight:bold">byte</span>) unsafe.Pointer
+
+<span style="color:#09f;font-style:italic">// C string to Go string
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> C.<span style="color:#c0f">GoString</span>(<span style="color:#555">*</span>C.char) <span style="color:#078;font-weight:bold">string</span>
+
+<span style="color:#09f;font-style:italic">// C data with explicit length to Go string
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> C.<span style="color:#c0f">GoStringN</span>(<span style="color:#555">*</span>C.char, C.<span style="color:#078;font-weight:bold">int</span>) <span style="color:#078;font-weight:bold">string</span>
+
+<span style="color:#09f;font-style:italic">// C data with explicit length to Go []byte
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> C.<span style="color:#c0f">GoBytes</span>(unsafe.Pointer, C.<span style="color:#078;font-weight:bold">int</span>) []<span style="color:#078;font-weight:bold">byte</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>其中<code>C.CString</code>针对输入的Go字符串，克隆一个C语言格式的字符串；返回的字符串由C语言的<code>malloc</code>函数分配，不使用时需要通过C语言的<code>free</code>函数释放。<code>C.CBytes</code>函数的功能和<code>C.CString</code>类似，用于从输入的Go语言字节切片克隆一个C语言版本的字节数组，同样返回的数组需要在合适的时候释放。<code>C.GoString</code>用于将从NULL结尾的C语言字符串克隆一个Go语言字符串。<code>C.GoStringN</code>是另一个字符数组克隆函数。<code>C.GoBytes</code>用于从C语言数组，克隆一个Go语言字节切片。</p>
+<p>该组辅助函数都是以克隆的方式运行。当Go语言字符串和切片向C语言转换时，克隆的内存由C语言的<code>malloc</code>函数分配，最终可以通过<code>free</code>函数释放。当C语言字符串或数组向Go语言转换时，克隆的内存由Go语言分配管理。通过该组转换函数，转换前和转换后的内存依然在各自的语言环境中，它们并没有跨越Go语言和C语言。克隆方式实现转换的优点是接口和内存管理都很简单，缺点是克隆需要分配新的内存和复制操作都会导致额外的开销。</p>
+<p>在<code>reflect</code>包中有字符串和切片的定义：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">type</span> StringHeader <span style="color:#069;font-weight:bold">struct</span> {
+    Data <span style="color:#078;font-weight:bold">uintptr</span>
+    Len  <span style="color:#078;font-weight:bold">int</span>
+}
+
+<span style="color:#069;font-weight:bold">type</span> SliceHeader <span style="color:#069;font-weight:bold">struct</span> {
+    Data <span style="color:#078;font-weight:bold">uintptr</span>
+    Len  <span style="color:#078;font-weight:bold">int</span>
+    Cap  <span style="color:#078;font-weight:bold">int</span>
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>如果不希望单独分配内存，可以在Go语言中直接访问C语言的内存空间：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#09f;font-style:italic">/*
+</span><span style="color:#09f;font-style:italic">#include &lt;string.h&gt;
+</span><span style="color:#09f;font-style:italic">char arr[10];
+</span><span style="color:#09f;font-style:italic">char *s = &#34;Hello&#34;;
+</span><span style="color:#09f;font-style:italic">*/</span>
+<span style="color:#069;font-weight:bold">import</span> <span style="color:#c30">&#34;C&#34;</span>
+<span style="color:#069;font-weight:bold">import</span> (
+	<span style="color:#c30">&#34;reflect&#34;</span>
+	<span style="color:#c30">&#34;unsafe&#34;</span>
+)
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+	<span style="color:#09f;font-style:italic">// 通过 reflect.SliceHeader 转换
+</span><span style="color:#09f;font-style:italic"></span>	<span style="color:#069;font-weight:bold">var</span> arr0 []<span style="color:#078;font-weight:bold">byte</span>
+	<span style="color:#069;font-weight:bold">var</span> arr0Hdr = (<span style="color:#555">*</span>reflect.SliceHeader)(unsafe.<span style="color:#c0f">Pointer</span>(<span style="color:#555">&amp;</span>arr0))
+	arr0Hdr.Data = <span style="color:#366">uintptr</span>(unsafe.<span style="color:#c0f">Pointer</span>(<span style="color:#555">&amp;</span>C.arr[<span style="color:#f60">0</span>]))
+	arr0Hdr.Len = <span style="color:#f60">10</span>
+	arr0Hdr.Cap = <span style="color:#f60">10</span>
+
+	<span style="color:#09f;font-style:italic">// 通过切片语法转换
+</span><span style="color:#09f;font-style:italic"></span>	arr1 <span style="color:#555">:=</span> (<span style="color:#555">*</span>[<span style="color:#f60">31</span>]<span style="color:#078;font-weight:bold">byte</span>)(unsafe.<span style="color:#c0f">Pointer</span>(<span style="color:#555">&amp;</span>C.arr[<span style="color:#f60">0</span>]))[:<span style="color:#f60">10</span>:<span style="color:#f60">10</span>]
+
+	<span style="color:#069;font-weight:bold">var</span> s0 <span style="color:#078;font-weight:bold">string</span>
+	<span style="color:#069;font-weight:bold">var</span> s0Hdr = (<span style="color:#555">*</span>reflect.StringHeader)(unsafe.<span style="color:#c0f">Pointer</span>(<span style="color:#555">&amp;</span>s0))
+	s0Hdr.Data = <span style="color:#366">uintptr</span>(unsafe.<span style="color:#c0f">Pointer</span>(C.s))
+	s0Hdr.Len = <span style="color:#366">int</span>(C.<span style="color:#c0f">strlen</span>(C.s))
+
+	sLen <span style="color:#555">:=</span> <span style="color:#366">int</span>(C.<span style="color:#c0f">strlen</span>(C.s))
+    	s1 <span style="color:#555">:=</span> <span style="color:#366">string</span>((<span style="color:#555">*</span>[<span style="color:#f60">31</span>]<span style="color:#078;font-weight:bold">byte</span>)(unsafe.<span style="color:#c0f">Pointer</span>(C.s))[:sLen:sLen])
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>因为Go语言的字符串是只读的，用户需要自己保证Go字符串在使用期间，底层对应的C字符串内容不会发生变化、内存不会被提前释放掉。</p>
+<p>在CGO中，会为字符串和切片生成和上面结构对应的C语言版本的结构体：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-c" data-lang="c"><span style="color:#069;font-weight:bold">typedef</span> <span style="color:#069;font-weight:bold">struct</span> { <span style="color:#069;font-weight:bold">const</span> <span style="color:#078;font-weight:bold">char</span> <span style="color:#555">*</span>p; GoInt n; } GoString;
+<span style="color:#069;font-weight:bold">typedef</span> <span style="color:#069;font-weight:bold">struct</span> { <span style="color:#078;font-weight:bold">void</span> <span style="color:#555">*</span>data; GoInt len; GoInt cap; } GoSlice;
+</code></pre></td></tr></table>
+</div>
+</div><p>在C语言中可以通过<code>GoString</code>和<code>GoSlice</code>来访问Go语言的字符串和切片。如果是Go语言中数组类型，可以将数组转为切片后再行转换。如果字符串或切片对应的底层内存空间由Go语言的运行时管理，那么在C语言中不能长时间保存Go内存对象。</p>
+<p>关于CGO内存模型的细节在稍后章节中会详细讨论。</p>
+<h2 id="235-指针间的转换">2.3.5 指针间的转换</h2>
+<p>在C语言中，不同类型的指针是可以显式或隐式转换的，如果是隐式只是会在编译时给出一些警告信息。但是Go语言对于不同类型的转换非常严格，任何C语言中可能出现的警告信息在Go语言中都可能是错误！指针是C语言的灵魂，指针间的自由转换也是cgo代码中经常要解决的第一个重要的问题。</p>
+<p>在Go语言中两个指针的类型完全一致则不需要转换可以直接通用。如果一个指针类型是用type命令在另一个指针类型基础之上构建的，换言之两个指针底层是相同完全结构的指针，那么我我们可以通过直接强制转换语法进行指针间的转换。但是cgo经常要面对的是2个完全不同类型的指针间的转换，原则上这种操作在纯Go语言代码是严格禁止的。</p>
+<p>cgo存在的一个目的就是打破Go语言的禁止，恢复C语言应有的指针的自由转换和指针运算。以下代码演示了如何将X类型的指针转化为Y类型的指针：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">var</span> p <span style="color:#555">*</span>X
+<span style="color:#069;font-weight:bold">var</span> q <span style="color:#555">*</span>Y
+
+q = (<span style="color:#555">*</span>Y)(unsafe.<span style="color:#c0f">Pointer</span>(p)) <span style="color:#09f;font-style:italic">// *X =&gt; *Y
+</span><span style="color:#09f;font-style:italic"></span>p = (<span style="color:#555">*</span>X)(unsafe.<span style="color:#c0f">Pointer</span>(q)) <span style="color:#09f;font-style:italic">// *Y =&gt; *X
+</span></code></pre></td></tr></table>
+</div>
+</div><p>为了实现X类型指针到Y类型指针的转换，我们需要借助<code>unsafe.Pointer</code>作为中间桥接类型实现不同类型指针之间的转换。<code>unsafe.Pointer</code>指针类型类似C语言中的<code>void*</code>类型的指针。</p>
+<p>下面是指针间的转换流程的示意图：</p>
+<p><img src="../images/ch2-1-x-ptr-to-y-ptr.uml.png" alt=""></p>
+<p><em>图 2-1 X类型指针转Y类型指针</em></p>
+<p>任何类型的指针都可以通过强制转换为<code>unsafe.Pointer</code>指针类型去掉原有的类型信息，然后再重新赋予新的指针类型而达到指针间的转换的目的。</p>
+<h2 id="236-数值和指针的转换">2.3.6 数值和指针的转换</h2>
+<p>不同类型指针间的转换看似复杂，但是在cgo中已经算是比较简单的了。在C语言中经常遇到用普通数值表示指针的场景，也就是说如何实现数值和指针的转换也是cgo需要面对的一个问题。</p>
+<p>为了严格控制指针的使用，Go语言禁止将数值类型直接转为指针类型！不过，Go语言针对<code>unsafe.Pointr</code>指针类型特别定义了一个uintptr类型。我们可以uintptr为中介，实现数值类型到<code>unsafe.Pointr</code>指针类型到转换。再结合前面提到的方法，就可以实现数值和指针的转换了。</p>
+<p>下面流程图演示了如何实现int32类型到C语言的<code>char*</code>字符串指针类型的相互转换：</p>
+<p><img src="../images/ch2-2-int32-to-char-ptr.uml.png" alt=""></p>
+<p><em>图 2-2 int32和<code>char*</code>指针转换</em></p>
+<p>转换分为几个阶段，在每个阶段实现一个小目标：首先是int32到uintptr类型，然后是uintptr到<code>unsafe.Pointr</code>指针类型，最后是<code>unsafe.Pointr</code>指针类型到<code>*C.char</code>类型。</p>
+<h2 id="237-切片间的转换">2.3.7 切片间的转换</h2>
+<p>在C语言中数组也一种指针，因此两个不同类型数组之间的转换和指针间转换基本类似。但是在Go语言中，数组或数组对应的切片都不再是指针类型，因此我们也就无法直接实现不同类型的切片之间的转换。</p>
+<p>不过Go语言的reflect包提供了切片类型的底层结构，再结合前面讨论到不同类型之间的指针转换技术就可以实现<code>[]X</code>和<code>[]Y</code>类型的切片转换：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">var</span> p []X
+<span style="color:#069;font-weight:bold">var</span> q []Y
+
+pHdr <span style="color:#555">:=</span> (<span style="color:#555">*</span>reflect.SliceHeader)(unsafe.<span style="color:#c0f">Pointer</span>(<span style="color:#555">&amp;</span>p))
+qHdr <span style="color:#555">:=</span> (<span style="color:#555">*</span>reflect.SliceHeader)(unsafe.<span style="color:#c0f">Pointer</span>(<span style="color:#555">&amp;</span>q))
+
+pHdr.Data = qHdr.Data
+pHdr.Len = qHdr.Len <span style="color:#555">*</span> unsafe.<span style="color:#c0f">Sizeof</span>(q[<span style="color:#f60">0</span>]) <span style="color:#555">/</span> unsafe.<span style="color:#c0f">Sizeof</span>(p[<span style="color:#f60">0</span>])
+pHdr.Cap = qHdr.Cap <span style="color:#555">*</span> unsafe.<span style="color:#c0f">Sizeof</span>(q[<span style="color:#f60">0</span>]) <span style="color:#555">/</span> unsafe.<span style="color:#c0f">Sizeof</span>(p[<span style="color:#f60">0</span>])
+</code></pre></td></tr></table>
+</div>
+</div><p>不同切片类型之间转换的思路是先构造一个空的目标切片，然后用原有的切片底层数据填充目标切片。如果X和Y类型的大小不同，需要重新设置Len和Cap属性。需要注意的是，如果X或Y是空类型，上述代码中可能导致除0错误，实际代码需要根据情况酌情处理。</p>
+<p>下面演示了切片间的转换的具体流程：</p>
+<p><img src="../images/ch2-3-x-slice-to-y-slice.uml.png" alt=""></p>
+<p><em>图 2-3 X类型切片转Y类型切片</em></p>
+<p>针对CGO中常用的功能，作者封装了 &ldquo;github.com/chai2010/cgo&rdquo; 包，提供基本的转换功能，具体的细节可以参考实现代码。</p>
+
+                
+                
+                <hr> 
+
+<div class="entry-shang text-center">
+    
+    <p> 「真诚赞赏，手留余香」</p>
+    
+    <button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+    <div class="zs-modal-head">
+        <button type="button" class="close">×</button>
+        <span class="author">
+            <a href="http://www.mafool.com">
+                <img src="http://www.mafool.com/img/reward/hollson.png" alt="史布斯" />码夫庄园
+            </a>
+        </span>
+        
+        <p class="tip"><i></i><span>嗯，我的梦想是被读者的稿费包养~</span></p>
+        
+
+    </div>
+    <div class="zs-modal-body">
+        <div class="zs-modal-btns">
+            <button class="btn btn-blink" data-num="2">2元</button>
+            <button class="btn btn-blink" data-num="5">5元</button>
+            <button class="btn btn-blink" data-num="10">10元</button>
+            <button class="btn btn-blink" data-num="50">50元</button>
+            <button class="btn btn-blink" data-num="100">100元</button>
+            <button class="btn btn-blink" data-num="1">任意金额</button>
+        </div>
+        <div class="zs-modal-pay">
+            <button class="btn btn-bred" id="pay-text">2元</button>
+            <p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+            <img src="http://www.mafool.com/img/reward/wechat-2.png" alt="史布斯" id="pay-image" />
+        </div>
+    </div>
+    <div class="zs-modal-footer">
+        <label>
+            <span class="zs-wechat"></span>
+            <input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked">
+            <img src="http://www.mafool.com/img/reward/wechat-btn.png" alt="史布斯" />
+            </span>&nbsp;
+            <span>
+                <input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay">
+                <img src="http://www.mafool.com/img/reward/alipay-btn.png" alt="史布斯" />
+            </span>
+        </label>
+    </div>
+</div>
+
+ 
+
+                <br>
+                <br>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="column is-3">
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">最近发布</h2>
+        
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/0742b474a643d63a774461726a6201203/">Go语言中的原子操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年12月2日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/1600330472/">Go基础笔记 - 2.3 常量</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月10日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/15996311192/">Go - Gin框架快速入门</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月9日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480249/">Gorm快速指南</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480218/">18. Go语言MySQL数据库操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+    </div>
+</div>
+<br>
+        
+
+
+
+
+<div class="card">
+  <div class="card-content">
+    <h2 class="title is-6">相关文章</h2>
+    
+    
+    <h2><a href="http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch201/">Cgo编程笔记 - 2.1 快速入门</a></h2>
+    <time class="has-text-grey-light is-size-7">16 December 2019</time>
+    
+    <h2><a href="http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch210/">Cgo编程笔记 - 2.10 编译和链接参数</a></h2>
+    <time class="has-text-grey-light is-size-7">16 December 2019</time>
+    
+    <h2><a href="http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch202/">Cgo编程笔记 - 2.2 CGO基础</a></h2>
+    <time class="has-text-grey-light is-size-7">16 December 2019</time>
+    
+    <h2><a href="http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch204/">Cgo编程笔记 - 2.4 函数调用</a></h2>
+    <time class="has-text-grey-light is-size-7">16 December 2019</time>
+    
+    <h2><a href="http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch205/">Cgo编程笔记 - 2.5 内部机制</a></h2>
+    <time class="has-text-grey-light is-size-7">16 December 2019</time>
+    
+    <h2><a href="http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch206/">Cgo编程笔记 - 2.6 实战: 封装qsort</a></h2>
+    <time class="has-text-grey-light is-size-7">16 December 2019</time>
+    
+    <h2><a href="http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch207/">Cgo编程笔记 - 2.7 CGO内存模型</a></h2>
+    <time class="has-text-grey-light is-size-7">16 December 2019</time>
+    
+    <h2><a href="http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch208/">Cgo编程笔记 - 2.8 C&#43;&#43; 类包装</a></h2>
+    <time class="has-text-grey-light is-size-7">16 December 2019</time>
+    
+    <h2><a href="http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch209/">Cgo编程笔记 - 2.9 静态库和动态库</a></h2>
+    <time class="has-text-grey-light is-size-7">16 December 2019</time>
+    
+  </div>
+</div>
+<br>
+
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">标签</h2>
+        <div>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/atomic">atomic</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/blog">blog</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cgo">cgo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cloud">cloud</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/config">config</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/copy">copy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/docker">docker</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/exam">exam</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/gin">gin</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/git">git</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/golang">golang</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/hugo">hugo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/install">install</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/istio">istio</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/jenkins">jenkins</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/kubernetes">kubernetes</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/map">map</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/microservice">microservice</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/mycat">mycat</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/nginx">nginx</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/plan9">plan9</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/posix">posix</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/proxy">proxy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/raft">raft</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ssh">ssh</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/tips">tips</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ymal">ymal</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%B8%BB%E4%BB%8E">主从</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BA%8B%E5%8A%A1">事务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BB%A3%E7%90%86">代理</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BD%9C%E7%94%A8%E5%9F%9F">作用域</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%86%85%E5%AD%98">内存</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%8B%E7%BC%A9">压缩</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%88%9B">原创</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%AD%90">原子</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%91%BD%E4%BB%A4%E8%A1%8C">命令行</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%93%A8%E5%85%B5">哨兵</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%AD%98%E5%82%A8">存储</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B8%B8%E9%87%8F">常量</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B9%B6%E5%8F%91">并发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BC%82%E5%B8%B8">异常</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1">微服务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%88%E6%9D%83%E8%AE%A4%E8%AF%81">授权认证</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%92%E5%BA%8F">排序</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%A5%E5%8F%A3">接口</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%97%A5%E5%BF%97">日志</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%9D%83%E9%99%90">权限</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE1">标签1</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE2">标签2</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%AD%A3%E5%88%99">正则</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%81%E9%87%8F%E5%88%86%E5%8F%91">流量分发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%8B%E8%AF%95">测试</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%BA%90%E7%A0%81">源码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%8A%B6%E6%80%81%E7%A0%81">状态码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%AE%97%E6%B3%95">算法</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%BC%8F">编程模式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%80%81%E5%A6%96%E7%AC%94%E8%AE%B0">老妖笔记</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%BF%87%E6%BB%A4%E5%99%A8">过滤器</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%80%83%E9%80%B8">逃逸</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%85%8D%E7%BD%AE">配置</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%86%99">重写</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%AE%9A%E5%90%91">重定向</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9B%86%E7%BE%A4">集群</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9D%A2%E8%AF%95">面试</a>
+            </span>
+            
+        </div>
+    </div>
+</div>
+<br>
+    </div>
+</div>
+
+        </div>
+    </div>
+
+    
+    <footer class="footer has-background-grey-darker has-text-white">
+    <div class="content has-text-centered">
+        <p>
+            <span class="icon is-large">
+                <a href="https://twitter.com/" class="mysocial" rel="me">
+                    <i class="fab fa-twitter fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://www.youtube.com/" class="mysocial" rel="me">
+                    <i class="fab fa-youtube fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://github.com/" class="mysocial" rel="me">
+                    <i class="fab fa-github fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <br><br>
+            友情链接：
+            
+            <a class="mysocial" href="http://www.mafool.com" target="_blank">Mafool</a>
+            
+            <a class="mysocial" href="https://gohugo.io/documentation/" target="_blank">Hugo</a>
+            
+            <a class="mysocial" href="https://bulma.io/" target="_blank">Bulma</a>
+            
+            <a class="mysocial" href="https://bootstrapious.com/" target="_blank">Bootstrapious</a>
+            
+            <a class="mysocial" href="https://youzhixueyuan.com/" target="_blank">Youzhixueyuan</a>
+            
+            <br><br />
+            版权所有 &copy; 码夫庄园 2021
+            - <a class="mysocial" href="https://github.com/hollson/hugo-theme-dooz">Hugo Theme</a>
+        </p>
+    </div>
+</footer>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='http://www.mafool.com/js/dooz.totop.js?v=0.0.0' async=""></script>
+
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = 'https://hm.baidu.com/hm.js?f185359ec6b829a6a93e1e1f2597f6d9';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DK042XSJ2J"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-DK042XSJ2J');
+</script>
+
+    
+    
+<script type="text/javascript" src="http://www.mafool.com/js/reward.js"></script>
+
+    
+    <script defer src="https://cdn.staticfile.org/font-awesome/5.13.0/js/all.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>码夫庄园-「转」接口的构造过程是怎样的</title>
+    <meta name="keywords"
+        content='interface,接口'>
+    <meta name="description" content="接口定义了一种规范，描述了类的行为和功能，而不做具体实现" />
+
+    
+    <meta name="baidu-site-verification" content="v9szEmQLra" />
+    <meta name="360-site-verification" content="d8e961f98fb655e4b8cf9439cfd9ac7f" />
+    <meta name="sogou_site_verification" content="40NC9EdZDC" />
+    <meta name="shenma-site-verification" content="3200e3042e92157713a3b0aceeecb20a_1586020187" />
+    <meta name="google-site-verification" content="r8987bkunZHJeKut3ocu5NIJ5QEu53NA6Q_r7RrZ46c" />
+    <meta name="msvalidate.01" content="893A2865ABC54AC2782D118536831056" />
+
+    
+    <link rel="shortcut icon" href="http://www.mafool.com/img/res/favicon.ico">
+    
+
+    
+
+    <link crossorigin="anonymous" integrity="sha384-5kGFOAqgEKnuF6c2jk2JANKHZgYVt38Wn2dVJENtq1EBCP54/1uzXU5mpxqL8WjN"
+        href="https://lib.baomitu.com/bulma/0.8.0/css/bulma.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="http://www.mafool.com/css/dooz.blog.css" />
+    <script crossorigin="anonymous" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh"
+        src="https://lib.baomitu.com/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/jquery.share.min.js"></script>
+    
+
+    
+
+    
+    
+<link rel="stylesheet" href="http://www.mafool.com/css/reward.css">
+
+
+    <link href="http://www.mafool.com/css/fonts.googleapi.css" rel="stylesheet">
+    <script src=http://www.mafool.com/js/dooz.blog.js></script>
+
+    
+    <script>
+        $(document).ready(function () {
+            $('.content a[href^="http"]').each(function () {
+                $(this).attr('target', '_blank');
+            });
+        });
+
+        $(document).on('click', '.modal-wechat', function () {
+            $(".modal").addClass("is-active");
+        });
+
+        $(document).on('click', '.modal-background', function () {
+            $(".modal").removeClass("is-active");
+        });
+    </script>
+</head>
+
+<body>
+    
+    
+<section class="hero is-info is-medium"
+    style="background-image: url('/img/res/blog.jpg');">
+    <div class="hero-head">
+        <nav class="navbar is-transparent container has-text-white">
+    <div class="navbar-brand">
+        <div class="navbar-item">
+            <a class="title is-5 is-white" href="http://www.mafool.com/">码夫庄园</a>
+        </div>
+
+        
+        <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <div id="navbarExampleTransparentExample" class="navbar-menu has-text-dark">
+        
+
+        <div class="navbar-end">
+            <a class="navbar-item" href='http://www.mafool.com/'>首页</a>
+            <a class="navbar-item" href='http://www.mafool.com/archives'>归档 </a>
+            <a class="navbar-item" href='http://www.mafool.com/about'>关于</a>
+            <span class="navbar-item">
+                <a class="button is-primary is-inverted" href="https://github.com/hollson/hugo-theme-dooz">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>主题</span>
+                </a>
+            </span>
+        </div>
+    </div>
+</nav>
+    </div>
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <div class='container has-text-left column is-7'>
+                
+                <span>
+                    <a class="bar_tag" href="http://www.mafool.com/tags/%E6%8E%A5%E5%8F%A3" title="接口">接口</a>
+                </span>
+                
+                <h1 class="title is-size-2" style="margin-bottom:0.2rem;">
+                    
+                    「转」接口的构造过程是怎样的
+                    
+                </h1>
+                
+                <span class="title is-size-6" style="font-style: italic;"> </span><br>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    
+    <div class="container">
+        <div class="section">
+            
+<div class="columns">
+    <div class="column is-9">
+        <div class="tile is-child box">
+            <div class="content">
+                
+                <nav class="level">
+                    
+                    <div class="level-left">
+                        <div class="level-item">
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2019年3月16日,
+    星期六 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 4分钟阅读
+</p>
+                        </div>
+                    </div>
+
+                    
+                    
+                    <div class="share-component level-right" data-disabled="google,diandian,tencent,qzone"
+                        data-description="Share.js - 一键分享到微博，QQ空间，腾讯微博，人人，豆瓣"
+                        data-mobile-sites="weibo,qq,qzone,tencent">
+                    </div>
+                    
+                </nav>
+                <hr>
+                
+                <header>
+                    <h2>目录</h2>
+                </header>
+                <nav id="TableOfContents"></nav>
+                
+                <hr>
+                <p>我们已经看过了 <code>iface</code> 和 <code>eface</code> 的源码，知道 <code>iface</code> 最重要的是 <code>itab</code> 和 <code>_type</code>。</p>
+<p>为了研究清楚接口是如何构造的，接下来我会拿起汇编的武器，还原背后的真相。</p>
+<p>来看一个示例代码：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-golang" data-lang="golang"><span style="color:#069;font-weight:bold">package</span> main
+
+<span style="color:#069;font-weight:bold">import</span> <span style="color:#c30">&#34;fmt&#34;</span>
+
+<span style="color:#069;font-weight:bold">type</span> Person <span style="color:#069;font-weight:bold">interface</span> {
+    <span style="color:#c0f">growUp</span>()
+}
+
+<span style="color:#069;font-weight:bold">type</span> Student <span style="color:#069;font-weight:bold">struct</span> {
+    age <span style="color:#078;font-weight:bold">int</span>
+}
+
+<span style="color:#069;font-weight:bold">func</span> (p Student) <span style="color:#c0f">growUp</span>() {
+    p.age <span style="color:#555">+=</span> <span style="color:#f60">1</span>
+    <span style="color:#069;font-weight:bold">return</span>
+}
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+    <span style="color:#069;font-weight:bold">var</span> qcrao = <span style="color:#c0f">Person</span>(Student{age: <span style="color:#f60">18</span>})
+
+    fmt.<span style="color:#c0f">Println</span>(qcrao)
+}
+
+</code></pre></td></tr></table>
+</div>
+</div><p>执行命令：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">go tool compile -S main.go
+</code></pre></td></tr></table>
+</div>
+</div><p>得到 main 函数的汇编代码如下：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-asm" data-lang="asm"><span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0000</span> <span style="color:#f60">00000</span> (.<span style="color:#a00;background-color:#faa">/</span><span style="color:#360">src</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">main.go</span>:<span style="color:#f60">30</span>) <span style="color:#360">TEXT</span>    <span style="color:#a00;background-color:#faa">&#34;&#34;</span><span style="color:#360">.main</span>(<span style="color:#360">SB</span>), <span style="color:#360">$80-0</span>
+<span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0000</span> <span style="color:#f60">00000</span> (.<span style="color:#a00;background-color:#faa">/</span><span style="color:#360">src</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">main.go</span>:<span style="color:#f60">30</span>) <span style="color:#360">MOVQ</span>    (<span style="color:#360">TLS</span>), <span style="color:#360">CX</span>
+<span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0009</span> <span style="color:#f60">00009</span> (.<span style="color:#a00;background-color:#faa">/</span><span style="color:#360">src</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">main.go</span>:<span style="color:#f60">30</span>) <span style="color:#360">CMPQ</span>    <span style="color:#360">SP</span>, <span style="color:#f60">16</span>(<span style="color:#360">CX</span>)
+<span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x000d</span> <span style="color:#f60">00013</span> (.<span style="color:#a00;background-color:#faa">/</span><span style="color:#360">src</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">main.go</span>:<span style="color:#f60">30</span>) <span style="color:#360">JLS</span>     <span style="color:#f60">157</span>
+<span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0013</span> <span style="color:#f60">00019</span> (.<span style="color:#a00;background-color:#faa">/</span><span style="color:#360">src</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">main.go</span>:<span style="color:#f60">30</span>) <span style="color:#360">SUBQ</span>    <span style="color:#360">$80</span>, <span style="color:#360">SP</span>
+<span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0017</span> <span style="color:#f60">00023</span> (.<span style="color:#a00;background-color:#faa">/</span><span style="color:#360">src</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">main.go</span>:<span style="color:#f60">30</span>) <span style="color:#360">MOVQ</span>    <span style="color:#360">BP</span>, <span style="color:#f60">72</span>(<span style="color:#360">SP</span>)
+<span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x001c</span> <span style="color:#f60">00028</span> (.<span style="color:#a00;background-color:#faa">/</span><span style="color:#360">src</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">main.go</span>:<span style="color:#f60">30</span>) <span style="color:#360">LEAQ</span>    <span style="color:#f60">72</span>(<span style="color:#360">SP</span>), <span style="color:#360">BP</span>
+<span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0021</span> <span style="color:#f60">00033</span> (.<span style="color:#a00;background-color:#faa">/</span><span style="color:#360">src</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">main.go</span>:<span style="color:#f60">30</span>) <span style="color:#360">FUNCDATA$0</span>, <span style="color:#360">gclocals</span><span style="color:#a00;background-color:#faa">·</span><span style="color:#f60">69</span><span style="color:#360">c1753bd5f81501d95132d08af04464</span>(<span style="color:#360">SB</span>)
+<span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0021</span> <span style="color:#f60">00033</span> (.<span style="color:#a00;background-color:#faa">/</span><span style="color:#360">src</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">main.go</span>:<span style="color:#f60">30</span>) <span style="color:#360">FUNCDATA$1</span>, <span style="color:#360">gclocals</span><span style="color:#a00;background-color:#faa">·</span><span style="color:#360">e226d4ae4a7cad8835311c6a4683c14f</span>(<span style="color:#360">SB</span>)
+<span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0021</span> <span style="color:#f60">00033</span> (.<span style="color:#a00;background-color:#faa">/</span><span style="color:#360">src</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">main.go</span>:<span style="color:#f60">31</span>) <span style="color:#360">MOVQ</span>    <span style="color:#360">$18</span>, <span style="color:#a00;background-color:#faa">&#34;&#34;</span><span style="color:#360">..autotmp_1</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">48</span>(<span style="color:#360">SP</span>)
+<span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x002a</span> <span style="color:#f60">00042</span> (.<span style="color:#a00;background-color:#faa">/</span><span style="color:#360">src</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">main.go</span>:<span style="color:#f60">31</span>) <span style="color:#360">LEAQ</span>    <span style="color:#360">go.itab.</span><span style="color:#a00;background-color:#faa">&#34;&#34;</span><span style="color:#360">.Student</span>,<span style="color:#a00;background-color:#faa">&#34;&#34;</span><span style="color:#360">.Person</span>(<span style="color:#360">SB</span>), <span style="color:#360">AX</span>
+<span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0031</span> <span style="color:#f60">00049</span> (.<span style="color:#a00;background-color:#faa">/</span><span style="color:#360">src</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">main.go</span>:<span style="color:#f60">31</span>) <span style="color:#360">MOVQ</span>    <span style="color:#360">AX</span>, (<span style="color:#360">SP</span>)
+<span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0035</span> <span style="color:#f60">00053</span> (.<span style="color:#a00;background-color:#faa">/</span><span style="color:#360">src</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">main.go</span>:<span style="color:#f60">31</span>) <span style="color:#360">LEAQ</span>    <span style="color:#a00;background-color:#faa">&#34;&#34;</span><span style="color:#360">..autotmp_1</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">48</span>(<span style="color:#360">SP</span>), <span style="color:#360">AX</span>
+<span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x003a</span> <span style="color:#f60">00058</span> (.<span style="color:#a00;background-color:#faa">/</span><span style="color:#360">src</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">main.go</span>:<span style="color:#f60">31</span>) <span style="color:#360">MOVQ</span>    <span style="color:#360">AX</span>, <span style="color:#f60">8</span>(<span style="color:#360">SP</span>)
+<span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x003f</span> <span style="color:#f60">00063</span> (.<span style="color:#a00;background-color:#faa">/</span><span style="color:#360">src</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">main.go</span>:<span style="color:#f60">31</span>) <span style="color:#360">PCDATA</span>  <span style="color:#360">$0</span>, <span style="color:#360">$0</span>
+<span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x003f</span> <span style="color:#f60">00063</span> (.<span style="color:#a00;background-color:#faa">/</span><span style="color:#360">src</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">main.go</span>:<span style="color:#f60">31</span>) <span style="color:#360">CALL</span>    <span style="color:#360">runtime.convT2I64</span>(<span style="color:#360">SB</span>)
+<span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0044</span> <span style="color:#f60">00068</span> (.<span style="color:#a00;background-color:#faa">/</span><span style="color:#360">src</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">main.go</span>:<span style="color:#f60">31</span>) <span style="color:#360">MOVQ</span>    <span style="color:#f60">24</span>(<span style="color:#360">SP</span>), <span style="color:#360">AX</span>
+<span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0049</span> <span style="color:#f60">00073</span> (.<span style="color:#a00;background-color:#faa">/</span><span style="color:#360">src</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">main.go</span>:<span style="color:#f60">31</span>) <span style="color:#360">MOVQ</span>    <span style="color:#f60">16</span>(<span style="color:#360">SP</span>), <span style="color:#360">CX</span>
+<span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x004e</span> <span style="color:#f60">00078</span> (.<span style="color:#a00;background-color:#faa">/</span><span style="color:#360">src</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">main.go</span>:<span style="color:#f60">33</span>) <span style="color:#360">TESTQ</span>   <span style="color:#360">CX</span>, <span style="color:#360">CX</span>
+<span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0051</span> <span style="color:#f60">00081</span> (.<span style="color:#a00;background-color:#faa">/</span><span style="color:#360">src</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">main.go</span>:<span style="color:#f60">33</span>) <span style="color:#360">JEQ</span>     <span style="color:#f60">87</span>
+<span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0053</span> <span style="color:#f60">00083</span> (.<span style="color:#a00;background-color:#faa">/</span><span style="color:#360">src</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">main.go</span>:<span style="color:#f60">33</span>) <span style="color:#360">MOVQ</span>    <span style="color:#f60">8</span>(<span style="color:#360">CX</span>), <span style="color:#360">CX</span>
+<span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0057</span> <span style="color:#f60">00087</span> (.<span style="color:#a00;background-color:#faa">/</span><span style="color:#360">src</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">main.go</span>:<span style="color:#f60">33</span>) <span style="color:#360">MOVQ</span>    <span style="color:#360">$0</span>, <span style="color:#a00;background-color:#faa">&#34;&#34;</span><span style="color:#360">..autotmp_2</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">56</span>(<span style="color:#360">SP</span>)
+<span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0060</span> <span style="color:#f60">00096</span> (.<span style="color:#a00;background-color:#faa">/</span><span style="color:#360">src</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">main.go</span>:<span style="color:#f60">33</span>) <span style="color:#360">MOVQ</span>    <span style="color:#360">$0</span>, <span style="color:#a00;background-color:#faa">&#34;&#34;</span><span style="color:#360">..autotmp_2</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">64</span>(<span style="color:#360">SP</span>)
+<span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0069</span> <span style="color:#f60">00105</span> (.<span style="color:#a00;background-color:#faa">/</span><span style="color:#360">src</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">main.go</span>:<span style="color:#f60">33</span>) <span style="color:#360">MOVQ</span>    <span style="color:#360">CX</span>, <span style="color:#a00;background-color:#faa">&#34;&#34;</span><span style="color:#360">..autotmp_2</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">56</span>(<span style="color:#360">SP</span>)
+<span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x006e</span> <span style="color:#f60">00110</span> (.<span style="color:#a00;background-color:#faa">/</span><span style="color:#360">src</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">main.go</span>:<span style="color:#f60">33</span>) <span style="color:#360">MOVQ</span>    <span style="color:#360">AX</span>, <span style="color:#a00;background-color:#faa">&#34;&#34;</span><span style="color:#360">..autotmp_2</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">64</span>(<span style="color:#360">SP</span>)
+<span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0073</span> <span style="color:#f60">00115</span> (.<span style="color:#a00;background-color:#faa">/</span><span style="color:#360">src</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">main.go</span>:<span style="color:#f60">33</span>) <span style="color:#360">LEAQ</span>    <span style="color:#a00;background-color:#faa">&#34;&#34;</span><span style="color:#360">..autotmp_2</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">56</span>(<span style="color:#360">SP</span>), <span style="color:#360">AX</span>
+<span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0078</span> <span style="color:#f60">00120</span> (.<span style="color:#a00;background-color:#faa">/</span><span style="color:#360">src</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">main.go</span>:<span style="color:#f60">33</span>) <span style="color:#360">MOVQ</span>    <span style="color:#360">AX</span>, (<span style="color:#360">SP</span>)
+<span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x007c</span> <span style="color:#f60">00124</span> (.<span style="color:#a00;background-color:#faa">/</span><span style="color:#360">src</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">main.go</span>:<span style="color:#f60">33</span>) <span style="color:#360">MOVQ</span>    <span style="color:#360">$1</span>, <span style="color:#f60">8</span>(<span style="color:#360">SP</span>)
+<span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0085</span> <span style="color:#f60">00133</span> (.<span style="color:#a00;background-color:#faa">/</span><span style="color:#360">src</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">main.go</span>:<span style="color:#f60">33</span>) <span style="color:#360">MOVQ</span>    <span style="color:#360">$1</span>, <span style="color:#f60">16</span>(<span style="color:#360">SP</span>)
+<span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x008e</span> <span style="color:#f60">00142</span> (.<span style="color:#a00;background-color:#faa">/</span><span style="color:#360">src</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">main.go</span>:<span style="color:#f60">33</span>) <span style="color:#360">PCDATA</span>  <span style="color:#360">$0</span>, <span style="color:#360">$1</span>
+<span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x008e</span> <span style="color:#f60">00142</span> (.<span style="color:#a00;background-color:#faa">/</span><span style="color:#360">src</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">main.go</span>:<span style="color:#f60">33</span>) <span style="color:#360">CALL</span>    <span style="color:#360">fmt.Println</span>(<span style="color:#360">SB</span>)
+<span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0093</span> <span style="color:#f60">00147</span> (.<span style="color:#a00;background-color:#faa">/</span><span style="color:#360">src</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">main.go</span>:<span style="color:#f60">34</span>) <span style="color:#360">MOVQ</span>    <span style="color:#f60">72</span>(<span style="color:#360">SP</span>), <span style="color:#360">BP</span>
+<span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0098</span> <span style="color:#f60">00152</span> (.<span style="color:#a00;background-color:#faa">/</span><span style="color:#360">src</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">main.go</span>:<span style="color:#f60">34</span>) <span style="color:#360">ADDQ</span>    <span style="color:#360">$80</span>, <span style="color:#360">SP</span>
+<span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x009c</span> <span style="color:#f60">00156</span> (.<span style="color:#a00;background-color:#faa">/</span><span style="color:#360">src</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">main.go</span>:<span style="color:#f60">34</span>) <span style="color:#360">RET</span>
+<span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x009d</span> <span style="color:#f60">00157</span> (.<span style="color:#a00;background-color:#faa">/</span><span style="color:#360">src</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">main.go</span>:<span style="color:#f60">34</span>) <span style="color:#360">NOP</span>
+<span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x009d</span> <span style="color:#f60">00157</span> (.<span style="color:#a00;background-color:#faa">/</span><span style="color:#360">src</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">main.go</span>:<span style="color:#f60">30</span>) <span style="color:#360">PCDATA</span>  <span style="color:#360">$0</span>, <span style="color:#360">$-1</span>
+<span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x009d</span> <span style="color:#f60">00157</span> (.<span style="color:#a00;background-color:#faa">/</span><span style="color:#360">src</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">main.go</span>:<span style="color:#f60">30</span>) <span style="color:#360">CALL</span>    <span style="color:#360">runtime.morestack_noctxt</span>(<span style="color:#360">SB</span>)
+<span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x00a2</span> <span style="color:#f60">00162</span> (.<span style="color:#a00;background-color:#faa">/</span><span style="color:#360">src</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">main.go</span>:<span style="color:#f60">30</span>) <span style="color:#360">JMP</span>     <span style="color:#f60">0</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>我们从第 10 行开始看，如果不理解前面几行汇编代码的话，可以回去看看公众号前面两篇文章，这里我就省略了。</p>
+<table>
+<thead>
+<tr>
+<th>汇编行数</th>
+<th>操作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>10-14</td>
+<td>构造调用 <code>runtime.convT2I64(SB)</code> 的参数</td>
+</tr>
+</tbody>
+</table>
+<p>我们来看下这个函数的参数形式：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-golang" data-lang="golang"><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">convT2I64</span>(tab <span style="color:#555">*</span>itab, elem unsafe.Pointer) (i iface) {
+    <span style="color:#09f;font-style:italic">// ……
+</span><span style="color:#09f;font-style:italic"></span>}
+</code></pre></td></tr></table>
+</div>
+</div><p><code>convT2I64</code> 会构造出一个 <code>inteface</code>，也就是我们的 <code>Person</code> 接口。</p>
+<p>第一个参数的位置是 <code>(SP)</code>，这里被赋上了 <code>go.itab.&quot;&quot;.Student,&quot;&quot;.Person(SB)</code> 的地址。</p>
+<p>我们从生成的汇编找到：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-asm" data-lang="asm"><span style="color:#c0f">go.itab.</span><span style="color:#a00;background-color:#faa">&#34;&#34;</span><span style="color:#360">.Student</span>,<span style="color:#a00;background-color:#faa">&#34;&#34;</span><span style="color:#360">.Person</span> <span style="color:#360">SNOPTRDATA</span> <span style="color:#360">dupok</span> <span style="color:#360">size</span><span style="color:#a00;background-color:#faa">=</span><span style="color:#f60">40</span>
+        <span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0000</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span>  
+        <span style="color:#f60">0x0010</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#360">da</span> <span style="color:#f60">9</span><span style="color:#360">f</span> <span style="color:#f60">20</span> <span style="color:#360">d4</span>              
+        <span style="color:#360">rel</span> <span style="color:#f60">0</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">8</span> <span style="color:#360">t</span><span style="color:#a00;background-color:#faa">=</span><span style="color:#f60">1</span> <span style="color:#360">type.</span><span style="color:#a00;background-color:#faa">&#34;&#34;</span><span style="color:#360">.Person</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">0</span>
+        <span style="color:#c0f">rel</span> <span style="color:#f60">8</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">8</span> <span style="color:#360">t</span><span style="color:#a00;background-color:#faa">=</span><span style="color:#f60">1</span> <span style="color:#360">type.</span><span style="color:#a00;background-color:#faa">&#34;&#34;</span><span style="color:#360">.Student</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">0</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><code>size=40</code> 大小为40字节，回顾一下：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-golang" data-lang="golang"><span style="color:#069;font-weight:bold">type</span> itab <span style="color:#069;font-weight:bold">struct</span> {
+    inter  <span style="color:#555">*</span>interfacetype <span style="color:#09f;font-style:italic">// 8字节
+</span><span style="color:#09f;font-style:italic"></span>    _type  <span style="color:#555">*</span>_type <span style="color:#09f;font-style:italic">// 8字节
+</span><span style="color:#09f;font-style:italic"></span>    link   <span style="color:#555">*</span>itab <span style="color:#09f;font-style:italic">// 8字节
+</span><span style="color:#09f;font-style:italic"></span>    hash   <span style="color:#078;font-weight:bold">uint32</span> <span style="color:#09f;font-style:italic">// 4字节
+</span><span style="color:#09f;font-style:italic"></span>    bad    <span style="color:#078;font-weight:bold">bool</span>   <span style="color:#09f;font-style:italic">// 1字节
+</span><span style="color:#09f;font-style:italic"></span>    inhash <span style="color:#078;font-weight:bold">bool</span>   <span style="color:#09f;font-style:italic">// 1字节
+</span><span style="color:#09f;font-style:italic"></span>    unused [<span style="color:#f60">2</span>]<span style="color:#078;font-weight:bold">byte</span> <span style="color:#09f;font-style:italic">// 2字节
+</span><span style="color:#09f;font-style:italic"></span>    fun    [<span style="color:#f60">1</span>]<span style="color:#078;font-weight:bold">uintptr</span> <span style="color:#09f;font-style:italic">// variable sized // 8字节
+</span><span style="color:#09f;font-style:italic"></span>}
+</code></pre></td></tr></table>
+</div>
+</div><p>把每个字段的大小相加，<code>itab</code> 结构体的大小就是 40 字节。上面那一串数字实际上是 <code>itab</code> 序列化后的内容，注意到大部分数字是 0，从 24 字节开始的 4 个字节 <code>da 9f 20 d4</code> 实际上是 <code>itab</code> 的 <code>hash</code> 值，这在判断两个类型是否相同的时候会用到。</p>
+<p>下面两行是链接指令，简单说就是将所有源文件综合起来，给每个符号赋予一个全局的位置值。这里的意思也比较明确：前8个字节最终存储的是 <code>type.&quot;&quot;.Person</code> 的地址，对应 <code>itab</code> 里的 <code>inter</code> 字段，表示接口类型；8-16 字节最终存储的是 <code>type.&quot;&quot;.Student</code> 的地址，对应 <code>itab</code> 里 <code>_type</code> 字段，表示具体类型。</p>
+<p>第二个参数就比较简单了，它就是数字 <code>18</code> 的地址，这也是初始化 <code>Student</code> 结构体的时候会用到。</p>
+<table>
+<thead>
+<tr>
+<th>汇编行数</th>
+<th>操作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>15</td>
+<td>调用 <code>runtime.convT2I64(SB)</code></td>
+</tr>
+</tbody>
+</table>
+<p>具体看下代码：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-golang" data-lang="golang"><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">convT2I64</span>(tab <span style="color:#555">*</span>itab, elem unsafe.Pointer) (i iface) {
+    t <span style="color:#555">:=</span> tab._type
+    
+    <span style="color:#09f;font-style:italic">//...
+</span><span style="color:#09f;font-style:italic"></span>    
+    <span style="color:#069;font-weight:bold">var</span> x unsafe.Pointer
+    <span style="color:#069;font-weight:bold">if</span> <span style="color:#555">*</span>(<span style="color:#555">*</span><span style="color:#078;font-weight:bold">uint64</span>)(elem) <span style="color:#555">==</span> <span style="color:#f60">0</span> {
+        x = unsafe.<span style="color:#c0f">Pointer</span>(<span style="color:#555">&amp;</span>zeroVal[<span style="color:#f60">0</span>])
+    } <span style="color:#069;font-weight:bold">else</span> {
+        x = <span style="color:#c0f">mallocgc</span>(<span style="color:#f60">8</span>, t, <span style="color:#069;font-weight:bold">false</span>)
+        <span style="color:#555">*</span>(<span style="color:#555">*</span><span style="color:#078;font-weight:bold">uint64</span>)(x) = <span style="color:#555">*</span>(<span style="color:#555">*</span><span style="color:#078;font-weight:bold">uint64</span>)(elem)
+    }
+    i.tab = tab
+    i.data = x
+    <span style="color:#069;font-weight:bold">return</span>
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>这块代码比较简单，把 <code>tab</code> 赋给了 <code>iface</code> 的 <code>tab</code> 字段；<code>data</code> 部分则是在堆上申请了一块内存，然后将 <code>elem</code> 指向的 <code>18</code> 拷贝过去。这样 <code>iface</code> 就组装好了。</p>
+<table>
+<thead>
+<tr>
+<th>汇编行数</th>
+<th>操作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>17</td>
+<td>把 <code>i.tab</code> 赋给 <code>CX</code></td>
+</tr>
+<tr>
+<td>18</td>
+<td>把 <code>i.data</code> 赋给 <code>AX</code></td>
+</tr>
+<tr>
+<td>19-21</td>
+<td>检测 <code>i.tab</code> 是否是 nil，如果不是的话，把 CX 移动 8 个字节，也就是把 <code>itab</code> 的 <code>_type</code> 字段赋给了 CX，这也是接口的实体类型，最终要作为 <code>fmt.Println</code> 函数的参数</td>
+</tr>
+</tbody>
+</table>
+<p>后面，就是调用 <code>fmt.Println</code> 函数及之前的参数准备工作了，不再赘述。</p>
+<p>这样，我们就把一个 <code>interface</code> 的构造过程说完了。</p>
+<p>【引申1】<br>
+如何打印出接口类型的 <code>Hash</code> 值？</p>
+<p>这里参考曹大神翻译的一篇文章，参考资料里会写上。具体做法如下：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-golang" data-lang="golang"><span style="color:#069;font-weight:bold">type</span> iface <span style="color:#069;font-weight:bold">struct</span> {
+    tab  <span style="color:#555">*</span>itab
+    data unsafe.Pointer
+}
+<span style="color:#069;font-weight:bold">type</span> itab <span style="color:#069;font-weight:bold">struct</span> {
+    inter <span style="color:#078;font-weight:bold">uintptr</span>
+    _type <span style="color:#078;font-weight:bold">uintptr</span>
+    link <span style="color:#078;font-weight:bold">uintptr</span>
+    hash  <span style="color:#078;font-weight:bold">uint32</span>
+    _     [<span style="color:#f60">4</span>]<span style="color:#078;font-weight:bold">byte</span>
+    fun   [<span style="color:#f60">1</span>]<span style="color:#078;font-weight:bold">uintptr</span>
+}
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+    <span style="color:#069;font-weight:bold">var</span> qcrao = <span style="color:#c0f">Person</span>(Student{age: <span style="color:#f60">18</span>})
+
+    iface <span style="color:#555">:=</span> (<span style="color:#555">*</span>iface)(unsafe.<span style="color:#c0f">Pointer</span>(<span style="color:#555">&amp;</span>qcrao))
+    fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;iface.tab.hash = %#x\n&#34;</span>, iface.tab.hash)
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>定义了一个<code>山寨版</code>的 <code>iface</code> 和 <code>itab</code>，说它<code>山寨</code>是因为 <code>itab</code> 里的一些关键数据结构都不具体展开了，比如 <code>_type</code>，对比一下正宗的定义就可以发现，但是<code>山寨版</code>依然能工作，因为 <code>_type</code> 就是一个指针而已嘛。</p>
+<p>在 <code>main</code> 函数里，先构造出一个接口对象 <code>qcrao</code>，然后强制类型转换，最后读取出 <code>hash</code> 值，非常妙！你也可以自己动手试一下。</p>
+<p>运行结果：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">iface.tab.hash <span style="color:#555">=</span> 0xd4209fda
+</code></pre></td></tr></table>
+</div>
+</div><p>值得一提的是，构造接口 <code>qcrao</code> 的时候，即使我把 <code>age</code> 写成其他值，得到的 <code>hash</code> 值依然不变的，这应该是可以预料的，<code>hash</code> 值只和他的字段、方法相关。</p>
+<h1 id="参考资料">参考资料</h1>
+<p>【曹大神翻译的文章，非常硬核】http://xargin.com/go-and-interface/#reconstructing-an-itab-from-an-executable</p>
+
+                
+                
+                <hr> 
+
+<div class="entry-shang text-center">
+    
+    <p> 「真诚赞赏，手留余香」</p>
+    
+    <button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+    <div class="zs-modal-head">
+        <button type="button" class="close">×</button>
+        <span class="author">
+            <a href="http://www.mafool.com">
+                <img src="http://www.mafool.com/img/reward/hollson.png" alt="史布斯" />码夫庄园
+            </a>
+        </span>
+        
+        <p class="tip"><i></i><span>嗯，我的梦想是被读者的稿费包养~</span></p>
+        
+
+    </div>
+    <div class="zs-modal-body">
+        <div class="zs-modal-btns">
+            <button class="btn btn-blink" data-num="2">2元</button>
+            <button class="btn btn-blink" data-num="5">5元</button>
+            <button class="btn btn-blink" data-num="10">10元</button>
+            <button class="btn btn-blink" data-num="50">50元</button>
+            <button class="btn btn-blink" data-num="100">100元</button>
+            <button class="btn btn-blink" data-num="1">任意金额</button>
+        </div>
+        <div class="zs-modal-pay">
+            <button class="btn btn-bred" id="pay-text">2元</button>
+            <p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+            <img src="http://www.mafool.com/img/reward/wechat-2.png" alt="史布斯" id="pay-image" />
+        </div>
+    </div>
+    <div class="zs-modal-footer">
+        <label>
+            <span class="zs-wechat"></span>
+            <input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked">
+            <img src="http://www.mafool.com/img/reward/wechat-btn.png" alt="史布斯" />
+            </span>&nbsp;
+            <span>
+                <input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay">
+                <img src="http://www.mafool.com/img/reward/alipay-btn.png" alt="史布斯" />
+            </span>
+        </label>
+    </div>
+</div>
+
+ 
+
+                <br>
+                <br>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="column is-3">
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">最近发布</h2>
+        
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/0742b474a643d63a774461726a6201203/">Go语言中的原子操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年12月2日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/1600330472/">Go基础笔记 - 2.3 常量</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月10日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/15996311192/">Go - Gin框架快速入门</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月9日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480249/">Gorm快速指南</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480218/">18. Go语言MySQL数据库操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+    </div>
+</div>
+<br>
+        
+
+
+
+
+<div class="card">
+  <div class="card-content">
+    <h2 class="title is-6">相关文章</h2>
+    
+    
+    <h2><a href="http://www.mafool.com/posts/09f6faa09d79344eba8fcef184997d68/">Go之接口解读</a></h2>
+    <time class="has-text-grey-light is-size-7">7 March 2020</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585590231003/">「转」iface 和 eface 的区别是什么</a></h2>
+    <time class="has-text-grey-light is-size-7">16 March 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585590231005/">「转」如何用 interface 实现多态</a></h2>
+    <time class="has-text-grey-light is-size-7">16 March 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585590231006/">「转」接口的动态类型和动态值</a></h2>
+    <time class="has-text-grey-light is-size-7">16 March 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585590231004/">值接收者和指针接收者的区别</a></h2>
+    <time class="has-text-grey-light is-size-7">16 March 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585590232/">接口转换的原理</a></h2>
+    <time class="has-text-grey-light is-size-7">31 December 2018</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585590231/">类型转换和断言的区别</a></h2>
+    <time class="has-text-grey-light is-size-7">31 December 2018</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585590230/">编译器自动检测类型是否实现接口</a></h2>
+    <time class="has-text-grey-light is-size-7">31 December 2018</time>
+    
+  </div>
+</div>
+<br>
+
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">标签</h2>
+        <div>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/atomic">atomic</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/blog">blog</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cgo">cgo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cloud">cloud</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/config">config</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/copy">copy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/docker">docker</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/exam">exam</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/gin">gin</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/git">git</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/golang">golang</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/hugo">hugo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/install">install</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/istio">istio</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/jenkins">jenkins</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/kubernetes">kubernetes</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/map">map</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/microservice">microservice</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/mycat">mycat</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/nginx">nginx</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/plan9">plan9</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/posix">posix</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/proxy">proxy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/raft">raft</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ssh">ssh</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/tips">tips</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ymal">ymal</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%B8%BB%E4%BB%8E">主从</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BA%8B%E5%8A%A1">事务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BB%A3%E7%90%86">代理</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BD%9C%E7%94%A8%E5%9F%9F">作用域</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%86%85%E5%AD%98">内存</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%8B%E7%BC%A9">压缩</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%88%9B">原创</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%AD%90">原子</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%91%BD%E4%BB%A4%E8%A1%8C">命令行</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%93%A8%E5%85%B5">哨兵</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%AD%98%E5%82%A8">存储</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B8%B8%E9%87%8F">常量</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B9%B6%E5%8F%91">并发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BC%82%E5%B8%B8">异常</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1">微服务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%88%E6%9D%83%E8%AE%A4%E8%AF%81">授权认证</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%92%E5%BA%8F">排序</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%A5%E5%8F%A3">接口</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%97%A5%E5%BF%97">日志</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%9D%83%E9%99%90">权限</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE1">标签1</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE2">标签2</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%AD%A3%E5%88%99">正则</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%81%E9%87%8F%E5%88%86%E5%8F%91">流量分发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%8B%E8%AF%95">测试</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%BA%90%E7%A0%81">源码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%8A%B6%E6%80%81%E7%A0%81">状态码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%AE%97%E6%B3%95">算法</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%BC%8F">编程模式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%80%81%E5%A6%96%E7%AC%94%E8%AE%B0">老妖笔记</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%BF%87%E6%BB%A4%E5%99%A8">过滤器</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%80%83%E9%80%B8">逃逸</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%85%8D%E7%BD%AE">配置</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%86%99">重写</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%AE%9A%E5%90%91">重定向</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9B%86%E7%BE%A4">集群</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9D%A2%E8%AF%95">面试</a>
+            </span>
+            
+        </div>
+    </div>
+</div>
+<br>
+    </div>
+</div>
+
+        </div>
+    </div>
+
+    
+    <footer class="footer has-background-grey-darker has-text-white">
+    <div class="content has-text-centered">
+        <p>
+            <span class="icon is-large">
+                <a href="https://twitter.com/" class="mysocial" rel="me">
+                    <i class="fab fa-twitter fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://www.youtube.com/" class="mysocial" rel="me">
+                    <i class="fab fa-youtube fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://github.com/" class="mysocial" rel="me">
+                    <i class="fab fa-github fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <br><br>
+            友情链接：
+            
+            <a class="mysocial" href="http://www.mafool.com" target="_blank">Mafool</a>
+            
+            <a class="mysocial" href="https://gohugo.io/documentation/" target="_blank">Hugo</a>
+            
+            <a class="mysocial" href="https://bulma.io/" target="_blank">Bulma</a>
+            
+            <a class="mysocial" href="https://bootstrapious.com/" target="_blank">Bootstrapious</a>
+            
+            <a class="mysocial" href="https://youzhixueyuan.com/" target="_blank">Youzhixueyuan</a>
+            
+            <br><br />
+            版权所有 &copy; 码夫庄园 2021
+            - <a class="mysocial" href="https://github.com/hollson/hugo-theme-dooz">Hugo Theme</a>
+        </p>
+    </div>
+</footer>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='http://www.mafool.com/js/dooz.totop.js?v=0.0.0' async=""></script>
+
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = 'https://hm.baidu.com/hm.js?f185359ec6b829a6a93e1e1f2597f6d9';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DK042XSJ2J"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-DK042XSJ2J');
+</script>
+
+    
+    
+<script type="text/javascript" src="http://www.mafool.com/js/reward.js"></script>
+
+    
+    <script defer src="https://cdn.staticfile.org/font-awesome/5.13.0/js/all.min.js"></script>
+</body>
+
+</html>

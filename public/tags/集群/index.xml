@@ -1,0 +1,33 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>集群 on 码夫庄园</title>
+    <link>http://www.mafool.com/tags/%E9%9B%86%E7%BE%A4/</link>
+    <description>Recent content in 集群 on 码夫庄园</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <copyright>版权所有</copyright>
+    <lastBuildDate>Fri, 01 Nov 2019 00:00:00 +0800</lastBuildDate>
+    
+        <atom:link href="http://www.mafool.com/tags/%E9%9B%86%E7%BE%A4/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Redis哨兵模式和集群搭建</title>
+      <link>http://www.mafool.com/post/1585749845/</link>
+      <pubDate>Fri, 01 Nov 2019 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585749845/</guid>
+      <description>参考链接 https://zhangweisep.github.io/2018/09/26/Redis%E5%93%A8%E5%85%B5%E6%A8%A1%E5%BC%8F%E5%92%8C%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/ https://segmentfault.com/a/1190000021622469 https://phachon.com/redis/redis-2.html http://objcoding.com/2019/01/17/redis-sentinel/ http://www.throwable.club/2019/10/07/redis-server-sentinel-install-guide/</description>
+    </item>
+    
+    <item>
+      <title>Zookeeper集群部署</title>
+      <link>http://www.mafool.com/post/1585818342/</link>
+      <pubDate>Thu, 02 May 2019 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585818342/</guid>
+      <description>一. Zookeeper要点 zookeeper开放源码的分布式协调服务框架 ； zookeeper功能包括：配置维护、域名服务、分布式锁、组服务等</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>码夫庄园-Go并发1-并发模型</title>
+    <meta name="keywords"
+        content='并发,MPG'>
+    <meta name="description" content="用于SEO的内容说明" />
+
+    
+    <meta name="baidu-site-verification" content="v9szEmQLra" />
+    <meta name="360-site-verification" content="d8e961f98fb655e4b8cf9439cfd9ac7f" />
+    <meta name="sogou_site_verification" content="40NC9EdZDC" />
+    <meta name="shenma-site-verification" content="3200e3042e92157713a3b0aceeecb20a_1586020187" />
+    <meta name="google-site-verification" content="r8987bkunZHJeKut3ocu5NIJ5QEu53NA6Q_r7RrZ46c" />
+    <meta name="msvalidate.01" content="893A2865ABC54AC2782D118536831056" />
+
+    
+    <link rel="shortcut icon" href="http://www.mafool.com/img/res/favicon.ico">
+    
+
+    
+
+    <link crossorigin="anonymous" integrity="sha384-5kGFOAqgEKnuF6c2jk2JANKHZgYVt38Wn2dVJENtq1EBCP54/1uzXU5mpxqL8WjN"
+        href="https://lib.baomitu.com/bulma/0.8.0/css/bulma.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="http://www.mafool.com/css/dooz.blog.css" />
+    <script crossorigin="anonymous" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh"
+        src="https://lib.baomitu.com/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/jquery.share.min.js"></script>
+    
+
+    
+
+    
+    
+<link rel="stylesheet" href="http://www.mafool.com/css/reward.css">
+
+
+    <link href="http://www.mafool.com/css/fonts.googleapi.css" rel="stylesheet">
+    <script src=http://www.mafool.com/js/dooz.blog.js></script>
+
+    
+    <script>
+        $(document).ready(function () {
+            $('.content a[href^="http"]').each(function () {
+                $(this).attr('target', '_blank');
+            });
+        });
+
+        $(document).on('click', '.modal-wechat', function () {
+            $(".modal").addClass("is-active");
+        });
+
+        $(document).on('click', '.modal-background', function () {
+            $(".modal").removeClass("is-active");
+        });
+    </script>
+</head>
+
+<body>
+    
+    
+<section class="hero is-info is-medium"
+    style="background-image: url('/img/res/blog.jpg');">
+    <div class="hero-head">
+        <nav class="navbar is-transparent container has-text-white">
+    <div class="navbar-brand">
+        <div class="navbar-item">
+            <a class="title is-5 is-white" href="http://www.mafool.com/">码夫庄园</a>
+        </div>
+
+        
+        <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <div id="navbarExampleTransparentExample" class="navbar-menu has-text-dark">
+        
+
+        <div class="navbar-end">
+            <a class="navbar-item" href='http://www.mafool.com/'>首页</a>
+            <a class="navbar-item" href='http://www.mafool.com/archives'>归档 </a>
+            <a class="navbar-item" href='http://www.mafool.com/about'>关于</a>
+            <span class="navbar-item">
+                <a class="button is-primary is-inverted" href="https://github.com/hollson/hugo-theme-dooz">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>主题</span>
+                </a>
+            </span>
+        </div>
+    </div>
+</nav>
+    </div>
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <div class='container has-text-left column is-7'>
+                
+                <span>
+                    <a class="bar_tag" href="http://www.mafool.com/tags/%E5%B9%B6%E5%8F%91" title="并发">并发</a>
+                </span>
+                
+                <h1 class="title is-size-2" style="margin-bottom:0.2rem;">
+                    
+                    Go并发1-并发模型
+                    
+                </h1>
+                
+                <span class="title is-size-6" style="font-style: italic;"> </span><br>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    
+    <div class="container">
+        <div class="section">
+            
+<div class="columns">
+    <div class="column is-9">
+        <div class="tile is-child box">
+            <div class="content">
+                
+                <nav class="level">
+                    
+                    <div class="level-left">
+                        <div class="level-item">
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2019年12月19日,
+    星期四 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 4分钟阅读
+</p>
+                        </div>
+                    </div>
+
+                    
+                    
+                    <div class="share-component level-right" data-disabled="google,diandian,tencent,qzone"
+                        data-description="Share.js - 一键分享到微博，QQ空间，腾讯微博，人人，豆瓣"
+                        data-mobile-sites="weibo,qq,qzone,tencent">
+                    </div>
+                    
+                </nav>
+                <hr>
+                
+                <header>
+                    <h2>目录</h2>
+                </header>
+                <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一-并发概念">一. 并发概念</a></li>
+    <li><a href="#二-go调度器">二. Go调度器</a></li>
+    <li><a href="#三-mpg模型">三. MPG模型</a></li>
+    <li><a href="#参考链接">参考链接</a></li>
+  </ul>
+</nav>
+                
+                <hr>
+                <p>[TOC]</p>
+<h2 id="一-并发概念">一. 并发概念</h2>
+<p><strong>1. 多核CPU</strong></p>
+<ul>
+<li>单核CPU主频接近<code>4GHz</code>时遇到瓶颈(<code>能耗和散热</code>),所以2005年4月Intel推出第一次<code>双核</code>奔腾CPU。</li>
+<li>多核CPU就是在一枚处理器中集成两个或以上<code>计算引擎(内核)</code>,以<code>线程方式</code>执行多任务。</li>
+<li><code>单芯片多处理器</code>即CMP,他分为<code>同构</code>和<code>异构</code>两类，异构如<code>CPU</code>和<code>GPU</code>的组合。</li>
+<li>CMP通过<code>总线共享的Cache结构</code>或<code>片上的互连结构</code>进行<code>数据共享与同步</code>，如下图：</li>
+</ul>
+<p><img src="https://img-blog.csdnimg.cn/20191219180133629.png" alt="并发"></p>
+<p><em>查看CPU</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell"><span style="color:#09f;font-style:italic"># 查看CPU信息（Linux）</span>
+$ cat /proc/cpuinfo
+
+<span style="color:#09f;font-style:italic"># 查看CPU信息（Mac）</span>
+$ sysctl machdep.cpu|grep count
+
+$ arch 查看CPU架构
+</code></pre></td></tr></table>
+</div>
+</div><p><em>CPU参考实例：</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-txt" data-lang="txt">  型号名称：	MacBook Pro
+  型号标识符：	MacBookPro14,1
+  处理器名称：	Intel Core i5
+  处理器速度：	2.3 GHz
+  处理器数目：	1
+  核总数：	2
+  L2 缓存（每个核）：	256 KB
+  L3 缓存：	4 MB
+  内存：    8 GB
+  Boot ROM 版本：	MBP141.0173.B00
+  SMC 版本（系统）：	2.43f6
+  序列号（系统）：    FVFXR5KXXXXX
+  硬件 UUID：	D1589F05-DF5C-5BEF-9943-XXXXXXXXXX
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>2. 进程与线程</strong></p>
+<ul>
+<li>进程：<code>资源分配的最小单位</code>，进程由控制块(PCB)、程序和数据组成，生命周期：执行-就绪-阻塞。</li>
+<li>线程：<code>cpu调度的最小单位</code> ，由进程创建，继承了进程的部分资源，具有进程的一些基本特征。</li>
+</ul>
+<p><strong>3. 并行与并发</strong></p>
+<ul>
+<li>并行(<code>parallelism</code>)：<code>多个</code>处理器上<code>同时执行</code>,<code>同时刻</code>。</li>
+<li>并发(<code>concurrency</code>)：<code>同一</code>处理器上<code>轮转执行</code><sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>,<code>同时段</code>。</li>
+</ul>
+<p><strong>4. 串行与并发</strong></p>
+<ul>
+<li>串行执行： <code>顺序执行</code>,<code>资源独占</code>, <code>速度无关</code>,<code>结果确定</code></li>
+<li>并发执行： <code>无封闭性</code>,<code>不可再现</code>, <code>相互制约</code>,<code>结果不定</code></li>
+</ul>
+<p><strong>5. 多核的利弊</strong></p>
+<ul>
+<li>利：带来了CPU性能的提升，增强了用户体验</li>
+<li>弊：核数过多,对并发程序的编写、调试等造成困难,造成<code>可编程性困扰</code>。</li>
+</ul>
+<!-- raw HTML omitted -->
+<h2 id="二-go调度器">二. Go调度器</h2>
+<p><strong>1. 基础知识：</strong></p>
+<ul>
+<li>Golang并发是基于函数的，即让某个函数独立运行的能力。</li>
+<li>Golang并发基于<code>非抢占式多任务处理</code>，由协程主动交出控制权。</li>
+<li><code>runtime.NumCPU()</code>是通过<code>超线程技术</code>获取的本机<code>逻辑CPU数量</code>。</li>
+<li>Go1.5+默认的GOMAXPROCS为<code>runtime.NumCPU()</code>，适合<code>cpu计算密集型</code>。</li>
+</ul>
+<!-- raw HTML omitted -->
+<p><strong>2. runtime调度器：</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">成员</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>GOARCH</code></td>
+<td style="text-align:left">CPU架构,如x386、amd64、arm等</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>GOOS</code></td>
+<td style="text-align:left">操作系统架构,如darwin, linux等</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>GOROOT()</code></td>
+<td style="text-align:left">goroot目录</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>NumGoroutine()</code></td>
+<td style="text-align:left">协程数(包含主协程)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>NumCPU()</code></td>
+<td style="text-align:left">逻辑cpu数</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>GOMAXPROCS(n)</code></td>
+<td style="text-align:left">设置获取硬件线程数</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>GC()</code></td>
+<td style="text-align:left">垃圾回收</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>ReadMemStats(&amp;info)</code></td>
+<td style="text-align:left">统计内存</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>Gosched()</code></td>
+<td style="text-align:left">暂停当前协程</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>Goexit()</code></td>
+<td style="text-align:left">终止当前协程</td>
+</tr>
+</tbody>
+</table>
+<!-- raw HTML omitted -->
+<ul>
+<li><strong>示例1:  测试GOMAXPROCS</strong></li>
+</ul>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">sum</span>(id <span style="color:#078;font-weight:bold">int</span>) {
+   <span style="color:#069;font-weight:bold">var</span> x <span style="color:#078;font-weight:bold">int64</span>
+   <span style="color:#069;font-weight:bold">for</span> i <span style="color:#555">:=</span> <span style="color:#f60">0</span>; i &lt; math.MaxUint32; i<span style="color:#555">++</span> {
+      x <span style="color:#555">+=</span> <span style="color:#366">int64</span>(i)
+   }
+   <span style="color:#366">println</span>(id, x)
+}
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+   wg <span style="color:#555">:=</span> <span style="color:#366">new</span>(sync.WaitGroup)
+   wg.<span style="color:#c0f">Add</span>(<span style="color:#f60">2</span>)
+   <span style="color:#069;font-weight:bold">for</span> i <span style="color:#555">:=</span> <span style="color:#f60">0</span>; i &lt; <span style="color:#f60">2</span>; i<span style="color:#555">++</span> {
+      <span style="color:#069;font-weight:bold">go</span> <span style="color:#069;font-weight:bold">func</span>(id <span style="color:#078;font-weight:bold">int</span>) {
+         <span style="color:#069;font-weight:bold">defer</span> wg.<span style="color:#c0f">Done</span>()
+         <span style="color:#c0f">sum</span>(id)
+      }(i)
+   }
+   wg.<span style="color:#c0f">Wait</span>()
+}
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell"><span style="color:#033">GOMAXPROCS</span><span style="color:#555">=</span><span style="color:#f60">2</span>  <span style="color:#366">time</span> -p go run main.go 
+<span style="color:#f60">0</span> <span style="color:#f60">9223372030412324865</span>
+<span style="color:#f60">1</span> <span style="color:#f60">9223372030412324865</span>
+real         1.72 // 程序开始到结束时间差 <span style="color:#555">(</span>非 CPU 时间<span style="color:#555">)</span> 
+user         3.20 // ⽤用户态所使⽤用 CPU 时间片 <span style="color:#555">(</span>多核累加<span style="color:#555">)</span>
+sys          0.09 // 内核态所使⽤用 CPU 时间片
+</code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>调整GOMAXPROCS参数，观察real结果。</p>
+</blockquote>
+<!-- raw HTML omitted -->
+<ul>
+<li><strong>示例2:  直观感受调度器调度过程</strong></li>
+</ul>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#09f;font-style:italic">// 模拟时间片
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+   <span style="color:#09f;font-style:italic">//修改参数值，观察打印结果的离散度
+</span><span style="color:#09f;font-style:italic"></span>   runtime.<span style="color:#c0f">GOMAXPROCS</span>(<span style="color:#f60">4</span>)  
+   foo <span style="color:#555">:=</span> <span style="color:#069;font-weight:bold">func</span>(n <span style="color:#078;font-weight:bold">int</span>) {
+      <span style="color:#069;font-weight:bold">for</span> {
+         fmt.<span style="color:#c0f">Print</span>(n)
+      }
+   }
+   <span style="color:#069;font-weight:bold">go</span> <span style="color:#c0f">foo</span>(<span style="color:#f60">0</span>)
+   <span style="color:#069;font-weight:bold">go</span> <span style="color:#c0f">foo</span>(<span style="color:#f60">1</span>)
+   time.<span style="color:#c0f">Sleep</span>(time.Second <span style="color:#555">*</span> <span style="color:#f60">5</span>)
+   fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;~~~Done~~~&#34;</span>)
+}
+</code></pre></td></tr></table>
+</div>
+</div><!-- raw HTML omitted -->
+<ul>
+<li><strong>示例3:  退出子协程:</strong> <code>runtime.Goexit</code>将立即终止当前goroutine执行，调度器确保所有已注册defer延迟调用被执行。</li>
+</ul>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+   wg <span style="color:#555">:=</span> <span style="color:#366">new</span>(sync.WaitGroup)
+   wg.<span style="color:#c0f">Add</span>(<span style="color:#f60">1</span>)
+   <span style="color:#069;font-weight:bold">go</span> <span style="color:#069;font-weight:bold">func</span>() {
+      <span style="color:#069;font-weight:bold">defer</span> wg.<span style="color:#c0f">Done</span>()
+      <span style="color:#069;font-weight:bold">defer</span> <span style="color:#366">println</span>(<span style="color:#c30">&#34;A.defer&#34;</span>)
+      <span style="color:#069;font-weight:bold">func</span>() {
+         <span style="color:#069;font-weight:bold">defer</span> <span style="color:#366">println</span>(<span style="color:#c30">&#34;B.defer&#34;</span>)
+         runtime.<span style="color:#c0f">Goexit</span>()
+         <span style="color:#366">println</span>(<span style="color:#c30">&#34;B&#34;</span>)
+      }()
+      <span style="color:#366">println</span>(<span style="color:#c30">&#34;A&#34;</span>)
+   }()
+   wg.<span style="color:#c0f">Wait</span>()
+}
+</code></pre></td></tr></table>
+</div>
+</div><!-- raw HTML omitted -->
+<ul>
+<li><strong>示例4:  暂停子协程：</strong> <code>runtime.Gosched</code>让出底层线程，将当前goroutine暂停，放回队列等待下次被调度执行。</li>
+</ul>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+   wg <span style="color:#555">:=</span> <span style="color:#366">new</span>(sync.WaitGroup)
+   wg.<span style="color:#c0f">Add</span>(<span style="color:#f60">2</span>)
+   <span style="color:#069;font-weight:bold">go</span> <span style="color:#069;font-weight:bold">func</span>() {
+      <span style="color:#069;font-weight:bold">defer</span> wg.<span style="color:#c0f">Done</span>()
+      <span style="color:#366">println</span>(<span style="color:#c30">&#34;Hello, World!&#34;</span>)
+   }()
+
+   <span style="color:#069;font-weight:bold">func</span>() {
+      <span style="color:#069;font-weight:bold">defer</span> wg.<span style="color:#c0f">Done</span>()
+      <span style="color:#069;font-weight:bold">for</span> i <span style="color:#555">:=</span> <span style="color:#f60">0</span>; i &lt; <span style="color:#f60">6</span>; i<span style="color:#555">++</span> {
+         <span style="color:#366">println</span>(i)
+         <span style="color:#069;font-weight:bold">if</span> i <span style="color:#555">==</span> <span style="color:#f60">3</span> {
+            runtime.<span style="color:#c0f">Gosched</span>()
+         }
+      }
+   }()
+   wg.<span style="color:#c0f">Wait</span>()
+}
+</code></pre></td></tr></table>
+</div>
+</div><!-- raw HTML omitted -->
+<h2 id="三-mpg模型">三. MPG模型</h2>
+<p>Go语言以 <strong><code>CSP(communicating sequential processes)</code></strong> 为<code>并发模型</code>。不同于传统的多线程通过<code>共享内存来通信</code>，CSP是**“以通信的方式来共享内存”**,<br>
+即 **<code>“不要以共享内存的方式来通信，相反，要通过通信来共享内存”</code>** 。</p>
+<blockquote>
+<p><strong><code>Do not communicate by sharing memory; instead, share memory by communicating.</code></strong></p>
+</blockquote>
+<p><strong>Go语言使用<code>MPG模式</code>来实现CSP</strong>，在传统的并发中起很多线程只会加大CPU和内存的开销，太多的线程会大量的消耗计算机硬件资源，造成并发量的瓶颈。</p>
+<ul>
+<li>M指的是<code>“Machine”</code>，一个M直接关联了一个内核线程。</li>
+<li>P指的是<code>”processor”</code>，代表了M所需的上下文环境，也是处理用户级代码逻辑的处理器。</li>
+<li>G指的是<code>”Goroutine“</code>，其实本质上也是一种轻量级的线程(<code>逻辑态线程</code>)。</li>
+</ul>
+<p><img src="https://img-blog.csdnimg.cn/20191219180256835.png" alt="在这里插入图片描述"></p>
+<p><img src="https://img-blog.csdnimg.cn/20191219180311710.png" alt="在这里插入图片描述"><br>
+M关联了一个内核线程，通过调度器P（上下文）的调度，可以连接1个或者多个G,相当于把一个内核线程切分成了了N个用户线程，M和P是一对一关系(但是实际调度中关系多<br>
+变)，通过P调度N个G（P和G是一对多关系），实现内核线程和G的多对多关系（M:N）,通过这个方式, 一个内核线程就可以起N个Goroutine，同样硬件配置的机器可用的用<br>
+户线程就成几何级增长，并发性大幅提高。</p>
+<!-- raw HTML omitted -->
+<h2 id="参考链接">参考链接</h2>
+<blockquote>
+<p><a href="https://blog.csdn.net/erlib/article/details/50264271">https://blog.csdn.net/erlib/article/details/50264271</a><br>
+<a href="https://studygolang.com/articles/10099">https://studygolang.com/articles/10099</a><br>
+<a href="https://www.jianshu.com/p/8aa03db51043">https://www.jianshu.com/p/8aa03db51043</a><br>
+<a href="https://www.jianshu.com/p/ff8e8be262ac">https://www.jianshu.com/p/ff8e8be262ac</a><br>
+<a href="https://blog.haohtml.com/archives/18352">https://blog.haohtml.com/archives/18352</a></p>
+<p><a href="https://www.cnblogs.com/itbsl/p/12165215.html">https://www.cnblogs.com/itbsl/p/12165215.html</a></p>
+</blockquote>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>出让时间片或控制权轮转执行&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+                
+                
+                <hr> 
+
+<div class="entry-shang text-center">
+    
+    <p> 「真诚赞赏，手留余香」</p>
+    
+    <button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+    <div class="zs-modal-head">
+        <button type="button" class="close">×</button>
+        <span class="author">
+            <a href="http://www.mafool.com">
+                <img src="http://www.mafool.com/img/reward/hollson.png" alt="史布斯" />码夫庄园
+            </a>
+        </span>
+        
+        <p class="tip"><i></i><span>嗯，我的梦想是被读者的稿费包养~</span></p>
+        
+
+    </div>
+    <div class="zs-modal-body">
+        <div class="zs-modal-btns">
+            <button class="btn btn-blink" data-num="2">2元</button>
+            <button class="btn btn-blink" data-num="5">5元</button>
+            <button class="btn btn-blink" data-num="10">10元</button>
+            <button class="btn btn-blink" data-num="50">50元</button>
+            <button class="btn btn-blink" data-num="100">100元</button>
+            <button class="btn btn-blink" data-num="1">任意金额</button>
+        </div>
+        <div class="zs-modal-pay">
+            <button class="btn btn-bred" id="pay-text">2元</button>
+            <p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+            <img src="http://www.mafool.com/img/reward/wechat-2.png" alt="史布斯" id="pay-image" />
+        </div>
+    </div>
+    <div class="zs-modal-footer">
+        <label>
+            <span class="zs-wechat"></span>
+            <input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked">
+            <img src="http://www.mafool.com/img/reward/wechat-btn.png" alt="史布斯" />
+            </span>&nbsp;
+            <span>
+                <input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay">
+                <img src="http://www.mafool.com/img/reward/alipay-btn.png" alt="史布斯" />
+            </span>
+        </label>
+    </div>
+</div>
+
+ 
+
+                <br>
+                <br>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="column is-3">
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">最近发布</h2>
+        
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/0742b474a643d63a774461726a6201203/">Go语言中的原子操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年12月2日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/1600330472/">Go基础笔记 - 2.3 常量</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月10日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/15996311192/">Go - Gin框架快速入门</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月9日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480249/">Gorm快速指南</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480218/">18. Go语言MySQL数据库操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+    </div>
+</div>
+<br>
+        
+
+
+
+
+<div class="card">
+  <div class="card-content">
+    <h2 class="title is-6">相关文章</h2>
+    
+    
+    <h2><a href="http://www.mafool.com/posts/0742b474a643d63a774461726a6d328c/">「转」Go并发之优雅退出</a></h2>
+    <time class="has-text-grey-light is-size-7">10 April 2020</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585752015/">Mysql的乐观锁与悲观锁</a></h2>
+    <time class="has-text-grey-light is-size-7">1 April 2020</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585677428/">Go并发2-同步编程</a></h2>
+    <time class="has-text-grey-light is-size-7">19 December 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585855719/">Go并发3-Channel进程通信</a></h2>
+    <time class="has-text-grey-light is-size-7">8 October 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585856050/">Go并发4-Context</a></h2>
+    <time class="has-text-grey-light is-size-7">7 October 2019</time>
+    
+  </div>
+</div>
+<br>
+
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">标签</h2>
+        <div>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/atomic">atomic</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/blog">blog</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cgo">cgo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cloud">cloud</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/config">config</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/copy">copy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/docker">docker</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/exam">exam</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/gin">gin</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/git">git</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/golang">golang</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/hugo">hugo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/install">install</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/istio">istio</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/jenkins">jenkins</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/kubernetes">kubernetes</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/map">map</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/microservice">microservice</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/mycat">mycat</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/nginx">nginx</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/plan9">plan9</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/posix">posix</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/proxy">proxy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/raft">raft</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ssh">ssh</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/tips">tips</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ymal">ymal</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%B8%BB%E4%BB%8E">主从</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BA%8B%E5%8A%A1">事务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BB%A3%E7%90%86">代理</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BD%9C%E7%94%A8%E5%9F%9F">作用域</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%86%85%E5%AD%98">内存</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%8B%E7%BC%A9">压缩</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%88%9B">原创</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%AD%90">原子</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%91%BD%E4%BB%A4%E8%A1%8C">命令行</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%93%A8%E5%85%B5">哨兵</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%AD%98%E5%82%A8">存储</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B8%B8%E9%87%8F">常量</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B9%B6%E5%8F%91">并发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BC%82%E5%B8%B8">异常</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1">微服务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%88%E6%9D%83%E8%AE%A4%E8%AF%81">授权认证</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%92%E5%BA%8F">排序</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%A5%E5%8F%A3">接口</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%97%A5%E5%BF%97">日志</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%9D%83%E9%99%90">权限</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE1">标签1</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE2">标签2</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%AD%A3%E5%88%99">正则</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%81%E9%87%8F%E5%88%86%E5%8F%91">流量分发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%8B%E8%AF%95">测试</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%BA%90%E7%A0%81">源码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%8A%B6%E6%80%81%E7%A0%81">状态码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%AE%97%E6%B3%95">算法</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%BC%8F">编程模式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%80%81%E5%A6%96%E7%AC%94%E8%AE%B0">老妖笔记</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%BF%87%E6%BB%A4%E5%99%A8">过滤器</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%80%83%E9%80%B8">逃逸</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%85%8D%E7%BD%AE">配置</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%86%99">重写</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%AE%9A%E5%90%91">重定向</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9B%86%E7%BE%A4">集群</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9D%A2%E8%AF%95">面试</a>
+            </span>
+            
+        </div>
+    </div>
+</div>
+<br>
+    </div>
+</div>
+
+        </div>
+    </div>
+
+    
+    <footer class="footer has-background-grey-darker has-text-white">
+    <div class="content has-text-centered">
+        <p>
+            <span class="icon is-large">
+                <a href="https://twitter.com/" class="mysocial" rel="me">
+                    <i class="fab fa-twitter fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://www.youtube.com/" class="mysocial" rel="me">
+                    <i class="fab fa-youtube fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://github.com/" class="mysocial" rel="me">
+                    <i class="fab fa-github fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <br><br>
+            友情链接：
+            
+            <a class="mysocial" href="http://www.mafool.com" target="_blank">Mafool</a>
+            
+            <a class="mysocial" href="https://gohugo.io/documentation/" target="_blank">Hugo</a>
+            
+            <a class="mysocial" href="https://bulma.io/" target="_blank">Bulma</a>
+            
+            <a class="mysocial" href="https://bootstrapious.com/" target="_blank">Bootstrapious</a>
+            
+            <a class="mysocial" href="https://youzhixueyuan.com/" target="_blank">Youzhixueyuan</a>
+            
+            <br><br />
+            版权所有 &copy; 码夫庄园 2021
+            - <a class="mysocial" href="https://github.com/hollson/hugo-theme-dooz">Hugo Theme</a>
+        </p>
+    </div>
+</footer>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='http://www.mafool.com/js/dooz.totop.js?v=0.0.0' async=""></script>
+
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = 'https://hm.baidu.com/hm.js?f185359ec6b829a6a93e1e1f2597f6d9';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DK042XSJ2J"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-DK042XSJ2J');
+</script>
+
+    
+    
+<script type="text/javascript" src="http://www.mafool.com/js/reward.js"></script>
+
+    
+    <script defer src="https://cdn.staticfile.org/font-awesome/5.13.0/js/all.min.js"></script>
+</body>
+
+</html>

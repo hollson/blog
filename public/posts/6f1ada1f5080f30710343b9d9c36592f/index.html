@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>码夫庄园-Go - 实现布隆过滤器</title>
+    <meta name="keywords"
+        content='布隆,过滤器,哈希,判重'>
+    <meta name="description" content="布隆过滤器（Bloom Filter） 是由 Howard Bloom在1970年提出的二进制向量数据结构，它具有很好的空间和时间效率，被用来检测一个元素是不是集合中的一个成员，即判定 “可能已存在和绝对不存在” 两种情况。如果检测结果为是，该元素不一定在集合中；但如果检测结果为否，该元素一定不在集合中,因此Bloom filter具有100%的召回率。" />
+
+    
+    <meta name="baidu-site-verification" content="v9szEmQLra" />
+    <meta name="360-site-verification" content="d8e961f98fb655e4b8cf9439cfd9ac7f" />
+    <meta name="sogou_site_verification" content="40NC9EdZDC" />
+    <meta name="shenma-site-verification" content="3200e3042e92157713a3b0aceeecb20a_1586020187" />
+    <meta name="google-site-verification" content="r8987bkunZHJeKut3ocu5NIJ5QEu53NA6Q_r7RrZ46c" />
+    <meta name="msvalidate.01" content="893A2865ABC54AC2782D118536831056" />
+
+    
+    <link rel="shortcut icon" href="http://www.mafool.com/img/res/favicon.ico">
+    
+
+    
+
+    <link crossorigin="anonymous" integrity="sha384-5kGFOAqgEKnuF6c2jk2JANKHZgYVt38Wn2dVJENtq1EBCP54/1uzXU5mpxqL8WjN"
+        href="https://lib.baomitu.com/bulma/0.8.0/css/bulma.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="http://www.mafool.com/css/dooz.blog.css" />
+    <script crossorigin="anonymous" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh"
+        src="https://lib.baomitu.com/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/jquery.share.min.js"></script>
+    
+
+    
+
+    
+    
+<link rel="stylesheet" href="http://www.mafool.com/css/reward.css">
+
+
+    <link href="http://www.mafool.com/css/fonts.googleapi.css" rel="stylesheet">
+    <script src=http://www.mafool.com/js/dooz.blog.js></script>
+
+    
+    <script>
+        $(document).ready(function () {
+            $('.content a[href^="http"]').each(function () {
+                $(this).attr('target', '_blank');
+            });
+        });
+
+        $(document).on('click', '.modal-wechat', function () {
+            $(".modal").addClass("is-active");
+        });
+
+        $(document).on('click', '.modal-background', function () {
+            $(".modal").removeClass("is-active");
+        });
+    </script>
+</head>
+
+<body>
+    
+    
+<section class="hero is-info is-medium"
+    style="background-image: url('/img/res/blog.jpg');">
+    <div class="hero-head">
+        <nav class="navbar is-transparent container has-text-white">
+    <div class="navbar-brand">
+        <div class="navbar-item">
+            <a class="title is-5 is-white" href="http://www.mafool.com/">码夫庄园</a>
+        </div>
+
+        
+        <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <div id="navbarExampleTransparentExample" class="navbar-menu has-text-dark">
+        
+
+        <div class="navbar-end">
+            <a class="navbar-item" href='http://www.mafool.com/'>首页</a>
+            <a class="navbar-item" href='http://www.mafool.com/archives'>归档 </a>
+            <a class="navbar-item" href='http://www.mafool.com/about'>关于</a>
+            <span class="navbar-item">
+                <a class="button is-primary is-inverted" href="https://github.com/hollson/hugo-theme-dooz">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>主题</span>
+                </a>
+            </span>
+        </div>
+    </div>
+</nav>
+    </div>
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <div class='container has-text-left column is-7'>
+                
+                <span>
+                    <a class="bar_tag" href="http://www.mafool.com/tags/%E8%BF%87%E6%BB%A4%E5%99%A8" title="过滤器">过滤器</a>
+                </span>
+                
+                <h1 class="title is-size-2" style="margin-bottom:0.2rem;">
+                    
+                    Go - 实现布隆过滤器
+                    
+                </h1>
+                
+                <span class="title is-size-6" style="font-style: italic;"> </span><br>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    
+    <div class="container">
+        <div class="section">
+            
+<div class="columns">
+    <div class="column is-9">
+        <div class="tile is-child box">
+            <div class="content">
+                
+                <nav class="level">
+                    
+                    <div class="level-left">
+                        <div class="level-item">
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年4月13日,
+    星期一 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 4分钟阅读
+</p>
+                        </div>
+                    </div>
+
+                    
+                    
+                    <div class="share-component level-right" data-disabled="google,diandian,tencent,qzone"
+                        data-description="Share.js - 一键分享到微博，QQ空间，腾讯微博，人人，豆瓣"
+                        data-mobile-sites="weibo,qq,qzone,tencent">
+                    </div>
+                    
+                </nav>
+                <hr>
+                
+                <header>
+                    <h2>目录</h2>
+                </header>
+                <nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-概念">1. 概念</a></li>
+    <li><a href="#2-应用场景">2. 应用场景</a></li>
+    <li><a href="#3-工作原理">3. 工作原理</a></li>
+    <li><a href="#4-优缺缺点">4. 优缺缺点</a></li>
+    <li><a href="#5-注意事项">5. 注意事项</a></li>
+    <li><a href="#6--代码实现">6.  代码实现</a></li>
+    <li><a href="#参考链接">参考链接</a></li>
+  </ul>
+</nav>
+                
+                <hr>
+                <h2 id="1-概念">1. 概念</h2>
+<p><strong>布隆过滤器（Bloom Filter）</strong> 是由 Howard Bloom在1970年提出的<code>二进制向量数据结构</code>，它具有很好的<code>空间和时间效率</code>，被用来<code>检测一个元素是不是集合中的一个成员</code>，即判定 <strong><code>“可能已存在和绝对不存在”</code></strong> 两种情况。如果检测结果为是，该元素不一定在集合中；但如果检测结果为否，该元素一定不在集合中,因此Bloom filter<code>具有100%的召回率</code>。</p>
+<!-- raw HTML omitted -->
+<h2 id="2-应用场景">2. 应用场景</h2>
+<ul>
+<li>垃圾邮件过滤</li>
+<li>防止缓存击穿</li>
+<li>比特币交易查询</li>
+<li>爬虫的URL过滤</li>
+<li>IP黑名单</li>
+<li>查询加速【比如基于KV结构的数据】</li>
+<li>集合元素重复的判断</li>
+</ul>
+<!-- raw HTML omitted -->
+<h2 id="3-工作原理">3. 工作原理</h2>
+<p>布隆过滤器的核心是一个<code>超大的位数组</code>和<code>几个哈希函数</code>。假设位数组的长度为m,哈希函数的个数为k。<br>
+下图表示有三个hash函数，比如一个集合中有x，y，z三个元素，分别用三个hash函数映射到二进制序列的某些位上，假设我们判断w是否在集合中，同样用三个hash函数来映射，结果发现取得的结果不全为1，则表示w不在集合里面。</p>
+<p><img src="https://img-blog.csdnimg.cn/2019120816271831.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0d1c2FuZA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p><strong>工作流程:</strong></p>
+<ul>
+<li>第一步：开辟空间：<br>
+开辟一个长度为m的位数组（或者称二进制向量），这个不同的语言有不同的实现方式，甚至你可以用文件来实现。</li>
+<li>第二步：寻找hash函数<br>
+获取几个hash函数，前辈们已经发明了很多运行良好的hash函数，比如BKDRHash，JSHash，RSHash等等。这些hash函数我们直接获取就可以了。</li>
+<li>第三步：写入数据<br>
+将所需要判断的内容经过这些hash函数计算，得到几个值，比如用3个hash函数，得到值分别是1000，2000，3000。之后设置m位数组的第1000，2000，3000位的值位二进制1。</li>
+<li>第四步：判断<br>
+接下来就可以判断一个新的内容是不是在我们的集合中。判断的流程和写入的流程是一致的。</li>
+</ul>
+<!-- raw HTML omitted -->
+<h2 id="4-优缺缺点">4. 优缺缺点</h2>
+<p><strong>1、优点：</strong></p>
+<ul>
+<li>有很好的<code>空间和时间效率</code></li>
+<li><code>存储空间和插入/查询时间都是常数</code>。</li>
+<li>Hash函数相互之间没有关系，方便由硬件并行实现。</li>
+<li>不需要存储元素本身，在某些对保密要求非常严格的场合有优势。</li>
+<li>布隆过滤器可以表示<code>全集</code>，其它任何数据结构都不能。</li>
+</ul>
+<p><strong>2、缺点：</strong></p>
+<ul>
+<li><code>误判率会随元素的增加而增加</code></li>
+<li><code>不能从布隆过滤器中删除元素</code></li>
+</ul>
+<!-- raw HTML omitted -->
+<h2 id="5-注意事项">5. 注意事项</h2>
+<p>布隆过滤器思路比较简单，但是对于布隆过滤器的随机映射函数设计，需要计算几次，向量长度设置为多少比较合适，这个才是需要认真讨论的。<br>
+如果向量长度太短，会导致误判率直线上升。<br>
+如果向量太长，会浪费大量内存。<br>
+如果计算次数过多，会占用计算资源，且很容易很快就把过滤器填满。</p>
+<!-- raw HTML omitted -->
+<h2 id="6--代码实现">6.  代码实现</h2>
+<p><strong>1. 开源包简单演示</strong></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">package</span> main
+
+<span style="color:#069;font-weight:bold">import</span> (
+   <span style="color:#c30">&#34;fmt&#34;</span>
+   <span style="color:#c30">&#34;github.com/willf/bitset&#34;</span>
+   <span style="color:#c30">&#34;math/rand&#34;</span>
+)
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+   <span style="color:#c0f">Foo</span>()
+   <span style="color:#c0f">bar</span>()
+}
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">Foo</span>() {
+   <span style="color:#069;font-weight:bold">var</span> b bitset.BitSet <span style="color:#09f;font-style:italic">// 定义一个BitSet对象
+</span><span style="color:#09f;font-style:italic"></span>
+   b.<span style="color:#c0f">Set</span>(<span style="color:#f60">1</span>).<span style="color:#c0f">Set</span>(<span style="color:#f60">2</span>).<span style="color:#c0f">Set</span>(<span style="color:#f60">3</span>) <span style="color:#09f;font-style:italic">//添加3个元素
+</span><span style="color:#09f;font-style:italic"></span>   <span style="color:#069;font-weight:bold">if</span> b.<span style="color:#c0f">Test</span>(<span style="color:#f60">2</span>) {
+      fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;2已经存在&#34;</span>)
+   }
+   fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;总数：&#34;</span>, b.<span style="color:#c0f">Count</span>())
+
+   b.<span style="color:#c0f">Clear</span>(<span style="color:#f60">2</span>)
+   <span style="color:#069;font-weight:bold">if</span> !b.<span style="color:#c0f">Test</span>(<span style="color:#f60">2</span>) {
+      fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;2不存在&#34;</span>)
+   }
+   fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;总数：&#34;</span>, b.<span style="color:#c0f">Count</span>())
+}
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">bar</span>() {
+   fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;Hello from BitSet!\n&#34;</span>)
+   <span style="color:#069;font-weight:bold">var</span> b bitset.BitSet
+   <span style="color:#09f;font-style:italic">// play some Go Fish
+</span><span style="color:#09f;font-style:italic"></span>   <span style="color:#069;font-weight:bold">for</span> i <span style="color:#555">:=</span> <span style="color:#f60">0</span>; i &lt; <span style="color:#f60">100</span>; i<span style="color:#555">++</span> {
+      card1 <span style="color:#555">:=</span> <span style="color:#366">uint</span>(rand.<span style="color:#c0f">Intn</span>(<span style="color:#f60">52</span>))
+      card2 <span style="color:#555">:=</span> <span style="color:#366">uint</span>(rand.<span style="color:#c0f">Intn</span>(<span style="color:#f60">52</span>))
+      b.<span style="color:#c0f">Set</span>(card1)
+      <span style="color:#069;font-weight:bold">if</span> b.<span style="color:#c0f">Test</span>(card2) {
+         fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;Go Fish!&#34;</span>)
+      }
+      b.<span style="color:#c0f">Clear</span>(card1)
+   }
+
+   <span style="color:#09f;font-style:italic">// Chaining
+</span><span style="color:#09f;font-style:italic"></span>   b.<span style="color:#c0f">Set</span>(<span style="color:#f60">10</span>).<span style="color:#c0f">Set</span>(<span style="color:#f60">11</span>)
+
+   <span style="color:#069;font-weight:bold">for</span> i, e <span style="color:#555">:=</span> b.<span style="color:#c0f">NextSet</span>(<span style="color:#f60">0</span>); e; i, e = b.<span style="color:#c0f">NextSet</span>(i <span style="color:#555">+</span> <span style="color:#f60">1</span>) {
+      fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;The following bit is set:&#34;</span>, i)
+   }
+   <span style="color:#09f;font-style:italic">// 交集
+</span><span style="color:#09f;font-style:italic"></span>   <span style="color:#069;font-weight:bold">if</span> b.<span style="color:#c0f">Intersection</span>(bitset.<span style="color:#c0f">New</span>(<span style="color:#f60">100</span>).<span style="color:#c0f">Set</span>(<span style="color:#f60">10</span>)).<span style="color:#c0f">Count</span>() <span style="color:#555">==</span> <span style="color:#f60">1</span> {
+      fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;Intersection works.&#34;</span>)
+   } <span style="color:#069;font-weight:bold">else</span> {
+      fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;Intersection doesn&#39;t work???&#34;</span>)
+   }
+}
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>2. 封装的方法：</strong></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">package</span> bloomx
+
+<span style="color:#069;font-weight:bold">import</span> <span style="color:#c30">&#34;github.com/willf/bitset&#34;</span>
+
+<span style="color:#069;font-weight:bold">const</span> DEFAULT_SIZE = <span style="color:#f60">2</span><span style="color:#555">&lt;&lt;</span><span style="color:#f60">24</span>
+<span style="color:#069;font-weight:bold">var</span> seeds = []<span style="color:#078;font-weight:bold">uint</span>{<span style="color:#f60">7</span>, <span style="color:#f60">11</span>, <span style="color:#f60">13</span>, <span style="color:#f60">31</span>, <span style="color:#f60">37</span>, <span style="color:#f60">61</span>}
+
+<span style="color:#069;font-weight:bold">type</span> BloomFilter <span style="color:#069;font-weight:bold">struct</span> {
+   Set <span style="color:#555">*</span>bitset.BitSet
+   Funcs [<span style="color:#f60">6</span>]SimpleHash
+}
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">NewBloomFilter</span>() <span style="color:#555">*</span>BloomFilter {
+   bf <span style="color:#555">:=</span> <span style="color:#366">new</span>(BloomFilter)
+   <span style="color:#069;font-weight:bold">for</span> i<span style="color:#555">:=</span><span style="color:#f60">0</span>;i&lt; <span style="color:#366">len</span>(bf.Funcs);i<span style="color:#555">++</span>{
+      bf.Funcs[i] = SimpleHash{DEFAULT_SIZE,seeds[i]}
+   }
+   bf.Set = bitset.<span style="color:#c0f">New</span>(DEFAULT_SIZE)
+   <span style="color:#069;font-weight:bold">return</span> bf
+}
+
+<span style="color:#069;font-weight:bold">func</span> (bf BloomFilter) <span style="color:#c0f">Add</span>(value <span style="color:#078;font-weight:bold">string</span>){
+   <span style="color:#069;font-weight:bold">for</span> _,f<span style="color:#555">:=</span><span style="color:#069;font-weight:bold">range</span>(bf.Funcs){
+      bf.Set.<span style="color:#c0f">Set</span>(f.<span style="color:#c0f">hash</span>(value))
+   }
+}
+
+<span style="color:#069;font-weight:bold">func</span> (bf BloomFilter) <span style="color:#c0f">Contains</span>(value <span style="color:#078;font-weight:bold">string</span>) <span style="color:#078;font-weight:bold">bool</span> {
+   <span style="color:#069;font-weight:bold">if</span> value <span style="color:#555">==</span> <span style="color:#c30">&#34;&#34;</span> {
+      <span style="color:#069;font-weight:bold">return</span> <span style="color:#069;font-weight:bold">false</span>
+   }
+   ret <span style="color:#555">:=</span> <span style="color:#069;font-weight:bold">true</span>
+   <span style="color:#069;font-weight:bold">for</span> _,f<span style="color:#555">:=</span><span style="color:#069;font-weight:bold">range</span>(bf.Funcs){
+      ret = ret <span style="color:#555">&amp;&amp;</span> bf.Set.<span style="color:#c0f">Test</span>(f.<span style="color:#c0f">hash</span>(value))
+   }
+   <span style="color:#069;font-weight:bold">return</span> ret
+}
+
+<span style="color:#069;font-weight:bold">type</span> SimpleHash <span style="color:#069;font-weight:bold">struct</span>{
+   Cap <span style="color:#078;font-weight:bold">uint</span>
+   Seed <span style="color:#078;font-weight:bold">uint</span>
+}
+
+<span style="color:#069;font-weight:bold">func</span> (s SimpleHash) <span style="color:#c0f">hash</span>(value <span style="color:#078;font-weight:bold">string</span>) <span style="color:#078;font-weight:bold">uint</span>{
+   <span style="color:#069;font-weight:bold">var</span> result <span style="color:#078;font-weight:bold">uint</span> = <span style="color:#f60">0</span>
+   <span style="color:#069;font-weight:bold">for</span> i<span style="color:#555">:=</span><span style="color:#f60">0</span>;i&lt; <span style="color:#366">len</span>(value);i<span style="color:#555">++</span>{
+      result = result<span style="color:#555">*</span>s.Seed<span style="color:#555">+</span><span style="color:#366">uint</span>(value[i])
+   }
+   <span style="color:#069;font-weight:bold">return</span> (s.Cap<span style="color:#555">-</span><span style="color:#f60">1</span>)<span style="color:#555">&amp;</span>result
+}
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+   filter <span style="color:#555">:=</span> bloomx.<span style="color:#c0f">NewBloomFilter</span>()
+   fmt.<span style="color:#c0f">Println</span>(filter.Funcs[<span style="color:#f60">1</span>].Seed)
+   str1 <span style="color:#555">:=</span> <span style="color:#c30">&#34;hello,bloom filter!&#34;</span>
+   filter.<span style="color:#c0f">Add</span>(str1)
+   str2 <span style="color:#555">:=</span> <span style="color:#c30">&#34;A happy day&#34;</span>
+   filter.<span style="color:#c0f">Add</span>(str2)
+   str3 <span style="color:#555">:=</span> <span style="color:#c30">&#34;Greate wall&#34;</span>
+   filter.<span style="color:#c0f">Add</span>(str3)
+
+   fmt.<span style="color:#c0f">Println</span>(filter.Set.<span style="color:#c0f">Count</span>())
+   fmt.<span style="color:#c0f">Println</span>(filter.<span style="color:#c0f">Contains</span>(str1))
+   fmt.<span style="color:#c0f">Println</span>(filter.<span style="color:#c0f">Contains</span>(str2))
+   fmt.<span style="color:#c0f">Println</span>(filter.<span style="color:#c0f">Contains</span>(str3))
+   fmt.<span style="color:#c0f">Println</span>(filter.<span style="color:#c0f">Contains</span>(<span style="color:#c30">&#34;blockchain technology&#34;</span>))
+}
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>100W数量级下布隆过滤器测试</strong>，源码可参考<a href="https://download.csdn.net/download/Gusand/12018239">https://download.csdn.net/download/Gusand/12018239</a></p>
+<!-- raw HTML omitted -->
+<h2 id="参考链接">参考链接</h2>
+<blockquote>
+<p><a href="https://www.jianshu.com/p/01309d298a0e">https://www.jianshu.com/p/01309d298a0e</a><br>
+<a href="https://www.cnblogs.com/zengdan-develpoer/p/4425167.html">https://www.cnblogs.com/zengdan-develpoer/p/4425167.html</a><br>
+<a href="https://blog.csdn.net/liuzhijun301/article/details/83040178">https://blog.csdn.net/liuzhijun301/article/details/83040178</a><br>
+<a href="https://github.com/willf/bloom">https://github.com/willf/bloom</a></p>
+</blockquote>
+
+                
+                
+                <hr> 
+
+<div class="entry-shang text-center">
+    
+    <p> 「真诚赞赏，手留余香」</p>
+    
+    <button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+    <div class="zs-modal-head">
+        <button type="button" class="close">×</button>
+        <span class="author">
+            <a href="http://www.mafool.com">
+                <img src="http://www.mafool.com/img/reward/hollson.png" alt="史布斯" />码夫庄园
+            </a>
+        </span>
+        
+        <p class="tip"><i></i><span>嗯，我的梦想是被读者的稿费包养~</span></p>
+        
+
+    </div>
+    <div class="zs-modal-body">
+        <div class="zs-modal-btns">
+            <button class="btn btn-blink" data-num="2">2元</button>
+            <button class="btn btn-blink" data-num="5">5元</button>
+            <button class="btn btn-blink" data-num="10">10元</button>
+            <button class="btn btn-blink" data-num="50">50元</button>
+            <button class="btn btn-blink" data-num="100">100元</button>
+            <button class="btn btn-blink" data-num="1">任意金额</button>
+        </div>
+        <div class="zs-modal-pay">
+            <button class="btn btn-bred" id="pay-text">2元</button>
+            <p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+            <img src="http://www.mafool.com/img/reward/wechat-2.png" alt="史布斯" id="pay-image" />
+        </div>
+    </div>
+    <div class="zs-modal-footer">
+        <label>
+            <span class="zs-wechat"></span>
+            <input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked">
+            <img src="http://www.mafool.com/img/reward/wechat-btn.png" alt="史布斯" />
+            </span>&nbsp;
+            <span>
+                <input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay">
+                <img src="http://www.mafool.com/img/reward/alipay-btn.png" alt="史布斯" />
+            </span>
+        </label>
+    </div>
+</div>
+
+ 
+
+                <br>
+                <br>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="column is-3">
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">最近发布</h2>
+        
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/0742b474a643d63a774461726a6201203/">Go语言中的原子操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年12月2日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/1600330472/">Go基础笔记 - 2.3 常量</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月10日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/15996311192/">Go - Gin框架快速入门</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月9日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480249/">Gorm快速指南</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480218/">18. Go语言MySQL数据库操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+    </div>
+</div>
+<br>
+        
+
+
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">标签</h2>
+        <div>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/atomic">atomic</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/blog">blog</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cgo">cgo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cloud">cloud</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/config">config</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/copy">copy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/docker">docker</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/exam">exam</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/gin">gin</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/git">git</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/golang">golang</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/hugo">hugo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/install">install</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/istio">istio</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/jenkins">jenkins</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/kubernetes">kubernetes</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/map">map</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/microservice">microservice</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/mycat">mycat</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/nginx">nginx</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/plan9">plan9</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/posix">posix</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/proxy">proxy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/raft">raft</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ssh">ssh</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/tips">tips</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ymal">ymal</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%B8%BB%E4%BB%8E">主从</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BA%8B%E5%8A%A1">事务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BB%A3%E7%90%86">代理</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BD%9C%E7%94%A8%E5%9F%9F">作用域</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%86%85%E5%AD%98">内存</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%8B%E7%BC%A9">压缩</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%88%9B">原创</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%AD%90">原子</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%91%BD%E4%BB%A4%E8%A1%8C">命令行</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%93%A8%E5%85%B5">哨兵</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%AD%98%E5%82%A8">存储</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B8%B8%E9%87%8F">常量</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B9%B6%E5%8F%91">并发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BC%82%E5%B8%B8">异常</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1">微服务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%88%E6%9D%83%E8%AE%A4%E8%AF%81">授权认证</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%92%E5%BA%8F">排序</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%A5%E5%8F%A3">接口</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%97%A5%E5%BF%97">日志</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%9D%83%E9%99%90">权限</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE1">标签1</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE2">标签2</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%AD%A3%E5%88%99">正则</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%81%E9%87%8F%E5%88%86%E5%8F%91">流量分发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%8B%E8%AF%95">测试</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%BA%90%E7%A0%81">源码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%8A%B6%E6%80%81%E7%A0%81">状态码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%AE%97%E6%B3%95">算法</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%BC%8F">编程模式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%80%81%E5%A6%96%E7%AC%94%E8%AE%B0">老妖笔记</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%BF%87%E6%BB%A4%E5%99%A8">过滤器</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%80%83%E9%80%B8">逃逸</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%85%8D%E7%BD%AE">配置</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%86%99">重写</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%AE%9A%E5%90%91">重定向</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9B%86%E7%BE%A4">集群</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9D%A2%E8%AF%95">面试</a>
+            </span>
+            
+        </div>
+    </div>
+</div>
+<br>
+    </div>
+</div>
+
+        </div>
+    </div>
+
+    
+    <footer class="footer has-background-grey-darker has-text-white">
+    <div class="content has-text-centered">
+        <p>
+            <span class="icon is-large">
+                <a href="https://twitter.com/" class="mysocial" rel="me">
+                    <i class="fab fa-twitter fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://www.youtube.com/" class="mysocial" rel="me">
+                    <i class="fab fa-youtube fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://github.com/" class="mysocial" rel="me">
+                    <i class="fab fa-github fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <br><br>
+            友情链接：
+            
+            <a class="mysocial" href="http://www.mafool.com" target="_blank">Mafool</a>
+            
+            <a class="mysocial" href="https://gohugo.io/documentation/" target="_blank">Hugo</a>
+            
+            <a class="mysocial" href="https://bulma.io/" target="_blank">Bulma</a>
+            
+            <a class="mysocial" href="https://bootstrapious.com/" target="_blank">Bootstrapious</a>
+            
+            <a class="mysocial" href="https://youzhixueyuan.com/" target="_blank">Youzhixueyuan</a>
+            
+            <br><br />
+            版权所有 &copy; 码夫庄园 2021
+            - <a class="mysocial" href="https://github.com/hollson/hugo-theme-dooz">Hugo Theme</a>
+        </p>
+    </div>
+</footer>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='http://www.mafool.com/js/dooz.totop.js?v=0.0.0' async=""></script>
+
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = 'https://hm.baidu.com/hm.js?f185359ec6b829a6a93e1e1f2597f6d9';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DK042XSJ2J"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-DK042XSJ2J');
+</script>
+
+    
+    
+<script type="text/javascript" src="http://www.mafool.com/js/reward.js"></script>
+
+    
+    <script defer src="https://cdn.staticfile.org/font-awesome/5.13.0/js/all.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>码夫庄园-2020</title>
+    <meta name="keywords"
+        content='码农,hugo,theme,blog,coder,geek,github,golang,技术,源码,代码,编程,程序员,主题,个人,博客,微服务,容器'>
+    <meta name="description" content="" />
+
+    
+    <meta name="baidu-site-verification" content="v9szEmQLra" />
+    <meta name="360-site-verification" content="d8e961f98fb655e4b8cf9439cfd9ac7f" />
+    <meta name="sogou_site_verification" content="40NC9EdZDC" />
+    <meta name="shenma-site-verification" content="3200e3042e92157713a3b0aceeecb20a_1586020187" />
+    <meta name="google-site-verification" content="r8987bkunZHJeKut3ocu5NIJ5QEu53NA6Q_r7RrZ46c" />
+    <meta name="msvalidate.01" content="893A2865ABC54AC2782D118536831056" />
+
+    
+    <link rel="shortcut icon" href="http://www.mafool.com/img/res/favicon.ico">
+    
+
+    
+
+    <link crossorigin="anonymous" integrity="sha384-5kGFOAqgEKnuF6c2jk2JANKHZgYVt38Wn2dVJENtq1EBCP54/1uzXU5mpxqL8WjN"
+        href="https://lib.baomitu.com/bulma/0.8.0/css/bulma.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="http://www.mafool.com/css/dooz.blog.css" />
+    <script crossorigin="anonymous" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh"
+        src="https://lib.baomitu.com/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/jquery.share.min.js"></script>
+    
+
+    
+    <link href="http://www.mafool.com/archives/2020/index.xml" rel="alternate" type="application/rss+xml" title="码夫庄园" />
+    <link href="http://www.mafool.com/archives/2020/index.xml" rel="feed" type="application/rss+xml" title="码夫庄园" />
+    
+
+    
+    
+<link rel="stylesheet" href="http://www.mafool.com/css/reward.css">
+
+
+    <link href="http://www.mafool.com/css/fonts.googleapi.css" rel="stylesheet">
+    <script src=http://www.mafool.com/js/dooz.blog.js></script>
+
+    
+    <script>
+        $(document).ready(function () {
+            $('.content a[href^="http"]').each(function () {
+                $(this).attr('target', '_blank');
+            });
+        });
+
+        $(document).on('click', '.modal-wechat', function () {
+            $(".modal").addClass("is-active");
+        });
+
+        $(document).on('click', '.modal-background', function () {
+            $(".modal").removeClass("is-active");
+        });
+    </script>
+</head>
+
+<body>
+    
+    
+<section class="hero is-info is-medium"
+    style="background-image: url('/img/res/hero.jpg');">
+    <div class="hero-head">
+        <nav class="navbar is-transparent container has-text-white">
+    <div class="navbar-brand">
+        <div class="navbar-item">
+            <a class="title is-5 is-white" href="http://www.mafool.com/">码夫庄园</a>
+        </div>
+
+        
+        <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <div id="navbarExampleTransparentExample" class="navbar-menu has-text-dark">
+        
+
+        <div class="navbar-end">
+            <a class="navbar-item" href='http://www.mafool.com/'>首页</a>
+            <a class="navbar-item" href='http://www.mafool.com/archives'>归档 </a>
+            <a class="navbar-item" href='http://www.mafool.com/about'>关于</a>
+            <span class="navbar-item">
+                <a class="button is-primary is-inverted" href="https://github.com/hollson/hugo-theme-dooz">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>主题</span>
+                </a>
+            </span>
+        </div>
+    </div>
+</nav>
+    </div>
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <div class='container column is-7'>
+                
+                <h1 class="title is-size-2" style="margin-bottom:0.2rem;">
+                    
+                    Archive@ 2020
+                    
+                </h1>
+                
+                <span class="title is-size-6" style="font-style: italic;"> </span><br>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    
+    <div class="container">
+        <div class="section">
+            
+
+
+<div class="columns">
+    <div class="column is-1"></div>
+    <div class="column is-10">
+        <div class="tile is-child box">
+            <div class="content">
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/posts/0742b474a643d63a774461726a6201203/">Go语言中的原子操作</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年12月2日,
+    星期三 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 3分钟阅读
+</p>
+                            <p>  原子操作中，针对某个值的操作在被进行的过程中，CPU绝不会再去进行其他的针对该值的操作。为了实现这样的严谨性，原子操作仅会由一个独立的CPU指令代表和完成。原子操作是无锁的，常常直接通过 CPU 指令直接实现。 事实上，其它同步技术的实现常常依赖于原子操作 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/posts/1600330472/">Go基础笔记 - 2.3 常量</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年9月10日,
+    星期四 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 2分钟阅读
+</p>
+                            <p>  [TOC] 一. 关于常量 常量有：显示常量、隐式常量、全局常量、局部常量、编译时常量。 常量只能是布尔型，数字型(整型，浮点型和复数)和字符串类型。 常量是 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/posts/15996311192/">Go - Gin框架快速入门</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年9月9日,
+    星期三 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 1分钟阅读
+</p>
+                            <p>  Gin是一个golang的微框架，封装比较优雅，API友好，源码注释比较明确，已经发布了1.0版本。具有快速灵活，容错方便等特点。 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/post/1597480217/">17. Go语言database/sql接口</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年8月14日,
+    星期五 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 6分钟阅读
+</p>
+                            <p>  [TOC] 一、database/sql接口 Go语言官方没有提供数据库驱动，而是为开发数据库驱动定义了标准数据库驱动接口database/sql，开发 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/post/1597480218/">18. Go语言MySQL数据库操作</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年8月14日,
+    星期五 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 7分钟阅读
+</p>
+                            <p>  [TOC] 一、MySQL安装驱动 Go官方没有提供数据库驱动，最常用的开源MySQL数据库驱动非Go-MySQL-Driver莫属: 维护比较好。 完全支 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/post/1597480249/">Gorm快速指南</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年8月14日,
+    星期五 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 4分钟阅读
+</p>
+                            <p>  [TOC] Gorm介绍 Github Gorm是一个使用Go语言编写的ORM框架。中文官方网站内含十分齐全的中文文档 ，对开发者友好，支持主流数据库。 安装Gorm： </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/posts/848cd59ca42c13602cf7b0ddf6ca1d1f/">Option编程模式</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年7月9日,
+    星期四 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 2分钟阅读
+</p>
+                            <p>  Option模式的专业术语为：Functional Options Pattern（函数式选项模式） </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/posts/4a08ebfa30e31cfbc6f0e1305fb21fdb/">PostgreSQL&#43;Pgpool实现HA主备切换</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年7月6日,
+    星期一 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 0分钟阅读
+</p>
+                            <p>  概述流复制的主库和备库的角色不是静态存在的，在维护过程中可以对二者进行角色切换。例如当主库硬件故障或主库需要调整参数需要重启系统时，通常要进行流复制的主备切换。 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/posts/postgresql-install/">安装Postgresql数据库</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年7月6日,
+    星期一 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 2分钟阅读
+</p>
+                            <p>  PostgreSQL是一个功能非常强大的、源代码开放的客户/服务器关系型数据库管理系统（RDBMS），PostgreSQL支持大部分的SQL标准并且提供了很多其他现代特性，如复杂查询、外键、触发器、视图、事务完整性、多版本并发控制等。同样，PostgreSQL也可以用许多方法扩展，例如通过增加新的数据类型、函数、操作符、聚集函数、索引方法、过程语言等。 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/posts/36c29462cec19ee3cad6610506ea56dd/">Git入门</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年5月21日,
+    星期四 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 12分钟阅读
+</p>
+                            <p>  https://oscimg.oschina.net/oscnet/99c82f109b10b170870caff0690c69d2588.jpg Git 仓库 1.1Git 基本概念 ​ 在Git中，我们将需要进行版本控制的文件目录叫做一个仓库（repository），每个仓库可以简单理解成一个目录，这个目 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/posts/1600334132/">Go基础笔记 - 2.2 作用域</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年5月10日,
+    星期日 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 2分钟阅读
+</p>
+                            <p>  [TOC] 变量作用域 Golang有四个作用域：全局作用域、函数作用域、语句作用域和块内作用域。 1 2 3 4 5 6 7 8 9 var a string = &#34;hello&#34; //1.全局作用域（字符串 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/posts/199ea5b7cf7372f8ce9886fdbd3d6aae/">Jenkins- 构建Go项目</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年4月21日,
+    星期二 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 2分钟阅读
+</p>
+                            <p>  Jenkins 是一款流行的开源持续集成（Continuous Integration）工具，广泛用于项目开发，具有自动化构建、测试和部署等功能。 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/posts/4f1b039fa5fd1a09e83a47bfac1fef0f/">Go - 内存分配原理</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年4月14日,
+    星期二 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 6分钟阅读
+</p>
+                            <p>  Go内存管理基于tcmalloc，使用连续虚拟地址，以页(8k)为单位、多级缓存进行管理；在分配内存时，需要对size进行对齐处理，根据best-fit找到合适的mspan，对未用完的内存还会拆分成其他大小的mspan继续使用。 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/posts/6f1ada1f5080f30710343b9d9c36592f/">Go - 实现布隆过滤器</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年4月13日,
+    星期一 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 4分钟阅读
+</p>
+                            <p>  布隆过滤器（Bloom Filter） 是由 Howard Bloom在1970年提出的二进制向量数据结构，它具有很好的空间和时间效率，被用来检测一个元素是不是集合中的一个成员，即判定 “可能已存在和绝对不存在” 两种情况。如果检测结果为是，该元素不一定在集合中；但如果检测结果为否，该元素一定不在集合中,因此Bloom filter具有100%的召回率。 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/posts/4a72f077ca65b5f3952d202fa0edf421/">Linux - 四种IO模型简介</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年4月11日,
+    星期六 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 2分钟阅读
+</p>
+                            <p>  select，poll，epoll都是IO多路复用的机制。I/O多路复用就通过一种机制，可以监视多个描述符，一旦某个描述符就绪（一般是读就绪或者写就绪），能够通知程序进行相应的读写操作。但select，poll，epoll本质上都是同步I/O，因为他们都需要在读写事件就绪后自己负责进行读写，也就是说这个读写过程是阻塞的，而异步I/O则无需自己负责进行读写，异步I/O的实现会负责把数据从内核拷贝到用户空间。 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/posts/518ce644178d75ca09829c29bee8341b/">POSIX - 可移植操作系统接口</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年4月11日,
+    星期六 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 3分钟阅读
+</p>
+                            <p>  POSIX表示可移植操作系统接口（Portable Operating System Interface of UNIX，缩写为 POSIX ），POSIX标准定义了操作系统应该为应用程序提供的接口标准，是IEEE为要在各种UNIX操作系统上运行的软件而定义的一系列API标准的总称，其正式称呼为IEEE 1003，而国际标准名称为ISO/IEC 9945。 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/posts/0aa0b471cae5bf3523c8de46d7f37c60/">字典树详解与实现</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年4月10日,
+    星期五 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 3分钟阅读
+</p>
+                            <p>  在计算机科学中，trie又称前缀树或字典树，是一种有序树，用于保存关联数组，其中的键通常是字符串。与二叉查找树不同，键不是直接保存在节点中，而是由节点在树中的位置决定。一个节点的所有子孙都有相同的前缀，也就是这个节点对应的字符串，而根节点对应空字符串。一般情况下，不是所有的节点都有对应的值，只有叶子节点和部分内部节点所对应的键才有相关的值。 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/posts/0742b474a643d63a774461726a6d328c/">「转」Go并发之优雅退出</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年4月10日,
+    星期五 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 4分钟阅读
+</p>
+                            <p>  goroutine作为Golang并发的核心，我们不仅要关注它们的创建和管理，当然还要关注如何合理的退出这些协程，不（合理）退出不然可能会造成阻塞、panic、程序行为异常、数据结果不正确等问题。 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/posts/97029d3d3c08b182359e59ed692f17a4/">Docker之Dockerfile详解</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年4月9日,
+    星期四 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 4分钟阅读
+</p>
+                            <p>  一. 基础命令： 1. FROM：基础镜像 1 2 3 4 5 6 # 注释部分 FROM ubuntu:14.04 MAINTAINER Hollson &#34;hollson@qq.com&#34; RUN apt-get update RUN apt-get install -y nginx EXPOSE 80 2. MAINTAINER：作者信息 1 MAINTAINER Hollson &#34;hollson@qq.com&#34; 3. RUN：指定 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/posts/d40cede24573717edfd927aad8bb5042/">分布式系统概述</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年4月8日,
+    星期三 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 3分钟阅读
+</p>
+                            <p>  分布式系统(distributed system)是由自主计算机组成的网络，这些自主计算机使用分布式中间件连接。它们有助于共享不同的资源和功能，从而为用户提供单个集成的一致网络。 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/post/1586082803/">深入解读unsafe包</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年4月5日,
+    星期日 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 3分钟阅读
+</p>
+                            <p>  unsafe提供了类型转换，通过指针修改字段值，修改私有变量等能力，可以通过unsafe查看类型大小、内存偏移量、对齐值等。它是一种危险的操作，但是在某些情况下有特别有用。 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/post/1585727755/">Go中的正则表达式</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年4月1日,
+    星期三 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 10分钟阅读
+</p>
+                            <p>  Go正则表达式语法与Perl、Python等语言一样，都采用了RE2语法规范。RE2的目标是能够处理来自不受信任用户的正则表达式，而不存在风险。它的特点是匹配时间与输入字符串的长度呈线性关系。考虑到生产方面，解析器、编译器和执行引擎通过在可配置的预算内工作来限制内存使用量（耗尽时会优雅地失败），并且通过避免递归来避免堆栈溢出 。实现Perl，PCRE等引擎提供的所有功能不是Golang的目标，它在某些方面也进行了一些取舍，如Go正则不支持反向引用和环顾断言。 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/post/1585752015/">Mysql的乐观锁与悲观锁</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年4月1日,
+    星期三 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 3分钟阅读
+</p>
+                            <p>  在并发环境下，如果客户端在同一事件内访问同一条数据对数据进行操作时，这时候就会产生数据不一致的问题，我们可以使用mysql的加锁机制，这样可以在一定程度上解决并发访问的问题，mysql中有两种常见的锁，分别为悲观锁和乐观锁，悲观锁和乐观锁是一种机制不是指具体的锁。 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/post/1585745291/">「转」服务器雪崩的场景与解决方案</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年4月1日,
+    星期三 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 5分钟阅读
+</p>
+                            <p>  当缓存服务器重启或者大量缓存集中在某一个时间段失效，这样在失效的时候，也会给后端系统(比如DB)带来很大压力，造成数据库后端故障，从而引起应用服务器雪崩。 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/post/1585588756/">Go语言之细节决定成败</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年3月31日,
+    星期二 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 5分钟阅读
+</p>
+                            <p>  [TOC] 1.变量 全局变量不能使用类型推导 2.常量 常量属于硬编码(即当作指令数据)，所以不能取地址 1 2 3 4 const a = 100 func main() { fmt.Println(&amp;a,a) } 1 2 3 4 5 6 7 8 9 10 11 const </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/post/1585546631/">Istio入门系列-Istio介绍</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年3月30日,
+    星期一 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 3分钟阅读
+</p>
+                            <p>  Istio 提供一种简单的方式来为已部署的服务建立网络，该网络具有负载均衡、服务间认证、监控等功能，而不需要对服务的代码做任何改动。 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/post/1585573653/">深度解密Go语言之map</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年3月30日,
+    星期一 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 36分钟阅读
+</p>
+                            <p>  Hash table是计算机数据结构中一个最重要的设计。大部分hash table都实现了快速查找、添加、删除的功能，Go 语言内置的 map 实现了上述所有功能。map的任务是设计一种数据结构用来维护一个集合的数据，并且可以同时对集合进行增删查改的操作。最主要的数据结构有两种：哈希查找表（Hash table）、搜索树（Search tree）。 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/post/1585577658/">深度解密Go语言之slice</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年3月30日,
+    星期一 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 1分钟阅读
+</p>
+                            <p>  源码 1 open -a goland $GOROOT/src/runtime/slice.go 源码简读 原型 1 2 3 4 5 type slice struct { array unsafe.Pointer len int cap int } make操作 经常被问到new和make读区别，来看一看到底干来啥 1 2 3 4 5 6 7 8 9 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/posts/1585335064/">Linux Bash终端设置代理访问</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年3月28日,
+    星期六 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 2分钟阅读
+</p>
+                            <p>  Linux是开源操作系统，有很多软件包需要从国外网站上下载，而其中大部分国外网站是被墙的，这时我们需要通过代理来访问这些网站。下面我们介绍Linux bash shell终端代理设置方法，包括socks代理，http代理。linux要在shell终端为http、https、ftp协议设置代理，值需要设置对应的环境变量即可。 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/2020/03/hugo%E5%88%9B%E5%BB%BA%E7%AB%99%E5%86%85%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E/">Hugo创建站内搜索引擎</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年3月22日,
+    星期日 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 3分钟阅读
+</p>
+                            <p>  Hugo是由Go语言实现的静态网站生成器。具有简单、易用、高效、易扩展、快速部署等特点，是企业建站、旅行创作、个人写作和IT技术爱好者的必备神器。 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/2020/03/%E4%BD%BF%E7%94%A8hugo%E6%90%AD%E5%BB%BA%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2/">使用Hugo搭建静态博客</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年3月22日,
+    星期日 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 5分钟阅读
+</p>
+                            <p>  Hugo是由Go语言实现的静态网站生成器。具有简单、易用、高效、易扩展、快速部署等特点，是企业建站、旅行创作、个人写作和IT技术爱好者的必备神器。 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/2020/03/%E7%94%A8go%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E6%95%B0%E5%AD%A6%E8%A1%A8%E8%BE%BE%E5%BC%8F%E8%AE%A1%E7%AE%97%E5%BC%95%E6%93%8E/">用Go实现一个数学表达式计算引擎</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年3月22日,
+    星期日 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 14分钟阅读
+</p>
+                            <p>  这里是内容该要信息 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/2020/03/go%E4%B9%8Blogrus%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6/">Go之Logrus日志框架</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年3月19日,
+    星期四 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 6分钟阅读
+</p>
+                            <p>  golang标准库的日志框架非常简单，仅仅提供了print，panic和fatal三个函数。对于更精细的日志级别、日志文件分割，以及日志分发等方面，并没有提供支持。在golang的世界，流行的日志框架包括logrus、zap、zerolog、seelog等。 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/2020/03/go%E4%B9%8B%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7%E6%95%99%E7%A8%8B/">Go之命令行工具教程</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年3月19日,
+    星期四 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 5分钟阅读
+</p>
+                            <p>  Go is a tool for managing Go source code. </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/posts/aff3b81a3477dddf3a0e9115dd348b11/">Etcd - 搭建伪集群</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年3月13日,
+    星期五 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 4分钟阅读
+</p>
+                            <p>  Etcd是CoreOS团队于2013年6月发起的开源项目，它的目标是构建一个高可用的分布式键值(key-value)数据库。etcd内部采用raft协议作为一致性算法，etcd基于Go语言实现。 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/posts/f0e1186f6b7f094003d14539f38425d6/">sync.errgroup 源码解读</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年3月8日,
+    星期日 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 3分钟阅读
+</p>
+                            <p>  包errgroup可以为处理常见任务的子任务的goroutine组提供同步，错误传播和上下文取消。 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/posts/09f6faa09d79344eba8fcef184997d68/">Go之接口解读</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年3月7日,
+    星期六 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 20分钟阅读
+</p>
+                            <p>  用于SEO的内容说明 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/2020/02/css%E6%A1%86%E6%9E%B6bulma%E6%95%99%E7%A8%8B/">CSS框架Bulma教程</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年2月21日,
+    星期五 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 5分钟阅读
+</p>
+                            <p>  Bulma是一个轻量级CSS框架，最大的特点，就是简单好用。所有样式都基于class，只需为 HTML 元素指定class，样式立刻生效 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/posts/1f880505b15bc9af30837c3286fdd2c5/">「转」图解go反射实现原理</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年2月17日,
+    星期一 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 7分钟阅读
+</p>
+                            <p>  用于SEO的内容说明 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/post/1585728530/">Kafka环境部署</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年2月3日,
+    星期一 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 2分钟阅读
+</p>
+                            <p>  Kafka是分布式发布-订阅消息系统，它最初是由LinkedIn公司开发的，之后成为Apache项目的一部分，Kafka是一个分布式，可划分的，冗余备份的持久性的日志服务，它主要用于处理流式数据。 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/posts/ce39f185a4105efee0e4d06d943f2d28/">Redis为什么这么快</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年1月11日,
+    星期六 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 11分钟阅读
+</p>
+                            <p>  Redis采用的是基于内存的采用的是单进程单线程模型的 KV 数据库，由C语言编写，官方提供的数据是可以达到100000&#43;的QPS（每秒内查询次数）。 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/post/1585819046/">Go操作Zookeeper</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年1月8日,
+    星期三 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 3分钟阅读
+</p>
+                            <p>  Native ZooKeeper client for Go  </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/post/1585829952/">JWT实现认证授权</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年1月2日,
+    星期四 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 4分钟阅读
+</p>
+                            <p>  JSON Web Token（JWT）是目前最流行的跨域身份验证解决方案。简单说，OAuth 就是一种授权机制, 数据的所有者告诉系统，同意授权第三方应用进入系统，获取这些数据, 系统从而产生一个短期的进入令(token)，用来代替密码，供第三方应用使用。 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/post/1585749845/">Redis哨兵模式和集群搭建</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2019年11月1日,
+    星期五 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 1分钟阅读
+</p>
+                            <p>  用于SEO的内容说明 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/post/1585905443/">「转」MySQL慢查询优化、索引优化、以及表等优化总结</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2019年9月9日,
+    星期一 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 5分钟阅读
+</p>
+                            <p>  用于SEO的内容MySQL数据库常见的两个瓶颈是：CPU和I/O的瓶颈。CPU在饱和的时候一般发生在数据装入内存或从磁盘上读取数据时候。磁盘I/O瓶颈发生在装入数据远大于内存容量的时候，如果应用分布在网络上，那么查询量相当大的时候那么平瓶颈就会出现在网络上。 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/posts/d780d847caf0f29efb743f0ae0c8d2aa/">「转」Go之优雅代码之道</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2019年8月7日,
+    星期三 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 32分钟阅读
+</p>
+                            <p>  Go 语言是一门简单、易学的编程语言，对于有编程背景的工程师来说，学习 Go 语言并写出能够运行的代码并不是一件困难的事情，对于之前有过其他语言经验的开发者来说，写什么语言都像自己学过的语言其实是有问题的，想要真正融入生态写出优雅的代码就一定要花一些时间和精力了解语言背后的设计哲学和最佳实践。 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/post/1585818342/">Zookeeper集群部署</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2019年5月2日,
+    星期四 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 5分钟阅读
+</p>
+                            <p>  ZooKeeper是一个分布式的，开放源码的分布式应用程序协调服务，是Google的Chubby一个开源的实现，是Hadoop和Hbase的重要组件。它是一个为分布式应用提供一致性服务的软件，提供的功能包括：配置维护、域名服务、分布式同步、组服务等。 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/post/1585727291/">日常工作中的正则表达式</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2019年4月1日,
+    星期一 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 1分钟阅读
+</p>
+                            <p>  1. VS code替换行尾字符 替换行尾双星号 1 \*\*r?$ </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/post/1585590232/">接口转换的原理</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2018年12月31日,
+    星期一 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 6分钟阅读
+</p>
+                            <p>  golang接口原理 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/post/1585590231/">类型转换和断言的区别</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2018年12月31日,
+    星期一 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 4分钟阅读
+</p>
+                            <p>  golang接口原理 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/post/1585590230/">编译器自动检测类型是否实现接口</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2018年12月31日,
+    星期一 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 1分钟阅读
+</p>
+                            <p>  golang接口原理 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/posts/d6bafcadfff4b121d2d6f4bad1f1a5cb/">数据排序之TopK问题</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2018年12月10日,
+    星期一 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 3分钟阅读
+</p>
+                            <p>  针对topK类问题，通常比较好的方案是【分治&#43;trie树/hash&#43;小顶堆】，即先将数据集按照hash算法分解成多个小数据集，然后使用trie树或者hash表统计每个小数据集中的query词频，之后用小顶堆求出每个数据集中出频率最高的前K个数，最后在所有top K中求出最终的top K </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/posts/99a7e89b9b8052e68f39909ef7fc0fc1/">面试题汇总</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2018年8月11日,
+    星期六 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 166分钟阅读
+</p>
+                            <p>  用于SEO的内容说明 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/post/1585671937/">Java环境部署</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2018年8月9日,
+    星期四 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 2分钟阅读
+</p>
+                            <p>  这里包含了JDK/JRE，Apache-Tomcat，Apache下载安装过程。 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/post/1585672788/">Yaml基础语法示例</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2018年5月1日,
+    星期二 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 1分钟阅读
+</p>
+                            <p>  在线Demo： http://nodeca.github.io/js-yaml 语法规则 大小写敏感 符号加空格▲ 用缩进表示层级 左对齐表示同级 禁止制表符 井号表示注释 减号表示序列符 冒号表示键值符 大于号折行 双叹号 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+        </div>
+    </div>
+
+    
+    <footer class="footer has-background-grey-darker has-text-white">
+    <div class="content has-text-centered">
+        <p>
+            <span class="icon is-large">
+                <a href="https://twitter.com/" class="mysocial" rel="me">
+                    <i class="fab fa-twitter fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://www.youtube.com/" class="mysocial" rel="me">
+                    <i class="fab fa-youtube fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://github.com/" class="mysocial" rel="me">
+                    <i class="fab fa-github fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <br><br>
+            友情链接：
+            
+            <a class="mysocial" href="http://www.mafool.com" target="_blank">Mafool</a>
+            
+            <a class="mysocial" href="https://gohugo.io/documentation/" target="_blank">Hugo</a>
+            
+            <a class="mysocial" href="https://bulma.io/" target="_blank">Bulma</a>
+            
+            <a class="mysocial" href="https://bootstrapious.com/" target="_blank">Bootstrapious</a>
+            
+            <a class="mysocial" href="https://youzhixueyuan.com/" target="_blank">Youzhixueyuan</a>
+            
+            <br><br />
+            版权所有 &copy; 码夫庄园 2021
+            - <a class="mysocial" href="https://github.com/hollson/hugo-theme-dooz">Hugo Theme</a>
+        </p>
+    </div>
+</footer>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='http://www.mafool.com/js/dooz.totop.js?v=0.0.0' async=""></script>
+
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = 'https://hm.baidu.com/hm.js?f185359ec6b829a6a93e1e1f2597f6d9';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DK042XSJ2J"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-DK042XSJ2J');
+</script>
+
+    
+    
+<script type="text/javascript" src="http://www.mafool.com/js/reward.js"></script>
+
+    
+    <script defer src="https://cdn.staticfile.org/font-awesome/5.13.0/js/all.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,33 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Hugo on 码夫庄园</title>
+    <link>http://www.mafool.com/categories/hugo/</link>
+    <description>Recent content in Hugo on 码夫庄园</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <copyright>版权所有</copyright>
+    <lastBuildDate>Sun, 22 Mar 2020 00:00:00 +0800</lastBuildDate>
+    
+        <atom:link href="http://www.mafool.com/categories/hugo/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Hugo创建站内搜索引擎</title>
+      <link>http://www.mafool.com/2020/03/hugo%E5%88%9B%E5%BB%BA%E7%AB%99%E5%86%85%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E/</link>
+      <pubDate>Sun, 22 Mar 2020 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/2020/03/hugo%E5%88%9B%E5%BB%BA%E7%AB%99%E5%86%85%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E/</guid>
+      <description>目标是建立静态站点搜索： 无需在计算机上安装任何JS模块 不索引停用词，即“和，或与……”之类的词 逐页索引单词（无重复） 您下一个创建的页面将自动</description>
+    </item>
+    
+    <item>
+      <title>使用Hugo搭建静态博客</title>
+      <link>http://www.mafool.com/2020/03/%E4%BD%BF%E7%94%A8hugo%E6%90%AD%E5%BB%BA%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2/</link>
+      <pubDate>Sun, 22 Mar 2020 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/2020/03/%E4%BD%BF%E7%94%A8hugo%E6%90%AD%E5%BB%BA%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2/</guid>
+      <description>Hugo介绍 Hugo是由Go语言实现的静态网站生成器。简单、易用、高效、易扩展、快速部署。 安装Hugo 1 2 3 4 5 6 # Mac安装 $ brew install hugo # 查看</description>
+    </item>
+    
+  </channel>
+</rss>

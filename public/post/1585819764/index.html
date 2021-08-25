@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>码夫庄园-Redis实现主从复制</title>
+    <meta name="keywords"
+        content='主从,复制,redis,同步,故障转移,雪崩'>
+    <meta name="description" content="主从复制(Replication)：也叫主从同步，它是将Redis主服务器的数据同步到任意数量的从服务器上，同步使用的是发布/订阅机制。Redis的持久化功能，只能保障在宕机等情况下恢复大部分数据 ，但在硬盘故障、系统崩溃等单点故障情况下，仍可能引发灾难性后果。而主从复制可以更好的解决这一问题，达到故障转移的目的。" />
+
+    
+    <meta name="baidu-site-verification" content="v9szEmQLra" />
+    <meta name="360-site-verification" content="d8e961f98fb655e4b8cf9439cfd9ac7f" />
+    <meta name="sogou_site_verification" content="40NC9EdZDC" />
+    <meta name="shenma-site-verification" content="3200e3042e92157713a3b0aceeecb20a_1586020187" />
+    <meta name="google-site-verification" content="r8987bkunZHJeKut3ocu5NIJ5QEu53NA6Q_r7RrZ46c" />
+    <meta name="msvalidate.01" content="893A2865ABC54AC2782D118536831056" />
+
+    
+    <link rel="shortcut icon" href="http://www.mafool.com/img/res/favicon.ico">
+    
+
+    
+
+    <link crossorigin="anonymous" integrity="sha384-5kGFOAqgEKnuF6c2jk2JANKHZgYVt38Wn2dVJENtq1EBCP54/1uzXU5mpxqL8WjN"
+        href="https://lib.baomitu.com/bulma/0.8.0/css/bulma.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="http://www.mafool.com/css/dooz.blog.css" />
+    <script crossorigin="anonymous" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh"
+        src="https://lib.baomitu.com/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/jquery.share.min.js"></script>
+    
+
+    
+
+    
+    
+<link rel="stylesheet" href="http://www.mafool.com/css/reward.css">
+
+
+    <link href="http://www.mafool.com/css/fonts.googleapi.css" rel="stylesheet">
+    <script src=http://www.mafool.com/js/dooz.blog.js></script>
+
+    
+    <script>
+        $(document).ready(function () {
+            $('.content a[href^="http"]').each(function () {
+                $(this).attr('target', '_blank');
+            });
+        });
+
+        $(document).on('click', '.modal-wechat', function () {
+            $(".modal").addClass("is-active");
+        });
+
+        $(document).on('click', '.modal-background', function () {
+            $(".modal").removeClass("is-active");
+        });
+    </script>
+</head>
+
+<body>
+    
+    
+<section class="hero is-info is-medium"
+    style="background-image: url('/img/res/blog.jpg');">
+    <div class="hero-head">
+        <nav class="navbar is-transparent container has-text-white">
+    <div class="navbar-brand">
+        <div class="navbar-item">
+            <a class="title is-5 is-white" href="http://www.mafool.com/">码夫庄园</a>
+        </div>
+
+        
+        <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <div id="navbarExampleTransparentExample" class="navbar-menu has-text-dark">
+        
+
+        <div class="navbar-end">
+            <a class="navbar-item" href='http://www.mafool.com/'>首页</a>
+            <a class="navbar-item" href='http://www.mafool.com/archives'>归档 </a>
+            <a class="navbar-item" href='http://www.mafool.com/about'>关于</a>
+            <span class="navbar-item">
+                <a class="button is-primary is-inverted" href="https://github.com/hollson/hugo-theme-dooz">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>主题</span>
+                </a>
+            </span>
+        </div>
+    </div>
+</nav>
+    </div>
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <div class='container has-text-left column is-7'>
+                
+                <span>
+                    <a class="bar_tag" href="http://www.mafool.com/tags/%E4%B8%BB%E4%BB%8E" title="主从">主从</a>
+                </span>
+                
+                <h1 class="title is-size-2" style="margin-bottom:0.2rem;">
+                    
+                    Redis实现主从复制
+                    
+                </h1>
+                
+                <span class="title is-size-6" style="font-style: italic;"> </span><br>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    
+    <div class="container">
+        <div class="section">
+            
+<div class="columns">
+    <div class="column is-9">
+        <div class="tile is-child box">
+            <div class="content">
+                
+                <nav class="level">
+                    
+                    <div class="level-left">
+                        <div class="level-item">
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2019年4月10日,
+    星期三 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 5分钟阅读
+</p>
+                        </div>
+                    </div>
+
+                    
+                    
+                    <div class="share-component level-right" data-disabled="google,diandian,tencent,qzone"
+                        data-description="Share.js - 一键分享到微博，QQ空间，腾讯微博，人人，豆瓣"
+                        data-mobile-sites="weibo,qq,qzone,tencent">
+                    </div>
+                    
+                </nav>
+                <hr>
+                
+                <header>
+                    <h2>目录</h2>
+                </header>
+                <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一-配置主从概述">一. 配置主从概述</a></li>
+    <li><a href="#二-配置主从复制">二. 配置主从复制</a></li>
+    <li><a href="#三-配置主从原理">三. 配置主从原理</a>
+      <ul>
+        <li><a href="#1-全量复制">1. 全量复制</a></li>
+        <li><a href="#2-部分复制">2. 部分复制</a></li>
+      </ul>
+    </li>
+    <li><a href="#四-配置主从问题">四. 配置主从问题</a>
+      <ul>
+        <li><a href="#1-读写分离">1. 读写分离</a></li>
+        <li><a href="#2-主从配置不一致">2. 主从配置不一致</a></li>
+        <li><a href="#3-规避全量复制">3. 规避全量复制</a></li>
+        <li><a href="#4规避复制风暴">4.规避复制风暴</a></li>
+      </ul>
+    </li>
+    <li><a href="#参考链接">参考链接：</a></li>
+  </ul>
+</nav>
+                
+                <hr>
+                <h2 id="一-配置主从概述">一. 配置主从概述</h2>
+<p><strong>主从复制(Replication)</strong>：也叫<code>主从同步</code>，它是将Redis<strong>主服务器</strong>的数据同步到任意数量的<strong>从服务器</strong>上，同步使用的是<code>发布/订阅机制</code>。Redis的<code>持久化功能</code>，只能保障在宕机等情况下恢复大部分数据 ，但在<code>硬盘故障</code>、<code>系统崩溃</code>等<code>单点故障</code>情况下，仍可能引发灾难性后果。而主从复制可以更好的解决这一问题，达到<code>故障转移</code>的目的。</p>
+<blockquote>
+<p>Redis通过<code>持久化</code>、<code>主从复制</code>、<code>哨兵模式</code>、<code>集群</code>保证了数据是安全和服务的高可用性。</p>
+</blockquote>
+<!-- raw HTML omitted -->
+<h2 id="二-配置主从复制">二. 配置主从复制</h2>
+<p>主从复制有两种实现方式：<code>命令方式</code>和<code>配置方式</code>(推荐)， 示例拓扑图如下：<br>
+<img src="https://img-blog.csdnimg.cn/2020021015275647.png" alt="在这里插入图片描述"></p>
+<table>
+<thead>
+<tr>
+<th>role</th>
+<th>ip</th>
+<th>port</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Master</td>
+<td>127.0.0.1</td>
+<td>6379</td>
+</tr>
+<tr>
+<td>Slave1</td>
+<td>127.0.0.1</td>
+<td>6380</td>
+</tr>
+<tr>
+<td>Slave2</td>
+<td>127.0.0.1</td>
+<td>6381</td>
+</tr>
+</tbody>
+</table>
+<p><strong>准备工作：</strong></p>
+<ul>
+<li>Redis安装包提供了名为<code>redis.conf</code>的Redis配置文件，以此为模板，新建三个Redis配置文件： 如<code>redis_6379.conf</code>的内容如下：</li>
+</ul>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell"> <span style="color:#09f;font-style:italic"># 拷贝一份新配置</span>
+$ cat /etc/redis/redis.conf | grep -v <span style="color:#c30">&#34;#&#34;</span>|grep -v <span style="color:#c30">&#34;^</span>$<span style="color:#c30">&#34;</span> &gt; redis_6379.conf 
+
+<span style="color:#09f;font-style:italic"># 修改redis_6379.conf配置内容如下：</span>
+<span style="color:#09f;font-style:italic"># cat ./redis_6379.conf|grep -E &#34;port|dbfilename|appendfilename|logfile|pidfile&#34;</span>
+$ cat ./redis_6379.conf
+cat ./redis_6379.conf|grep <span style="color:#f60">6379</span>
+port <span style="color:#f60">6379</span>
+pidfile <span style="color:#c30">&#34;/var/run/redis_6379.pid&#34;</span>
+logfile <span style="color:#c30">&#34;redis_6379.log&#34;</span>
+dbfilename <span style="color:#c30">&#34;dump_6379.rdb&#34;</span>
+appendfilename <span style="color:#c30">&#34;dump_6379.aof&#34;</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>以此为例，创建<code>redis_6380.conf</code>、<code>redis_6381.conf</code>文件</li>
+</ul>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">$ sed <span style="color:#c30">&#34;s/6379/6380/g&#34;</span> redis_6379.conf &gt; redis_6380.conf
+$ cat ./redis_6380.conf|grep <span style="color:#f60">6380</span>
+
+$ sed <span style="color:#c30">&#34;s/6379/6381/g&#34;</span> redis_6379.conf &gt; redis_6381.conf
+$ cat ./redis_6381.conf|grep <span style="color:#f60">6381</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>依次启动6379、6380、6381三个Redis服务</li>
+</ul>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">$ redis-server ./redis_6379.conf
+$ redis-server ./redis_6380.conf
+$ redis-server ./redis_6381.conf
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>命令方式实现主从复制：</strong>  这种方式简单方便，但重启服务后会断掉Replication状态</p>
+<ul>
+<li>进入6380、6381，将他们以命令方式，指向主Redis服务(6379) ，如下：</li>
+</ul>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">$ redis-cli -p <span style="color:#f60">6380</span>
+127.0.0.1:6380&gt; slaveof 127.0.0.1 <span style="color:#f60">6379</span>    <span style="color:#09f;font-style:italic"># 设置为从服务，将6379作为Master</span>
+OK
+
+<span style="color:#09f;font-style:italic"># 无需重启redis服务</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>配置文件方式实现主从复制：</strong> 推荐该方式，但需要重启Redis服务</p>
+<ul>
+<li>修改<code>redis_6380.conf</code>、<code>redis_6381.conf</code>相关配置项，内容如下：</li>
+</ul>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell"><span style="color:#09f;font-style:italic"># 检查复制相关的配置项</span>
+$ cat ./redis_6380.conf|grep -v <span style="color:#c30">&#34;#&#34;</span>|grep replica
+replicaof 127.0.0.1 <span style="color:#f60">6379</span>  <span style="color:#09f;font-style:italic"># 关键项,指向master</span>
+replica-serve-stale-data yes
+replica-read-only yes    <span style="color:#09f;font-style:italic"># 关键项</span>
+replica-priority <span style="color:#f60">100</span>
+replica-lazy-flush no
+client-output-buffer-limit replica 256mb 64mb <span style="color:#f60">60</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>重启6380、6381两个Redis从服务，使之重新加载配置文件，操作如下：</li>
+</ul>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">$ redis-cli -p <span style="color:#f60">6380</span> shutdown
+$ redis-server ./redis_6380.conf
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>验证主从复制服务：</strong></p>
+<ul>
+<li>查看从服务（slave）状态信息</li>
+</ul>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">$ redis-cli -p <span style="color:#f60">6380</span>
+127.0.0.1:6380&gt; info replication
+<span style="color:#09f;font-style:italic"># Replication</span>
+role:slave         <span style="color:#09f;font-style:italic"># 角色Slave</span>
+master_host:127.0.0.1
+master_port:6379
+master_link_status:up
+master_last_io_seconds_ago:7
+master_sync_in_progress:0
+slave_repl_offset:42
+slave_priority:100
+slave_read_only:1
+connected_slaves:0
+master_replid:6f0624789e4178643a526dfc707293344b4e20cf
+master_replid2:0000000000000000000000000000000000000000
+master_repl_offset:42
+second_repl_offset:-1
+repl_backlog_active:1
+repl_backlog_size:1048576
+repl_backlog_first_byte_offset:29
+repl_backlog_histlen:14
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>查看主（master）服务状态信息</li>
+</ul>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">$ redis-cli info replication
+<span style="color:#09f;font-style:italic"># Replication</span>
+role:master
+connected_slaves:2    <span style="color:#09f;font-style:italic"># 显示多个slave状态信息</span>
+slave0:ip<span style="color:#555">=</span>127.0.0.1,port<span style="color:#555">=</span>6380,state<span style="color:#555">=</span>online,offset<span style="color:#555">=</span>392,lag<span style="color:#555">=</span><span style="color:#f60">0</span>
+slave1:ip<span style="color:#555">=</span>127.0.0.1,port<span style="color:#555">=</span>6381,state<span style="color:#555">=</span>online,offset<span style="color:#555">=</span>392,lag<span style="color:#555">=</span><span style="color:#f60">0</span>
+master_replid:c9db0ed52f30faa0138914f5d9fc3c77c01a675b
+master_replid2:0000000000000000000000000000000000000000
+master_repl_offset:392
+second_repl_offset:-1
+repl_backlog_active:1
+repl_backlog_size:1048576
+repl_backlog_first_byte_offset:1
+repl_backlog_histlen:392
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>向Master写入数据，验证Slave的Replaction是否成功</li>
+</ul>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">$ redis-cli <span style="color:#366">set</span> <span style="color:#366">test</span> <span style="color:#c30">&#34;hello world&#34;</span>
+OK
+$ redis-cli -p <span style="color:#f60">6380</span> get <span style="color:#366">test</span>
+<span style="color:#c30">&#34;hello world&#34;</span>
+$ redis-cli -p <span style="color:#f60">6381</span> get <span style="color:#366">test</span>
+<span style="color:#c30">&#34;hello world&#34;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>关闭主从复制服务：</strong> 在从服务上操作，操作如下：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">127.0.0.1:6380&gt; slaveof no one
+OK
+</code></pre></td></tr></table>
+</div>
+</div><!-- raw HTML omitted -->
+<h2 id="三-配置主从原理">三. 配置主从原理</h2>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">$ redis-cli info server | grep run_id       <span style="color:#09f;font-style:italic">#查看服务ID</span>
+$ redis-cli info replication | grep offset  <span style="color:#09f;font-style:italic">#复制偏移量</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="1-全量复制">1. 全量复制</h3>
+<p><strong>1.1 复制过程：</strong> 在出现<code>网络抖动</code>或<code>服务重启</code>(服务ID改变)时，会引发全量复制。复制过程如下：</p>
+<ul>
+<li>第1步：slave向master发送psync（<code>runid</code>为问号，偏移量为<code>-1</code>）；</li>
+<li>第2步：master根据<code>runid</code>和<code>offset</code>判断要做全量复制，并向slave发送<code>FullResync(runid,offset)</code>数据；</li>
+<li>第3步：slave保存master信息；</li>
+<li>第4步：master保存全量复制到快照，同时将增量数据保存到<code>buffer</code>；</li>
+<li>第5步：master向slave发送<code>RDB</code>数据；</li>
+<li>第6步：master发送<code>send buffer</code>数据；</li>
+<li>第7步：slave删除老数据；</li>
+<li>第8步：slave加载新的<code>RDB</code>；</li>
+</ul>
+<p><img src="https://img-blog.csdnimg.cn/20200210153317947.png" alt="Redis实现主从复制"></p>
+<p><strong>1.2 复制开销：</strong></p>
+<ul>
+<li>bgsave时间</li>
+<li>RDB文件网络传输时间</li>
+<li>从节点清空数据时间</li>
+<li>从节点加载RDB文件时间</li>
+<li>可能的AOF重写时间</li>
+</ul>
+<h3 id="2-部分复制">2. 部分复制</h3>
+<p><strong>2.1 复制原理：</strong> Redis2.8+提供部分复制，即复制断开后会<code>发送缓冲</code>(默认1M)，<strong>如果偏移量大于<code>1M</code>，则进行全量复制</strong>。<br>
+<img src="https://img-blog.csdnimg.cn/20200210153427794.png" alt="Redis实现主从复制"><br>
+<!-- raw HTML omitted --></p>
+<h2 id="四-配置主从问题">四. 配置主从问题</h2>
+<ul>
+<li>单个服务实例是故障可能是个小概率事件，但当服务的规模达到一定数量的时候，故障的产生就变成一个必然问题。</li>
+</ul>
+<h3 id="1-读写分离">1. 读写分离</h3>
+<p>Replication除了数据备份(数据安全），另外一个重要的应用就是读写分离。读写分离可以提升系统性能，但也增加了系统的复杂性<br>
+<img src="http://www.mafool.com/img/post/2020021015351180.png" alt="Redis实现主从复制"></p>
+<ul>
+<li><strong>1. 复制数据延迟：</strong> 由于网络延迟或程序阻塞，出现主从数据不一致，可判断数量偏移量，进行数据回溯查询，但这大大增加了复杂性。</li>
+<li><strong>2. 读到过期数据 :</strong> 由于对Slave的过期数据采取<code>懒惰删除</code>或<code>定时任务</code>进行删除，难免出现读到过期数据。新版本(v3.2+)已经解决了该问题。</li>
+<li><strong>3. 从节点故障：</strong> 优先优化主节点，其次可使用哨兵模式、集群等方案。</li>
+</ul>
+<h3 id="2-主从配置不一致">2. 主从配置不一致</h3>
+<ul>
+<li><strong>1. Maxmemery不一致：</strong> master和slave内存大小设置不一致，在主从切换等情况下导致丢失数据，建议使用标准安装工具，对数据进行监控和校验。</li>
+<li><strong>2. 数据结构优化参数(hash-max-ziplist-entries)：</strong> 主从设置不一致而导致的不可预知的问题。</li>
+</ul>
+<h3 id="3-规避全量复制">3. 规避全量复制</h3>
+<ul>
+<li><strong>1. 第一次全量复制：</strong> 无法避免，可才低峰(如晚上)进行，其次可使用小主节点（切片）减少全量复制的性能损耗。</li>
+<li><strong>2. 节点运行ID不匹配：</strong> 主节点重启(运行ID变化)，可使用故障转移，将slave晋升为master，如哨兵或集群。</li>
+<li><strong>3. 复制积压缓冲区不足：</strong> 如网络中断，缓冲区不足1M，导致的全量复制，可调整<code>rel_backlog_size</code> 参数。</li>
+</ul>
+<h3 id="4规避复制风暴">4.规避复制风暴</h3>
+<ul>
+<li><strong>1. 单主机复制风暴：</strong> 即主节点重启，多从节点复制。可调整<code>复制拓扑</code>,如<code>&quot;master-&gt;slave-&gt;slave&quot;</code>。</li>
+<li><strong>2. 单机器复制风暴：</strong> 即一台主机有多个redis实例，在机器重启后，导致大量全量复制。可将节点分散到多机器，当然也可以使用<code>高可用</code>。</li>
+</ul>
+<!-- raw HTML omitted -->
+<h2 id="参考链接">参考链接：</h2>
+<p><a href="http://www.redis.com.cn/topics/replication">http://www.redis.com.cn/topics/replication</a><br>
+<a href="https://www.cnblogs.com/wdliu/p/9407179.html">https://www.cnblogs.com/wdliu/p/9407179.html</a></p>
+
+                
+                
+                <hr> 
+
+<div class="entry-shang text-center">
+    
+    <p> 「真诚赞赏，手留余香」</p>
+    
+    <button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+    <div class="zs-modal-head">
+        <button type="button" class="close">×</button>
+        <span class="author">
+            <a href="http://www.mafool.com">
+                <img src="http://www.mafool.com/img/reward/hollson.png" alt="史布斯" />码夫庄园
+            </a>
+        </span>
+        
+        <p class="tip"><i></i><span>嗯，我的梦想是被读者的稿费包养~</span></p>
+        
+
+    </div>
+    <div class="zs-modal-body">
+        <div class="zs-modal-btns">
+            <button class="btn btn-blink" data-num="2">2元</button>
+            <button class="btn btn-blink" data-num="5">5元</button>
+            <button class="btn btn-blink" data-num="10">10元</button>
+            <button class="btn btn-blink" data-num="50">50元</button>
+            <button class="btn btn-blink" data-num="100">100元</button>
+            <button class="btn btn-blink" data-num="1">任意金额</button>
+        </div>
+        <div class="zs-modal-pay">
+            <button class="btn btn-bred" id="pay-text">2元</button>
+            <p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+            <img src="http://www.mafool.com/img/reward/wechat-2.png" alt="史布斯" id="pay-image" />
+        </div>
+    </div>
+    <div class="zs-modal-footer">
+        <label>
+            <span class="zs-wechat"></span>
+            <input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked">
+            <img src="http://www.mafool.com/img/reward/wechat-btn.png" alt="史布斯" />
+            </span>&nbsp;
+            <span>
+                <input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay">
+                <img src="http://www.mafool.com/img/reward/alipay-btn.png" alt="史布斯" />
+            </span>
+        </label>
+    </div>
+</div>
+
+ 
+
+                <br>
+                <br>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="column is-3">
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">最近发布</h2>
+        
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/0742b474a643d63a774461726a6201203/">Go语言中的原子操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年12月2日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/1600330472/">Go基础笔记 - 2.3 常量</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月10日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/15996311192/">Go - Gin框架快速入门</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月9日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480249/">Gorm快速指南</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480218/">18. Go语言MySQL数据库操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+    </div>
+</div>
+<br>
+        
+
+
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">标签</h2>
+        <div>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/atomic">atomic</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/blog">blog</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cgo">cgo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cloud">cloud</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/config">config</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/copy">copy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/docker">docker</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/exam">exam</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/gin">gin</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/git">git</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/golang">golang</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/hugo">hugo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/install">install</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/istio">istio</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/jenkins">jenkins</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/kubernetes">kubernetes</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/map">map</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/microservice">microservice</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/mycat">mycat</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/nginx">nginx</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/plan9">plan9</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/posix">posix</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/proxy">proxy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/raft">raft</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ssh">ssh</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/tips">tips</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ymal">ymal</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%B8%BB%E4%BB%8E">主从</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BA%8B%E5%8A%A1">事务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BB%A3%E7%90%86">代理</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BD%9C%E7%94%A8%E5%9F%9F">作用域</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%86%85%E5%AD%98">内存</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%8B%E7%BC%A9">压缩</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%88%9B">原创</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%AD%90">原子</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%91%BD%E4%BB%A4%E8%A1%8C">命令行</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%93%A8%E5%85%B5">哨兵</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%AD%98%E5%82%A8">存储</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B8%B8%E9%87%8F">常量</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B9%B6%E5%8F%91">并发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BC%82%E5%B8%B8">异常</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1">微服务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%88%E6%9D%83%E8%AE%A4%E8%AF%81">授权认证</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%92%E5%BA%8F">排序</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%A5%E5%8F%A3">接口</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%97%A5%E5%BF%97">日志</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%9D%83%E9%99%90">权限</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE1">标签1</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE2">标签2</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%AD%A3%E5%88%99">正则</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%81%E9%87%8F%E5%88%86%E5%8F%91">流量分发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%8B%E8%AF%95">测试</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%BA%90%E7%A0%81">源码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%8A%B6%E6%80%81%E7%A0%81">状态码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%AE%97%E6%B3%95">算法</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%BC%8F">编程模式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%80%81%E5%A6%96%E7%AC%94%E8%AE%B0">老妖笔记</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%BF%87%E6%BB%A4%E5%99%A8">过滤器</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%80%83%E9%80%B8">逃逸</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%85%8D%E7%BD%AE">配置</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%86%99">重写</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%AE%9A%E5%90%91">重定向</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9B%86%E7%BE%A4">集群</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9D%A2%E8%AF%95">面试</a>
+            </span>
+            
+        </div>
+    </div>
+</div>
+<br>
+    </div>
+</div>
+
+        </div>
+    </div>
+
+    
+    <footer class="footer has-background-grey-darker has-text-white">
+    <div class="content has-text-centered">
+        <p>
+            <span class="icon is-large">
+                <a href="https://twitter.com/" class="mysocial" rel="me">
+                    <i class="fab fa-twitter fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://www.youtube.com/" class="mysocial" rel="me">
+                    <i class="fab fa-youtube fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://github.com/" class="mysocial" rel="me">
+                    <i class="fab fa-github fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <br><br>
+            友情链接：
+            
+            <a class="mysocial" href="http://www.mafool.com" target="_blank">Mafool</a>
+            
+            <a class="mysocial" href="https://gohugo.io/documentation/" target="_blank">Hugo</a>
+            
+            <a class="mysocial" href="https://bulma.io/" target="_blank">Bulma</a>
+            
+            <a class="mysocial" href="https://bootstrapious.com/" target="_blank">Bootstrapious</a>
+            
+            <a class="mysocial" href="https://youzhixueyuan.com/" target="_blank">Youzhixueyuan</a>
+            
+            <br><br />
+            版权所有 &copy; 码夫庄园 2021
+            - <a class="mysocial" href="https://github.com/hollson/hugo-theme-dooz">Hugo Theme</a>
+        </p>
+    </div>
+</footer>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='http://www.mafool.com/js/dooz.totop.js?v=0.0.0' async=""></script>
+
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = 'https://hm.baidu.com/hm.js?f185359ec6b829a6a93e1e1f2597f6d9';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DK042XSJ2J"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-DK042XSJ2J');
+</script>
+
+    
+    
+<script type="text/javascript" src="http://www.mafool.com/js/reward.js"></script>
+
+    
+    <script defer src="https://cdn.staticfile.org/font-awesome/5.13.0/js/all.min.js"></script>
+</body>
+
+</html>

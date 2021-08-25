@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>码夫庄园-区块链分布式存储：生态大数据的存储新模式</title>
+    <meta name="keywords"
+        content='区块链,分布式,存储'>
+    <meta name="description" content="区块链，作为一个分布式的数据库，则能很好解决这方面的问题。这是由区块链的技术特征决定了的。区块链上的数字记录，不可篡改、不可伪造，智能合约让大家更高效地协同起来，从而建立可信的数字经济秩序，能够提高数据流转效率，打破数据孤岛，打造全新的存储模式。" />
+
+    
+    <meta name="baidu-site-verification" content="v9szEmQLra" />
+    <meta name="360-site-verification" content="d8e961f98fb655e4b8cf9439cfd9ac7f" />
+    <meta name="sogou_site_verification" content="40NC9EdZDC" />
+    <meta name="shenma-site-verification" content="3200e3042e92157713a3b0aceeecb20a_1586020187" />
+    <meta name="google-site-verification" content="r8987bkunZHJeKut3ocu5NIJ5QEu53NA6Q_r7RrZ46c" />
+    <meta name="msvalidate.01" content="893A2865ABC54AC2782D118536831056" />
+
+    
+    <link rel="shortcut icon" href="http://www.mafool.com/img/res/favicon.ico">
+    
+
+    
+
+    <link crossorigin="anonymous" integrity="sha384-5kGFOAqgEKnuF6c2jk2JANKHZgYVt38Wn2dVJENtq1EBCP54/1uzXU5mpxqL8WjN"
+        href="https://lib.baomitu.com/bulma/0.8.0/css/bulma.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="http://www.mafool.com/css/dooz.blog.css" />
+    <script crossorigin="anonymous" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh"
+        src="https://lib.baomitu.com/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/jquery.share.min.js"></script>
+    
+
+    
+
+    
+    
+<link rel="stylesheet" href="http://www.mafool.com/css/reward.css">
+
+
+    <link href="http://www.mafool.com/css/fonts.googleapi.css" rel="stylesheet">
+    <script src=http://www.mafool.com/js/dooz.blog.js></script>
+
+    
+    <script>
+        $(document).ready(function () {
+            $('.content a[href^="http"]').each(function () {
+                $(this).attr('target', '_blank');
+            });
+        });
+
+        $(document).on('click', '.modal-wechat', function () {
+            $(".modal").addClass("is-active");
+        });
+
+        $(document).on('click', '.modal-background', function () {
+            $(".modal").removeClass("is-active");
+        });
+    </script>
+</head>
+
+<body>
+    
+    
+<section class="hero is-info is-medium"
+    style="background-image: url('/img/res/blog.jpg');">
+    <div class="hero-head">
+        <nav class="navbar is-transparent container has-text-white">
+    <div class="navbar-brand">
+        <div class="navbar-item">
+            <a class="title is-5 is-white" href="http://www.mafool.com/">码夫庄园</a>
+        </div>
+
+        
+        <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <div id="navbarExampleTransparentExample" class="navbar-menu has-text-dark">
+        
+
+        <div class="navbar-end">
+            <a class="navbar-item" href='http://www.mafool.com/'>首页</a>
+            <a class="navbar-item" href='http://www.mafool.com/archives'>归档 </a>
+            <a class="navbar-item" href='http://www.mafool.com/about'>关于</a>
+            <span class="navbar-item">
+                <a class="button is-primary is-inverted" href="https://github.com/hollson/hugo-theme-dooz">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>主题</span>
+                </a>
+            </span>
+        </div>
+    </div>
+</nav>
+    </div>
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <div class='container has-text-left column is-7'>
+                
+                <span>
+                    <a class="bar_tag" href="http://www.mafool.com/tags/%E5%AD%98%E5%82%A8" title="存储">存储</a>
+                </span>
+                
+                <span>
+                    <a class="bar_tag" href="http://www.mafool.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F" title="分布式">分布式</a>
+                </span>
+                
+                <h1 class="title is-size-2" style="margin-bottom:0.2rem;">
+                    
+                    区块链分布式存储：生态大数据的存储新模式
+                    
+                </h1>
+                
+                <span class="title is-size-6" style="font-style: italic;"> </span><br>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    
+    <div class="container">
+        <div class="section">
+            
+<div class="columns">
+    <div class="column is-9">
+        <div class="tile is-child box">
+            <div class="content">
+                
+                <nav class="level">
+                    
+                    <div class="level-left">
+                        <div class="level-item">
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2019年3月26日,
+    星期二 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 6分钟阅读
+</p>
+                        </div>
+                    </div>
+
+                    
+                    
+                    <div class="share-component level-right" data-disabled="google,diandian,tencent,qzone"
+                        data-description="Share.js - 一键分享到微博，QQ空间，腾讯微博，人人，豆瓣"
+                        data-mobile-sites="weibo,qq,qzone,tencent">
+                    </div>
+                    
+                </nav>
+                <hr>
+                
+                <header>
+                    <h2>目录</h2>
+                </header>
+                <nav id="TableOfContents">
+  <ul>
+    <li><a href="#前言">前言</a></li>
+    <li><a href="#一中心化存储vs分布式存储">一、中心化存储VS分布式存储</a></li>
+    <li><a href="#二生态大数据的特点">二、生态大数据的特点</a>
+      <ul>
+        <li><a href="#1-空天地一体的巨大数据量">1. “空天地一体”的巨大数据量</a></li>
+        <li><a href="#2-历史数据需要存储">2. 历史数据需要存储</a></li>
+      </ul>
+    </li>
+    <li><a href="#三生态大数据的存储需求">三、生态大数据的存储需求</a>
+      <ul>
+        <li><a href="#1-强安全的存储">1. 强安全的存储</a></li>
+        <li><a href="#2-安全共享的存储机制">2. 安全共享的存储机制</a></li>
+        <li><a href="#3-数据存证和追溯">3. 数据存证和追溯</a></li>
+      </ul>
+    </li>
+    <li><a href="#四区块链带来的全新存储模式">四、区块链带来的全新存储模式</a>
+      <ul>
+        <li><a href="#1-数据安全存储">1. 数据安全存储</a></li>
+        <li><a href="#2-数据安全共享">2. 数据安全共享</a></li>
+        <li><a href="#3-数据追溯监控">3. 数据追溯监控</a></li>
+      </ul>
+    </li>
+    <li><a href="#五总结">五、总结</a></li>
+  </ul>
+</nav>
+                
+                <hr>
+                <h2 id="前言">前言</h2>
+<p>区块链，当之无愧的2019最靓的词，在科技领域闪闪发亮，在实体行业星光熠熠。</p>
+<p>2019年的1024讲话，让区块链这个词焕然一新，以前它总是和传销和诈骗联系在一起，“区块链”这个词总是蒙上一层灰色。但是如今，区块链则是和实体经济融合紧密相连，成为国家的战略技术，<strong>这个词瞬间闪耀着热情的红色和生意盎然的绿色</strong>。</p>
+<p>**“产业区块链”在这个时代背景下应运而生，**是继“互联网”后的又一大热门词汇，核心就是区块链必须和实体产业融合，脱虚向实，让区块链技术找到更多业务场景才是正道。</p>
+<p>区块链的本质就是一个数据库，而且是采用的分布式存储的方式。作为一名区块链从业者，今天就来讲讲<strong>区块链的分布式存储和生态大数据</strong>结合后，碰撞产生的火花。</p>
+<h2 id="一中心化存储vs分布式存储">一、中心化存储VS分布式存储</h2>
+<p>当前的存储大多为中心化存储，存储在传统的中心化服务器。如果服务器出现宕机或者故障，或者服务器停止运营，则很多数据就会丢失。</p>
+<p>比如我们在微信朋友圈发的图片，在抖音上传的视频等等，都是中心化存储。很多朋友会把东西存储在网上，但是某天打开后，网页呈现404，则表示存储的东西已经不见了。</p>
+<p>区块链，作为一个分布式的数据库，则能很好解决这方面的问题。这是由区块链的技术特征决定了的。<strong>区块链上的数字记录，不可篡改、不可伪造，智能合约让大家更高效地协同起来，从而建立可信的数字经济秩序，能够提高数据流转效率，打破数据孤岛，打造全新的存储模式。</strong></p>
+<h2 id="二生态大数据的特点">二、生态大数据的特点</h2>
+<p>生态大数据，其实和我们每天的生活息息相关，比如每天的天气预报，所吃的农产品的溯源数据等等，都是生态大数据的一部分。要来谈这个结合，首先咱们来看看生态大数据存储的特点。</p>
+<p>伴随着互联网的发展，当前，生态大数据在存储方面有具有如下特点：</p>
+<h3 id="1-空天地一体的巨大数据量">1. “空天地一体”的巨大数据量</h3>
+<p>从数据规模来看，生态数据体量很大，数据已经从TB级跃升到了PB级别。</p>
+<p>随着各类传感器技术、卫星遥感、雷达和视频感知等技术的发展，数据不仅来源于传统人工监测数据，还包括航空、航天和地面数据，他们一起产生了海量生态环境数据。近10年以来，生态数据以每年数百个TB的数据在增长。</p>
+<h3 id="2-历史数据需要存储">2. 历史数据需要存储</h3>
+<p>生态环境大数据需要动态新数据和历史数据相结合来处理，实时连续观测尤为重要。只有实时处理分析这些动态新数据，并与已有历史数据结合起来分析，才能挖掘出有用信息，为解决有关生态环境问题提供科学决策。</p>
+<p>比如在当前城市建设中，提倡的生态环境修复、生态模型建设中，需要大量调用生态大数据进行分析、建模和制定方案。但是目前很多历史数据因为存储不当而消失，造成了数据的价值的流失。</p>
+<p>既然生态大数据有这些特点，那么它有哪些存储需求呢？</p>
+<h2 id="三生态大数据的存储需求">三、生态大数据的存储需求</h2>
+<h3 id="1-强安全的存储">1. 强安全的存储</h3>
+<p>当前，生态大数据面临严重安全隐患，强安全的存储对于生态大数据而言势在必行。</p>
+<p>大数据的安全主要包括大数据自身安全和大数据技术安全，比如在大数据的数据存储中，由于黑客外部网络攻击和人为操作不当造成数据信息泄露。外部攻击包括对静态数据和动态数据的数据传输攻击、数据内容攻击、数据管理和网络物理攻击等。</p>
+<p>例如，很多野外生态环境监测的海量数据需要网络传输，这就加大了网络攻击的风险。如果涉及到军用的一些生态环境数据，如果被黑客获得这些数据，就可能推测到我国军方的一些信息，或者获取敏感的生态环境数据，后果不堪设想。</p>
+<h3 id="2-安全共享的存储机制">2. 安全共享的存储机制</h3>
+<p>生态大数据的商业化应用需要整合集成政府、企业、科研院所等社会多来源的数据。只有不同类型的生态环境大数据相互连接、碰撞和共享，才能释放生态环境大数据的价值。</p>
+<p>以当前的智慧城市建设为例，很多城市都在全方位、多维度建立知识产权、种质资源、农资、农产品、病虫害疫情等农业信息大数据中心，为农业产供销提供全程信息服务。建设此类大数据中心，离不开各部门生态大数据的共享。</p>
+<p>但是，生态大数据共享面临着巨大挑战。首先，我国生态环境大数据包括气象、水利、生态、国土、农业、林业、交通、社会经济等其他部门的大数据，涉及多领域多部门和多源数据。虽然目前这些部门已经建立了自己的数据平台，但这些平台之间互不连通，只是一个个的数据孤岛。</p>
+<p>其次，相关部门因为无法追踪数据的轨迹，担心数据的利益归属问题，便无法实现数据的共享。因此，要想挖掘隐藏在生态大数据背后的潜在价值，实现安全的数据共享是关键，也是生态大数据产生价值的前提和基础。</p>
+<h3 id="3-数据存证和追溯">3. 数据存证和追溯</h3>
+<p>生态大数据来之不易，是研究院所、企业、个人等社会来源的集体智慧。</p>
+<p>其中，很多生态大数据涉及到了知识产权的保护。但是目前的中心化存储无法保证知识产权的保护，无法对数据的使用进行溯源管理，容易造成知识产权的侵犯和隐私数据的泄露。</p>
+<h2 id="四区块链带来的全新存储模式">四、区块链带来的全新存储模式</h2>
+<p>这些就是生态大数据在存储方面的需求。在当前产业区块链快速发展的今天，区块链的分布式存储是可以为生态大数据存储提供全新的存储方式的。<strong>这个核心前提就是区块链的分布式存储、不可篡改和数据追踪特性</strong>。</p>
+<p>把区块链作为底层技术，搭建此类平台，专门存储生态大数据，可以设置节点管理、存储管理、用户管理、许可管理、业务通道管理等。针对上层业务应用提供高可用和动态扩展的区块链网络底层服务的实现。在这个平台的应用层，可以搭建API接口，让整个平台的使用灵活可扩展。区块链分布式存储有如下特点：</p>
+<h3 id="1-数据安全存储">1. 数据安全存储</h3>
+<p>利用区块链的分布式存储，能够实现真正的生态大数据安全存储。</p>
+<p>首先，数据永不丢失。这点对于生态大数据的历史数据特别友好，方便新老数据的调用和对比。</p>
+<p>其次，数据不易被泄露或者攻击。因为数据采取的是分布式存储，如果遭遇攻击，也只能得到存储在部分节点里的数据碎片，无法完全获得完整的数据信息或者数据段。</p>
+<h3 id="2-数据安全共享">2. 数据安全共享</h3>
+<p>区块链能够实现生态数据的存储即确权，这样就能够避免知识产权被侵害，实现安全共享。毕竟生态大数据的获取，是需要生态工作者常年在野外驻守，提取数据的。</p>
+<p>生态大数据来之不易，是很多生态工作者的工作心血和结晶，需要得到产权的保护，让数据体现出应用价值和商业价值，保护生态工作者的工作动力，让他们能够深入一线，采集出更多优质的大数据。</p>
+<p>同时，利用区块链的数据安全共享机制，也能够打破气象、林业、湿地等部门的数据壁垒，构建安全可靠的数据共享机制，让数据流转更具价值。</p>
+<h3 id="3-数据追溯监控">3. 数据追溯监控</h3>
+<p>现在有部分生态工作者，为了牟取私利，会将生态数据篡改。如果利用区块链技术，则没有那么容易了。</p>
+<p>利用加密技术，把存储的数据放在分布式存储平台进行加密处理。如果生态大数据发生变更，平台就可以记录其不同版本，便于事后追溯和核查。</p>
+<p>这个保护机制主要是利用了数据的不可篡改，满足在使用生态大数据的各类业务过程中对数据的安全性的要求。</p>
+<p>区块链能够对数据提供安全监控，记录应用系统的操作日志、数据库的操作日志数据，并加密存储在系统上，提供日志预警功能，对于异常情况通过区块链浏览器展示出来，便于及时发现违规的操作和提供证据。</p>
+<h2 id="五总结">五、总结</h2>
+<p>以上就是区块链的分布式存储能够在生态大数据方面所起的作用。未来，肯定会出现很多针对生态大数据存储的平台诞生。</p>
+<p><strong>生态大数据是智慧城市建设的重要基础资料</strong>，引用区块链技术，打造相关的生态大数据存储和管理平台，能够保证生态大数据的安全存储和有效共享，为智慧城市建设添砖加瓦，推动产业区块链的发展。</p>
+
+                
+                
+                <hr> 
+
+<div class="entry-shang text-center">
+    
+    <p> 「真诚赞赏，手留余香」</p>
+    
+    <button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+    <div class="zs-modal-head">
+        <button type="button" class="close">×</button>
+        <span class="author">
+            <a href="http://www.mafool.com">
+                <img src="http://www.mafool.com/img/reward/hollson.png" alt="史布斯" />码夫庄园
+            </a>
+        </span>
+        
+        <p class="tip"><i></i><span>嗯，我的梦想是被读者的稿费包养~</span></p>
+        
+
+    </div>
+    <div class="zs-modal-body">
+        <div class="zs-modal-btns">
+            <button class="btn btn-blink" data-num="2">2元</button>
+            <button class="btn btn-blink" data-num="5">5元</button>
+            <button class="btn btn-blink" data-num="10">10元</button>
+            <button class="btn btn-blink" data-num="50">50元</button>
+            <button class="btn btn-blink" data-num="100">100元</button>
+            <button class="btn btn-blink" data-num="1">任意金额</button>
+        </div>
+        <div class="zs-modal-pay">
+            <button class="btn btn-bred" id="pay-text">2元</button>
+            <p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+            <img src="http://www.mafool.com/img/reward/wechat-2.png" alt="史布斯" id="pay-image" />
+        </div>
+    </div>
+    <div class="zs-modal-footer">
+        <label>
+            <span class="zs-wechat"></span>
+            <input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked">
+            <img src="http://www.mafool.com/img/reward/wechat-btn.png" alt="史布斯" />
+            </span>&nbsp;
+            <span>
+                <input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay">
+                <img src="http://www.mafool.com/img/reward/alipay-btn.png" alt="史布斯" />
+            </span>
+        </label>
+    </div>
+</div>
+
+ 
+
+                <br>
+                <br>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="column is-3">
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">最近发布</h2>
+        
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/0742b474a643d63a774461726a6201203/">Go语言中的原子操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年12月2日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/1600330472/">Go基础笔记 - 2.3 常量</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月10日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/15996311192/">Go - Gin框架快速入门</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月9日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480249/">Gorm快速指南</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480218/">18. Go语言MySQL数据库操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+    </div>
+</div>
+<br>
+        
+
+
+
+
+<div class="card">
+  <div class="card-content">
+    <h2 class="title is-6">相关文章</h2>
+    
+    
+    <h2><a href="http://www.mafool.com/posts/d40cede24573717edfd927aad8bb5042/">分布式系统概述</a></h2>
+    <time class="has-text-grey-light is-size-7">8 April 2020</time>
+    
+    <h2><a href="http://www.mafool.com/posts/aff3b81a3477dddf3a0e9115dd348b11/">Etcd - 搭建伪集群</a></h2>
+    <time class="has-text-grey-light is-size-7">13 March 2020</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585819046/">Go操作Zookeeper</a></h2>
+    <time class="has-text-grey-light is-size-7">8 January 2020</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585838490/">CAP定理和分布式数据库管理系统</a></h2>
+    <time class="has-text-grey-light is-size-7">11 November 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585749845/">Redis哨兵模式和集群搭建</a></h2>
+    <time class="has-text-grey-light is-size-7">1 November 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585839366/">分布式理论(一) - CAP定理</a></h2>
+    <time class="has-text-grey-light is-size-7">6 July 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585838938/">分布式理论(二) - BASE理论</a></h2>
+    <time class="has-text-grey-light is-size-7">5 July 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585839040/">分布式理论(三) - 2PC协议</a></h2>
+    <time class="has-text-grey-light is-size-7">4 July 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585839114/">分布式理论(四) - 3PC协议</a></h2>
+    <time class="has-text-grey-light is-size-7">3 July 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585839221/">分布式理论(五) 一致性算法Paxos</a></h2>
+    <time class="has-text-grey-light is-size-7">2 July 2019</time>
+    
+  </div>
+</div>
+<br>
+
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">标签</h2>
+        <div>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/atomic">atomic</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/blog">blog</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cgo">cgo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cloud">cloud</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/config">config</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/copy">copy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/docker">docker</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/exam">exam</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/gin">gin</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/git">git</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/golang">golang</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/hugo">hugo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/install">install</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/istio">istio</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/jenkins">jenkins</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/kubernetes">kubernetes</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/map">map</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/microservice">microservice</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/mycat">mycat</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/nginx">nginx</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/plan9">plan9</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/posix">posix</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/proxy">proxy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/raft">raft</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ssh">ssh</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/tips">tips</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ymal">ymal</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%B8%BB%E4%BB%8E">主从</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BA%8B%E5%8A%A1">事务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BB%A3%E7%90%86">代理</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BD%9C%E7%94%A8%E5%9F%9F">作用域</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%86%85%E5%AD%98">内存</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%8B%E7%BC%A9">压缩</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%88%9B">原创</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%AD%90">原子</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%91%BD%E4%BB%A4%E8%A1%8C">命令行</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%93%A8%E5%85%B5">哨兵</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%AD%98%E5%82%A8">存储</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B8%B8%E9%87%8F">常量</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B9%B6%E5%8F%91">并发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BC%82%E5%B8%B8">异常</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1">微服务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%88%E6%9D%83%E8%AE%A4%E8%AF%81">授权认证</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%92%E5%BA%8F">排序</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%A5%E5%8F%A3">接口</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%97%A5%E5%BF%97">日志</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%9D%83%E9%99%90">权限</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE1">标签1</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE2">标签2</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%AD%A3%E5%88%99">正则</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%81%E9%87%8F%E5%88%86%E5%8F%91">流量分发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%8B%E8%AF%95">测试</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%BA%90%E7%A0%81">源码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%8A%B6%E6%80%81%E7%A0%81">状态码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%AE%97%E6%B3%95">算法</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%BC%8F">编程模式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%80%81%E5%A6%96%E7%AC%94%E8%AE%B0">老妖笔记</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%BF%87%E6%BB%A4%E5%99%A8">过滤器</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%80%83%E9%80%B8">逃逸</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%85%8D%E7%BD%AE">配置</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%86%99">重写</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%AE%9A%E5%90%91">重定向</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9B%86%E7%BE%A4">集群</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9D%A2%E8%AF%95">面试</a>
+            </span>
+            
+        </div>
+    </div>
+</div>
+<br>
+    </div>
+</div>
+
+        </div>
+    </div>
+
+    
+    <footer class="footer has-background-grey-darker has-text-white">
+    <div class="content has-text-centered">
+        <p>
+            <span class="icon is-large">
+                <a href="https://twitter.com/" class="mysocial" rel="me">
+                    <i class="fab fa-twitter fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://www.youtube.com/" class="mysocial" rel="me">
+                    <i class="fab fa-youtube fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://github.com/" class="mysocial" rel="me">
+                    <i class="fab fa-github fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <br><br>
+            友情链接：
+            
+            <a class="mysocial" href="http://www.mafool.com" target="_blank">Mafool</a>
+            
+            <a class="mysocial" href="https://gohugo.io/documentation/" target="_blank">Hugo</a>
+            
+            <a class="mysocial" href="https://bulma.io/" target="_blank">Bulma</a>
+            
+            <a class="mysocial" href="https://bootstrapious.com/" target="_blank">Bootstrapious</a>
+            
+            <a class="mysocial" href="https://youzhixueyuan.com/" target="_blank">Youzhixueyuan</a>
+            
+            <br><br />
+            版权所有 &copy; 码夫庄园 2021
+            - <a class="mysocial" href="https://github.com/hollson/hugo-theme-dooz">Hugo Theme</a>
+        </p>
+    </div>
+</footer>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='http://www.mafool.com/js/dooz.totop.js?v=0.0.0' async=""></script>
+
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = 'https://hm.baidu.com/hm.js?f185359ec6b829a6a93e1e1f2597f6d9';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DK042XSJ2J"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-DK042XSJ2J');
+</script>
+
+    
+    
+<script type="text/javascript" src="http://www.mafool.com/js/reward.js"></script>
+
+    
+    <script defer src="https://cdn.staticfile.org/font-awesome/5.13.0/js/all.min.js"></script>
+</body>
+
+</html>

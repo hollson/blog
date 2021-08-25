@@ -1,0 +1,24 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Docker on 码夫庄园</title>
+    <link>http://www.mafool.com/tags/docker/</link>
+    <description>Recent content in Docker on 码夫庄园</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <copyright>版权所有</copyright>
+    <lastBuildDate>Fri, 09 Feb 2018 00:00:00 +0000</lastBuildDate>
+    
+        <atom:link href="http://www.mafool.com/tags/docker/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>如何使用非root用户执行docker命令</title>
+      <link>http://www.mafool.com/2018/02/09/docker-without-sudo/</link>
+      <pubDate>Fri, 09 Feb 2018 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.mafool.com/2018/02/09/docker-without-sudo/</guid>
+      <description>Add the docker group if it doesn&amp;rsquo;t already exist: sudo groupadd docker Add the connected user &amp;ldquo;$USER&amp;rdquo; to the docker group. Change the user name to match your preferred user if you do not want to use your current user: sudo gpasswd -a $USER docker Either do a newgrp docker or log out/in to activate the changes to groups.</description>
+    </item>
+    
+  </channel>
+</rss>

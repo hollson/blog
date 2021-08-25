@@ -1,0 +1,51 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Kafka on 码夫庄园</title>
+    <link>http://www.mafool.com/categories/kafka/</link>
+    <description>Recent content in Kafka on 码夫庄园</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <copyright>版权所有</copyright>
+    <lastBuildDate>Mon, 03 Feb 2020 00:00:00 +0800</lastBuildDate>
+    
+        <atom:link href="http://www.mafool.com/categories/kafka/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Kafka环境部署</title>
+      <link>http://www.mafool.com/post/1585728530/</link>
+      <pubDate>Mon, 03 Feb 2020 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585728530/</guid>
+      <description>一. 搭建Zookeeper 参考Zookeeper安装教程 1 2 3 $ jps 1699 QuorumPeerMain # zookeeper进程 1702 Jps 二. 搭建单机Kafka 1. 下载Kafka： 参</description>
+    </item>
+    
+    <item>
+      <title>Kafka面试自测系列1</title>
+      <link>http://www.mafool.com/post/1585721646/</link>
+      <pubDate>Wed, 08 May 2019 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585721646/</guid>
+      <description>面试题，不仅是面试指南，更是自我知识检测手段 1.什么是kafka Kafka是分布式发布-订阅消息系统，它最初是由LinkedIn公司开发的，</description>
+    </item>
+    
+    <item>
+      <title>Kafka面试自测系列2</title>
+      <link>http://www.mafool.com/post/1585721666/</link>
+      <pubDate>Wed, 08 May 2019 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585721666/</guid>
+      <description>面试题，不仅是面试指南，更是自我知识检测手段 1.Kafka 的设计时什么样的呢？ Kafka 将消息以 topic 为单位进行归纳 将向 Kafka topic 发布消息的程序成为 producers. 将预订 topics 并消费消息的</description>
+    </item>
+    
+    <item>
+      <title>Kafka面试自测系列3</title>
+      <link>http://www.mafool.com/post/1585721669/</link>
+      <pubDate>Wed, 08 May 2019 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585721669/</guid>
+      <description>面试题，不仅是面试指南，更是自我知识检测手段 问题1：什么是Apache Kafka? 答：Apache Kafka是一个发布 - 订阅开源消息代理应用程序。这个</description>
+    </item>
+    
+  </channel>
+</rss>

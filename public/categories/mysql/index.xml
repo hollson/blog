@@ -1,0 +1,96 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Mysql on 码夫庄园</title>
+    <link>http://www.mafool.com/categories/mysql/</link>
+    <description>Recent content in Mysql on 码夫庄园</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <copyright>版权所有</copyright>
+    <lastBuildDate>Wed, 01 Apr 2020 00:00:00 +0800</lastBuildDate>
+    
+        <atom:link href="http://www.mafool.com/categories/mysql/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Mysql的乐观锁与悲观锁</title>
+      <link>http://www.mafool.com/post/1585752015/</link>
+      <pubDate>Wed, 01 Apr 2020 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585752015/</guid>
+      <description>一. 悲观锁(PCC) 悲观锁概念 在关系数据库管理系统里，悲观并发控制（又名“悲观锁”，Pessimistic Concurrency Control，缩写“PCC”）</description>
+    </item>
+    
+    <item>
+      <title>「转」MySQL慢查询优化、索引优化、以及表等优化总结</title>
+      <link>http://www.mafool.com/post/1585905443/</link>
+      <pubDate>Mon, 09 Sep 2019 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585905443/</guid>
+      <description>MySQL优化概述 MySQL数据库常见的两个瓶颈是：CPU和I/O的瓶颈。 CPU在饱和的时候一般发生在数据装入内存或从磁盘上读取数据时候。 磁</description>
+    </item>
+    
+    <item>
+      <title>Mysql分表分库1 - Mycat安装与配置</title>
+      <link>http://www.mafool.com/post/1585906994/</link>
+      <pubDate>Mon, 15 Jul 2019 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585906994/</guid>
+      <description>一. Mycat安装 Mycat是一款数据库分库分表中间件。 1. 安装依赖项 安装JDK1.7+ 安装Mysql(略), 建议安装mysql8.0以下版本</description>
+    </item>
+    
+    <item>
+      <title>Mysql分表分库2 - Mycat实战演练</title>
+      <link>http://www.mafool.com/post/1585907144/</link>
+      <pubDate>Sat, 13 Jul 2019 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585907144/</guid>
+      <description>一. 配置规则 1. 分片方式 分片 连续分片 离散分片 优点 扩容无需迁移数据范围条件查询消耗资源少 并发访问能力增强范围条件查询性能提升 缺点 存在数据热点的可</description>
+    </item>
+    
+    <item>
+      <title>Mysql面试题收录</title>
+      <link>http://www.mafool.com/post/1585726446/</link>
+      <pubDate>Tue, 09 Apr 2019 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585726446/</guid>
+      <description>事务四大特性 原子性(Atomicity) ：一个事务中的所有操作，要么全部完成，要么全部不完成。事务在执行过程中发生错误，会被回滚（Rollb</description>
+    </item>
+    
+    <item>
+      <title>Mysql配置文件管理</title>
+      <link>http://www.mafool.com/post/1585906809/</link>
+      <pubDate>Sun, 03 Feb 2019 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585906809/</guid>
+      <description>一. 配置管理 1. 查看配置文件路径： mysql会使用以下优先级去加载配置文件。 1 $ mysql --help|grep my.cnf 2.查看启动配置项： 包含服务目录、插件、数据、日志目录和</description>
+    </item>
+    
+    <item>
+      <title>Mysql数据库设计范式</title>
+      <link>http://www.mafool.com/post/1585731112/</link>
+      <pubDate>Fri, 03 Aug 2018 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585731112/</guid>
+      <description>前言 NORMALIZATION是一种数据库设计技术，它以减少数据冗余和依赖性的方式组织表。规范化将较大的表划分为较小的表，并使用关系将它们链</description>
+    </item>
+    
+    <item>
+      <title>Mysql用户权限管理</title>
+      <link>http://www.mafool.com/post/1585906664/</link>
+      <pubDate>Thu, 03 May 2018 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585906664/</guid>
+      <description>一. 用户管理 1. 查询用户 1 SELECT host,user FROM mysql.user; 2. 添加用户 可使用create或grant(当用户不存在时创建用户，并授权，参考授权管理)命名创建用户。 1 CREATE USER</description>
+    </item>
+    
+    <item>
+      <title>Mysql安装教程</title>
+      <link>http://www.mafool.com/post/1585906284/</link>
+      <pubDate>Wed, 02 May 2018 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585906284/</guid>
+      <description>1.准备环境 下载与操作系统相兼容的Mysql版本，查看安装向导 。 1 2 3 # 查看服务器操作系统版本信息 $ uname -r #lunix内核版本 3.10.0...x86_64 $ lsb_release -d #lin</description>
+    </item>
+    
+  </channel>
+</rss>

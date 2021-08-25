@@ -1,0 +1,24 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>过滤器 on 码夫庄园</title>
+    <link>http://www.mafool.com/tags/%E8%BF%87%E6%BB%A4%E5%99%A8/</link>
+    <description>Recent content in 过滤器 on 码夫庄园</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <copyright>版权所有</copyright>
+    <lastBuildDate>Mon, 13 Apr 2020 00:49:27 +0800</lastBuildDate>
+    
+        <atom:link href="http://www.mafool.com/tags/%E8%BF%87%E6%BB%A4%E5%99%A8/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Go - 实现布隆过滤器</title>
+      <link>http://www.mafool.com/posts/6f1ada1f5080f30710343b9d9c36592f/</link>
+      <pubDate>Mon, 13 Apr 2020 00:49:27 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/posts/6f1ada1f5080f30710343b9d9c36592f/</guid>
+      <description>1. 概念 布隆过滤器（Bloom Filter） 是由 Howard Bloom在1970年提出的二进制向量数据结构，它具有很好的空间和时间效率，被用来检测一个元</description>
+    </item>
+    
+  </channel>
+</rss>

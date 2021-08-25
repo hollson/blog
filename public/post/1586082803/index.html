@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>码夫庄园-深入解读unsafe包</title>
+    <meta name="keywords"
+        content='unsafe,转换'>
+    <meta name="description" content="unsafe提供了类型转换，通过指针修改字段值，修改私有变量等能力，可以通过unsafe查看类型大小、内存偏移量、对齐值等。它是一种危险的操作，但是在某些情况下有特别有用。" />
+
+    
+    <meta name="baidu-site-verification" content="v9szEmQLra" />
+    <meta name="360-site-verification" content="d8e961f98fb655e4b8cf9439cfd9ac7f" />
+    <meta name="sogou_site_verification" content="40NC9EdZDC" />
+    <meta name="shenma-site-verification" content="3200e3042e92157713a3b0aceeecb20a_1586020187" />
+    <meta name="google-site-verification" content="r8987bkunZHJeKut3ocu5NIJ5QEu53NA6Q_r7RrZ46c" />
+    <meta name="msvalidate.01" content="893A2865ABC54AC2782D118536831056" />
+
+    
+    <link rel="shortcut icon" href="http://www.mafool.com/img/res/favicon.ico">
+    
+
+    
+
+    <link crossorigin="anonymous" integrity="sha384-5kGFOAqgEKnuF6c2jk2JANKHZgYVt38Wn2dVJENtq1EBCP54/1uzXU5mpxqL8WjN"
+        href="https://lib.baomitu.com/bulma/0.8.0/css/bulma.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="http://www.mafool.com/css/dooz.blog.css" />
+    <script crossorigin="anonymous" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh"
+        src="https://lib.baomitu.com/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/jquery.share.min.js"></script>
+    
+
+    
+
+    
+    
+<link rel="stylesheet" href="http://www.mafool.com/css/reward.css">
+
+
+    <link href="http://www.mafool.com/css/fonts.googleapi.css" rel="stylesheet">
+    <script src=http://www.mafool.com/js/dooz.blog.js></script>
+
+    
+    <script>
+        $(document).ready(function () {
+            $('.content a[href^="http"]').each(function () {
+                $(this).attr('target', '_blank');
+            });
+        });
+
+        $(document).on('click', '.modal-wechat', function () {
+            $(".modal").addClass("is-active");
+        });
+
+        $(document).on('click', '.modal-background', function () {
+            $(".modal").removeClass("is-active");
+        });
+    </script>
+</head>
+
+<body>
+    
+    
+<section class="hero is-info is-medium"
+    style="background-image: url('/img/res/bg2.jpg');">
+    <div class="hero-head">
+        <nav class="navbar is-transparent container has-text-white">
+    <div class="navbar-brand">
+        <div class="navbar-item">
+            <a class="title is-5 is-white" href="http://www.mafool.com/">码夫庄园</a>
+        </div>
+
+        
+        <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <div id="navbarExampleTransparentExample" class="navbar-menu has-text-dark">
+        
+
+        <div class="navbar-end">
+            <a class="navbar-item" href='http://www.mafool.com/'>首页</a>
+            <a class="navbar-item" href='http://www.mafool.com/archives'>归档 </a>
+            <a class="navbar-item" href='http://www.mafool.com/about'>关于</a>
+            <span class="navbar-item">
+                <a class="button is-primary is-inverted" href="https://github.com/hollson/hugo-theme-dooz">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>主题</span>
+                </a>
+            </span>
+        </div>
+    </div>
+</nav>
+    </div>
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <div class='container has-text-left column is-7'>
+                
+                <span>
+                    <a class="bar_tag" href="http://www.mafool.com/tags/%E5%8E%9F%E5%88%9B" title="原创">原创</a>
+                </span>
+                
+                <span>
+                    <a class="bar_tag" href="http://www.mafool.com/tags/%E6%BA%90%E7%A0%81" title="源码">源码</a>
+                </span>
+                
+                <h1 class="title is-size-2" style="margin-bottom:0.2rem;">
+                    
+                    深入解读unsafe包
+                    
+                </h1>
+                
+                <span class="title is-size-6" style="font-style: italic;"> </span><br>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    
+    <div class="container">
+        <div class="section">
+            
+<div class="columns">
+    <div class="column is-9">
+        <div class="tile is-child box">
+            <div class="content">
+                
+                <nav class="level">
+                    
+                    <div class="level-left">
+                        <div class="level-item">
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年4月5日,
+    星期日 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 3分钟阅读
+</p>
+                        </div>
+                    </div>
+
+                    
+                    
+                    <div class="share-component level-right" data-disabled="google,diandian,tencent,qzone"
+                        data-description="Share.js - 一键分享到微博，QQ空间，腾讯微博，人人，豆瓣"
+                        data-mobile-sites="weibo,qq,qzone,tencent">
+                    </div>
+                    
+                </nav>
+                <hr>
+                
+                <header>
+                    <h2>目录</h2>
+                </header>
+                <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一-关于-unsafe-包">一. 关于 unsafe 包</a></li>
+    <li><a href="#二-地址类型-uintptr">二. 地址类型 uintptr</a></li>
+    <li><a href="#三-任意类型-arbitrary">三. 任意类型 Arbitrary</a>
+      <ul>
+        <li><a href="#1-类型大小-sizeof">1. 类型大小 Sizeof</a></li>
+        <li><a href="#2-字段对齐-alignof">2. 字段对齐 Alignof</a></li>
+        <li><a href="#3-偏移量-offsetof">3. 偏移量 Offsetof</a></li>
+      </ul>
+    </li>
+    <li><a href="#四-空指针-pointer">四. 空指针 Pointer</a></li>
+    <li><a href="#参考链接">参考链接：</a></li>
+  </ul>
+</nav>
+                
+                <hr>
+                <h2 id="一-关于-unsafe-包">一. 关于 unsafe 包</h2>
+<p>Unsafe 包主要用于<code>指针计算</code>和指<code>针类型转换</code>(具体可以查阅<a href="https://github.com/golang/go/blob/master/src/unsafe/unsafe.go"><strong>unsafe 源码</strong></a>或<a href="https://golang.org/pkg/unsafe/"><strong>unsafe 文档</strong></a>）。unsafe 包源码如下：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">package</span> unsafe
+
+<span style="color:#09f;font-style:italic">// 它表示任意Go表达式的类型。
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">type</span> ArbitraryType <span style="color:#078;font-weight:bold">int</span>
+
+<span style="color:#09f;font-style:italic">//任意类型指针，类似于语言的*void
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">type</span> Pointer <span style="color:#555">*</span>ArbitraryType
+
+<span style="color:#09f;font-style:italic">// 大小
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">Sizeof</span>(x ArbitraryType) <span style="color:#078;font-weight:bold">uintptr</span>
+
+<span style="color:#09f;font-style:italic">// 偏移量
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">Offsetof</span>(x ArbitraryType) <span style="color:#078;font-weight:bold">uintptr</span>
+
+<span style="color:#09f;font-style:italic">// 对齐值
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">Alignof</span>(x ArbitraryType) <span style="color:#078;font-weight:bold">uintptr</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="二-地址类型-uintptr">二. 地址类型 uintptr</h2>
+<p><code>uintptr</code>是 Go 语言<code>内置数据类型</code>，源码注释如下：</p>
+<blockquote>
+<p>uintptr is an integer type that is large enough to hold the bit pattern of any pointer.</p>
+<p>即：uintptr 是一个足够大的<code>整数类型</code>，可以<code>容纳</code>任何<code>指针</code>的位模式。</p>
+</blockquote>
+<p>说明：</p>
+<ol>
+<li>
+<p>uintptr 不属于指针，也不属于 unsafe，它只是指针运算的<code>中间变量或容器</code>。</p>
+</li>
+<li>
+<p>uintptr 是整数类型，所以它可以参与数据(内存地址)计算,也可能被 GC 回收。</p>
+</li>
+<li>
+<p>unsafe 中的 uintptr 是<code>常量</code>，类似的还有<code>cap</code>、<code>len</code>、<code>complex</code>等。</p>
+</li>
+</ol>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">const</span> size = unsafe.<span style="color:#c0f">Sizeof</span>(<span style="color:#366">int64</span>(<span style="color:#f60">1</span>))
+<span style="color:#069;font-weight:bold">const</span> com = <span style="color:#366">complex</span>(<span style="color:#f60">1.2</span>, <span style="color:#f60">3.4</span>)
+<span style="color:#069;font-weight:bold">const</span> lenght= <span style="color:#366">len</span>([<span style="color:#f60">3</span>]<span style="color:#078;font-weight:bold">int</span>{}) <span style="color:#09f;font-style:italic">//数组长度(相当于常量)
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">const</span> capacity= <span style="color:#366">cap</span>([<span style="color:#f60">3</span>]<span style="color:#078;font-weight:bold">int</span>{})
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="三-任意类型-arbitrary">三. 任意类型 Arbitrary</h2>
+<blockquote>
+<p>Arbitrary<code>[ˈɑːrbɪtreri]</code> 即任意的。<code>ArbitraryType</code>它只是声明了一个 int 的类型，相当于一个<code>占位符</code>。</p>
+</blockquote>
+<h3 id="1-类型大小-sizeof">1. 类型大小 Sizeof</h3>
+<p>返回类型描述符的字节大小（与数据无关）</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+    <span style="color:#069;font-weight:bold">type</span> T <span style="color:#069;font-weight:bold">struct</span> {
+        t1 <span style="color:#078;font-weight:bold">bool</span>
+        t2 <span style="color:#078;font-weight:bold">byte</span>
+        t3 <span style="color:#078;font-weight:bold">int64</span>
+        t4 <span style="color:#078;font-weight:bold">string</span>
+    }
+    t <span style="color:#555">:=</span> T{<span style="color:#069;font-weight:bold">true</span>, <span style="color:#f60">1</span>, <span style="color:#f60">2</span>, <span style="color:#c30">&#34;&#34;</span>}
+
+    fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;===字段尺寸===&#34;</span>)
+    fmt.<span style="color:#c0f">Println</span>(unsafe.<span style="color:#c0f">Sizeof</span>(t.t1)) <span style="color:#09f;font-style:italic">//1 =&gt; 4
+</span><span style="color:#09f;font-style:italic"></span>    fmt.<span style="color:#c0f">Println</span>(unsafe.<span style="color:#c0f">Sizeof</span>(t.t2)) <span style="color:#09f;font-style:italic">//1 =&gt; 4
+</span><span style="color:#09f;font-style:italic"></span>    fmt.<span style="color:#c0f">Println</span>(unsafe.<span style="color:#c0f">Sizeof</span>(t.t3)) <span style="color:#09f;font-style:italic">//8
+</span><span style="color:#09f;font-style:italic"></span>    fmt.<span style="color:#c0f">Println</span>(unsafe.<span style="color:#c0f">Sizeof</span>(t.t4)) <span style="color:#09f;font-style:italic">//16
+</span><span style="color:#09f;font-style:italic"></span>
+    fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;===结构体尺寸===&#34;</span>)
+    fmt.<span style="color:#c0f">Println</span>(unsafe.<span style="color:#c0f">Sizeof</span>(t)) <span style="color:#09f;font-style:italic">//32(发生了4倍对齐)
+</span><span style="color:#09f;font-style:italic"></span>
+    fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;===指针尺寸===&#34;</span>)
+    fmt.<span style="color:#c0f">Println</span>(unsafe.<span style="color:#c0f">Sizeof</span>(<span style="color:#555">&amp;</span>t)) <span style="color:#09f;font-style:italic">//4或8，跟系统相关
+</span><span style="color:#09f;font-style:italic"></span>
+    fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;===引用尺寸===&#34;</span>)
+    s1 <span style="color:#555">:=</span> []<span style="color:#078;font-weight:bold">byte</span>{<span style="color:#f60">1</span>, <span style="color:#f60">2</span>, <span style="color:#f60">3</span>}
+    s2 <span style="color:#555">:=</span> []<span style="color:#078;font-weight:bold">int64</span>{<span style="color:#f60">1</span>, <span style="color:#f60">2</span>, <span style="color:#f60">3</span>, <span style="color:#f60">4</span>, <span style="color:#f60">5</span>, <span style="color:#f60">6</span>}
+    m1 <span style="color:#555">:=</span> <span style="color:#069;font-weight:bold">map</span>[<span style="color:#078;font-weight:bold">byte</span>]<span style="color:#078;font-weight:bold">float32</span>{<span style="color:#f60">1</span>: <span style="color:#f60">1.1</span>}
+    m2 <span style="color:#555">:=</span> <span style="color:#069;font-weight:bold">map</span>[<span style="color:#078;font-weight:bold">int32</span>]<span style="color:#078;font-weight:bold">float64</span>{<span style="color:#f60">1</span>: <span style="color:#f60">1.1</span>, <span style="color:#f60">2</span>: <span style="color:#f60">2.2</span>}
+    fmt.<span style="color:#c0f">Println</span>(unsafe.<span style="color:#c0f">Sizeof</span>(s1), unsafe.<span style="color:#c0f">Sizeof</span>(s2)) <span style="color:#09f;font-style:italic">//24 24
+</span><span style="color:#09f;font-style:italic"></span>    fmt.<span style="color:#c0f">Println</span>(unsafe.<span style="color:#c0f">Sizeof</span>(m1), unsafe.<span style="color:#c0f">Sizeof</span>(m2)) <span style="color:#09f;font-style:italic">//8 8
+</span><span style="color:#09f;font-style:italic"></span>}
+</code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>特别注意的是，结构体尺寸发生了<code>2^n</code>对齐；其次，指针类型跟平台相关，即 uintptr 是跟平台相关的值。</p>
+</blockquote>
+<h3 id="2-字段对齐-alignof">2. 字段对齐 Alignof</h3>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+    <span style="color:#069;font-weight:bold">type</span> T <span style="color:#069;font-weight:bold">struct</span> {
+        t1 <span style="color:#078;font-weight:bold">byte</span>
+        t2 <span style="color:#078;font-weight:bold">int32</span>
+    }
+    <span style="color:#069;font-weight:bold">var</span> t T
+    <span style="color:#069;font-weight:bold">var</span> tp <span style="color:#555">*</span>T
+
+    fmt.<span style="color:#c0f">Println</span>(unsafe.<span style="color:#c0f">Alignof</span>(t.t1)) <span style="color:#09f;font-style:italic">//1
+</span><span style="color:#09f;font-style:italic"></span>    fmt.<span style="color:#c0f">Println</span>(unsafe.<span style="color:#c0f">Alignof</span>(t.t2)) <span style="color:#09f;font-style:italic">//4
+</span><span style="color:#09f;font-style:italic"></span>    fmt.<span style="color:#c0f">Println</span>(unsafe.<span style="color:#c0f">Alignof</span>(t))    <span style="color:#09f;font-style:italic">//4
+</span><span style="color:#09f;font-style:italic"></span>    fmt.<span style="color:#c0f">Println</span>(unsafe.<span style="color:#c0f">Alignof</span>(tp))   <span style="color:#09f;font-style:italic">//4或8，跟系统相关
+</span><span style="color:#09f;font-style:italic"></span>
+    fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;===反射对齐===&#34;</span>)
+    fmt.<span style="color:#c0f">Println</span>(reflect.<span style="color:#c0f">TypeOf</span>(t).<span style="color:#c0f">Align</span>())         <span style="color:#09f;font-style:italic">//4  类型对齐
+</span><span style="color:#09f;font-style:italic"></span>    fmt.<span style="color:#c0f">Println</span>(reflect.<span style="color:#c0f">TypeOf</span>(t.t1).<span style="color:#c0f">Align</span>())      <span style="color:#09f;font-style:italic">//1
+</span><span style="color:#09f;font-style:italic"></span>    fmt.<span style="color:#c0f">Println</span>(reflect.<span style="color:#c0f">TypeOf</span>(tp).<span style="color:#c0f">Elem</span>().<span style="color:#c0f">Align</span>()) <span style="color:#09f;font-style:italic">//4
+</span><span style="color:#09f;font-style:italic"></span>}
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="3-偏移量-offsetof">3. 偏移量 Offsetof</h3>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+    <span style="color:#069;font-weight:bold">type</span> T <span style="color:#069;font-weight:bold">struct</span> {
+        t1 <span style="color:#078;font-weight:bold">int64</span>   <span style="color:#09f;font-style:italic">// =&gt; 0
+</span><span style="color:#09f;font-style:italic"></span>        t2 <span style="color:#078;font-weight:bold">byte</span>    <span style="color:#09f;font-style:italic">// =&gt; 8
+</span><span style="color:#09f;font-style:italic"></span>        t3 <span style="color:#078;font-weight:bold">string</span>  <span style="color:#09f;font-style:italic">// 8+1=9 =&gt; 16
+</span><span style="color:#09f;font-style:italic"></span>        t4 []<span style="color:#078;font-weight:bold">int32</span> <span style="color:#09f;font-style:italic">// 16+16=32
+</span><span style="color:#09f;font-style:italic"></span>        t5 <span style="color:#078;font-weight:bold">float64</span> <span style="color:#09f;font-style:italic">// 32+16=48 =&gt; 56
+</span><span style="color:#09f;font-style:italic"></span>    }
+    t <span style="color:#555">:=</span> T{}
+    fmt.<span style="color:#c0f">Println</span>(unsafe.<span style="color:#c0f">Offsetof</span>(t.t1))
+    fmt.<span style="color:#c0f">Println</span>(unsafe.<span style="color:#c0f">Offsetof</span>(t.t2))
+    fmt.<span style="color:#c0f">Println</span>(unsafe.<span style="color:#c0f">Offsetof</span>(t.t3))
+    fmt.<span style="color:#c0f">Println</span>(unsafe.<span style="color:#c0f">Offsetof</span>(t.t4))
+    fmt.<span style="color:#c0f">Println</span>(unsafe.<span style="color:#c0f">Offsetof</span>(t.t5))
+}
+</code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>注意，偏移量是以<code>2^n</code>对齐方式递增的。</p>
+</blockquote>
+<h2 id="四-空指针-pointer">四. 空指针 Pointer</h2>
+<p>Pointer 表示<strong>指向任意类型的指针</strong>(类似于 C 语言里的<code>void*</code>指针)。 Pointer 类型有四种特殊操作 ：</p>
+<blockquote>
+<ul>
+<li>任何类型的<code>指针值</code>都可以转换为 Pointer。</li>
+<li>Pointer 可以转换为任何类型的<code>指针值</code>。</li>
+<li>uintptr 可以转换为 Pointer。</li>
+<li>Pointer 可以转换为 uintptr。</li>
+</ul>
+</blockquote>
+<p><img src="http://www.mafool.com/img/post/640.png" alt="unsafe"></p>
+<p>因此，指针允许程序破坏类型系统并读写任意内存。 使用时应格外小心。</p>
+<p><strong>示例 1: 通过 Pointer 修改对象</strong></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+    <span style="color:#069;font-weight:bold">var</span> v = <span style="color:#069;font-weight:bold">struct</span> {
+        A <span style="color:#078;font-weight:bold">int32</span>
+        B <span style="color:#078;font-weight:bold">int64</span>
+    }{<span style="color:#f60">1</span>, <span style="color:#f60">2</span>}
+
+    p <span style="color:#555">:=</span> unsafe.<span style="color:#c0f">Pointer</span>(<span style="color:#555">&amp;</span>v) <span style="color:#09f;font-style:italic">// *T     -&gt;  Pointer
+</span><span style="color:#09f;font-style:italic"></span>    i32 <span style="color:#555">:=</span> (<span style="color:#555">*</span><span style="color:#078;font-weight:bold">int32</span>)(p)      <span style="color:#09f;font-style:italic">// Pointer -&gt; *T
+</span><span style="color:#09f;font-style:italic"></span>    <span style="color:#555">*</span>i32 <span style="color:#555">+=</span> <span style="color:#f60">10</span>
+    fmt.<span style="color:#c0f">Println</span>(v)
+
+    up <span style="color:#555">:=</span> <span style="color:#366">uintptr</span>(p) <span style="color:#555">+</span> unsafe.<span style="color:#c0f">Offsetof</span>(v.B) <span style="color:#09f;font-style:italic">// Pointer -&gt; uintptr
+</span><span style="color:#09f;font-style:italic"></span>    p = unsafe.<span style="color:#c0f">Pointer</span>(up)                  <span style="color:#09f;font-style:italic">// uintptr -&gt; Pointer
+</span><span style="color:#09f;font-style:italic"></span>    i64 <span style="color:#555">:=</span> (<span style="color:#555">*</span><span style="color:#078;font-weight:bold">int64</span>)(p)
+    <span style="color:#555">*</span>i64 <span style="color:#555">+=</span> <span style="color:#f60">10</span>
+    fmt.<span style="color:#c0f">Println</span>(v)
+}
+</code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>Pointer 充当了一个<code>通用类型转换器</code>的角色, 不同类型的互转都得通过 Pointer 转接。</p>
+</blockquote>
+<p><strong>示例 2: 结构体类型换转</strong></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">type</span> A <span style="color:#069;font-weight:bold">struct</span> {
+    A <span style="color:#078;font-weight:bold">int8</span>
+    B <span style="color:#078;font-weight:bold">string</span>
+    C <span style="color:#078;font-weight:bold">float32</span>
+
+}
+
+<span style="color:#069;font-weight:bold">type</span> B <span style="color:#069;font-weight:bold">struct</span> {
+    D <span style="color:#078;font-weight:bold">int8</span>
+    E <span style="color:#078;font-weight:bold">string</span>
+    F <span style="color:#078;font-weight:bold">float32</span>
+}
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+    a <span style="color:#555">:=</span> A{<span style="color:#f60">1</span>,  <span style="color:#c30">`foo`</span>,  <span style="color:#f60">1.23</span>}
+    <span style="color:#09f;font-style:italic">//b := B(a) //不能以这种方式转换
+</span><span style="color:#09f;font-style:italic"></span>    b <span style="color:#555">:=</span> <span style="color:#555">*</span>(<span style="color:#555">*</span>B)(unsafe.<span style="color:#c0f">Pointer</span>(<span style="color:#555">&amp;</span>a))
+    <span style="color:#366">println</span>(b.D, b.E, b.F)
+}
+</code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>太无耻了，字段名不一样也能转换 😂😂😂</p>
+</blockquote>
+<p><strong>示例 3: 修改私有成员</strong></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#09f;font-style:italic">// 定义一个和 strings包中的Reader相同的本地结构体
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">type</span> Reader <span style="color:#069;font-weight:bold">struct</span> {
+    s        <span style="color:#078;font-weight:bold">string</span>
+    i        <span style="color:#078;font-weight:bold">int64</span>
+    prevRune <span style="color:#078;font-weight:bold">int</span>
+}
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+    sr <span style="color:#555">:=</span> strings.<span style="color:#c0f">NewReader</span>(<span style="color:#c30">&#34;abcdef&#34;</span>)
+    p <span style="color:#555">:=</span> unsafe.<span style="color:#c0f">Pointer</span>(sr)
+
+    pR <span style="color:#555">:=</span> (<span style="color:#555">*</span>Reader)(p) <span style="color:#09f;font-style:italic">//将源结构体转换成系统结构的本地Reader结构体
+</span><span style="color:#09f;font-style:italic"></span>    (<span style="color:#555">*</span>pR).i = <span style="color:#f60">3</span>        <span style="color:#09f;font-style:italic">//修改sr中的私有成员了
+</span><span style="color:#09f;font-style:italic"></span>
+    fmt.<span style="color:#c0f">Println</span>(sr)
+    b, err <span style="color:#555">:=</span> sr.<span style="color:#c0f">ReadByte</span>()
+    fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;%c, %v\n&#34;</span>, b, err)
+}
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="参考链接">参考链接：</h2>
+<blockquote>
+<p><a href="https://golang.org/pkg/unsafe/">https://golang.org/pkg/unsafe/</a> &gt; <a href="https://go101.org/article/unsafe.html">https://go101.org/article/unsafe.html</a> &gt; <a href="https://medium.com/a-journey-with-go/go-what-is-the-unsafe-package-d2443da36350">https://medium.com/a-journey-with-go/go-what-is-the-unsafe-package-d2443da36350</a> &gt; <a href="https://segmentfault.com/a/1190000017389782">https://segmentfault.com/a/1190000017389782</a> &gt; <a href="https://www.pixelstech.net/article/1584241521-Understand-unsafe-in-GoLang">https://www.pixelstech.net/article/1584241521-Understand-unsafe-in-GoLang</a></p>
+</blockquote>
+
+                
+                
+                <hr> 
+
+<div class="entry-shang text-center">
+    
+    <p> 「真诚赞赏，手留余香」</p>
+    
+    <button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+    <div class="zs-modal-head">
+        <button type="button" class="close">×</button>
+        <span class="author">
+            <a href="http://www.mafool.com">
+                <img src="http://www.mafool.com/img/reward/hollson.png" alt="史布斯" />码夫庄园
+            </a>
+        </span>
+        
+        <p class="tip"><i></i><span>嗯，我的梦想是被读者的稿费包养~</span></p>
+        
+
+    </div>
+    <div class="zs-modal-body">
+        <div class="zs-modal-btns">
+            <button class="btn btn-blink" data-num="2">2元</button>
+            <button class="btn btn-blink" data-num="5">5元</button>
+            <button class="btn btn-blink" data-num="10">10元</button>
+            <button class="btn btn-blink" data-num="50">50元</button>
+            <button class="btn btn-blink" data-num="100">100元</button>
+            <button class="btn btn-blink" data-num="1">任意金额</button>
+        </div>
+        <div class="zs-modal-pay">
+            <button class="btn btn-bred" id="pay-text">2元</button>
+            <p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+            <img src="http://www.mafool.com/img/reward/wechat-2.png" alt="史布斯" id="pay-image" />
+        </div>
+    </div>
+    <div class="zs-modal-footer">
+        <label>
+            <span class="zs-wechat"></span>
+            <input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked">
+            <img src="http://www.mafool.com/img/reward/wechat-btn.png" alt="史布斯" />
+            </span>&nbsp;
+            <span>
+                <input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay">
+                <img src="http://www.mafool.com/img/reward/alipay-btn.png" alt="史布斯" />
+            </span>
+        </label>
+    </div>
+</div>
+
+ 
+
+                <br>
+                <br>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="column is-3">
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">最近发布</h2>
+        
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/0742b474a643d63a774461726a6201203/">Go语言中的原子操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年12月2日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/1600330472/">Go基础笔记 - 2.3 常量</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月10日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/15996311192/">Go - Gin框架快速入门</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月9日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480249/">Gorm快速指南</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480218/">18. Go语言MySQL数据库操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+    </div>
+</div>
+<br>
+        
+
+
+
+
+<div class="card">
+  <div class="card-content">
+    <h2 class="title is-6">相关文章</h2>
+    
+    
+    <h2><a href="http://www.mafool.com/post/1585573653/">深度解密Go语言之map</a></h2>
+    <time class="has-text-grey-light is-size-7">30 March 2020</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585577658/">深度解密Go语言之slice</a></h2>
+    <time class="has-text-grey-light is-size-7">30 March 2020</time>
+    
+  </div>
+</div>
+<br>
+
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">标签</h2>
+        <div>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/atomic">atomic</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/blog">blog</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cgo">cgo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cloud">cloud</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/config">config</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/copy">copy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/docker">docker</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/exam">exam</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/gin">gin</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/git">git</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/golang">golang</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/hugo">hugo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/install">install</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/istio">istio</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/jenkins">jenkins</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/kubernetes">kubernetes</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/map">map</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/microservice">microservice</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/mycat">mycat</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/nginx">nginx</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/plan9">plan9</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/posix">posix</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/proxy">proxy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/raft">raft</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ssh">ssh</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/tips">tips</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ymal">ymal</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%B8%BB%E4%BB%8E">主从</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BA%8B%E5%8A%A1">事务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BB%A3%E7%90%86">代理</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BD%9C%E7%94%A8%E5%9F%9F">作用域</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%86%85%E5%AD%98">内存</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%8B%E7%BC%A9">压缩</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%88%9B">原创</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%AD%90">原子</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%91%BD%E4%BB%A4%E8%A1%8C">命令行</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%93%A8%E5%85%B5">哨兵</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%AD%98%E5%82%A8">存储</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B8%B8%E9%87%8F">常量</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B9%B6%E5%8F%91">并发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BC%82%E5%B8%B8">异常</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1">微服务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%88%E6%9D%83%E8%AE%A4%E8%AF%81">授权认证</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%92%E5%BA%8F">排序</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%A5%E5%8F%A3">接口</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%97%A5%E5%BF%97">日志</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%9D%83%E9%99%90">权限</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE1">标签1</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE2">标签2</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%AD%A3%E5%88%99">正则</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%81%E9%87%8F%E5%88%86%E5%8F%91">流量分发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%8B%E8%AF%95">测试</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%BA%90%E7%A0%81">源码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%8A%B6%E6%80%81%E7%A0%81">状态码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%AE%97%E6%B3%95">算法</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%BC%8F">编程模式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%80%81%E5%A6%96%E7%AC%94%E8%AE%B0">老妖笔记</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%BF%87%E6%BB%A4%E5%99%A8">过滤器</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%80%83%E9%80%B8">逃逸</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%85%8D%E7%BD%AE">配置</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%86%99">重写</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%AE%9A%E5%90%91">重定向</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9B%86%E7%BE%A4">集群</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9D%A2%E8%AF%95">面试</a>
+            </span>
+            
+        </div>
+    </div>
+</div>
+<br>
+    </div>
+</div>
+
+        </div>
+    </div>
+
+    
+    <footer class="footer has-background-grey-darker has-text-white">
+    <div class="content has-text-centered">
+        <p>
+            <span class="icon is-large">
+                <a href="https://twitter.com/" class="mysocial" rel="me">
+                    <i class="fab fa-twitter fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://www.youtube.com/" class="mysocial" rel="me">
+                    <i class="fab fa-youtube fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://github.com/" class="mysocial" rel="me">
+                    <i class="fab fa-github fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <br><br>
+            友情链接：
+            
+            <a class="mysocial" href="http://www.mafool.com" target="_blank">Mafool</a>
+            
+            <a class="mysocial" href="https://gohugo.io/documentation/" target="_blank">Hugo</a>
+            
+            <a class="mysocial" href="https://bulma.io/" target="_blank">Bulma</a>
+            
+            <a class="mysocial" href="https://bootstrapious.com/" target="_blank">Bootstrapious</a>
+            
+            <a class="mysocial" href="https://youzhixueyuan.com/" target="_blank">Youzhixueyuan</a>
+            
+            <br><br />
+            版权所有 &copy; 码夫庄园 2021
+            - <a class="mysocial" href="https://github.com/hollson/hugo-theme-dooz">Hugo Theme</a>
+        </p>
+    </div>
+</footer>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='http://www.mafool.com/js/dooz.totop.js?v=0.0.0' async=""></script>
+
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = 'https://hm.baidu.com/hm.js?f185359ec6b829a6a93e1e1f2597f6d9';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DK042XSJ2J"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-DK042XSJ2J');
+</script>
+
+    
+    
+<script type="text/javascript" src="http://www.mafool.com/js/reward.js"></script>
+
+    
+    <script defer src="https://cdn.staticfile.org/font-awesome/5.13.0/js/all.min.js"></script>
+</body>
+
+</html>

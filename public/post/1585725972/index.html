@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>码夫庄园-Go面试自测系列</title>
+    <meta name="keywords"
+        content='关键字1,关键字2'>
+    <meta name="description" content="用于SEO的内容说明" />
+
+    
+    <meta name="baidu-site-verification" content="v9szEmQLra" />
+    <meta name="360-site-verification" content="d8e961f98fb655e4b8cf9439cfd9ac7f" />
+    <meta name="sogou_site_verification" content="40NC9EdZDC" />
+    <meta name="shenma-site-verification" content="3200e3042e92157713a3b0aceeecb20a_1586020187" />
+    <meta name="google-site-verification" content="r8987bkunZHJeKut3ocu5NIJ5QEu53NA6Q_r7RrZ46c" />
+    <meta name="msvalidate.01" content="893A2865ABC54AC2782D118536831056" />
+
+    
+    <link rel="shortcut icon" href="http://www.mafool.com/img/res/favicon.ico">
+    
+
+    
+
+    <link crossorigin="anonymous" integrity="sha384-5kGFOAqgEKnuF6c2jk2JANKHZgYVt38Wn2dVJENtq1EBCP54/1uzXU5mpxqL8WjN"
+        href="https://lib.baomitu.com/bulma/0.8.0/css/bulma.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="http://www.mafool.com/css/dooz.blog.css" />
+    <script crossorigin="anonymous" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh"
+        src="https://lib.baomitu.com/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/jquery.share.min.js"></script>
+    
+
+    
+
+    
+    
+<link rel="stylesheet" href="http://www.mafool.com/css/reward.css">
+
+
+    <link href="http://www.mafool.com/css/fonts.googleapi.css" rel="stylesheet">
+    <script src=http://www.mafool.com/js/dooz.blog.js></script>
+
+    
+    <script>
+        $(document).ready(function () {
+            $('.content a[href^="http"]').each(function () {
+                $(this).attr('target', '_blank');
+            });
+        });
+
+        $(document).on('click', '.modal-wechat', function () {
+            $(".modal").addClass("is-active");
+        });
+
+        $(document).on('click', '.modal-background', function () {
+            $(".modal").removeClass("is-active");
+        });
+    </script>
+</head>
+
+<body>
+    
+    
+<section class="hero is-info is-medium"
+    style="background-image: url('/img/res/blog.jpg');">
+    <div class="hero-head">
+        <nav class="navbar is-transparent container has-text-white">
+    <div class="navbar-brand">
+        <div class="navbar-item">
+            <a class="title is-5 is-white" href="http://www.mafool.com/">码夫庄园</a>
+        </div>
+
+        
+        <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <div id="navbarExampleTransparentExample" class="navbar-menu has-text-dark">
+        
+
+        <div class="navbar-end">
+            <a class="navbar-item" href='http://www.mafool.com/'>首页</a>
+            <a class="navbar-item" href='http://www.mafool.com/archives'>归档 </a>
+            <a class="navbar-item" href='http://www.mafool.com/about'>关于</a>
+            <span class="navbar-item">
+                <a class="button is-primary is-inverted" href="https://github.com/hollson/hugo-theme-dooz">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>主题</span>
+                </a>
+            </span>
+        </div>
+    </div>
+</nav>
+    </div>
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <div class='container has-text-left column is-7'>
+                
+                <span>
+                    <a class="bar_tag" href="http://www.mafool.com/tags/exam" title="Exam">Exam</a>
+                </span>
+                
+                <h1 class="title is-size-2" style="margin-bottom:0.2rem;">
+                    
+                    Go面试自测系列
+                    
+                </h1>
+                
+                <span class="title is-size-6" style="font-style: italic;"> </span><br>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    
+    <div class="container">
+        <div class="section">
+            
+<div class="columns">
+    <div class="column is-9">
+        <div class="tile is-child box">
+            <div class="content">
+                
+                <nav class="level">
+                    
+                    <div class="level-left">
+                        <div class="level-item">
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2019年4月9日,
+    星期二 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 7分钟阅读
+</p>
+                        </div>
+                    </div>
+
+                    
+                    
+                    <div class="share-component level-right" data-disabled="google,diandian,tencent,qzone"
+                        data-description="Share.js - 一键分享到微博，QQ空间，腾讯微博，人人，豆瓣"
+                        data-mobile-sites="weibo,qq,qzone,tencent">
+                    </div>
+                    
+                </nav>
+                <hr>
+                
+                <header>
+                    <h2>目录</h2>
+                </header>
+                <nav id="TableOfContents">
+  <ul>
+    <li><a href="#2struct能不能比较">2、struct能不能比较</a></li>
+    <li><a href="#4-select可以用于什么常用语gorotine的完美退出">4、 select可以用于什么，常用语gorotine的完美退出</a></li>
+    <li><a href="#6-client如何实现长连接">6、 client如何实现长连接</a></li>
+    <li><a href="#7-主协程如何等其余协程完再操作">7、 主协程如何等其余协程完再操作</a></li>
+    <li><a href="#8-slice扩容">8、 slice扩容</a></li>
+    <li><a href="#9-map如何顺序读取">9、 map如何顺序读取</a></li>
+    <li><a href="#10-如何实现一个set">10、 如何实现一个set</a></li>
+    <li><a href="#11-实现消息队列多生产者多消费者">11、 实现消息队列（多生产者，多消费者）</a></li>
+    <li><a href="#12-大文件排序">12、 大文件排序</a></li>
+    <li><a href="#15-描述400401403404状态含义">15、 描述400、401、403、404状态含义</a></li>
+    <li><a href="#17-http能不能一次连接多次请求不等后端返回">17、 http能不能一次连接多次请求，不等后端返回</a></li>
+    <li><a href="#19-time-wait的作用">19、 time-wait的作用</a></li>
+    <li><a href="#21-孤儿进程僵尸进程">21、 孤儿进程，僵尸进程</a></li>
+    <li><a href="#22-死锁条件如何避免">22、 死锁条件，如何避免</a></li>
+    <li><a href="#27-项目里的微信支付这块在支付完微信通知这里收到两次微信相同的支付通知怎么防止重复消费类似接口的幂等性说了借助redis或者数据库的事务">27、 项目里的微信支付这块，在支付完微信通知这里，收到两次微信相同的支付通知，怎么防止重复消费（类似接口的幂等性），说了借助Redis或者数据库的事务</a></li>
+    <li><a href="#29-go的反射包怎么找到对应的方法这里忘记怎么问的直接说不会只用了deepequal简单讲了deepequal">29、 Go的反射包怎么找到对应的方法（这里忘记怎么问的，直接说不会，只用了DeepEqual，简单讲了DeepEqual）</a></li>
+    <li><a href="#30-redis基本数据结构">30、 Redis基本数据结构</a></li>
+    <li><a href="#31-redis的list用过吗底层怎么实现的知道但是没用过不知道怎么实现">31、 Redis的List用过吗？底层怎么实现的？知道但是没用过，不知道怎么实现</a></li>
+    <li><a href="#32-mysql的索引有几种时间复杂度">32、 Mysql的索引有几种，时间复杂度</a></li>
+    <li><a href="#35-退出程序时怎么防止channel没有消费完这里一开始有点没清楚面试官问的然后说了监听中断信号做退出前的处理然后面试官说不是这个意思然后说发送前先告知长度长度要是不知道呢close-channel下游会受到0值可以利用这点这里也有点跟面试官说不明白">35、 退出程序时怎么防止channel没有消费完，这里一开始有点没清楚面试官问的，然后说了监听中断信号，做退出前的处理，然后面试官说不是这个意思，然后说发送前先告知长度，长度要是不知道呢？close channel下游会受到0值，可以利用这点（这里也有点跟面试官说不明白）</a></li>
+    <li><a href="#38-生产者消费者模式手写代码go直接使用channel实现很简单还想着面试官会不会不让用channel实现不用channel的可以使用数组加条件变量channel缓冲长度怎么决定怎么控制上游生产速度过快这里没说出解决方案只是简单说了channel长度可以与上下游的速度比例成线性关系面试官说这是一种解决方案">38、 生产者消费者模式，手写代码（Go直接使用channel实现很简单，还想着面试官会不会不让用channel实现，不用channel的可以使用数组加条件变量），channel缓冲长度怎么决定，怎么控制上游生产速度过快，这里没说出解决方案，只是简单说了channel长度可以与上下游的速度比例成线性关系，面试官说这是一种解决方案</a></li>
+    <li><a href="#40-写的循环队列是不是线程安全不是怎么保证线程安全加锁效率有点低啊然后面试官就提醒go推崇原子操作和channel">40、 写的循环队列是不是线程安全，不是，怎么保证线程安全，加锁，效率有点低啊，然后面试官就提醒Go推崇原子操作和channel</a></li>
+    <li><a href="#41-写完代码面试官说后面问的问题回答就可以不知道的话没关系">41、 写完代码面试官说后面问的问题回答就可以，不知道的话没关系</a></li>
+    <li><a href="#43-timewait和closewait原因">43、 TimeWait和CloseWait原因</a></li>
+    <li><a href="#46-syncpool用过吗为什么使用对象池避免频繁分配对象gc有关那里面的对象是固定的吗不清楚没看过这个的源码">46、 sync.Pool用过吗，为什么使用，对象池，避免频繁分配对象（GC有关），那里面的对象是固定的吗？不清楚，没看过这个的源码</a></li>
+    <li><a href="#56-goroutine调度用了什么系统调用这个不会面试官想从go问到操作系统然后以为作系统基础不好就问了操作系统问题">56、 goroutine调度用了什么系统调用，这个不会，面试官想从go问到操作系统，然后以为***作系统基础不好，就问了操作系统问题</a></li>
+    <li><a href="#57-进程虚拟空间分布全局变量放哪里答上来了操作系统就不问了">57、 进程虚拟空间分布，全局变量放哪里？答上来了，操作系统就不问了</a></li>
+    <li><a href="#58-有没有网络编程有怎么看连接状态netstat有哪些establishedlisten等等有异常情况吗time_wait很多为什么大量短链接">58、 有没有网络编程，有，怎么看连接状态？netstat，有哪些？ESTABLISHED，LISTEN等等，有异常情况吗？TIME_WAIT很多，为什么？大量短链接</a></li>
+    <li><a href="#59-几种基本排序算法说一下问了堆的时间复杂度稳定性为什么不稳定">59、 几种基本排序算法说一下，问了堆的时间复杂度，稳定性，为什么不稳定</a></li>
+    <li><a href="#60--topk问题海量数据topk回答成切分多次加载内存然后用维持k长度的有序链表然后被说时间复杂度不好提示说还是用堆然后哦哦哦对">60、  topk问题，海量数据topk（回答成切分多次加载内存，然后用维持k长度的有序链表，然后被说时间复杂度不好，提示说还是用堆，然后哦哦哦对）</a></li>
+    <li><a href="#65-死锁">65、 死锁？</a></li>
+    <li><a href="#66-tcp三次握手">66、 tcp三次握手</a></li>
+    <li><a href="#67-httphttps">67、 http，https</a></li>
+    <li><a href="#68-状态码401301302201">68、 状态码401,301,302,201</a></li>
+    <li><a href="#69-docker有哪些网络">69、 docker有哪些网络。</a></li>
+    <li><a href="#70-数据库隔离级别提交读会造成什么">70、 数据库隔离级别，提交读会造成什么</a></li>
+    <li><a href="#72--goroutine泄漏有没有处理设置timeoutselect加定时器">72、  goroutine泄漏有没有处理，设置timeout，select加定时器</a></li>
+    <li><a href="#73-mysql高可用的方案">73、 mysql高可用的方案</a></li>
+    <li><a href="#77-go的线程给他讲了跟goroutine调度">77、 go的线程，给他讲了跟goroutine调度</a></li>
+    <li><a href="#78-io模型同步阻塞同步非阻塞异步">78、 io模型，同步阻塞，同步非阻塞，异步</a></li>
+    <li><a href="#79-cookie和session">79、 cookie和session</a></li>
+    <li><a href="#80-接口kps测试">80、 接口kps测试</a></li>
+    <li><a href="#81-redis排行榜数据结构跳跃表查询时间复杂度">81、 redis排行榜数据结构（跳跃表），查询时间复杂度</a></li>
+    <li><a href="#82-redis分布式如何减少同步延迟">82、 redis分布式，如何减少同步延迟</a></li>
+    <li><a href="#92-go使用踩过什么坑for-range数据库连接defer-close">92、 go使用踩过什么坑（for range，数据库连接defer close）</a></li>
+    <li><a href="#96-慢查询">96、 慢查询</a></li>
+    <li><a href="#100-m个n大小的有序数组求并集一开始是2路归并求时间复杂度后来在面试官提醒直接m路归并求时间复杂度">100、 m个n大小的有序数组求并集，一开始是2路归并，求时间复杂度，后来在面试官提醒直接m路归并，求时间复杂度</a></li>
+    <li><a href="#105-selectepoll">105、 select、epoll</a></li>
+    <li><a href="#107-排行榜怎么实现">107、 排行榜怎么实现</a></li>
+    <li><a href="#108-go的锁如何实现用了什么cpu指令">108、 go的锁如何实现，用了什么cpu指令</a></li>
+    <li><a href="#109-go的runtime如何实现">109、 go的runtime如何实现</a></li>
+    <li><a href="#110-看过sql的连接池实现吗">110、 看过sql的连接池实现吗</a></li>
+    <li><a href="#111-ctx包了解吗有什么用">111、 ctx包了解吗？有什么用？</a></li>
+    <li><a href="#112-go什么情况下会发生内存泄漏他说ctx没有cancel的时候这个真不知道">112、 go什么情况下会发生内存泄漏？（他说ctx没有cancel的时候，这个真不知道）</a></li>
+    <li><a href="#113-怎么实现协程完美退出">113、 怎么实现协程完美退出？</a></li>
+    <li><a href="#114-智力题1000瓶酒中有1瓶毒酒10只老鼠7天后毒性才发作第8天要卖了怎么求那瓶毒酒">114、 智力题：1000瓶酒中有1瓶毒酒，10只老鼠，7天后毒性才发作，第8天要卖了，怎么求那瓶毒酒？</a></li>
+    <li><a href="#115-简单dp题nn矩阵从左上角到右下角有多少种走法只限往下和往右走">115、 简单dp题，n*n矩阵从左上角到右下角有多少种走法（只限往下和往右走）</a></li>
+    <li><a href="#116-用channel实现定时器实际上是两个协程同步">116、 用channel实现定时器？（实际上是两个协程同步）</a></li>
+    <li><a href="#118-操作系统内存管理进程通讯为什么共享存储区效率最高">118、 操作系统内存管理？进程通讯，为什么共享存储区效率最高</a></li>
+    <li><a href="#119-实现一个hashmap解决hash冲突的方法解决hash倾斜的方法">119、 实现一个hashmap，解决hash冲突的方法，解决hash倾斜的方法</a></li>
+    <li><a href="#121-100亿个数选top5小根堆">121、 100亿个数选top5，小根堆</a></li>
+    <li><a href="#122-数组和为n的数组对">122、 数组和为n的数组对</a></li>
+    <li><a href="#123-最大连续子数组和">123、 最大连续子数组和</a></li>
+    <li><a href="#124-redis容灾备份扩容">124、 redis容灾，备份，扩容</a></li>
+    <li><a href="#125-跳跃表为什么使用跳跃表而不使用红黑树">125、 跳跃表，为什么使用跳跃表而不使用红黑树</a></li>
+    <li><a href="#127-tcp怎么找到哪个套接字">127、 tcp怎么找到哪个套接字</a></li>
+    <li><a href="#128-ipc方式共享存储区原理">128、 ipc方式，共享存储区原理</a></li>
+    <li><a href="#131-进程状态转换">131、 进程状态转换</a></li>
+    <li><a href="#132-线程的栈在哪里分配">132、 线程的栈在哪里分配</a></li>
+    <li><a href="#133-多个线程读一个线程写一个int32会不会有问题int64呢这里面试官后来说了要看数据总线的位数32位的话写int32没问题int64就有问题">133、 多个线程读，一个线程写一个int32会不会有问题，int64呢（这里面试官后来说了要看数据总线的位数，32位的话写int32没问题，int64就有问题）</a></li>
+    <li><a href="#134-判断二叉树是否为满二叉树">134、 判断二叉树是否为满二叉树</a></li>
+    <li><a href="#135-lru实现">135. lru实现</a></li>
+    <li><a href="#136-一个大整数字符串形式表示的移动字符求比它大的数中最小的">136. 一个大整数（字符串形式表示的），移动字符求比它大的数中最小的</a></li>
+  </ul>
+</nav>
+                
+                <hr>
+                <h2 id="2struct能不能比较">2、struct能不能比较</h2>
+<blockquote>
+<p>因为是强类型语言，所以不同类型的结构不能作比较，但是同一类型的实例值是可以比较的，实例不可以比较，因为是指针类型</p>
+</blockquote>
+<h2 id="4-select可以用于什么常用语gorotine的完美退出">4、 select可以用于什么，常用语gorotine的完美退出</h2>
+<blockquote>
+<p>golang 的 select 就是监听 IO 操作，当 IO 操作发生时，触发相应的动作<br>
+每个case语句里必须是一个IO操作，确切的说，应该是一个面向channel的IO操作</p>
+</blockquote>
+<h2 id="6-client如何实现长连接">6、 client如何实现长连接</h2>
+<blockquote>
+<p>server是设置超时时间，for循环遍历的</p>
+</blockquote>
+<h2 id="7-主协程如何等其余协程完再操作">7、 主协程如何等其余协程完再操作</h2>
+<blockquote>
+<p>使用channel进行通信，context,select</p>
+</blockquote>
+<h2 id="8-slice扩容">8、 slice扩容</h2>
+<blockquote>
+<p>append函数，因为slice底层数据结构是，由数组、len、cap组成，所以，在使用append扩容时，会查看数组后面有没有连续内存快，有就在后面添加，没有就重新生成一个大的素组</p>
+</blockquote>
+<h2 id="9-map如何顺序读取">9、 map如何顺序读取</h2>
+<blockquote>
+<p>map不能顺序读取，是因为他是无序的，想要有序读取，首先的解决的问题就是，把ｋｅｙ变为有序，所以可以把key放入切片，对切片进行排序，遍历切片，通过key取值。</p>
+</blockquote>
+<h2 id="10-如何实现一个set">10、 如何实现一个set</h2>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">type</span> inter <span style="color:#069;font-weight:bold">interface</span>{}
+<span style="color:#069;font-weight:bold">type</span> Set <span style="color:#069;font-weight:bold">struct</span> {
+    m <span style="color:#069;font-weight:bold">map</span>[inter]<span style="color:#078;font-weight:bold">bool</span>
+    sync.RWMutex
+}
+ 
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">New</span>() <span style="color:#555">*</span>Set {
+    <span style="color:#069;font-weight:bold">return</span> <span style="color:#555">&amp;</span>Set{
+    m: <span style="color:#069;font-weight:bold">map</span>[inter]<span style="color:#078;font-weight:bold">bool</span>{},
+    }
+}
+<span style="color:#069;font-weight:bold">func</span> (s <span style="color:#555">*</span>Set) <span style="color:#c0f">Add</span>(item inter) {
+    s.<span style="color:#c0f">Lock</span>()
+    <span style="color:#069;font-weight:bold">defer</span> s.<span style="color:#c0f">Unlock</span>()
+    s.m[item] = <span style="color:#069;font-weight:bold">true</span>
+}
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="11-实现消息队列多生产者多消费者">11、 实现消息队列（多生产者，多消费者）</h2>
+<blockquote>
+<p>使用切片加锁可以实现</p>
+</blockquote>
+<h2 id="12-大文件排序">12、 大文件排序</h2>
+<blockquote>
+<p>归并排序，分而治之,拆分为小文件，在排序</p>
+</blockquote>
+<h2 id="15-描述400401403404状态含义">15、 描述400、401、403、404状态含义</h2>
+<blockquote>
+<p>400 bad request，请求报文存在语法错误<br>
+401 unauthorized，表示发送的请求需要有通过 HTTP 认证的认证信息<br>
+403 forbidden，表示对请求资源的访问被服务器拒绝<br>
+404 not found，表示在服务器上没有找到请求的资源<br>
+eep-alive字段段，并且在http的response里指定Connection:keep-alive字段，告诉client，我能提供keep-alive</p>
+</blockquote>
+<h2 id="17-http能不能一次连接多次请求不等后端返回">17、 http能不能一次连接多次请求，不等后端返回</h2>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">http本质上市使用socket连接，因此发送请求，接写入tcp缓冲，是可以多次进行的，这也是http是无状态的原因
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="19-time-wait的作用">19、 time-wait的作用</h2>
+<h2 id="21-孤儿进程僵尸进程">21、 孤儿进程，僵尸进程</h2>
+<h2 id="22-死锁条件如何避免">22、 死锁条件，如何避免</h2>
+<h2 id="27-项目里的微信支付这块在支付完微信通知这里收到两次微信相同的支付通知怎么防止重复消费类似接口的幂等性说了借助redis或者数据库的事务">27、 项目里的微信支付这块，在支付完微信通知这里，收到两次微信相同的支付通知，怎么防止重复消费（类似接口的幂等性），说了借助Redis或者数据库的事务</h2>
+<h2 id="29-go的反射包怎么找到对应的方法这里忘记怎么问的直接说不会只用了deepequal简单讲了deepequal">29、 Go的反射包怎么找到对应的方法（这里忘记怎么问的，直接说不会，只用了DeepEqual，简单讲了DeepEqual）</h2>
+<h2 id="30-redis基本数据结构">30、 Redis基本数据结构</h2>
+<h2 id="31-redis的list用过吗底层怎么实现的知道但是没用过不知道怎么实现">31、 Redis的List用过吗？底层怎么实现的？知道但是没用过，不知道怎么实现</h2>
+<h2 id="32-mysql的索引有几种时间复杂度">32、 Mysql的索引有几种，时间复杂度</h2>
+<h2 id="35-退出程序时怎么防止channel没有消费完这里一开始有点没清楚面试官问的然后说了监听中断信号做退出前的处理然后面试官说不是这个意思然后说发送前先告知长度长度要是不知道呢close-channel下游会受到0值可以利用这点这里也有点跟面试官说不明白">35、 退出程序时怎么防止channel没有消费完，这里一开始有点没清楚面试官问的，然后说了监听中断信号，做退出前的处理，然后面试官说不是这个意思，然后说发送前先告知长度，长度要是不知道呢？close channel下游会受到0值，可以利用这点（这里也有点跟面试官说不明白）</h2>
+<h2 id="38-生产者消费者模式手写代码go直接使用channel实现很简单还想着面试官会不会不让用channel实现不用channel的可以使用数组加条件变量channel缓冲长度怎么决定怎么控制上游生产速度过快这里没说出解决方案只是简单说了channel长度可以与上下游的速度比例成线性关系面试官说这是一种解决方案">38、 生产者消费者模式，手写代码（Go直接使用channel实现很简单，还想着面试官会不会不让用channel实现，不用channel的可以使用数组加条件变量），channel缓冲长度怎么决定，怎么控制上游生产速度过快，这里没说出解决方案，只是简单说了channel长度可以与上下游的速度比例成线性关系，面试官说这是一种解决方案</h2>
+<h2 id="40-写的循环队列是不是线程安全不是怎么保证线程安全加锁效率有点低啊然后面试官就提醒go推崇原子操作和channel">40、 写的循环队列是不是线程安全，不是，怎么保证线程安全，加锁，效率有点低啊，然后面试官就提醒Go推崇原子操作和channel</h2>
+<h2 id="41-写完代码面试官说后面问的问题回答就可以不知道的话没关系">41、 写完代码面试官说后面问的问题回答就可以，不知道的话没关系</h2>
+<h2 id="43-timewait和closewait原因">43、 TimeWait和CloseWait原因</h2>
+<h2 id="46-syncpool用过吗为什么使用对象池避免频繁分配对象gc有关那里面的对象是固定的吗不清楚没看过这个的源码">46、 sync.Pool用过吗，为什么使用，对象池，避免频繁分配对象（GC有关），那里面的对象是固定的吗？不清楚，没看过这个的源码</h2>
+<h2 id="56-goroutine调度用了什么系统调用这个不会面试官想从go问到操作系统然后以为作系统基础不好就问了操作系统问题">56、 goroutine调度用了什么系统调用，这个不会，面试官想从go问到操作系统，然后以为***作系统基础不好，就问了操作系统问题</h2>
+<h2 id="57-进程虚拟空间分布全局变量放哪里答上来了操作系统就不问了">57、 进程虚拟空间分布，全局变量放哪里？答上来了，操作系统就不问了</h2>
+<h2 id="58-有没有网络编程有怎么看连接状态netstat有哪些establishedlisten等等有异常情况吗time_wait很多为什么大量短链接">58、 有没有网络编程，有，怎么看连接状态？netstat，有哪些？ESTABLISHED，LISTEN等等，有异常情况吗？TIME_WAIT很多，为什么？大量短链接</h2>
+<h2 id="59-几种基本排序算法说一下问了堆的时间复杂度稳定性为什么不稳定">59、 几种基本排序算法说一下，问了堆的时间复杂度，稳定性，为什么不稳定</h2>
+<h2 id="60--topk问题海量数据topk回答成切分多次加载内存然后用维持k长度的有序链表然后被说时间复杂度不好提示说还是用堆然后哦哦哦对">60、  topk问题，海量数据topk（回答成切分多次加载内存，然后用维持k长度的有序链表，然后被说时间复杂度不好，提示说还是用堆，然后哦哦哦对）</h2>
+<p>最长连续字串和，这里我说的解决方案没用dp（对dp不熟），面试官一直引导我dp，还是不会</p>
+<h2 id="65-死锁">65、 死锁？</h2>
+<h2 id="66-tcp三次握手">66、 tcp三次握手</h2>
+<h2 id="67-httphttps">67、 http，https</h2>
+<h2 id="68-状态码401301302201">68、 状态码401,301,302,201</h2>
+<h2 id="69-docker有哪些网络">69、 docker有哪些网络。</h2>
+<h2 id="70-数据库隔离级别提交读会造成什么">70、 数据库隔离级别，提交读会造成什么</h2>
+<h2 id="72--goroutine泄漏有没有处理设置timeoutselect加定时器">72、  goroutine泄漏有没有处理，设置timeout，select加定时器</h2>
+<h2 id="73-mysql高可用的方案">73、 mysql高可用的方案</h2>
+<h2 id="77-go的线程给他讲了跟goroutine调度">77、 go的线程，给他讲了跟goroutine调度</h2>
+<h2 id="78-io模型同步阻塞同步非阻塞异步">78、 io模型，同步阻塞，同步非阻塞，异步</h2>
+<h2 id="79-cookie和session">79、 cookie和session</h2>
+<h2 id="80-接口kps测试">80、 接口kps测试</h2>
+<h2 id="81-redis排行榜数据结构跳跃表查询时间复杂度">81、 redis排行榜数据结构（跳跃表），查询时间复杂度</h2>
+<h2 id="82-redis分布式如何减少同步延迟">82、 redis分布式，如何减少同步延迟</h2>
+<h2 id="92-go使用踩过什么坑for-range数据库连接defer-close">92、 go使用踩过什么坑（for range，数据库连接defer close）</h2>
+<h2 id="96-慢查询">96、 慢查询</h2>
+<h2 id="100-m个n大小的有序数组求并集一开始是2路归并求时间复杂度后来在面试官提醒直接m路归并求时间复杂度">100、 m个n大小的有序数组求并集，一开始是2路归并，求时间复杂度，后来在面试官提醒直接m路归并，求时间复杂度</h2>
+<h2 id="105-selectepoll">105、 select、epoll</h2>
+<h2 id="107-排行榜怎么实现">107、 排行榜怎么实现</h2>
+<h2 id="108-go的锁如何实现用了什么cpu指令">108、 go的锁如何实现，用了什么cpu指令</h2>
+<h2 id="109-go的runtime如何实现">109、 go的runtime如何实现</h2>
+<h2 id="110-看过sql的连接池实现吗">110、 看过sql的连接池实现吗</h2>
+<h2 id="111-ctx包了解吗有什么用">111、 ctx包了解吗？有什么用？</h2>
+<h2 id="112-go什么情况下会发生内存泄漏他说ctx没有cancel的时候这个真不知道">112、 go什么情况下会发生内存泄漏？（他说ctx没有cancel的时候，这个真不知道）</h2>
+<h2 id="113-怎么实现协程完美退出">113、 怎么实现协程完美退出？</h2>
+<h2 id="114-智力题1000瓶酒中有1瓶毒酒10只老鼠7天后毒性才发作第8天要卖了怎么求那瓶毒酒">114、 智力题：1000瓶酒中有1瓶毒酒，10只老鼠，7天后毒性才发作，第8天要卖了，怎么求那瓶毒酒？</h2>
+<h2 id="115-简单dp题nn矩阵从左上角到右下角有多少种走法只限往下和往右走">115、 简单dp题，n*n矩阵从左上角到右下角有多少种走法（只限往下和往右走）</h2>
+<h2 id="116-用channel实现定时器实际上是两个协程同步">116、 用channel实现定时器？（实际上是两个协程同步）</h2>
+<h2 id="118-操作系统内存管理进程通讯为什么共享存储区效率最高">118、 操作系统内存管理？进程通讯，为什么共享存储区效率最高</h2>
+<h2 id="119-实现一个hashmap解决hash冲突的方法解决hash倾斜的方法">119、 实现一个hashmap，解决hash冲突的方法，解决hash倾斜的方法</h2>
+<h2 id="121-100亿个数选top5小根堆">121、 100亿个数选top5，小根堆</h2>
+<h2 id="122-数组和为n的数组对">122、 数组和为n的数组对</h2>
+<h2 id="123-最大连续子数组和">123、 最大连续子数组和</h2>
+<h2 id="124-redis容灾备份扩容">124、 redis容灾，备份，扩容</h2>
+<h2 id="125-跳跃表为什么使用跳跃表而不使用红黑树">125、 跳跃表，为什么使用跳跃表而不使用红黑树</h2>
+<h2 id="127-tcp怎么找到哪个套接字">127、 tcp怎么找到哪个套接字</h2>
+<h2 id="128-ipc方式共享存储区原理">128、 ipc方式，共享存储区原理</h2>
+<h2 id="131-进程状态转换">131、 进程状态转换</h2>
+<h2 id="132-线程的栈在哪里分配">132、 线程的栈在哪里分配</h2>
+<blockquote>
+<p>一般默认情况下，线程栈是在进程的堆中分配栈空间，每个线程拥有独立的栈空间，为了避免线程之间的栈空间踩踏，线程栈之间还会有以小块guardsize用来隔离保护各自的栈空间，一旦另一个线程踏入到这个隔离区，就会引发段错误。</p>
+</blockquote>
+<h2 id="133-多个线程读一个线程写一个int32会不会有问题int64呢这里面试官后来说了要看数据总线的位数32位的话写int32没问题int64就有问题">133、 多个线程读，一个线程写一个int32会不会有问题，int64呢（这里面试官后来说了要看数据总线的位数，32位的话写int32没问题，int64就有问题）</h2>
+<h2 id="134-判断二叉树是否为满二叉树">134、 判断二叉树是否为满二叉树</h2>
+<p><a href="https://images2015.cnblogs.com/blog/1094457/201702/1094457-20170225183610632-1388959691.png">https://images2015.cnblogs.com/blog/1094457/201702/1094457-20170225183610632-1388959691.png</a></p>
+<h2 id="135-lru实现">135. lru实现</h2>
+<ul>
+<li>LRU（Least recently used，最近最少使用）算法根据数据的历史访问记录来进行淘汰数据，其核心思想是“如果数据最近被访问过，那么将来被访问的几率也更高”。</li>
+</ul>
+<h2 id="136-一个大整数字符串形式表示的移动字符求比它大的数中最小的">136. 一个大整数（字符串形式表示的），移动字符求比它大的数中最小的</h2>
+
+                
+                
+                <hr> 
+
+<div class="entry-shang text-center">
+    
+    <p> 「真诚赞赏，手留余香」</p>
+    
+    <button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+    <div class="zs-modal-head">
+        <button type="button" class="close">×</button>
+        <span class="author">
+            <a href="http://www.mafool.com">
+                <img src="http://www.mafool.com/img/reward/hollson.png" alt="史布斯" />码夫庄园
+            </a>
+        </span>
+        
+        <p class="tip"><i></i><span>嗯，我的梦想是被读者的稿费包养~</span></p>
+        
+
+    </div>
+    <div class="zs-modal-body">
+        <div class="zs-modal-btns">
+            <button class="btn btn-blink" data-num="2">2元</button>
+            <button class="btn btn-blink" data-num="5">5元</button>
+            <button class="btn btn-blink" data-num="10">10元</button>
+            <button class="btn btn-blink" data-num="50">50元</button>
+            <button class="btn btn-blink" data-num="100">100元</button>
+            <button class="btn btn-blink" data-num="1">任意金额</button>
+        </div>
+        <div class="zs-modal-pay">
+            <button class="btn btn-bred" id="pay-text">2元</button>
+            <p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+            <img src="http://www.mafool.com/img/reward/wechat-2.png" alt="史布斯" id="pay-image" />
+        </div>
+    </div>
+    <div class="zs-modal-footer">
+        <label>
+            <span class="zs-wechat"></span>
+            <input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked">
+            <img src="http://www.mafool.com/img/reward/wechat-btn.png" alt="史布斯" />
+            </span>&nbsp;
+            <span>
+                <input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay">
+                <img src="http://www.mafool.com/img/reward/alipay-btn.png" alt="史布斯" />
+            </span>
+        </label>
+    </div>
+</div>
+
+ 
+
+                <br>
+                <br>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="column is-3">
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">最近发布</h2>
+        
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/0742b474a643d63a774461726a6201203/">Go语言中的原子操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年12月2日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/1600330472/">Go基础笔记 - 2.3 常量</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月10日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/15996311192/">Go - Gin框架快速入门</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月9日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480249/">Gorm快速指南</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480218/">18. Go语言MySQL数据库操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+    </div>
+</div>
+<br>
+        
+
+
+
+
+<div class="card">
+  <div class="card-content">
+    <h2 class="title is-6">相关文章</h2>
+    
+    
+    <h2><a href="http://www.mafool.com/post/1585721646/">Kafka面试自测系列1</a></h2>
+    <time class="has-text-grey-light is-size-7">8 May 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585721666/">Kafka面试自测系列2</a></h2>
+    <time class="has-text-grey-light is-size-7">8 May 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585721669/">Kafka面试自测系列3</a></h2>
+    <time class="has-text-grey-light is-size-7">8 May 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585725105/">Nginx自测 - 课后练习题</a></h2>
+    <time class="has-text-grey-light is-size-7">8 May 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585725111/">Nginx面试自测系列3</a></h2>
+    <time class="has-text-grey-light is-size-7">8 May 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585726239/">Go精编100道题</a></h2>
+    <time class="has-text-grey-light is-size-7">9 April 2019</time>
+    
+    <h2><a href="http://www.mafool.com/posts/99a7e89b9b8052e68f39909ef7fc0fc1/">面试题汇总</a></h2>
+    <time class="has-text-grey-light is-size-7">11 August 2018</time>
+    
+  </div>
+</div>
+<br>
+
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">标签</h2>
+        <div>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/atomic">atomic</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/blog">blog</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cgo">cgo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cloud">cloud</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/config">config</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/copy">copy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/docker">docker</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/exam">exam</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/gin">gin</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/git">git</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/golang">golang</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/hugo">hugo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/install">install</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/istio">istio</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/jenkins">jenkins</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/kubernetes">kubernetes</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/map">map</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/microservice">microservice</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/mycat">mycat</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/nginx">nginx</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/plan9">plan9</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/posix">posix</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/proxy">proxy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/raft">raft</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ssh">ssh</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/tips">tips</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ymal">ymal</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%B8%BB%E4%BB%8E">主从</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BA%8B%E5%8A%A1">事务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BB%A3%E7%90%86">代理</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BD%9C%E7%94%A8%E5%9F%9F">作用域</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%86%85%E5%AD%98">内存</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%8B%E7%BC%A9">压缩</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%88%9B">原创</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%AD%90">原子</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%91%BD%E4%BB%A4%E8%A1%8C">命令行</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%93%A8%E5%85%B5">哨兵</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%AD%98%E5%82%A8">存储</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B8%B8%E9%87%8F">常量</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B9%B6%E5%8F%91">并发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BC%82%E5%B8%B8">异常</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1">微服务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%88%E6%9D%83%E8%AE%A4%E8%AF%81">授权认证</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%92%E5%BA%8F">排序</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%A5%E5%8F%A3">接口</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%97%A5%E5%BF%97">日志</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%9D%83%E9%99%90">权限</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE1">标签1</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE2">标签2</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%AD%A3%E5%88%99">正则</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%81%E9%87%8F%E5%88%86%E5%8F%91">流量分发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%8B%E8%AF%95">测试</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%BA%90%E7%A0%81">源码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%8A%B6%E6%80%81%E7%A0%81">状态码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%AE%97%E6%B3%95">算法</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%BC%8F">编程模式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%80%81%E5%A6%96%E7%AC%94%E8%AE%B0">老妖笔记</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%BF%87%E6%BB%A4%E5%99%A8">过滤器</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%80%83%E9%80%B8">逃逸</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%85%8D%E7%BD%AE">配置</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%86%99">重写</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%AE%9A%E5%90%91">重定向</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9B%86%E7%BE%A4">集群</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9D%A2%E8%AF%95">面试</a>
+            </span>
+            
+        </div>
+    </div>
+</div>
+<br>
+    </div>
+</div>
+
+        </div>
+    </div>
+
+    
+    <footer class="footer has-background-grey-darker has-text-white">
+    <div class="content has-text-centered">
+        <p>
+            <span class="icon is-large">
+                <a href="https://twitter.com/" class="mysocial" rel="me">
+                    <i class="fab fa-twitter fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://www.youtube.com/" class="mysocial" rel="me">
+                    <i class="fab fa-youtube fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://github.com/" class="mysocial" rel="me">
+                    <i class="fab fa-github fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <br><br>
+            友情链接：
+            
+            <a class="mysocial" href="http://www.mafool.com" target="_blank">Mafool</a>
+            
+            <a class="mysocial" href="https://gohugo.io/documentation/" target="_blank">Hugo</a>
+            
+            <a class="mysocial" href="https://bulma.io/" target="_blank">Bulma</a>
+            
+            <a class="mysocial" href="https://bootstrapious.com/" target="_blank">Bootstrapious</a>
+            
+            <a class="mysocial" href="https://youzhixueyuan.com/" target="_blank">Youzhixueyuan</a>
+            
+            <br><br />
+            版权所有 &copy; 码夫庄园 2021
+            - <a class="mysocial" href="https://github.com/hollson/hugo-theme-dooz">Hugo Theme</a>
+        </p>
+    </div>
+</footer>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='http://www.mafool.com/js/dooz.totop.js?v=0.0.0' async=""></script>
+
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = 'https://hm.baidu.com/hm.js?f185359ec6b829a6a93e1e1f2597f6d9';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DK042XSJ2J"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-DK042XSJ2J');
+</script>
+
+    
+    
+<script type="text/javascript" src="http://www.mafool.com/js/reward.js"></script>
+
+    
+    <script defer src="https://cdn.staticfile.org/font-awesome/5.13.0/js/all.min.js"></script>
+</body>
+
+</html>

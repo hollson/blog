@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>码夫庄园-Go汇编笔记 - 3.1 汇编入门</title>
+    <meta name="keywords"
+        content='码农,hugo,theme,blog,coder,geek,github,golang,技术,源码,代码,编程,程序员,主题,个人,博客,微服务,容器'>
+    <meta name="description" content="Go汇编语言并不是一个独立的语言，因为Go汇编程序无法独立使用。Go汇编代码必须以Go包的方式组织，同时包中至少要有一个Go语言文件用于指明当前包名等基本包信息。如果Go汇编代码中定义的变量和函数要被其它Go语言代码引用，还需要通过Go语言代码将汇编中定义的符号声明出来。用于变量的定义和函数的定义Go汇编文件类似于C语言中的.c文件，而用于导出汇编中定义符号的Go源文件类似于C语言的.h文件。" />
+
+    
+    <meta name="baidu-site-verification" content="v9szEmQLra" />
+    <meta name="360-site-verification" content="d8e961f98fb655e4b8cf9439cfd9ac7f" />
+    <meta name="sogou_site_verification" content="40NC9EdZDC" />
+    <meta name="shenma-site-verification" content="3200e3042e92157713a3b0aceeecb20a_1586020187" />
+    <meta name="google-site-verification" content="r8987bkunZHJeKut3ocu5NIJ5QEu53NA6Q_r7RrZ46c" />
+    <meta name="msvalidate.01" content="893A2865ABC54AC2782D118536831056" />
+
+    
+    <link rel="shortcut icon" href="http://www.mafool.com/img/res/favicon.ico">
+    
+
+    
+
+    <link crossorigin="anonymous" integrity="sha384-5kGFOAqgEKnuF6c2jk2JANKHZgYVt38Wn2dVJENtq1EBCP54/1uzXU5mpxqL8WjN"
+        href="https://lib.baomitu.com/bulma/0.8.0/css/bulma.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="http://www.mafool.com/css/dooz.blog.css" />
+    <script crossorigin="anonymous" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh"
+        src="https://lib.baomitu.com/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/jquery.share.min.js"></script>
+    
+
+    
+
+    
+    
+<link rel="stylesheet" href="http://www.mafool.com/css/reward.css">
+
+
+    <link href="http://www.mafool.com/css/fonts.googleapi.css" rel="stylesheet">
+    <script src=http://www.mafool.com/js/dooz.blog.js></script>
+
+    
+    <script>
+        $(document).ready(function () {
+            $('.content a[href^="http"]').each(function () {
+                $(this).attr('target', '_blank');
+            });
+        });
+
+        $(document).on('click', '.modal-wechat', function () {
+            $(".modal").addClass("is-active");
+        });
+
+        $(document).on('click', '.modal-background', function () {
+            $(".modal").removeClass("is-active");
+        });
+    </script>
+</head>
+
+<body>
+    
+    
+<section class="hero is-info is-medium"
+    style="background-image: url('/img/res/bg6.jpg');">
+    <div class="hero-head">
+        <nav class="navbar is-transparent container has-text-white">
+    <div class="navbar-brand">
+        <div class="navbar-item">
+            <a class="title is-5 is-white" href="http://www.mafool.com/">码夫庄园</a>
+        </div>
+
+        
+        <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <div id="navbarExampleTransparentExample" class="navbar-menu has-text-dark">
+        
+
+        <div class="navbar-end">
+            <a class="navbar-item" href='http://www.mafool.com/'>首页</a>
+            <a class="navbar-item" href='http://www.mafool.com/archives'>归档 </a>
+            <a class="navbar-item" href='http://www.mafool.com/about'>关于</a>
+            <span class="navbar-item">
+                <a class="button is-primary is-inverted" href="https://github.com/hollson/hugo-theme-dooz">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>主题</span>
+                </a>
+            </span>
+        </div>
+    </div>
+</nav>
+    </div>
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <div class='container has-text-left column is-7'>
+                
+                <span>
+                    <a class="bar_tag" href="http://www.mafool.com/tags/plan9" title="plan9">plan9</a>
+                </span>
+                
+                <h1 class="title is-size-2" style="margin-bottom:0.2rem;">
+                    
+                    Go汇编笔记 - 3.1 汇编入门
+                    
+                </h1>
+                
+                <span class="title is-size-6" style="font-style: italic;"> </span><br>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    
+    <div class="container">
+        <div class="section">
+            
+<div class="columns">
+    <div class="column is-9">
+        <div class="tile is-child box">
+            <div class="content">
+                
+                <nav class="level">
+                    
+                    <div class="level-left">
+                        <div class="level-item">
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2019年12月16日,
+    星期一 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 11分钟阅读
+</p>
+                        </div>
+                    </div>
+
+                    
+                    
+                    <div class="share-component level-right" data-disabled="google,diandian,tencent,qzone"
+                        data-description="Share.js - 一键分享到微博，QQ空间，腾讯微博，人人，豆瓣"
+                        data-mobile-sites="weibo,qq,qzone,tencent">
+                    </div>
+                    
+                </nav>
+                <hr>
+                
+                <header>
+                    <h2>目录</h2>
+                </header>
+                <nav id="TableOfContents">
+  <ul>
+    <li><a href="#go汇编程序">Go汇编程序</a></li>
+    <li><a href="#查看汇编代码">查看汇编代码</a></li>
+    <li><a href="#汇编基本语法">汇编基本语法</a>
+      <ul>
+        <li><a href="#常用汇编指令">常用汇编指令</a></li>
+        <li><a href="#data命令">DATA命令</a></li>
+      </ul>
+    </li>
+    <li><a href="#汇编代码示例">汇编代码示例</a>
+      <ul>
+        <li><a href="#1-整数变量">1. 整数变量</a></li>
+        <li><a href="#2-字符串变量">2. 字符串变量</a></li>
+        <li><a href="#3-定义main函数">3. 定义main函数</a></li>
+        <li><a href="#4-加法运算">4. 加法运算</a></li>
+        <li><a href="#指针相关汇编示例">指针相关汇编示例</a></li>
+      </ul>
+    </li>
+    <li><a href="#特殊字符">特殊字符</a></li>
+    <li><a href="#参考链接">参考链接：</a></li>
+  </ul>
+</nav>
+                
+                <hr>
+                <h2 id="go汇编程序">Go汇编程序</h2>
+<p>Go汇编程序<code>无法独立使用</code>,必须<code>以Go包的方式组织</code>;且至少要有一个Go文件指明当前包名等基本包信息；如果Go汇编代码中的变量和函数要被其它Go代码引用，还需要通过Go语言代码将汇编中定义的符号声明出来。Go汇编有点类似于C语言中的<code>.c</code>文件和<code>.h</code>文件的组织形式。</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-nginx" data-lang="nginx"><span style="color:#069;font-weight:bold">$</span> <span style="color:#c30">tree</span> <span style="color:#c30">./hello/</span>
+<span style="color:#c30">./hello/</span>
+<span style="color:#c30">├──</span> <span style="color:#c30">main.go</span>
+<span style="color:#c30">└──</span> <span style="color:#c30">pkg</span>
+    <span style="color:#c30">├──</span> <span style="color:#c30">pkg.go</span>
+    <span style="color:#c30">└──</span> <span style="color:#c30">pkg_amd64.s</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="查看汇编代码">查看汇编代码</h2>
+<p>创建一个<code>./pkg/pkg.go</code>文件，内容如下：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">package</span> pkg
+<span style="color:#069;font-weight:bold">var</span> Id = <span style="color:#f60">9527</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>使用<code>go tool compile</code>工具查看汇编代码</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-nginx" data-lang="nginx"><span style="color:#069;font-weight:bold">go</span> <span style="color:#c30">tool</span> <span style="color:#c30">compile</span> <span style="color:#c30">-h</span>                <span style="color:#09f;font-style:italic">#查看compile帮助文档
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#c30">go</span> <span style="color:#c30">tool</span> <span style="color:#c30">compile</span> <span style="color:#c30">-S</span> <span style="color:#c30">./pkg/pkg.go</span>   <span style="color:#09f;font-style:italic">#当前环境
+</span><span style="color:#09f;font-style:italic"></span>
+<span style="color:#09f;font-style:italic"># 也可以查看交叉环境的汇编代码
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#c30">GOOS=linux</span> <span style="color:#c30">GOARCH=386</span> <span style="color:#c30">go</span> <span style="color:#c30">tool</span> <span style="color:#c30">compile</span> <span style="color:#c30">-S</span> <span style="color:#c30">./pkg/pkg.go</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>如下是<code>x64</code>的汇编代码：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-asm" data-lang="asm"><span style="color:#a00;background-color:#faa">&#34;&#34;</span><span style="color:#309">.Id</span> <span style="color:#360">SNOPTRDATA</span> <span style="color:#360">size</span><span style="color:#a00;background-color:#faa">=</span><span style="color:#f60">8</span>
+  <span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0000</span> <span style="color:#f60">37</span> <span style="color:#f60">25</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span>                          <span style="color:#a00;background-color:#faa">&#39;</span><span style="color:#360">.......</span>
+</code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>输出： <code>&quot;&quot;.Id</code>对应Id变量，内存大小为<code>8</code>个字节, 初始化内容为<code>37 25 00 00 00 00 00 00</code>，对应十六进制的0x2537，对应十进制为9527。<code>SNOPTRDATA</code>是相关的标志，其中<code>NOPTR</code>表示数据中不包含指针数据。</p>
+</blockquote>
+<h2 id="汇编基本语法">汇编基本语法</h2>
+<h3 id="常用汇编指令">常用汇编指令</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">指令</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">NOP</td>
+<td style="text-align:left">占位符</td>
+</tr>
+<tr>
+<td style="text-align:left">FP/SP</td>
+<td style="text-align:left">指向栈底/指向栈顶</td>
+</tr>
+<tr>
+<td style="text-align:left">BX</td>
+<td style="text-align:left">临时寄存器</td>
+</tr>
+<tr>
+<td style="text-align:left">FUNCDATA/FCDATA</td>
+<td style="text-align:left">要回收的数据</td>
+</tr>
+<tr>
+<td style="text-align:left">INCQ</td>
+<td style="text-align:left">自增算法</td>
+</tr>
+<tr>
+<td style="text-align:left">RET</td>
+<td style="text-align:left">返回</td>
+</tr>
+<tr>
+<td style="text-align:left">CMPQ</td>
+<td style="text-align:left">比较</td>
+</tr>
+<tr>
+<td style="text-align:left">MOVQ $0, AX</td>
+<td style="text-align:left">赋值</td>
+</tr>
+</tbody>
+</table>
+<h3 id="data命令">DATA命令</h3>
+<p><code>DATA命令</code>用于初始化包变量，DATA命令的语法如下：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-asm" data-lang="asm"><span style="color:#c0f">DATA</span> <span style="color:#360">symbol</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#360">offset</span>(<span style="color:#360">SB</span>)<span style="color:#a00;background-color:#faa">/</span><span style="color:#360">width</span>, <span style="color:#360">value</span>
+</code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>其中<code>symbol</code>为标识符，<code>offset</code>是偏移量，<code>width</code>是初始化内存大小，<code>value</code>是要初始化的值。其中当前包中Go语言定义的符号symbol，在汇编代码中对应<code>·symbol</code>。</p>
+</blockquote>
+<p>如：变量初始化为十六进制的0x2537，对应十进制的9527（<code>常量需要以美元符号$开头表示</code>）：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-asm" data-lang="asm"><span style="color:#c0f">DATA</span> <span style="color:#a00;background-color:#faa">·</span><span style="color:#360">Id</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">0</span>(<span style="color:#360">SB</span>)<span style="color:#a00;background-color:#faa">/</span><span style="color:#f60">1</span>,<span style="color:#360">$0x37</span>
+<span style="color:#c0f">DATA</span> <span style="color:#a00;background-color:#faa">·</span><span style="color:#360">Id</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">1</span>(<span style="color:#360">SB</span>)<span style="color:#a00;background-color:#faa">/</span><span style="color:#f60">1</span>,<span style="color:#360">$0x25</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>变量定义好之后需要使用<code>GLOBL命令</code>导出以供其它代码引用。</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-asm" data-lang="asm"><span style="color:#c0f">GLOBL</span> <span style="color:#360">symbol</span>(<span style="color:#360">SB</span>), <span style="color:#360">width</span>   <span style="color:#09f;font-style:italic">#width为符号对应内存的大小
+</span></code></pre></td></tr></table>
+</div>
+</div><h2 id="汇编代码示例">汇编代码示例</h2>
+<h3 id="1-整数变量">1. 整数变量</h3>
+<p><code>pkg.go</code>文件:</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">package</span> pkg
+
+<span style="color:#09f;font-style:italic">//只声明，相当于c语言的头文件，具体实现在汇编代码里面，即pkg_amd64.s
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">var</span> Id <span style="color:#078;font-weight:bold">int</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><code>./pkg/pkg_amd64.s</code>文件（注意末尾空一行）:</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-asm" data-lang="asm"><span style="color:#a00;background-color:#faa">//</span> <span style="color:#a00;background-color:#faa">导出变量，</span><span style="color:#c0f">x64中使用8个字节表示int</span>
+<span style="color:#c0f">GLOBL</span> <span style="color:#a00;background-color:#faa">·</span><span style="color:#360">Id</span>(<span style="color:#360">SB</span>),<span style="color:#360">$8</span>
+
+<span style="color:#a00;background-color:#faa">//</span> <span style="color:#c0f">printf</span> <span style="color:#033">%x</span> <span style="color:#f60">9527</span> <span style="color:#a00;background-color:#faa">查看进制转换结果</span>
+<span style="color:#a00;background-color:#faa">//</span> <span style="color:#a00;background-color:#faa">9527在</span><span style="color:#c0f">x64的内存分布</span><span style="color:#a00;background-color:#faa">：</span> <span style="color:#f60">37</span> <span style="color:#f60">25</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#a00;background-color:#faa">，从左到右表示低位到高位</span>
+<span style="color:#a00;background-color:#faa">//</span> <span style="color:#c0f">Data语法</span><span style="color:#a00;background-color:#faa">：</span> <span style="color:#360">DATA</span> <span style="color:#a00;background-color:#faa">·变量名+偏移量</span>(<span style="color:#360">SB</span>)<span style="color:#a00;background-color:#faa">/大小</span>,<span style="color:#a00;background-color:#faa">赋值</span>
+<span style="color:#a00;background-color:#faa">//</span> <span style="color:#a00;background-color:#faa">常量使用</span><span style="color:#c0f">$表示</span>
+<span style="color:#a00;background-color:#faa">//</span> <span style="color:#a00;background-color:#faa">变量值默认使用十六进制</span>
+<span style="color:#a00;background-color:#faa">//</span> <span style="color:#a00;background-color:#faa">末尾留空行</span>
+<span style="color:#c0f">DATA</span> <span style="color:#a00;background-color:#faa">·</span><span style="color:#360">Id</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">0</span>(<span style="color:#360">SB</span>)<span style="color:#a00;background-color:#faa">/</span><span style="color:#f60">1</span>,<span style="color:#360">$0x37</span>
+<span style="color:#c0f">DATA</span> <span style="color:#a00;background-color:#faa">·</span><span style="color:#360">Id</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">1</span>(<span style="color:#360">SB</span>)<span style="color:#a00;background-color:#faa">/</span><span style="color:#f60">1</span>,<span style="color:#360">$0x25</span>
+<span style="color:#c0f">DATA</span> <span style="color:#a00;background-color:#faa">·</span><span style="color:#360">Id</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">2</span>(<span style="color:#360">SB</span>)<span style="color:#a00;background-color:#faa">/</span><span style="color:#f60">1</span>,<span style="color:#360">$0x00</span>
+<span style="color:#c0f">DATA</span> <span style="color:#a00;background-color:#faa">·</span><span style="color:#360">Id</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">3</span>(<span style="color:#360">SB</span>)<span style="color:#a00;background-color:#faa">/</span><span style="color:#f60">1</span>,<span style="color:#360">$0x00</span>
+<span style="color:#c0f">DATA</span> <span style="color:#a00;background-color:#faa">·</span><span style="color:#360">Id</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">4</span>(<span style="color:#360">SB</span>)<span style="color:#a00;background-color:#faa">/</span><span style="color:#f60">1</span>,<span style="color:#360">$0x00</span>
+<span style="color:#c0f">DATA</span> <span style="color:#a00;background-color:#faa">·</span><span style="color:#360">Id</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">5</span>(<span style="color:#360">SB</span>)<span style="color:#a00;background-color:#faa">/</span><span style="color:#f60">1</span>,<span style="color:#360">$0x00</span>
+<span style="color:#c0f">DATA</span> <span style="color:#a00;background-color:#faa">·</span><span style="color:#360">Id</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">6</span>(<span style="color:#360">SB</span>)<span style="color:#a00;background-color:#faa">/</span><span style="color:#f60">1</span>,<span style="color:#360">$0x00</span>
+<span style="color:#c0f">DATA</span> <span style="color:#a00;background-color:#faa">·</span><span style="color:#360">Id</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">7</span>(<span style="color:#360">SB</span>)<span style="color:#a00;background-color:#faa">/</span><span style="color:#f60">1</span>,<span style="color:#360">$0x00</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><p>最后在main方法中调用汇编代码：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">package</span> main
+<span style="color:#069;font-weight:bold">import</span> <span style="color:#c30">&#34;demo/pkg&#34;</span>
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+    <span style="color:#366">println</span>(pkg.Id)
+}
+</code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>对于Go包的用户来说，用Go汇编语言或Go语言实现并无任何区别。</p>
+</blockquote>
+<h3 id="2-字符串变量">2. 字符串变量</h3>
+<p>我们先做一个go代码生成汇编代码的正向分析：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">package</span> pkg
+<span style="color:#069;font-weight:bold">var</span> Name = <span style="color:#c30">&#34;gopher&#34;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>查看汇编伪代码如下（不是严格的汇编，用于分析）：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-asm" data-lang="asm"><span style="color:#a00;background-color:#faa">//</span> <span style="color:#a00;background-color:#faa">包信息：使用</span><span style="color:#c0f">printf命令打印</span><span style="color:#a00;background-color:#faa">&#34;</span><span style="color:#360">pkg</span><span style="color:#a00;background-color:#faa">&#34;，正好是</span><span style="color:#f60">70</span><span style="color:#a00;background-color:#faa">，</span><span style="color:#f60">6</span><span style="color:#360">b</span><span style="color:#a00;background-color:#faa">，</span><span style="color:#f60">67</span><span style="color:#a00;background-color:#faa">，如：</span><span style="color:#360">printf</span> <span style="color:#a00;background-color:#faa">&#34;</span><span style="color:#033">%x</span><span style="color:#a00;background-color:#faa">&#34;</span> <span style="color:#a00;background-color:#faa">\&#39;</span><span style="color:#360">k</span>
+<span style="color:#c0f">go.cuinfo.packagename.</span> <span style="color:#360">SDWARFINFO</span> <span style="color:#360">dupok</span> <span style="color:#360">size</span><span style="color:#a00;background-color:#faa">=</span><span style="color:#f60">0</span>
+<span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0000</span> <span style="color:#f60">70</span> <span style="color:#f60">6</span><span style="color:#360">b</span> <span style="color:#f60">67</span>                                         <span style="color:#360">pkg</span>
+
+<span style="color:#a00;background-color:#faa">//字符串变量原型指向的底层数组(即指针指向的值，但汇编不存在指针)</span>
+<span style="color:#c0f">go.string.</span><span style="color:#a00;background-color:#faa">&#34;</span><span style="color:#360">gopher</span><span style="color:#a00;background-color:#faa">&#34;</span> <span style="color:#360">SRODATA</span> <span style="color:#360">dupok</span> <span style="color:#360">size</span><span style="color:#a00;background-color:#faa">=</span><span style="color:#f60">6</span>
+<span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0000</span> <span style="color:#f60">67</span> <span style="color:#f60">6</span><span style="color:#360">f</span> <span style="color:#f60">70</span> <span style="color:#f60">68</span> <span style="color:#f60">65</span> <span style="color:#f60">72</span>                                <span style="color:#360">gopher</span>
+
+<span style="color:#a00;background-color:#faa">//字符串变量，原型是：</span>
+<span style="color:#a00;background-color:#faa">//</span>	<span style="color:#c0f">type</span> <span style="color:#360">reflect.StringHeader</span> <span style="color:#360">struct</span> <span style="color:#a00;background-color:#faa">{</span>
+<span style="color:#a00;background-color:#faa">//</span>		  <span style="color:#c0f">Data</span> <span style="color:#360">uintptr</span>  <span style="color:#a00;background-color:#faa">//</span><span style="color:#f60">8</span><span style="color:#a00;background-color:#faa">个字节</span>
+<span style="color:#a00;background-color:#faa">//</span>	  	<span style="color:#c0f">Len</span>  <span style="color:#360">int</span>      <span style="color:#a00;background-color:#faa">//长度，</span><span style="color:#f60">8</span><span style="color:#a00;background-color:#faa">个字节</span>
+<span style="color:#a00;background-color:#faa">//</span>	<span style="color:#a00;background-color:#faa">}</span>
+<span style="color:#a00;background-color:#faa">&#34;&#34;</span><span style="color:#309">.Name</span> <span style="color:#360">SDATA</span> <span style="color:#360">size</span><span style="color:#a00;background-color:#faa">=</span><span style="color:#f60">16</span>
+<span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0000</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">06</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span>  <span style="color:#360">................</span>
+<span style="color:#c0f">rel</span> <span style="color:#f60">0</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">8</span> <span style="color:#360">t</span><span style="color:#a00;background-color:#faa">=</span><span style="color:#f60">1</span> <span style="color:#360">go.string.</span><span style="color:#a00;background-color:#faa">&#34;</span><span style="color:#360">gopher</span><span style="color:#a00;background-color:#faa">&#34;+</span><span style="color:#f60">0</span>
+</code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>Go字符串其实是一种<code>只读的引用类型</code>。如果多个代码中出现了相同的&quot;gopher&quot;只读字符串时，程序链接后可以引用同一个<code>go.string.&quot;gopher&quot;</code>。<code>SRODATA</code>表示这个数据在只读内存段，<code>dupok</code>表示多个相同标识符只保留一个。</p>
+<p>Name变量并没有直接对应<code>“gopher”</code>字符串，而是对应16字节大小的<code>reflect.StringHeader</code>结构体：</p>
+</blockquote>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">type</span> reflect.StringHeader <span style="color:#069;font-weight:bold">struct</span> {
+    Data <span style="color:#078;font-weight:bold">uintptr</span>
+    Len  <span style="color:#078;font-weight:bold">int</span>
+}
+</code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>前8个字节对应底层真实字符串数据的指针，也就是符号<code>go.string.&quot;gopher&quot;</code>对应的地址。后8个字节对应底层真实字符串数据的有效长度，这里是6个字节。</p>
+</blockquote>
+<p><strong>汇编定义字符串变量：</strong></p>
+<p><code>pkg_amd64.s</code>汇编代码如下：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-asm" data-lang="asm"><span style="color:#a00;background-color:#faa">//</span> <span style="color:#a00;background-color:#faa">导出变量，</span><span style="color:#c0f">x64中使用8个字节表示int</span>
+<span style="color:#c0f">GLOBL</span> <span style="color:#a00;background-color:#faa">·</span><span style="color:#360">NameData</span>(<span style="color:#360">SB</span>),<span style="color:#360">$8</span>
+<span style="color:#a00;background-color:#faa">//</span> <span style="color:#a00;background-color:#faa">定义一个8个字节的数组</span>
+<span style="color:#c0f">DATA</span> <span style="color:#a00;background-color:#faa">·</span><span style="color:#360">NameData</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">0</span>(<span style="color:#360">SB</span>)<span style="color:#a00;background-color:#faa">/</span><span style="color:#f60">8</span>,<span style="color:#360">$</span><span style="color:#a00;background-color:#faa">&#34;</span><span style="color:#360">gopher</span><span style="color:#a00;background-color:#faa">&#34;</span>
+
+<span style="color:#a00;background-color:#faa">//导出变量,长度就是字符串原型的长度</span>
+<span style="color:#c0f">GLOBL</span> <span style="color:#a00;background-color:#faa">·</span><span style="color:#360">Name</span>(<span style="color:#360">SB</span>),<span style="color:#360">$16</span>
+<span style="color:#a00;background-color:#faa">//数据，其实就是字符串的结构体原型，即指针+长度</span>
+<span style="color:#a00;background-color:#faa">//</span> <span style="color:#a00;background-color:#faa">指针，八个字节，引用另外一个常量(寄存器)</span>
+<span style="color:#c0f">DATA</span> <span style="color:#a00;background-color:#faa">·</span><span style="color:#360">Name</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">0</span>(<span style="color:#360">SB</span>)<span style="color:#a00;background-color:#faa">/</span><span style="color:#f60">8</span>,<span style="color:#360">$</span><span style="color:#a00;background-color:#faa">·</span><span style="color:#360">NameData</span>(<span style="color:#360">SB</span>)
+<span style="color:#a00;background-color:#faa">//偏移量为8，长度为6，使用十进制和十六进制都可以</span>
+<span style="color:#c0f">DATA</span> <span style="color:#a00;background-color:#faa">·</span><span style="color:#360">Name</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">8</span>(<span style="color:#360">SB</span>)<span style="color:#a00;background-color:#faa">/</span><span style="color:#f60">8</span>,<span style="color:#360">$6</span>
+</code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>因为在Go汇编语言中，<code>go.string.&quot;gopher&quot;</code>不是一个合法的符号，因此我们无法通过手工创建（这是给编译器保留的部分特权，因为手工创建类似符号可能打破编译器输出代码的某些规则）。因此我们新创建了一个<code>·NameData</code>符号表示底层的字符串数据。然后定义<code>·Name</code>符号内存大小为16字节，其中前8个字节用<code>·NameData</code>符号对应的地址初始化，后8个字节为常量6表示字符串长度。</p>
+</blockquote>
+<p><code>pkg.go</code>定义如下：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">package</span> pkg
+
+<span style="color:#09f;font-style:italic">// 八个字节长度的数组，用于存放基础数据
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">var</span> NameData [<span style="color:#f60">8</span>]<span style="color:#078;font-weight:bold">byte</span>
+<span style="color:#069;font-weight:bold">var</span> Name <span style="color:#078;font-weight:bold">string</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>当用汇编定义好字符串变量并导出之后，还需要在Go语言中声明该字符串变量。然后就可以用Go语言代码测试Name变量了：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">package</span> main
+
+<span style="color:#069;font-weight:bold">import</span> pkg <span style="color:#c30">&#34;hello/pkg&#34;</span>
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+    <span style="color:#366">println</span>(pkg.Name)
+}
+</code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>其实Go汇编语言中定义的数据并没有所谓的类型，每个符号只不过是对应一块内存而已，因此NameData符号也是没有类型的。但是Go语言是再带垃圾回收器的语言，而Go汇编语言是工作在自动垃圾回收体系框架内的。当Go语言的垃圾回收器在扫描到NameData变量的时候，无法知晓该变量内部是否包含指针，因此就出现了这种错误。错误的根本原因并不是NameData没有类型，而是NameData变量没有标注是否会含有指针信息。</p>
+</blockquote>
+<p>所以，还可以增加一个NOPTR标志，表示其中不会包含指针数据(去掉<code>var NameData [8]byte</code>)：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-asm" data-lang="asm"><span style="color:#09f;font-style:italic">#include &#34;textflag.h&#34;
+</span><span style="color:#09f;font-style:italic"></span>
+<span style="color:#a00;background-color:#faa">//告诉</span><span style="color:#c0f">GC不包含指针</span>, <span style="color:#a00;background-color:#faa">此处需要用到</span><span style="color:#360">c语言的textflag.h头文件</span>
+<span style="color:#c0f">GLOBL</span> <span style="color:#a00;background-color:#faa">·</span><span style="color:#360">NameData</span>(<span style="color:#360">SB</span>),<span style="color:#360">NOPTR</span>,<span style="color:#360">$8</span>
+<span style="color:#c0f">DATA</span>  <span style="color:#a00;background-color:#faa">·</span><span style="color:#360">NameData</span>(<span style="color:#360">SB</span>)<span style="color:#a00;background-color:#faa">/</span><span style="color:#f60">8</span>,<span style="color:#360">$</span><span style="color:#a00;background-color:#faa">&#34;</span><span style="color:#360">gopher</span><span style="color:#a00;background-color:#faa">&#34;</span>
+
+<span style="color:#c0f">GLOBL</span> <span style="color:#a00;background-color:#faa">·</span><span style="color:#360">Name</span>(<span style="color:#360">SB</span>),<span style="color:#360">$16</span>
+<span style="color:#c0f">DATA</span>  <span style="color:#a00;background-color:#faa">·</span><span style="color:#360">Name</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">0</span>(<span style="color:#360">SB</span>)<span style="color:#a00;background-color:#faa">/</span><span style="color:#f60">8</span>,<span style="color:#360">$</span><span style="color:#a00;background-color:#faa">·</span><span style="color:#360">NameData</span>(<span style="color:#360">SB</span>)
+<span style="color:#c0f">DATA</span>  <span style="color:#a00;background-color:#faa">·</span><span style="color:#360">Name</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">8</span>(<span style="color:#360">SB</span>)<span style="color:#a00;background-color:#faa">/</span><span style="color:#f60">8</span>,<span style="color:#360">$6</span>
+</code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>我们将NameData声明为长度为8的字节数组。编译器可以通过类型分析出该变量不会包含指针，因此汇编代码中可以省略NOPTR标志。现在垃圾回收器在遇到该变量的时候就会停止内部数据的扫描。</p>
+</blockquote>
+<p>当然这和字符串的只读定义是冲突的，正常的代码需要避免出现这种情况。最好的方法是不要导出内部的NameData变量，这样可以避免内部数据被无意破坏。<br>
+在用汇编定义字符串时我们可以换一种思维：将底层的字符串数据和字符串头结构体定义在一起，这样可以避免引入NameData符号：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-asm" data-lang="asm"><span style="color:#a00;background-color:#faa">//合并导出，长度为8*3=24，这样一来就值导出一个变量的声明</span>
+<span style="color:#c0f">GLOBL</span> <span style="color:#a00;background-color:#faa">·</span><span style="color:#360">Name</span>(<span style="color:#360">SB</span>),<span style="color:#360">$24</span>
+
+<span style="color:#a00;background-color:#faa">//</span> <span style="color:#a00;background-color:#faa">指针:</span> <span style="color:#a00;background-color:#faa">八个字节，指向第三个数据块</span>
+<span style="color:#a00;background-color:#faa">//可把【·变量+偏移量(</span><span style="color:#c0f">SB</span>)<span style="color:#a00;background-color:#faa">】当成一个整体变量或内存地址</span>
+<span style="color:#c0f">DATA</span> <span style="color:#a00;background-color:#faa">·</span><span style="color:#360">Name</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">0</span>(<span style="color:#360">SB</span>)<span style="color:#a00;background-color:#faa">/</span><span style="color:#f60">8</span>,<span style="color:#360">$</span><span style="color:#a00;background-color:#faa">·</span><span style="color:#360">Name</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">16</span>(<span style="color:#360">SB</span>)
+
+<span style="color:#a00;background-color:#faa">//偏移量:</span> <span style="color:#a00;background-color:#faa">为8，长度为6，使用十进制和十六进制都可以</span>
+<span style="color:#c0f">DATA</span> <span style="color:#a00;background-color:#faa">·</span><span style="color:#360">Name</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">8</span>(<span style="color:#360">SB</span>)<span style="color:#a00;background-color:#faa">/</span><span style="color:#f60">8</span>,<span style="color:#360">$6</span>
+
+<span style="color:#a00;background-color:#faa">//</span> <span style="color:#a00;background-color:#faa">数据：即指向的数组</span>
+<span style="color:#c0f">DATA</span> <span style="color:#a00;background-color:#faa">·</span><span style="color:#360">Name</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">16</span>(<span style="color:#360">SB</span>)<span style="color:#a00;background-color:#faa">/</span><span style="color:#f60">8</span>,<span style="color:#360">$</span><span style="color:#a00;background-color:#faa">&#34;</span><span style="color:#360">gopher</span><span style="color:#a00;background-color:#faa">&#34;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>在新的结构中，Name符号对应的内存从16字节变为24字节，多出的8个字节存放底层的“gopher”字符串。·Name符号前16个字节依然对应<code>reflect.StringHeader</code>结构体：Data部分对应<code>$·Name+16(SB)</code>，表示数据的地址为Name符号往后偏移16个字节的位置；Len部分依然对应6个字节的长度。这是C语言程序员经常使用的技巧。</p>
+<h3 id="3-定义main函数">3. 定义main函数</h3>
+<p>创建main.go文件，并声明main函数：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">package</span> main
+
+<span style="color:#069;font-weight:bold">var</span> helloworld = <span style="color:#c30">&#34;你好, 世界&#34;</span>
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>()
+</code></pre></td></tr></table>
+</div>
+</div><p>然后创建<code>main_amd64.s</code>文件，里面对应main函数的实现：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-asm" data-lang="asm"><span style="color:#c0f">TEXT</span> <span style="color:#a00;background-color:#faa">·</span><span style="color:#360">main</span>(<span style="color:#360">SB</span>), <span style="color:#360">$16-0</span>
+    <span style="color:#c0f">MOVQ</span> <span style="color:#a00;background-color:#faa">·</span><span style="color:#360">helloworld</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">0</span>(<span style="color:#360">SB</span>), <span style="color:#360">AX</span><span style="color:#09f;font-style:italic">; MOVQ AX, 0(SP)
+</span><span style="color:#09f;font-style:italic"></span>    <span style="color:#360">MOVQ</span> <span style="color:#a00;background-color:#faa">·</span><span style="color:#360">helloworld</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">8</span>(<span style="color:#360">SB</span>), <span style="color:#360">BX</span><span style="color:#09f;font-style:italic">; MOVQ BX, 8(SP)
+</span><span style="color:#09f;font-style:italic"></span>    <span style="color:#360">CALL</span> <span style="color:#360">runtime</span><span style="color:#a00;background-color:#faa">·</span><span style="color:#360">printstring</span>(<span style="color:#360">SB</span>)
+    <span style="color:#c0f">CALL</span> <span style="color:#360">runtime</span><span style="color:#a00;background-color:#faa">·</span><span style="color:#360">printnl</span>(<span style="color:#360">SB</span>)
+    <span style="color:#c0f">RET</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><code>TEXT ·main(SB), $16-0</code>用于定义<code>main</code>函数，其中<code>$16-0</code>表示<code>main</code>函数的帧大小是16个字节（对应string头部结构体的大小，用于给<code>runtime·printstring</code>函数传递参数），<code>0</code>表示<code>main</code>函数没有参数和返回值。<code>main</code>函数内部通过调用运行时内部的<code>runtime·printstring(SB)</code>函数来打印字符串。然后调用<code>runtime·printnl</code>打印换行符号。</p>
+<p>Go语言函数在函数调用时，完全通过栈传递调用参数和返回值。先通过MOVQ指令，将helloworld对应的字符串头部结构体的16个字节复制到栈指针SP对应的16字节的空间，然后通过CALL指令调用对应函数。最后使用RET指令表示当前函数返回。</p>
+<h3 id="4-加法运算">4. 加法运算</h3>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-asm" data-lang="asm"><span style="color:#a00;background-color:#faa">//</span> <span style="color:#c0f">fist.s</span> <span style="color:#a00;background-color:#faa">注意末行的空行</span>
+<span style="color:#c0f">TEXT</span> <span style="color:#a00;background-color:#faa">·</span><span style="color:#360">Equal</span>(<span style="color:#360">SB</span>),<span style="color:#f60">7</span>,<span style="color:#360">$0</span>
+        <span style="color:#c0f">MOVL</span>    <span style="color:#360">len</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">8</span>(<span style="color:#360">FP</span>), <span style="color:#360">BX</span>
+        <span style="color:#c0f">MOVL</span>    <span style="color:#360">len1</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">24</span>(<span style="color:#360">FP</span>), <span style="color:#360">CX</span>
+        <span style="color:#c0f">MOVL</span>    <span style="color:#360">$0</span>, <span style="color:#360">AX</span>
+        <span style="color:#c0f">CMPL</span>    <span style="color:#360">BX</span>, <span style="color:#360">CX</span>
+        <span style="color:#c0f">JNE</span>     <span style="color:#360">eqret</span>
+        <span style="color:#c0f">MOVQ</span>    <span style="color:#360">p</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">0</span>(<span style="color:#360">FP</span>), <span style="color:#360">SI</span>
+        <span style="color:#c0f">MOVQ</span>    <span style="color:#360">q</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">16</span>(<span style="color:#360">FP</span>), <span style="color:#360">DI</span>
+        <span style="color:#c0f">CLD</span>
+        <span style="color:#c0f">REP</span><span style="color:#09f;font-style:italic">; CMPSB
+</span><span style="color:#09f;font-style:italic"></span>        <span style="color:#360">MOVL</span>    <span style="color:#360">$1</span>, <span style="color:#360">DX</span>
+        <span style="color:#c0f">CMOVLEQ</span> <span style="color:#360">DX</span>, <span style="color:#360">AX</span>
+<span style="color:#99f">eqret:</span>
+        <span style="color:#c0f">MOVB</span>    <span style="color:#360">AX</span>, <span style="color:#360">ret</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">32</span>(<span style="color:#360">FP</span>)
+        <span style="color:#c0f">RET</span>
+
+<span style="color:#c0f">TEXT</span>    <span style="color:#a00;background-color:#faa">·</span><span style="color:#360">Add</span>(<span style="color:#360">SB</span>),<span style="color:#f60">7</span>,<span style="color:#360">$0</span>
+        <span style="color:#c0f">MOVL</span> <span style="color:#f60">4</span>(<span style="color:#360">SP</span>),<span style="color:#360">AX</span>
+        <span style="color:#c0f">ADDL</span> <span style="color:#f60">8</span>(<span style="color:#360">SP</span>),<span style="color:#360">AX</span>
+        <span style="color:#c0f">MOVL</span> <span style="color:#360">AX</span>,<span style="color:#f60">12</span>(<span style="color:#360">SP</span>)
+        <span style="color:#c0f">RET</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#09f;font-style:italic">//first.go
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">package</span> first
+
+<span style="color:#09f;font-style:italic">// 空函数体，表示调用汇编
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">Equal</span>(a []<span style="color:#078;font-weight:bold">byte</span>, b []<span style="color:#078;font-weight:bold">byte</span>) <span style="color:#078;font-weight:bold">bool</span>
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">Add</span>(a, b <span style="color:#078;font-weight:bold">int</span>) <span style="color:#078;font-weight:bold">int</span>
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">package</span> main
+
+<span style="color:#069;font-weight:bold">import</span> (
+   <span style="color:#c30">&#34;fmt&#34;</span>
+   <span style="color:#c30">&#34;hello/first&#34;</span>
+)
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+   fmt.<span style="color:#c0f">Println</span>(first.<span style="color:#c0f">Add</span>(<span style="color:#f60">14</span>,<span style="color:#f60">13</span>))
+   e <span style="color:#555">:=</span> first.<span style="color:#c0f">Equal</span>([]<span style="color:#366">byte</span>(<span style="color:#c30">&#34;hello&#34;</span>), []<span style="color:#366">byte</span>(<span style="color:#c30">&#34;hello&#34;</span>))
+   <span style="color:#366">println</span>(e)
+}
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="指针相关汇编示例">指针相关汇编示例</h3>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">package</span> main
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">Foo</span>(a <span style="color:#078;font-weight:bold">int</span>) <span style="color:#078;font-weight:bold">int</span> {
+	rt <span style="color:#555">:=</span> a <span style="color:#555">*</span> a
+	<span style="color:#069;font-weight:bold">return</span> rt
+}
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-asm" data-lang="asm"><span style="color:#99f">sybs@shs:</span><span style="color:#c0f">hello$</span> <span style="color:#360">go</span> <span style="color:#360">tool</span> <span style="color:#360">compile</span> -<span style="color:#360">S</span> <span style="color:#360">hello.go</span> 
+<span style="color:#a00;background-color:#faa">&#34;&#34;</span><span style="color:#360">.Foo</span> <span style="color:#360">STEXT</span> <span style="color:#360">nosplit</span> <span style="color:#360">size</span><span style="color:#a00;background-color:#faa">=</span><span style="color:#f60">15</span> <span style="color:#360">args</span><span style="color:#a00;background-color:#faa">=</span><span style="color:#f60">0x10</span> <span style="color:#360">locals</span><span style="color:#a00;background-color:#faa">=</span><span style="color:#f60">0x0</span>
+        <span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0000</span> <span style="color:#f60">00000</span> (<span style="color:#360">hello.go</span>:<span style="color:#f60">3</span>)       <span style="color:#360">TEXT</span>    <span style="color:#a00;background-color:#faa">&#34;&#34;</span><span style="color:#360">.Foo</span>(<span style="color:#360">SB</span>), <span style="color:#360">NOSPLIT</span><span style="color:#a00;background-color:#faa">|</span><span style="color:#360">ABIInternal</span>, <span style="color:#360">$0-16</span>
+        <span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0000</span> <span style="color:#f60">00000</span> (<span style="color:#360">hello.go</span>:<span style="color:#f60">3</span>)       <span style="color:#360">PCDATA</span>  <span style="color:#360">$0</span>, <span style="color:#360">$-2</span>
+        <span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0000</span> <span style="color:#f60">00000</span> (<span style="color:#360">hello.go</span>:<span style="color:#f60">3</span>)       <span style="color:#360">PCDATA</span>  <span style="color:#360">$1</span>, <span style="color:#360">$-2</span>
+        <span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0000</span> <span style="color:#f60">00000</span> (<span style="color:#360">hello.go</span>:<span style="color:#f60">3</span>)       <span style="color:#360">FUNCDATA</span>        <span style="color:#360">$0</span>, <span style="color:#360">gclocals</span><span style="color:#a00;background-color:#faa">·</span><span style="color:#f60">33</span><span style="color:#360">cdeccccebe80329f1fdbee7f5874cb</span>(<span style="color:#360">SB</span>)
+        <span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0000</span> <span style="color:#f60">00000</span> (<span style="color:#360">hello.go</span>:<span style="color:#f60">3</span>)       <span style="color:#360">FUNCDATA</span>        <span style="color:#360">$1</span>, <span style="color:#360">gclocals</span><span style="color:#a00;background-color:#faa">·</span><span style="color:#f60">33</span><span style="color:#360">cdeccccebe80329f1fdbee7f5874cb</span>(<span style="color:#360">SB</span>)
+        <span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0000</span> <span style="color:#f60">00000</span> (<span style="color:#360">hello.go</span>:<span style="color:#f60">3</span>)       <span style="color:#360">FUNCDATA</span>        <span style="color:#360">$2</span>, <span style="color:#360">gclocals</span><span style="color:#a00;background-color:#faa">·</span><span style="color:#f60">33</span><span style="color:#360">cdeccccebe80329f1fdbee7f5874cb</span>(<span style="color:#360">SB</span>)
+        <span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0000</span> <span style="color:#f60">00000</span> (<span style="color:#360">hello.go</span>:<span style="color:#f60">4</span>)       <span style="color:#360">PCDATA</span>  <span style="color:#360">$0</span>, <span style="color:#360">$0</span>
+        <span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0000</span> <span style="color:#f60">00000</span> (<span style="color:#360">hello.go</span>:<span style="color:#f60">4</span>)       <span style="color:#360">PCDATA</span>  <span style="color:#360">$1</span>, <span style="color:#360">$0</span>
+        <span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0000</span> <span style="color:#f60">00000</span> (<span style="color:#360">hello.go</span>:<span style="color:#f60">4</span>)       <span style="color:#360">MOVQ</span>    <span style="color:#a00;background-color:#faa">&#34;&#34;</span><span style="color:#360">.a</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">8</span>(<span style="color:#360">SP</span>), <span style="color:#360">AX</span>
+        <span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0005</span> <span style="color:#f60">00005</span> (<span style="color:#360">hello.go</span>:<span style="color:#f60">4</span>)       <span style="color:#360">IMULQ</span>   <span style="color:#360">AX</span>, <span style="color:#360">AX</span>
+        <span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0009</span> <span style="color:#f60">00009</span> (<span style="color:#360">hello.go</span>:<span style="color:#f60">5</span>)       <span style="color:#360">MOVQ</span>    <span style="color:#360">AX</span>, <span style="color:#a00;background-color:#faa">&#34;&#34;</span>.<span style="color:#a00;background-color:#faa">~</span><span style="color:#360">r1</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">16</span>(<span style="color:#360">SP</span>)
+        <span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x000e</span> <span style="color:#f60">00014</span> (<span style="color:#360">hello.go</span>:<span style="color:#f60">5</span>)       <span style="color:#360">RET</span>
+        <span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0000</span> <span style="color:#f60">48</span> <span style="color:#f60">8</span><span style="color:#360">b</span> <span style="color:#f60">44</span> <span style="color:#f60">24</span> <span style="color:#f60">08</span> <span style="color:#f60">48</span> <span style="color:#f60">0</span><span style="color:#360">f</span> <span style="color:#360">af</span> <span style="color:#360">c0</span> <span style="color:#f60">48</span> <span style="color:#f60">89</span> <span style="color:#f60">44</span> <span style="color:#f60">24</span> <span style="color:#f60">10</span> <span style="color:#360">c3</span>     <span style="color:#360">H.D$.H...H.D$..</span>
+<span style="color:#c0f">go.cuinfo.packagename.</span> <span style="color:#360">SDWARFINFO</span> <span style="color:#360">dupok</span> <span style="color:#360">size</span><span style="color:#a00;background-color:#faa">=</span><span style="color:#f60">0</span>
+        <span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0000</span> <span style="color:#f60">6</span><span style="color:#360">d</span> <span style="color:#f60">61</span> <span style="color:#f60">69</span> <span style="color:#f60">6</span><span style="color:#360">e</span>                                      <span style="color:#360">main</span>
+<span style="color:#c0f">go.loc.</span><span style="color:#a00;background-color:#faa">&#34;&#34;</span><span style="color:#360">.Foo</span> <span style="color:#360">SDWARFLOC</span> <span style="color:#360">size</span><span style="color:#a00;background-color:#faa">=</span><span style="color:#f60">70</span>
+        <span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0000</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span>  <span style="color:#360">................</span>
+        <span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0010</span> <span style="color:#f60">01</span> <span style="color:#f60">00</span> <span style="color:#f60">50</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span>  <span style="color:#360">..P.............</span>
+        <span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0020</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span>  <span style="color:#360">................</span>
+        <span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0030</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">01</span> <span style="color:#f60">00</span> <span style="color:#f60">9</span><span style="color:#360">c</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span>  <span style="color:#360">................</span>
+        <span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0040</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span>                                <span style="color:#360">......</span>
+        <span style="color:#c0f">rel</span> <span style="color:#f60">0</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">8</span> <span style="color:#360">t</span><span style="color:#a00;background-color:#faa">=</span><span style="color:#f60">53</span> <span style="color:#a00;background-color:#faa">&#34;&#34;</span><span style="color:#360">.Foo</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">9</span>
+        <span style="color:#c0f">rel</span> <span style="color:#f60">8</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">8</span> <span style="color:#360">t</span><span style="color:#a00;background-color:#faa">=</span><span style="color:#f60">53</span> <span style="color:#a00;background-color:#faa">&#34;&#34;</span><span style="color:#360">.Foo</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">15</span>
+        <span style="color:#c0f">rel</span> <span style="color:#f60">35</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">8</span> <span style="color:#360">t</span><span style="color:#a00;background-color:#faa">=</span><span style="color:#f60">53</span> <span style="color:#a00;background-color:#faa">&#34;&#34;</span><span style="color:#360">.Foo</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">0</span>
+        <span style="color:#c0f">rel</span> <span style="color:#f60">43</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">8</span> <span style="color:#360">t</span><span style="color:#a00;background-color:#faa">=</span><span style="color:#f60">53</span> <span style="color:#a00;background-color:#faa">&#34;&#34;</span><span style="color:#360">.Foo</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">15</span>
+<span style="color:#c0f">go.info.</span><span style="color:#a00;background-color:#faa">&#34;&#34;</span><span style="color:#360">.Foo</span> <span style="color:#360">SDWARFINFO</span> <span style="color:#360">size</span><span style="color:#a00;background-color:#faa">=</span><span style="color:#f60">70</span>
+        <span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0000</span> <span style="color:#f60">03</span> <span style="color:#f60">22</span> <span style="color:#f60">22</span> <span style="color:#f60">2</span><span style="color:#360">e</span> <span style="color:#f60">46</span> <span style="color:#f60">6</span><span style="color:#360">f</span> <span style="color:#f60">6</span><span style="color:#360">f</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span>  .<span style="color:#a00;background-color:#faa">&#34;&#34;</span><span style="color:#360">.Foo.........</span>
+        <span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0010</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">01</span> <span style="color:#f60">9</span><span style="color:#360">c</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">01</span> <span style="color:#f60">0</span><span style="color:#360">b</span>  <span style="color:#360">................</span>
+        <span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0020</span> <span style="color:#f60">72</span> <span style="color:#f60">74</span> <span style="color:#f60">00</span> <span style="color:#f60">04</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">10</span> <span style="color:#f60">61</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span>  <span style="color:#360">rt...........a..</span>
+        <span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0030</span> <span style="color:#f60">03</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">0</span><span style="color:#360">f</span> <span style="color:#f60">7</span><span style="color:#360">e</span> <span style="color:#f60">72</span> <span style="color:#f60">31</span> <span style="color:#f60">00</span> <span style="color:#f60">01</span> <span style="color:#f60">03</span>  <span style="color:#360">..........</span><span style="color:#a00;background-color:#faa">~</span><span style="color:#360">r1...</span>
+        <span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0040</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span>                                <span style="color:#360">......</span>
+        <span style="color:#c0f">rel</span> <span style="color:#f60">0</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">0</span> <span style="color:#360">t</span><span style="color:#a00;background-color:#faa">=</span><span style="color:#f60">24</span> <span style="color:#360">type.int</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">0</span>
+        <span style="color:#c0f">rel</span> <span style="color:#f60">8</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">8</span> <span style="color:#360">t</span><span style="color:#a00;background-color:#faa">=</span><span style="color:#f60">1</span> <span style="color:#a00;background-color:#faa">&#34;&#34;</span><span style="color:#360">.Foo</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">0</span>
+        <span style="color:#c0f">rel</span> <span style="color:#f60">16</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">8</span> <span style="color:#360">t</span><span style="color:#a00;background-color:#faa">=</span><span style="color:#f60">1</span> <span style="color:#a00;background-color:#faa">&#34;&#34;</span><span style="color:#360">.Foo</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">15</span>
+        <span style="color:#c0f">rel</span> <span style="color:#f60">26</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">4</span> <span style="color:#360">t</span><span style="color:#a00;background-color:#faa">=</span><span style="color:#f60">30</span> <span style="color:#360">gofile..</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">Users</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">sybs</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">work</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">hello</span><span style="color:#a00;background-color:#faa">/</span><span style="color:#360">hello.go</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">0</span>
+        <span style="color:#c0f">rel</span> <span style="color:#f60">36</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">4</span> <span style="color:#360">t</span><span style="color:#a00;background-color:#faa">=</span><span style="color:#f60">29</span> <span style="color:#360">go.info.int</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">0</span>
+        <span style="color:#c0f">rel</span> <span style="color:#f60">40</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">4</span> <span style="color:#360">t</span><span style="color:#a00;background-color:#faa">=</span><span style="color:#f60">29</span> <span style="color:#360">go.loc.</span><span style="color:#a00;background-color:#faa">&#34;&#34;</span><span style="color:#360">.Foo</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">0</span>
+        <span style="color:#c0f">rel</span> <span style="color:#f60">49</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">4</span> <span style="color:#360">t</span><span style="color:#a00;background-color:#faa">=</span><span style="color:#f60">29</span> <span style="color:#360">go.info.int</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">0</span>
+        <span style="color:#c0f">rel</span> <span style="color:#f60">53</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">4</span> <span style="color:#360">t</span><span style="color:#a00;background-color:#faa">=</span><span style="color:#f60">29</span> <span style="color:#360">go.loc.</span><span style="color:#a00;background-color:#faa">&#34;&#34;</span><span style="color:#360">.Foo</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">35</span>
+        <span style="color:#c0f">rel</span> <span style="color:#f60">64</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">4</span> <span style="color:#360">t</span><span style="color:#a00;background-color:#faa">=</span><span style="color:#f60">29</span> <span style="color:#360">go.info.int</span><span style="color:#a00;background-color:#faa">+</span><span style="color:#f60">0</span>
+<span style="color:#c0f">go.range.</span><span style="color:#a00;background-color:#faa">&#34;&#34;</span><span style="color:#360">.Foo</span> <span style="color:#360">SDWARFRANGE</span> <span style="color:#360">size</span><span style="color:#a00;background-color:#faa">=</span><span style="color:#f60">0</span>
+<span style="color:#c0f">go.debuglines.</span><span style="color:#a00;background-color:#faa">&#34;&#34;</span><span style="color:#360">.Foo</span> <span style="color:#360">SDWARFMISC</span> <span style="color:#360">size</span><span style="color:#a00;background-color:#faa">=</span><span style="color:#f60">15</span>
+        <span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0000</span> <span style="color:#f60">04</span> <span style="color:#f60">02</span> <span style="color:#f60">12</span> <span style="color:#f60">06</span> <span style="color:#f60">41</span> <span style="color:#f60">06</span> <span style="color:#f60">38</span> <span style="color:#f60">06</span> <span style="color:#f60">41</span> <span style="color:#f60">04</span> <span style="color:#f60">01</span> <span style="color:#f60">03</span> <span style="color:#f60">7</span><span style="color:#360">c</span> <span style="color:#f60">06</span> <span style="color:#f60">01</span>     <span style="color:#360">....A.8.A...</span><span style="color:#a00;background-color:#faa">|</span><span style="color:#360">..</span>
+<span style="color:#a00;background-color:#faa">&#34;&#34;</span><span style="color:#309">..inittask</span> <span style="color:#360">SNOPTRDATA</span> <span style="color:#360">size</span><span style="color:#a00;background-color:#faa">=</span><span style="color:#f60">24</span>
+        <span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0000</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span>  <span style="color:#360">................</span>
+        <span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0010</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span>                          <span style="color:#360">........</span>
+<span style="color:#c0f">gclocals</span><span style="color:#a00;background-color:#faa">·</span><span style="color:#f60">33</span><span style="color:#360">cdeccccebe80329f1fdbee7f5874cb</span> <span style="color:#360">SRODATA</span> <span style="color:#360">dupok</span> <span style="color:#360">size</span><span style="color:#a00;background-color:#faa">=</span><span style="color:#f60">8</span>
+        <span style="color:#a00;background-color:#faa">0</span><span style="color:#c0f">x0000</span> <span style="color:#f60">01</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span> <span style="color:#f60">00</span>                          <span style="color:#360">........</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="特殊字符">特殊字符</h2>
+<blockquote>
+<p>Go语言函数或方法符号在编译为目标文件后，目标文件中的每个符号均包含对应包的绝对导入路径。因此目标文件的符号可能非常复杂，比如“path/to/pkg.(*SomeType).SomeMethod”或“go.string.&ldquo;abc&rdquo;”等名字。目标文件的符号名中不仅仅包含普通的字母，还可能包含点号、星号、小括弧和双引号等诸多特殊字符。而Go语言的汇编器是从plan9移植过来的二把刀，并不能处理这些特殊的字符，导致了用Go汇编语言手工实现Go诸多特性时遇到种种限制。</p>
+</blockquote>
+<blockquote>
+<p>Go汇编语言同样遵循Go语言少即是多的哲学，它只保留了最基本的特性：定义变量和全局函数。其中在变量和全局函数等名字中引入特殊的分隔符号支持Go语言等包体系。为了简化Go汇编器的词法扫描程序的实现，特别引入了Unicode中的中点<code>·</code>和大写的除法<code>/</code>，对应的Unicode码点为<code>U+00B7</code>和<code>U+2215</code>。汇编器编译后，中点<code>·</code>会被替换为ASCII中的点“.”，大写的除法会被替换为ASCII码中的除法“/”，比如<code>math/rand·Int</code>会被替换为<code>math/rand.Int</code>。这样可以将中点和浮点数中的小数点、大写的除法和表达式中的除法符号分开，可以简化汇编程序词法分析部分的实现。</p>
+</blockquote>
+<blockquote>
+<p>即使暂时抛开Go汇编语言设计取舍的问题，在不同的操作系统不同等输入法中如何输入中点<code>·</code>和除法<code>/</code>两个字符就是一个挑战。这两个字符在 <a href="https://golang.org/doc/asm">https://golang.org/doc/asm</a> 文档中均有描述，因此直接从该页面复制是最简单可靠的方式。</p>
+</blockquote>
+<blockquote>
+<p>如果是macOS系统，则有以下几种方法输入中点<code>·</code>：在不开输入法时，可直接用 option+shift+9 输入；如果是自带的简体拼音输入法，输入左上角<code>~</code>键对应<code>·</code>，如果是自带的Unicode输入法，则可以输入对应的Unicode码点。其中Unicode输入法可能是最安全可靠等输入方式。</p>
+</blockquote>
+<h2 id="参考链接">参考链接：</h2>
+<p><a href="https://chai2010.cn/advanced-go-programming-book/ch3-asm/ch3-01-basic.html">https://chai2010.cn/advanced-go-programming-book/ch3-asm/ch3-01-basic.html</a><br>
+<a href="https://golang.org/doc/asm">https://golang.org/doc/asm</a><br>
+<a href="https://www.cnblogs.com/yjf512/p/6132868.html">https://www.cnblogs.com/yjf512/p/6132868.html</a><br>
+<a href="https://blog.csdn.net/agonie201218/article/details/77574556">https://blog.csdn.net/agonie201218/article/details/77574556</a><br>
+<a href="http://xargin.com/plan9-assembly/">http://xargin.com/plan9-assembly/</a><br>
+<a href="https://whu.iteye.com/blog/591386">https://whu.iteye.com/blog/591386</a><br>
+<a href="https://my.oschina.net/zengsai/blog/123916">https://my.oschina.net/zengsai/blog/123916</a><br>
+<a href="https://studygolang.com/articles/12828?fr=sidebar">https://studygolang.com/articles/12828?fr=sidebar</a></p>
+
+                
+                
+                <hr> 
+
+<div class="entry-shang text-center">
+    
+    <p> 「真诚赞赏，手留余香」</p>
+    
+    <button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+    <div class="zs-modal-head">
+        <button type="button" class="close">×</button>
+        <span class="author">
+            <a href="http://www.mafool.com">
+                <img src="http://www.mafool.com/img/reward/hollson.png" alt="史布斯" />码夫庄园
+            </a>
+        </span>
+        
+        <p class="tip"><i></i><span>嗯，我的梦想是被读者的稿费包养~</span></p>
+        
+
+    </div>
+    <div class="zs-modal-body">
+        <div class="zs-modal-btns">
+            <button class="btn btn-blink" data-num="2">2元</button>
+            <button class="btn btn-blink" data-num="5">5元</button>
+            <button class="btn btn-blink" data-num="10">10元</button>
+            <button class="btn btn-blink" data-num="50">50元</button>
+            <button class="btn btn-blink" data-num="100">100元</button>
+            <button class="btn btn-blink" data-num="1">任意金额</button>
+        </div>
+        <div class="zs-modal-pay">
+            <button class="btn btn-bred" id="pay-text">2元</button>
+            <p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+            <img src="http://www.mafool.com/img/reward/wechat-2.png" alt="史布斯" id="pay-image" />
+        </div>
+    </div>
+    <div class="zs-modal-footer">
+        <label>
+            <span class="zs-wechat"></span>
+            <input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked">
+            <img src="http://www.mafool.com/img/reward/wechat-btn.png" alt="史布斯" />
+            </span>&nbsp;
+            <span>
+                <input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay">
+                <img src="http://www.mafool.com/img/reward/alipay-btn.png" alt="史布斯" />
+            </span>
+        </label>
+    </div>
+</div>
+
+ 
+
+                <br>
+                <br>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="column is-3">
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">最近发布</h2>
+        
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/0742b474a643d63a774461726a6201203/">Go语言中的原子操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年12月2日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/1600330472/">Go基础笔记 - 2.3 常量</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月10日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/15996311192/">Go - Gin框架快速入门</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月9日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480249/">Gorm快速指南</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480218/">18. Go语言MySQL数据库操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+    </div>
+</div>
+<br>
+        
+
+
+
+
+<div class="card">
+  <div class="card-content">
+    <h2 class="title is-6">相关文章</h2>
+    
+    
+    <h2><a href="http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch302/">Go汇编笔记 - 3.2 计算机结构</a></h2>
+    <time class="has-text-grey-light is-size-7">16 December 2019</time>
+    
+    <h2><a href="http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch304/">Go汇编笔记 - 3.4 函数</a></h2>
+    <time class="has-text-grey-light is-size-7">16 December 2019</time>
+    
+  </div>
+</div>
+<br>
+
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">标签</h2>
+        <div>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/atomic">atomic</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/blog">blog</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cgo">cgo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cloud">cloud</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/config">config</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/copy">copy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/docker">docker</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/exam">exam</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/gin">gin</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/git">git</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/golang">golang</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/hugo">hugo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/install">install</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/istio">istio</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/jenkins">jenkins</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/kubernetes">kubernetes</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/map">map</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/microservice">microservice</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/mycat">mycat</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/nginx">nginx</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/plan9">plan9</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/posix">posix</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/proxy">proxy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/raft">raft</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ssh">ssh</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/tips">tips</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ymal">ymal</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%B8%BB%E4%BB%8E">主从</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BA%8B%E5%8A%A1">事务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BB%A3%E7%90%86">代理</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BD%9C%E7%94%A8%E5%9F%9F">作用域</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%86%85%E5%AD%98">内存</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%8B%E7%BC%A9">压缩</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%88%9B">原创</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%AD%90">原子</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%91%BD%E4%BB%A4%E8%A1%8C">命令行</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%93%A8%E5%85%B5">哨兵</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%AD%98%E5%82%A8">存储</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B8%B8%E9%87%8F">常量</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B9%B6%E5%8F%91">并发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BC%82%E5%B8%B8">异常</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1">微服务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%88%E6%9D%83%E8%AE%A4%E8%AF%81">授权认证</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%92%E5%BA%8F">排序</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%A5%E5%8F%A3">接口</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%97%A5%E5%BF%97">日志</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%9D%83%E9%99%90">权限</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE1">标签1</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE2">标签2</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%AD%A3%E5%88%99">正则</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%81%E9%87%8F%E5%88%86%E5%8F%91">流量分发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%8B%E8%AF%95">测试</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%BA%90%E7%A0%81">源码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%8A%B6%E6%80%81%E7%A0%81">状态码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%AE%97%E6%B3%95">算法</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%BC%8F">编程模式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%80%81%E5%A6%96%E7%AC%94%E8%AE%B0">老妖笔记</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%BF%87%E6%BB%A4%E5%99%A8">过滤器</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%80%83%E9%80%B8">逃逸</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%85%8D%E7%BD%AE">配置</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%86%99">重写</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%AE%9A%E5%90%91">重定向</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9B%86%E7%BE%A4">集群</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9D%A2%E8%AF%95">面试</a>
+            </span>
+            
+        </div>
+    </div>
+</div>
+<br>
+    </div>
+</div>
+
+        </div>
+    </div>
+
+    
+    <footer class="footer has-background-grey-darker has-text-white">
+    <div class="content has-text-centered">
+        <p>
+            <span class="icon is-large">
+                <a href="https://twitter.com/" class="mysocial" rel="me">
+                    <i class="fab fa-twitter fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://www.youtube.com/" class="mysocial" rel="me">
+                    <i class="fab fa-youtube fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://github.com/" class="mysocial" rel="me">
+                    <i class="fab fa-github fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <br><br>
+            友情链接：
+            
+            <a class="mysocial" href="http://www.mafool.com" target="_blank">Mafool</a>
+            
+            <a class="mysocial" href="https://gohugo.io/documentation/" target="_blank">Hugo</a>
+            
+            <a class="mysocial" href="https://bulma.io/" target="_blank">Bulma</a>
+            
+            <a class="mysocial" href="https://bootstrapious.com/" target="_blank">Bootstrapious</a>
+            
+            <a class="mysocial" href="https://youzhixueyuan.com/" target="_blank">Youzhixueyuan</a>
+            
+            <br><br />
+            版权所有 &copy; 码夫庄园 2021
+            - <a class="mysocial" href="https://github.com/hollson/hugo-theme-dooz">Hugo Theme</a>
+        </p>
+    </div>
+</footer>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='http://www.mafool.com/js/dooz.totop.js?v=0.0.0' async=""></script>
+
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = 'https://hm.baidu.com/hm.js?f185359ec6b829a6a93e1e1f2597f6d9';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DK042XSJ2J"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-DK042XSJ2J');
+</script>
+
+    
+    
+<script type="text/javascript" src="http://www.mafool.com/js/reward.js"></script>
+
+    
+    <script defer src="https://cdn.staticfile.org/font-awesome/5.13.0/js/all.min.js"></script>
+</body>
+
+</html>

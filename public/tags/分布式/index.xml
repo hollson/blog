@@ -1,0 +1,132 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>分布式 on 码夫庄园</title>
+    <link>http://www.mafool.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F/</link>
+    <description>Recent content in 分布式 on 码夫庄园</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <copyright>版权所有</copyright>
+    <lastBuildDate>Wed, 08 Apr 2020 22:26:52 +0800</lastBuildDate>
+    
+        <atom:link href="http://www.mafool.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>分布式系统概述</title>
+      <link>http://www.mafool.com/posts/d40cede24573717edfd927aad8bb5042/</link>
+      <pubDate>Wed, 08 Apr 2020 22:26:52 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/posts/d40cede24573717edfd927aad8bb5042/</guid>
+      <description>前言 说起分布式系统，我们就不得不说下分布式系统的祖先——集中式系统。集中式系统跟分布式系统是完全相反的两个概念。集中式系统就是把所有的程序、</description>
+    </item>
+    
+    <item>
+      <title>Etcd - 搭建伪集群</title>
+      <link>http://www.mafool.com/posts/aff3b81a3477dddf3a0e9115dd348b11/</link>
+      <pubDate>Fri, 13 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.mafool.com/posts/aff3b81a3477dddf3a0e9115dd348b11/</guid>
+      <description>一. ETCD简介 Etcd是CoreOS团队于2013年6月发起的开源项目，它的目标是构建一个高可用的分布式键值(key-value)数据库。</description>
+    </item>
+    
+    <item>
+      <title>Go操作Zookeeper</title>
+      <link>http://www.mafool.com/post/1585819046/</link>
+      <pubDate>Wed, 08 Jan 2020 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585819046/</guid>
+      <description>一. ZK集群连接对象 可以使用zk.WithXXX函数创建私有Option闭包对象，，然后以回调函数的方式传递(注入)给ZK连接方法。 With</description>
+    </item>
+    
+    <item>
+      <title>CAP定理和分布式数据库管理系统</title>
+      <link>http://www.mafool.com/post/1585838490/</link>
+      <pubDate>Mon, 11 Nov 2019 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585838490/</guid>
+      <description>过去，当我们想存储更多数据或提高处理能力时，通常的选择是垂直扩展（获得功能更强大的计算机）或进一步优化现有代码库。但是，随着并行处理和分布式</description>
+    </item>
+    
+    <item>
+      <title>Redis哨兵模式和集群搭建</title>
+      <link>http://www.mafool.com/post/1585749845/</link>
+      <pubDate>Fri, 01 Nov 2019 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585749845/</guid>
+      <description>参考链接 https://zhangweisep.github.io/2018/09/26/Redis%E5%93%A8%E5%85%B5%E6%A8%A1%E5%BC%8F%E5%92%8C%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/ https://segmentfault.com/a/1190000021622469 https://phachon.com/redis/redis-2.html http://objcoding.com/2019/01/17/redis-sentinel/ http://www.throwable.club/2019/10/07/redis-server-sentinel-install-guide/</description>
+    </item>
+    
+    <item>
+      <title>分布式理论(一) - CAP定理</title>
+      <link>http://www.mafool.com/post/1585839366/</link>
+      <pubDate>Sat, 06 Jul 2019 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585839366/</guid>
+      <description>前言 CAP原则又称CAP定理，指的是在一个分布式系统中，Consistency（一致性）、 Availability（可用性）、Partiti</description>
+    </item>
+    
+    <item>
+      <title>分布式理论(二) - BASE理论</title>
+      <link>http://www.mafool.com/post/1585838938/</link>
+      <pubDate>Fri, 05 Jul 2019 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585838938/</guid>
+      <description>前言 BASE理论是由eBay架构师提出的。BASE是对CAP中一致性和可用性权衡的结果，其来源于对大规模互联网分布式系统实践的总结，是基于C</description>
+    </item>
+    
+    <item>
+      <title>分布式理论(三) - 2PC协议</title>
+      <link>http://www.mafool.com/post/1585839040/</link>
+      <pubDate>Thu, 04 Jul 2019 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585839040/</guid>
+      <description>前言 由于BASE理论需要在一致性和可用性方面做出权衡，因此涌现了很多关于一致性的算法和协议。其中比较著名的有二阶提交协议（2 Phase Commitment Protoc</description>
+    </item>
+    
+    <item>
+      <title>分布式理论(四) - 3PC协议</title>
+      <link>http://www.mafool.com/post/1585839114/</link>
+      <pubDate>Wed, 03 Jul 2019 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585839114/</guid>
+      <description>分布式理论(四) - 3PC协议 前言 由于二阶段提交存在着诸如同步阻塞、单点问题、脑裂等缺陷。所以，研究者们在二阶段提交的基础上做了改进，提出了三</description>
+    </item>
+    
+    <item>
+      <title>分布式理论(五) 一致性算法Paxos</title>
+      <link>http://www.mafool.com/post/1585839221/</link>
+      <pubDate>Tue, 02 Jul 2019 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585839221/</guid>
+      <description>前言 世界上只有一种一致性算法，就是 Paxos。出自一位 Google 大神之口。Paxos 也是出名的 晦涩难懂，推理过程极其复杂。 Paxos 有点类似之前说的 2PC，</description>
+    </item>
+    
+    <item>
+      <title>分布式理论(六) - 一致性协议Raft</title>
+      <link>http://www.mafool.com/post/1585839270/</link>
+      <pubDate>Mon, 01 Jul 2019 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585839270/</guid>
+      <description>分布式理论(六) - 一致性协议Raft 前言 Raft 也是一个 一致性算法，和 Paxos 目标相同。但它还有另一个名字 - 易于理解的一致性算法。Paxos 和 Raft 都是为了</description>
+    </item>
+    
+    <item>
+      <title>Zookeeper集群部署</title>
+      <link>http://www.mafool.com/post/1585818342/</link>
+      <pubDate>Thu, 02 May 2019 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585818342/</guid>
+      <description>一. Zookeeper要点 zookeeper开放源码的分布式协调服务框架 ； zookeeper功能包括：配置维护、域名服务、分布式锁、组服务等</description>
+    </item>
+    
+    <item>
+      <title>区块链分布式存储：生态大数据的存储新模式</title>
+      <link>http://www.mafool.com/post/1585834756/</link>
+      <pubDate>Tue, 26 Mar 2019 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585834756/</guid>
+      <description>前言 区块链，当之无愧的2019最靓的词，在科技领域闪闪发亮，在实体行业星光熠熠。 2019年的1024讲话，让区块链这个词焕然一新，以前它总是</description>
+    </item>
+    
+  </channel>
+</rss>

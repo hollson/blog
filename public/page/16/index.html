@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+	<meta name="generator" content="Hugo 0.82.0" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>码夫庄园-码农的专属博客</title>
+    <meta name="keywords"
+        content='码农,hugo,theme,blog,coder,geek,github,golang,技术,源码,代码,编程,程序员,主题,个人,博客,微服务,容器'>
+    <meta name="description" content="码夫庄园是一个使用hugo搭建的程序员专属博客站点，以优美的博客风格，丰富的展现方式向广大程序员们传播最新的golang、docker、k8s、微服务、大数据、人工智能等技术。" />
+
+    
+    <meta name="baidu-site-verification" content="v9szEmQLra" />
+    <meta name="360-site-verification" content="d8e961f98fb655e4b8cf9439cfd9ac7f" />
+    <meta name="sogou_site_verification" content="40NC9EdZDC" />
+    <meta name="shenma-site-verification" content="3200e3042e92157713a3b0aceeecb20a_1586020187" />
+    <meta name="google-site-verification" content="r8987bkunZHJeKut3ocu5NIJ5QEu53NA6Q_r7RrZ46c" />
+    <meta name="msvalidate.01" content="893A2865ABC54AC2782D118536831056" />
+
+    
+    <link rel="shortcut icon" href="http://www.mafool.com/img/res/favicon.ico">
+    
+
+    
+
+    <link crossorigin="anonymous" integrity="sha384-5kGFOAqgEKnuF6c2jk2JANKHZgYVt38Wn2dVJENtq1EBCP54/1uzXU5mpxqL8WjN"
+        href="https://lib.baomitu.com/bulma/0.8.0/css/bulma.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="http://www.mafool.com/css/dooz.blog.css" />
+    <script crossorigin="anonymous" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh"
+        src="https://lib.baomitu.com/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/jquery.share.min.js"></script>
+    
+
+    
+    <link href="http://www.mafool.com/index.xml" rel="alternate" type="application/rss+xml" title="码夫庄园" />
+    <link href="http://www.mafool.com/index.xml" rel="feed" type="application/rss+xml" title="码夫庄园" />
+    
+
+    
+    
+<link rel="stylesheet" href="http://www.mafool.com/css/reward.css">
+
+
+    <link href="http://www.mafool.com/css/fonts.googleapi.css" rel="stylesheet">
+    <script src=http://www.mafool.com/js/dooz.blog.js></script>
+
+    
+    <script>
+        $(document).ready(function () {
+            $('.content a[href^="http"]').each(function () {
+                $(this).attr('target', '_blank');
+            });
+        });
+
+        $(document).on('click', '.modal-wechat', function () {
+            $(".modal").addClass("is-active");
+        });
+
+        $(document).on('click', '.modal-background', function () {
+            $(".modal").removeClass("is-active");
+        });
+    </script>
+</head>
+
+<body>
+    
+    
+<section class="hero is-info is-medium" style="background-image: url(/img/res/hero.jpg);">
+    <div class="hero-head">
+        <nav class="navbar is-transparent container has-text-white">
+    <div class="navbar-brand">
+        <div class="navbar-item">
+            <a class="title is-5 is-white" href="http://www.mafool.com/">码夫庄园</a>
+        </div>
+
+        
+        <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <div id="navbarExampleTransparentExample" class="navbar-menu has-text-dark">
+        
+
+        <div class="navbar-end">
+            <a class="navbar-item" href='http://www.mafool.com/'>首页</a>
+            <a class="navbar-item" href='http://www.mafool.com/archives'>归档 </a>
+            <a class="navbar-item" href='http://www.mafool.com/about'>关于</a>
+            <span class="navbar-item">
+                <a class="button is-primary is-inverted" href="https://github.com/hollson/hugo-theme-dooz">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>主题</span>
+                </a>
+            </span>
+        </div>
+    </div>
+</nav>
+    </div>
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <h1 class="title" style="font-size: 58px;">码夫庄园</h1>
+            <h2 class="subtitle">
+                提升码农亩产，掰直码农方向，授人以渔，功德无量，利在千秋 。
+            </h2>
+        </div>
+    </div>
+</section>
+<style>
+    .search {
+        position: relative;
+        display: inline-block;
+    }
+
+    .search-results {
+        display: none;
+        background-color: #fff;
+        position: absolute;
+        min-width: 100px;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+    }
+
+    .search-results a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
+
+    .search-results a:hover {
+        background-color: #ddd;
+    }
+</style>
+
+
+
+    
+    <div class="container">
+        <div class="section">
+            
+
+
+
+
+<div class="columns">
+    <div class="column is-9">
+        <div class="tile is-child box">
+            <div class="content">
+                <h3>欢迎光临我的博客！</h3>
+                <hr>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4">
+                                <a href="http://www.mafool.com/1/01/" title=""></a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     0001年1月1日,
+    星期一 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 7分钟阅读
+</p>
+                            <p> 1.1 Go语言创世纪 Go语言最初由Google公司的Robert Griesemer、Ken Thompson和Rob Pike三个大牛于2007年开 </p>
+                        </div>
+                    </div>
+                </article>
+                <hr>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4">
+                                <a href="http://www.mafool.com/1/01/" title=""></a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     0001年1月1日,
+    星期一 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 12分钟阅读
+</p>
+                            <p> 1.2 Hello, World 的革命 在创世纪章节中我们简单介绍了Go语言的演化基因族谱，对其中来自于贝尔实验室的特有并发编程基因做了重点介绍，最后引出了Go语言版的 </p>
+                        </div>
+                    </div>
+                </article>
+                <hr>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4">
+                                <a href="http://www.mafool.com/1/01/" title=""></a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     0001年1月1日,
+    星期一 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 21分钟阅读
+</p>
+                            <p> 1.3 数组、字符串和切片 在主流的编程语言中数组及其相关的数据结构是使用得最为频繁的，只有在它(们)不能满足时才会考虑链表、hash表（hash表 </p>
+                        </div>
+                    </div>
+                </article>
+                <hr>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4">
+                                <a href="http://www.mafool.com/1/01/" title=""></a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     0001年1月1日,
+    星期一 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 18分钟阅读
+</p>
+                            <p> 1.4 函数、方法和接口 函数对应操作序列，是程序的基本组成元素。Go语言中的函数有具名和匿名之分：具名函数一般对应于包级的函数，是匿名函数的一种特 </p>
+                        </div>
+                    </div>
+                </article>
+                <hr>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4">
+                                <a href="http://www.mafool.com/1/01/" title=""></a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     0001年1月1日,
+    星期一 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 14分钟阅读
+</p>
+                            <p> 1.5 面向并发的内存模型 在早期，CPU都是以单核的形式顺序执行机器指令。Go语言的祖先C语言正是这种顺序编程语言的代表。顺序编程语言中的顺序是指 </p>
+                        </div>
+                    </div>
+                </article>
+                <hr>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4">
+                                <a href="http://www.mafool.com/1/01/" title=""></a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     0001年1月1日,
+    星期一 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 17分钟阅读
+</p>
+                            <p> 1.6 常见的并发模式 Go语言最吸引人的地方是它内建的并发支持。Go语言并发体系的理论是C.A.R Hoare在1978年提出的CSP（Commun </p>
+                        </div>
+                    </div>
+                </article>
+                <hr>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4">
+                                <a href="http://www.mafool.com/1/01/" title=""></a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     0001年1月1日,
+    星期一 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 11分钟阅读
+</p>
+                            <p> 1.7 错误和异常 错误处理是每个编程语言都要考虑的一个重要话题。在Go语言的错误处理中，错误是软件包API和应用程序用户界面的一个重要组成部分。 在 </p>
+                        </div>
+                    </div>
+                </article>
+                <hr>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4">
+                                <a href="http://www.mafool.com/1/01/" title=""></a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     0001年1月1日,
+    星期一 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 1分钟阅读
+</p>
+                            <p> 1.8 补充说明 本书定位是Go语言进阶图书，因此读者需要有一定的Go语言基础。如果对Go语言不太了解，作者推荐通过以下资料开始学习Go语言。首先是 </p>
+                        </div>
+                    </div>
+                </article>
+                <hr>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4">
+                                <a href="http://www.mafool.com/1/01/" title=""></a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     0001年1月1日,
+    星期一 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 13分钟阅读
+</p>
+                            <p> 3.3 常量和全局变量 程序中的一切变量的初始值都直接或间接地依赖常量或常量表达式生成。在Go语言中很多变量是默认零值初始化的，但是Go汇编中定义的 </p>
+                        </div>
+                    </div>
+                </article>
+                <hr>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4">
+                                <a href="http://www.mafool.com/1/01/" title=""></a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     0001年1月1日,
+    星期一 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 9分钟阅读
+</p>
+                            <p> 3.5 控制流 程序主要有顺序、分支和循环几种执行流程。本节主要讨论如何将Go语言的控制流比较直观地转译为汇编程序，或者说如何以汇编思维来编写Go语 </p>
+                        </div>
+                    </div>
+                </article>
+                <hr>
+                
+            </div>
+            
+<div class="columns">
+    <div class="column is-12">
+        <nav class="pagination is-rounded" role="navigation" aria-label="pagination">
+            
+            <a class="pagination-previous" href="http://www.mafool.com/page/15/">上一页</a>
+            
+            
+            <a class="pagination-next" href="http://www.mafool.com/page/17/">下一页</a>
+            
+            
+        </nav>
+    </div>
+</div>
+        </div>
+    </div>
+    <div class="column is-3">
+        
+<div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">公告</h2>
+        <h6><strong><a href="https://github.com/hollson/hugo-theme-dooz">Dooz theme</a></strong> updated, hurry up and experience it! <code>2020.03.22</code></h6>
+    </div>
+</div>
+<br>
+
+        <div class="card">
+    <div class="card-content container has-text-centered">
+        <div class="container">
+            <figure class="image  container has-text-centered" style="width: 66%;">
+                <img src="img/my/avatar.png" alt="hollson">
+            </figure>
+        </div>
+        <br>
+        <div>
+            <p class="title is-6">史布斯<small>@Beijing</small></p>
+            <p class="subtitle is-6"><small>生活，是一种态度，请善待她</small></p>
+        </div>
+        <br>
+        <div>
+            <a href="https://github.com/hollson" target="_blank">
+                <span class="icon is-large">
+                    <svg t="1585929692621" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                        p-id="1132" width="38" height="38">
+                        <path
+                            d="M0 524.992q0 166.016 95.488 298.496t247.488 185.504q6.016 0.992 10.016 0.992t6.496-1.504 4-3.008 2.016-4.992 0.512-4.992v-100.512q-36.992 4-66.016-0.512t-45.504-14.016-28.992-23.488-16.992-25.504-8.992-24-5.504-14.496q-8.992-15.008-27.008-27.488t-27.008-20-2.016-14.496q50.016-26.016 112.992 66.016 34.016 51.008 119.008 30.016 10.016-40.992 40-70.016Q293.984 736 237.984 670.976t-56-158.016q0-87.008 55.008-151.008-22.016-64.992 6.016-136.992 28.992-2.016 64.992 11.488t50.496 23.008 25.504 17.504q56.992-16 128.512-16t129.504 16q12.992-8.992 28.992-19.008t48.992-21.504 60.992-9.504q27.008 71.008 7.008 135.008 56 64 56 151.008 0 92.992-56.992 158.496t-172 85.504q43.008 43.008 43.008 104v128.992q0 0.992 0.992 3.008 0 6.016 0.512 8.992t4.512 6.016 12 3.008q152.992-52 250.496-185.504t97.504-300.512q0-104-40.512-199.008t-108.992-163.488-163.488-108.992T512.032 12.96 313.024 53.472 149.536 162.464t-108.992 163.488-40.512 199.008z"
+                            p-id="1133" fill="#8a8a8a"></path>
+                    </svg>
+                </span>
+            </a>&nbsp;
+
+            <a href="javascript:void(0);" class="modal-wechat" data-target="modal-bis">
+                <span class="icon is-large">
+                    <svg t="1585983481253" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                        p-id="8263" width="38" height="38">
+                        <path
+                            d="M512 0Q294 5 149.5 149.5T0 512q5 218 149.5 362.5T512 1024q218-5 362.5-149.5T1024 512q-5-218-149.5-362.5T512 0z m-74 523q0 1-1 2l-12 38-3 50 8 42-12 1h-22q-10 0-21-2l-12-2-46-9-7 4-4-2-80 41 32-80-46-40-32-43-21-58-3-50 9-47 28-57 30-35 28-23 35-20 43-17 23-6 23-4q17-1 34-1h2q17 0 34 1l13 2 26 6 30 9 29 13 31 19 41 36 10 11 19 30 22 57-14-1h-23q-10 1-19 2l-20 4-20 6-28 11-28 17-35 30-18 22-19 38-4 5z m434 72v11l-3 19-26 59-31 39-29 26 20 68-69-41-6 2-45 10-16 1h-20q-9 0-19-1l-11-2-16-3-22-7-30-13-28-17-31-28-20-26-24-59-4-55 4-22 25-59 30-37 42-31 37-16 29-8 20-4q14-1 29-1h1q14 0 27 1l11 2 16 3 21 7 30 13 29 18 32 29 20 26q1 0 1 1l25 61 4 34h-3z m-287-83q-10 0-17.5 7.5T560 537q0 10 7.5 17.5T585 562q15 0 23.5-7.5T617 537q0-10-8.5-17.5T585 512z m140 0q-10 0-17.5 7.5T700 537q0 10 7.5 17.5T725 562q15 0 23.5-7.5T757 537q0-10-8.5-17.5T725 512zM324 327q-15 0-26 8.5t-11 23q0 14.5 11 23t26 8.5q15 0 23.5-8.5t8.5-23q0-14.5-8.5-23T324 327z m179 0q-15 0-26.5 8.5t-11.5 23q0 14.5 11.5 23t26 8.5q14.5 0 23-8.5t8.5-23q0-14.5-8.5-23T503 327z"
+                            fill="#8a8a8a" p-id="8264"></path>
+                    </svg>
+                </span>
+            </a>&nbsp;
+
+            <a href="https://blog.csdn.net/gusand" target="_blank">
+                <span class="icon is-large">
+                    <svg t="1585929761171" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                        p-id="1476" width="38" height="38">
+                        <path
+                            d="M512 0c282.784 0 512 229.216 512 512s-229.216 512-512 512S0 794.784 0 512 229.216 0 512 0z m189.952 752l11.2-108.224c-31.904 9.536-100.928 16.128-147.712 16.128-134.464 0-205.728-47.296-195.328-146.304 11.584-110.688 113.152-145.696 232.64-145.696 54.784 0 122.432 8.8 151.296 18.336L768 272.704C724.544 262.24 678.272 256 599.584 256c-203.2 0-388.704 94.88-406.4 263.488C178.336 660.96 303.584 768 535.616 768c80.672 0 138.464-6.432 166.336-16z"
+                            fill="#8a8a8a" p-id="1477"></path>
+                    </svg>
+                </span>
+            </a>&nbsp;
+
+            <a href="https://www.cnblogs.com/hollson/" target="_blank">
+                <span class="icon is-large">
+                    <svg t="1585929921096" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                        p-id="2146" width="38" height="38">
+                        <path
+                            d="M512 0C229.234472 0 0 229.226146 0 512 0 794.765528 229.234472 1024 512 1024S1024 794.765528 1024 512C1024 229.226146 794.765528 0 512 0zM228.776585 836.066862c-63.163317 0-114.371642-51.208325-114.371642-114.371642S165.613268 607.323577 228.776585 607.323577s114.371642 51.208325 114.371643 114.371643c0 63.171642-51.208325 114.371642-114.371643 114.371642z m420.555968-89.612488a391.867317 391.867317 0 0 1-1.989724 16.975089c-7.259577 30.203837-33.950179 52.898341-66.376845 52.898342-38.104455 0-68.990959-34.158309-68.99096-72.204488 0-5.877593 0.81587-11.463805 2.206179-16.775284-1.756618-131.096976-103.981789-237.867707-233.205593-246.883903l-6.343805-0.740943-1.015675-0.041626c-5.453008-0.216455-10.930992-0.732618-16.142569-2.331057a67.958634 67.958634 0 0 1-47.91987-65.078114c0-37.604943 30.245463-68.091837 67.550699-68.091837 0.299707 0 0.591089 0.041626 0.890797 0.049951l0.124878-0.049951c205.707447 2.139577 371.836878 169.484488 371.836878 375.699772 0 7.717463-0.341333 15.34335-0.824195 22.94426 0.066602 1.207154 0.19148 2.397659 0.199805 3.629789z m254.085203-63.329821c-10.856065 45.172553-25.80813 104.114992-74.310764 104.114992-56.994341 0-48.236228-66.085463-48.236228-122.996553 0-8.791415 1.223805-17.149919 3.296781-25.100488-2.639089-196.108488-169.834146-387.812943-363.137041-401.291447l-35.806699-5.827642c-42.117203-7.492683-111.715902-3.255154-111.715903-49.193626 0-56.253398 50.234276-81.861724 106.038114-81.861724 0.449561 0 0.882472 0.058276 1.332033 0.066602l0.183154-0.066602c307.724488 3.180228 526.252748 208.546341 526.252748 517.028423a538.474146 538.474146 0 0 1-1.23213 34.316488c0.108228 1.806569 0.291382 3.596488 0.308033 5.428032a542.72 542.72 0 0 1-2.972098 25.383545z"
+                            fill="#8a8a8a" p-id="2147"></path>
+                    </svg>
+                </span>
+            </a>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-content" style="max-width: 430px;">
+        <p class="image">
+            <img src="http://www.mafool.com/img/reward/wechat.png" alt="hollson">
+        </p>
+    </div>
+    <button class="modal-close is-large" aria-label="close"></button>
+</div><br>
+        
+        
+        
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">分类</h2>
+        <ul class="widget-list">
+            
+            <li><a href="http://www.mafool.com/categories/algorithm/">Algorithm (13)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/architect/">Architect (8)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/blockchain/">BlockChain (1)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/docker/">Docker (4)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/etcd/">Etcd (1)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/git%E5%BA%94%E7%94%A8/">Git应用 (5)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/golang/">Golang (1)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/go%E5%9F%BA%E7%A1%80%E7%AF%87/">Go基础篇 (13)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/go%E5%BA%94%E7%94%A8%E7%AF%87/">Go应用篇 (8)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/go%E6%B7%B1%E5%BA%A6%E6%8F%AD%E7%A7%98/">Go深度揭秘 (1)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/go%E7%AC%94%E8%AE%B0/">Go笔记 (14)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/go%E9%AB%98%E7%BA%A7%E7%AF%87/">Go高级篇 (21)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/hugo/">Hugo (2)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/istio/">Istio (7)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/k8s/">K8s (1)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/kafka/">Kafka (4)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/linux/">Linux (4)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/mysql/">Mysql (9)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/nginx/">Nginx (7)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/postgresql/">Postgresql (2)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/redis/">Redis (5)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/sundry/">Sundry (5)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/tech/">Tech (7)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/zookeeper/">Zookeeper (2)</a></li>
+            
+        </ul>
+    </div>
+</div>
+<br />
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">标签</h2>
+        <div>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/atomic">atomic</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/blog">blog</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cgo">cgo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cloud">cloud</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/config">config</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/copy">copy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/docker">docker</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/exam">exam</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/gin">gin</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/git">git</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/golang">golang</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/hugo">hugo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/install">install</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/istio">istio</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/jenkins">jenkins</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/kubernetes">kubernetes</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/map">map</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/microservice">microservice</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/mycat">mycat</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/nginx">nginx</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/plan9">plan9</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/posix">posix</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/proxy">proxy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/raft">raft</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ssh">ssh</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/tips">tips</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ymal">ymal</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%B8%BB%E4%BB%8E">主从</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BA%8B%E5%8A%A1">事务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BB%A3%E7%90%86">代理</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BD%9C%E7%94%A8%E5%9F%9F">作用域</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%86%85%E5%AD%98">内存</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%8B%E7%BC%A9">压缩</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%88%9B">原创</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%AD%90">原子</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%91%BD%E4%BB%A4%E8%A1%8C">命令行</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%93%A8%E5%85%B5">哨兵</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%AD%98%E5%82%A8">存储</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B8%B8%E9%87%8F">常量</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B9%B6%E5%8F%91">并发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BC%82%E5%B8%B8">异常</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1">微服务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%88%E6%9D%83%E8%AE%A4%E8%AF%81">授权认证</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%92%E5%BA%8F">排序</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%A5%E5%8F%A3">接口</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%97%A5%E5%BF%97">日志</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%9D%83%E9%99%90">权限</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE1">标签1</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE2">标签2</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%AD%A3%E5%88%99">正则</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%81%E9%87%8F%E5%88%86%E5%8F%91">流量分发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%8B%E8%AF%95">测试</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%BA%90%E7%A0%81">源码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%8A%B6%E6%80%81%E7%A0%81">状态码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%AE%97%E6%B3%95">算法</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%BC%8F">编程模式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%80%81%E5%A6%96%E7%AC%94%E8%AE%B0">老妖笔记</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%BF%87%E6%BB%A4%E5%99%A8">过滤器</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%80%83%E9%80%B8">逃逸</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%85%8D%E7%BD%AE">配置</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%86%99">重写</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%AE%9A%E5%90%91">重定向</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9B%86%E7%BE%A4">集群</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9D%A2%E8%AF%95">面试</a>
+            </span>
+            
+        </div>
+    </div>
+</div>
+<br>
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">归档</h2>
+        
+        <a href="http://www.mafool.com/archives/2020">2020</a> (44)<br>
+        
+        <a href="http://www.mafool.com/archives/2019">2019</a> (70)<br>
+        
+        <a href="http://www.mafool.com/archives/2018">2018</a> (33)<br>
+        
+        <a href="http://www.mafool.com/archives/0001">0001</a> (122)<br>
+        
+    </div>
+</div>
+<br />
+    </div>
+</div>
+
+        </div>
+    </div>
+
+    
+    <footer class="footer has-background-grey-darker has-text-white">
+    <div class="content has-text-centered">
+        <p>
+            <span class="icon is-large">
+                <a href="https://twitter.com/" class="mysocial" rel="me">
+                    <i class="fab fa-twitter fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://www.youtube.com/" class="mysocial" rel="me">
+                    <i class="fab fa-youtube fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://github.com/" class="mysocial" rel="me">
+                    <i class="fab fa-github fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <br><br>
+            友情链接：
+            
+            <a class="mysocial" href="http://www.mafool.com" target="_blank">Mafool</a>
+            
+            <a class="mysocial" href="https://gohugo.io/documentation/" target="_blank">Hugo</a>
+            
+            <a class="mysocial" href="https://bulma.io/" target="_blank">Bulma</a>
+            
+            <a class="mysocial" href="https://bootstrapious.com/" target="_blank">Bootstrapious</a>
+            
+            <a class="mysocial" href="https://youzhixueyuan.com/" target="_blank">Youzhixueyuan</a>
+            
+            <br><br />
+            版权所有 &copy; 码夫庄园 2021
+            - <a class="mysocial" href="https://github.com/hollson/hugo-theme-dooz">Hugo Theme</a>
+        </p>
+    </div>
+</footer>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='http://www.mafool.com/js/dooz.totop.js?v=0.0.0' async=""></script>
+
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = 'https://hm.baidu.com/hm.js?f185359ec6b829a6a93e1e1f2597f6d9';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DK042XSJ2J"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-DK042XSJ2J');
+</script>
+
+    
+    
+<script type="text/javascript" src="http://www.mafool.com/js/reward.js"></script>
+
+    
+    <script defer src="https://cdn.staticfile.org/font-awesome/5.13.0/js/all.min.js"></script>
+</body>
+
+</html>

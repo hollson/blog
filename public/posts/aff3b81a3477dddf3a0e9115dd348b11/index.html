@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>码夫庄园-Etcd - 搭建伪集群</title>
+    <meta name="keywords"
+        content='码农,hugo,theme,blog,coder,geek,github,golang,技术,源码,代码,编程,程序员,主题,个人,博客,微服务,容器'>
+    <meta name="description" content="Etcd是CoreOS团队于2013年6月发起的开源项目，它的目标是构建一个高可用的分布式键值(key-value)数据库。etcd内部采用raft协议作为一致性算法，etcd基于Go语言实现。" />
+
+    
+    <meta name="baidu-site-verification" content="v9szEmQLra" />
+    <meta name="360-site-verification" content="d8e961f98fb655e4b8cf9439cfd9ac7f" />
+    <meta name="sogou_site_verification" content="40NC9EdZDC" />
+    <meta name="shenma-site-verification" content="3200e3042e92157713a3b0aceeecb20a_1586020187" />
+    <meta name="google-site-verification" content="r8987bkunZHJeKut3ocu5NIJ5QEu53NA6Q_r7RrZ46c" />
+    <meta name="msvalidate.01" content="893A2865ABC54AC2782D118536831056" />
+
+    
+    <link rel="shortcut icon" href="http://www.mafool.com/img/res/favicon.ico">
+    
+
+    
+
+    <link crossorigin="anonymous" integrity="sha384-5kGFOAqgEKnuF6c2jk2JANKHZgYVt38Wn2dVJENtq1EBCP54/1uzXU5mpxqL8WjN"
+        href="https://lib.baomitu.com/bulma/0.8.0/css/bulma.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="http://www.mafool.com/css/dooz.blog.css" />
+    <script crossorigin="anonymous" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh"
+        src="https://lib.baomitu.com/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/jquery.share.min.js"></script>
+    
+
+    
+
+    
+    
+<link rel="stylesheet" href="http://www.mafool.com/css/reward.css">
+
+
+    <link href="http://www.mafool.com/css/fonts.googleapi.css" rel="stylesheet">
+    <script src=http://www.mafool.com/js/dooz.blog.js></script>
+
+    
+    <script>
+        $(document).ready(function () {
+            $('.content a[href^="http"]').each(function () {
+                $(this).attr('target', '_blank');
+            });
+        });
+
+        $(document).on('click', '.modal-wechat', function () {
+            $(".modal").addClass("is-active");
+        });
+
+        $(document).on('click', '.modal-background', function () {
+            $(".modal").removeClass("is-active");
+        });
+    </script>
+</head>
+
+<body>
+    
+    
+<section class="hero is-info is-medium"
+    style="background-image: url('/img/res/blog.jpg');">
+    <div class="hero-head">
+        <nav class="navbar is-transparent container has-text-white">
+    <div class="navbar-brand">
+        <div class="navbar-item">
+            <a class="title is-5 is-white" href="http://www.mafool.com/">码夫庄园</a>
+        </div>
+
+        
+        <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <div id="navbarExampleTransparentExample" class="navbar-menu has-text-dark">
+        
+
+        <div class="navbar-end">
+            <a class="navbar-item" href='http://www.mafool.com/'>首页</a>
+            <a class="navbar-item" href='http://www.mafool.com/archives'>归档 </a>
+            <a class="navbar-item" href='http://www.mafool.com/about'>关于</a>
+            <span class="navbar-item">
+                <a class="button is-primary is-inverted" href="https://github.com/hollson/hugo-theme-dooz">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>主题</span>
+                </a>
+            </span>
+        </div>
+    </div>
+</nav>
+    </div>
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <div class='container has-text-left column is-7'>
+                
+                <span>
+                    <a class="bar_tag" href="http://www.mafool.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F" title="分布式">分布式</a>
+                </span>
+                
+                <span>
+                    <a class="bar_tag" href="http://www.mafool.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1" title="微服务">微服务</a>
+                </span>
+                
+                <h1 class="title is-size-2" style="margin-bottom:0.2rem;">
+                    
+                    Etcd - 搭建伪集群
+                    
+                </h1>
+                
+                <span class="title is-size-6" style="font-style: italic;"> </span><br>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    
+    <div class="container">
+        <div class="section">
+            
+<div class="columns">
+    <div class="column is-9">
+        <div class="tile is-child box">
+            <div class="content">
+                
+                <nav class="level">
+                    
+                    <div class="level-left">
+                        <div class="level-item">
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年3月13日,
+    星期五 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 4分钟阅读
+</p>
+                        </div>
+                    </div>
+
+                    
+                    
+                    <div class="share-component level-right" data-disabled="google,diandian,tencent,qzone"
+                        data-description="Share.js - 一键分享到微博，QQ空间，腾讯微博，人人，豆瓣"
+                        data-mobile-sites="weibo,qq,qzone,tencent">
+                    </div>
+                    
+                </nav>
+                <hr>
+                
+                <header>
+                    <h2>目录</h2>
+                </header>
+                <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一-etcd简介">一. ETCD简介</a></li>
+    <li><a href="#二-单机安装">二. 单机安装</a>
+      <ul>
+        <li><a href="#linux安装etcd">Linux安装Etcd</a></li>
+        <li><a href="#docker安装etcd">Docker安装Etcd</a></li>
+      </ul>
+    </li>
+    <li><a href="#三-etcd配置">三. ETCD配置</a></li>
+    <li><a href="#四-搭建集群">四. 搭建集群</a>
+      <ul>
+        <li><a href="#1-初始化集群">1. 初始化集群</a></li>
+        <li><a href="#2-增加集群节点">2. 增加集群节点</a></li>
+        <li><a href="#3-删除集群节点">3. 删除集群节点</a></li>
+      </ul>
+    </li>
+    <li><a href="#五-golang管理集群">五. Golang管理集群</a></li>
+  </ul>
+</nav>
+                
+                <hr>
+                <h2 id="一-etcd简介">一. ETCD简介</h2>
+<p><a href="https://etcd.io"><strong>Etcd</strong></a>是CoreOS团队于2013年6月发起的开源项目，它的目标是构建一个高可用的<code>分布式键值(key-value)数据库</code>。etcd内部采用<code>raft协议</code>作为一致性算法，etcd基于<a href="https://github.com/coreos/etcd/">Go语言实现</a>。详细可查看<a href="https://etcd.io/docs/v3.4.0/">ETCD官方文档</a>。</p>
+<blockquote>
+<p>A distributed, reliable key-value store for the most critical data of a distributed system</p>
+</blockquote>
+<p><strong>ETCD的特点：</strong> <code>交互简单</code>、<code>键值存储</code>、<code>数据监控</code></p>
+<ul>
+<li>支持SSL客户端证书认证</li>
+<li>每秒1000秒的基准写入速度</li>
+<li>支持TTL密钥过期功能</li>
+<li>采用Raft算法实现分布式一致性；</li>
+</ul>
+<h2 id="二-单机安装">二. 单机安装</h2>
+<h3 id="linux安装etcd">Linux安装Etcd</h3>
+<p><em><strong>Github官方链接：</strong></em> <a href="https://github.com/etcd-io/etcd/releases">https://github.com/etcd-io/etcd/releases</a></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-bash" data-lang="bash"><span style="color:#09f;font-style:italic">## 选择版本</span>
+$ <span style="color:#033">ETCD_VER</span><span style="color:#555">=</span>v3.4.4
+
+<span style="color:#09f;font-style:italic">## 下载地址(任选其一)</span>
+<span style="color:#09f;font-style:italic">#DOWNLOAD_URL=https://storage.googleapis.com/etcd</span>
+$ <span style="color:#033">ETCD_URL</span><span style="color:#555">=</span>https://github.com/etcd-io/etcd/releases/download
+
+<span style="color:#09f;font-style:italic">## 解压安装</span>
+$ wget -L <span style="color:#a00">${</span><span style="color:#033">ETCD_URL</span><span style="color:#a00">}</span>/<span style="color:#a00">${</span><span style="color:#033">ETCD_VER</span><span style="color:#a00">}</span>/etcd-<span style="color:#a00">${</span><span style="color:#033">ETCD_VER</span><span style="color:#a00">}</span>-linux-amd64.tar.gz
+$ tar xzvf ./etcd-<span style="color:#a00">${</span><span style="color:#033">ETCD_VER</span><span style="color:#a00">}</span>-linux-amd64.tar.gz
+$ mv ./etcd-<span style="color:#a00">${</span><span style="color:#033">ETCD_VER</span><span style="color:#a00">}</span>-linux-amd64 /usr/local/etcd
+
+<span style="color:#09f;font-style:italic">## 添加软链</span>
+$ ln -s /usr/local/etcd/etcd /usr/local/bin/etcd
+$ ln -s /usr/local/etcd/etcdctl /usr/local/bin/etcdctl
+
+<span style="color:#09f;font-style:italic">## 查看版本</span>
+$ etcd --version
+$ etcdctl version <span style="color:#09f;font-style:italic">#二级命令</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><em><strong>以单机方式启动：</strong></em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell"><span style="color:#09f;font-style:italic">## 启动进程</span>
+$ sudop nohup etcd --data-dir<span style="color:#555">=</span>/var/etcd-data/ &gt;/tmp/etcd.log 2&gt;&amp;<span style="color:#f60">1</span> &amp;
+</code></pre></td></tr></table>
+</div>
+</div><p><em><strong>客户端测试：</strong></em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">$ etcdctl --endpoints<span style="color:#555">=</span>localhost:2379 put <span style="color:#366">test</span> <span style="color:#c30">&#34;hello world&#34;</span>
+$ etcdctl --endpoints<span style="color:#555">=</span>localhost:2379 get <span style="color:#366">test</span>
+$ curl 127.0.0.1:2379/version
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="docker安装etcd">Docker安装Etcd</h3>
+<p><em><strong>Docker仓库：</strong></em> <a href="https://gcr.io/etcd-development/etcd"><code>gcr.io/etcd-development/etcd</code></a> 或 <a href="https://quay.io/coreos/etcd"><code>quay.io/coreos/etcd</code></a> 仓库.</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">$ mkdir -p /var/etcd-data-docker
+$ <span style="color:#033">TOKEN</span><span style="color:#555">=</span><span style="color:#069;font-weight:bold">$(</span>uuidgen<span style="color:#069;font-weight:bold">)</span> <span style="color:#09f;font-style:italic">#uuid作为token</span>
+
+<span style="color:#09f;font-style:italic">## 单实例集群</span>
+$ docker run <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span> --name etcd -p 2379:2379 -p 2380:2380 <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span> --mount <span style="color:#033">type</span><span style="color:#555">=</span>bind,source<span style="color:#555">=</span>/var/etcd-data-docker,destination<span style="color:#555">=</span>/etcd-data <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span> quay.io/coreos/etcd:v3.4.4 /usr/local/bin/etcd <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span> --name <span style="color:#c30">&#34;etcd-01&#34;</span> <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span> --data-dir /var/etcd-data <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span> --listen-client-urls http://0.0.0.0:2379 <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span> --advertise-client-urls http://0.0.0.0:2379 <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span> --listen-peer-urls http://0.0.0.0:2380 <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span> --initial-advertise-peer-urls http://0.0.0.0:2380 <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span> --initial-cluster <span style="color:#c30">&#34;etcd-01&#34;</span><span style="color:#555">=</span>http://0.0.0.0:2380 <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span> --initial-cluster-token <span style="color:#a00">${</span><span style="color:#033">TOKEN</span><span style="color:#a00">}</span> <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span> --initial-cluster-state new <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span> --log-level info <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span> --logger zap <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span> --log-outputs stderr
+
+$ docker <span style="color:#366">exec</span> etcd /bin/sh -c <span style="color:#c30">&#34;etcd --version&#34;</span>
+$ docker <span style="color:#366">exec</span> etcd /bin/sh -c <span style="color:#c30">&#34;etcdctl version&#34;</span>
+$ docker <span style="color:#366">exec</span> etcd /bin/sh -c <span style="color:#c30">&#34;etcdctl endpoint health&#34;</span>
+$ docker <span style="color:#366">exec</span> etcd /bin/sh -c <span style="color:#c30">&#34;etcdctl put foo &#39;hello world&#39;&#34;</span>
+$ docker <span style="color:#366">exec</span> etcd /bin/sh -c <span style="color:#c30">&#34;etcdctl get foo&#34;</span>
+</code></pre></td></tr></table>
+</div>
+</div><!-- raw HTML omitted -->
+<h2 id="三-etcd配置">三. ETCD配置</h2>
+<p>Etcd服务的参数包括<code>Member</code>、<code>Cluster</code>、<code>Security</code>、<code>Auth</code>、<code>Logging</code>、<code>Profiling</code>等模块。</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">$ etcd --help <span style="color:#09f;font-style:italic">#查看帮助(不同版本的帮助文档有差异)</span>
+$ etcd --help| awk <span style="color:#c30">&#39;BEGIN {RS = &#34;&#34;;ORS = &#34;\n\n&#34;} /Member/ {print $0}&#39;</span> <span style="color:#09f;font-style:italic">#Member配置</span>
+$ etcd --help| awk <span style="color:#c30">&#39;BEGIN {RS = &#34;&#34;;ORS = &#34;\n\n&#34;} /Cluster/ {print $0}&#39;</span> <span style="color:#09f;font-style:italic">#Cluster配置</span>
+...
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>Ymal文件配置</strong></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell"><span style="color:#555">[</span>root@shs ~<span style="color:#555">]</span><span style="color:#09f;font-style:italic"># vim /etc/etcd.yml</span>
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-yml" data-lang="yml"><span style="color:#309;font-weight:bold">name</span>:<span style="color:#bbb"> </span><span style="color:#c30">&#34;etcd-01&#34;</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#309;font-weight:bold">data-dir</span>:<span style="color:#bbb"> </span><span style="color:#c30">&#34;/var/etcd-data&#34;</span>/<span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#309;font-weight:bold">initial-cluster</span>:<span style="color:#bbb"> </span><span style="color:#c30">&#34;etcd-01=http://localhost:2380&#34;</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#309;font-weight:bold">listen-client-urls</span>:<span style="color:#bbb"> </span><span style="color:#c30">&#34;http://localhost:2379&#34;</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#309;font-weight:bold">advertise-client-urls</span>:<span style="color:#bbb"> </span><span style="color:#c30">&#34;http://localhost:2379&#34;</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#309;font-weight:bold">initial-advertise-peer-urls</span>:<span style="color:#bbb"> </span><span style="color:#c30">&#34;http://localhost:2380&#34;</span><span style="color:#bbb">
+</span><span style="color:#bbb"></span><span style="color:#309;font-weight:bold">listen-peer-urls</span>:<span style="color:#bbb"> </span><span style="color:#c30">&#34;http://localhost:2380&#34;</span><span style="color:#bbb">
+</span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell"><span style="color:#09f;font-style:italic">## 启动服务，指定配置文件</span>
+$ nohup etcd --config-file /etc/etcd.yml &gt;/var/etcd.log 2&gt;&amp;<span style="color:#f60">1</span> &amp;
+
+<span style="color:#09f;font-style:italic">## 查看节点成员信息</span>
+$ etcdctl --endpoints<span style="color:#555">=</span>localhost:2379 member list -w table
+</code></pre></td></tr></table>
+</div>
+</div><!-- raw HTML omitted -->
+<h2 id="四-搭建集群">四. 搭建集群</h2>
+<h3 id="1-初始化集群">1. 初始化集群</h3>
+<ul>
+<li>Etcd遵循<code>先规划，再挂载</code>的原则，所以不管是初始化集群，还是新增节点，都必须先设定好集群列表。</li>
+</ul>
+<p><em><strong>先规初始化两个集群节点服务</strong></em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell"><span style="color:#09f;font-style:italic">## 集群列表,注意点：</span>
+<span style="color:#09f;font-style:italic">## 1.只有在初始预设中的节点，接回包含在集群</span>
+<span style="color:#09f;font-style:italic">## 2.初始化集群中的节点状态都为new</span>
+<span style="color:#09f;font-style:italic">## 3.集群列表中的【名称】和【主机名】必须和启动的服务信息一致</span>
+$ <span style="color:#033">CLUSTERS</span><span style="color:#555">=</span><span style="color:#033">etcd01</span><span style="color:#555">=</span>http://localhost:2380,etcd02<span style="color:#555">=</span>http://localhost:2480
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell"><span style="color:#09f;font-style:italic">## 将第一个节点挂载到集群中（端口：2379）</span>
+$ nohup etcd --name <span style="color:#c30">&#34;etcd01&#34;</span> <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span>--listen-client-urls http://localhost:2379 <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span>--advertise-client-urls http://localhost:2379 <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span>--initial-advertise-peer-urls http://localhost:2380 <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span>--listen-peer-urls http://localhost:2380 <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span>--initial-cluster <span style="color:#a00">${</span><span style="color:#033">CLUSTERS</span><span style="color:#a00">}</span> <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span>--initial-cluster-state new <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span>&gt;./etcd01.log 2&gt;&amp;<span style="color:#f60">1</span> &amp;
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell"><span style="color:#09f;font-style:italic">## 将第二个节点挂载到集群中（端口：2479）</span>
+$ nohup etcd --name <span style="color:#c30">&#34;etcd02&#34;</span> <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span>--listen-client-urls http://localhost:2479 <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span>--advertise-client-urls http://localhost:2479 <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span>--initial-advertise-peer-urls http://localhost:2480 <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span>--listen-peer-urls http://localhost:2480 <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span>--initial-cluster <span style="color:#a00">${</span><span style="color:#033">CLUSTERS</span><span style="color:#a00">}</span> <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span>--initial-cluster-state new <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span>&gt;./etcd02.log 2&gt;&amp;<span style="color:#f60">1</span> &amp;
+
+</code></pre></td></tr></table>
+</div>
+</div><p><em><strong>查看服务结果</strong></em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell"><span style="color:#09f;font-style:italic">## 查询</span>
+$ <span style="color:#366">export</span> <span style="color:#033">ETCDCTL_API</span><span style="color:#555">=</span><span style="color:#f60">3</span>
+
+<span style="color:#09f;font-style:italic">#终结点信息和集群列表信息一致(注意【格式】和【端口】不同)</span>
+$ <span style="color:#033">ENDPOINTS</span><span style="color:#555">=</span>localhost:2379,localhost:2479 
+
+<span style="color:#09f;font-style:italic">## 查看节点成员信息</span>
+$ etcdctl --endpoints<span style="color:#555">=</span><span style="color:#033">$ENDPOINTS</span> member list -w table
+
+<span style="color:#09f;font-style:italic">## 查看节点状态信息</span>
+$ etcdctl --endpoints<span style="color:#555">=</span><span style="color:#033">$ENDPOINTS</span> endpoint status -w table
+</code></pre></td></tr></table>
+</div>
+</div><p><em>查询结果：</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell"><span style="color:#555">[</span>root@shs ~<span style="color:#555">]</span><span style="color:#09f;font-style:italic"># etcdctl --endpoints=$ENDPOINTS member list -w table</span>
++------------------+---------+--------+-----------------------+-----------------------+------------+
+|  ID  | STATUS | NAME |  PEER ADDRS  |  CLIENT ADDRS  | IS LEARNER |
++------------------+---------+--------+-----------------------+-----------------------+------------+
+| b71f75320dc06a6c | started | etcd01 | http://localhost:2380 | http://localhost:2379 |  <span style="color:#366">false</span> |
+| 11bff47b8baf3ee9 | started | etcd02 | http://localhost:2480 | http://localhost:2479 |  <span style="color:#366">false</span> |
++------------------+---------+--------+-----------------------+-----------------------+------------+
+
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell"><span style="color:#555">[</span>root@shs ~<span style="color:#555">]</span><span style="color:#09f;font-style:italic"># etcdctl --endpoints=$ENDPOINTS endpoint status -w table</span>
++----------------+------------+---------+---------+-----------+------------+-----------+------------+...
+| ENDPOINT  |  ID  | VERSION | DB SIZE | IS LEADER | IS LEARNER | RAFT TERM | RAFT INDEX |...
++----------------+------------+---------+---------+-----------+------------+-----------+------------+...
+| localhost:2379 | b71f320... | 3.4.4 | <span style="color:#f60">20</span> kB |  <span style="color:#366">true</span> |  <span style="color:#366">false</span> |  <span style="color:#f60">11</span> |   <span style="color:#f60">6</span> |...
+| localhost:2479 | 11b47b8... | 3.4.4 | <span style="color:#f60">20</span> kB |  <span style="color:#366">false</span> |  <span style="color:#366">false</span> |  <span style="color:#f60">11</span> |   <span style="color:#f60">6</span> |...
++----------------+------------+---------+---------+-----------+------------+-----------+------------+...
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="2-增加集群节点">2. 增加集群节点</h3>
+<p><em><strong>先添加集群成员</strong></em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell"><span style="color:#09f;font-style:italic">## 添加节点（节点名称与集群成员名称一致）</span>
+$ etcdctl --endpoints<span style="color:#555">=</span><span style="color:#033">$ENDPOINTS</span> member add <span style="color:#c30">&#34;etcd03&#34;</span> --peer-urls<span style="color:#555">=</span>http://localhost:2580
+
+<span style="color:#09f;font-style:italic">## 查看集群成员，注意【STATUS】字段</span>
+$ etcdctl --endpoints<span style="color:#555">=</span><span style="color:#033">$ENDPOINTS</span> member list -w table
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-txt" data-lang="txt">[root@vm02 etcd]# etcdctl --endpoints=$ENDPOINTS member list -w table
++------------------+-----------+--------+-----------------------+-----------------------+------------+
+|  ID  | STATUS | NAME |  PEER ADDRS  |  CLIENT ADDRS  | IS LEARNER |
++------------------+-----------+--------+-----------------------+-----------------------+------------+
+| 3949aab25068a95f | unstarted |  | http://localhost:2580 |      |  false |
+| 8e9e05c52164694d | started | etcd01 | http://localhost:2380 | http://localhost:2379 |  false |
+| f228da3d709012fc | started | etcd02 | http://localhost:2480 | http://localhost:2479 |  false |
++------------------+-----------+--------+-----------------------+-----------------------+------------+
+</code></pre></td></tr></table>
+</div>
+</div><p><em><strong>最后扩展集群列表，并启动服务</strong></em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell"><span style="color:#09f;font-style:italic">## 声明集群列表</span>
+$ <span style="color:#033">CLUSTERS</span><span style="color:#555">=</span><span style="color:#033">etcd01</span><span style="color:#555">=</span>http://localhost:2380,etcd02<span style="color:#555">=</span>http://localhost:2480,etcd03<span style="color:#555">=</span>http://localhost:2580
+
+<span style="color:#09f;font-style:italic">## 至于集群状态变为【existing】</span>
+$ nohup etcd --name <span style="color:#c30">&#34;etcd03&#34;</span> <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span>--listen-client-urls http://localhost:2579 <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span>--advertise-client-urls http://localhost:2579 <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span>--listen-peer-urls http://127.0.0.1:2580 <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span>--initial-advertise-peer-urls http://localhost:2580 <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span>--initial-cluster-state existing <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span>--initial-cluster <span style="color:#a00">${</span><span style="color:#033">CLUSTERS</span><span style="color:#a00">}</span> <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span>--initial-cluster-token etcd-cluster-1 <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span>&gt;./etcd03.log 2&gt;&amp;<span style="color:#f60">1</span> &amp;
+</code></pre></td></tr></table>
+</div>
+</div><p><em><strong>再次查看服务结果：</strong></em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">$ <span style="color:#033">ENDPOINTS</span><span style="color:#555">=</span>localhost:2379,localhost:2479,localhost:2579
+$ etcdctl --endpoints<span style="color:#555">=</span><span style="color:#033">$ENDPOINTS</span> member list -w table
+$ etcdctl --endpoints<span style="color:#555">=</span><span style="color:#033">$ENDPOINTS</span> endpoint status -w table
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="3-删除集群节点">3. 删除集群节点</h3>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell"><span style="color:#09f;font-style:italic">## 试着删除leader节点，会发现leader转移到其他节点上</span>
+$ etcdctl --endpoints<span style="color:#555">=</span><span style="color:#033">$ENDPOINTS</span> member remove 8e9e05c52164694d
+</code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>温馨提示：删除服务的同时，请删除数据文件，否则再次创建服务的时候会加载旧的状态数据</p>
+</blockquote>
+<h2 id="五-golang管理集群">五. Golang管理集群</h2>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">58
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">59
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">60
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">61
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">62
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">63
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">64
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">65
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">66
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">67
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">68
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">69
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">70
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">71
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">72
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">73
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">74
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">75
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">package</span> main
+
+<span style="color:#069;font-weight:bold">import</span> (
+ <span style="color:#c30">&#34;github.com/coreos/etcd/clientv3&#34;</span>
+ <span style="color:#c30">&#34;log&#34;</span>
+ <span style="color:#c30">&#34;fmt&#34;</span>
+ <span style="color:#c30">&#34;context&#34;</span>
+ <span style="color:#c30">&#34;time&#34;</span>
+)
+<span style="color:#069;font-weight:bold">var</span> (
+ dialTimeout = <span style="color:#f60">5</span> <span style="color:#555">*</span> time.Second
+ requestTimeout = <span style="color:#f60">2</span> <span style="color:#555">*</span> time.Second
+ endpoints  = []<span style="color:#078;font-weight:bold">string</span>{<span style="color:#c30">&#34;127.0.0.1:2379&#34;</span>}
+)
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+
+ cli, err <span style="color:#555">:=</span> clientv3.<span style="color:#c0f">New</span>(clientv3.Config{
+  Endpoints: endpoints,
+  DialTimeout: dialTimeout,
+ })
+ <span style="color:#069;font-weight:bold">if</span> err <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span> {
+  log.<span style="color:#c0f">Fatal</span>(err)
+ }
+ <span style="color:#069;font-weight:bold">defer</span> cli.<span style="color:#c0f">Close</span>()
+
+ resp, err <span style="color:#555">:=</span> cli.<span style="color:#c0f">MemberList</span>(context.<span style="color:#c0f">Background</span>())
+ <span style="color:#069;font-weight:bold">if</span> err <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span> {
+  log.<span style="color:#c0f">Fatal</span>(err)
+ }
+ fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;members:&#34;</span>, resp.Members)
+
+
+ <span style="color:#09f;font-style:italic">//添加member
+</span><span style="color:#09f;font-style:italic"></span> <span style="color:#09f;font-style:italic">//addMember(cli)
+</span><span style="color:#09f;font-style:italic"></span>
+
+ <span style="color:#09f;font-style:italic">// 删除节点
+</span><span style="color:#09f;font-style:italic"></span> <span style="color:#09f;font-style:italic">//delMember(cli,uint64(7438291228984697304))
+</span><span style="color:#09f;font-style:italic"></span>
+}
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">addMember</span>(cli <span style="color:#555">*</span>clientv3.Client) {
+ peerURLs <span style="color:#555">:=</span> []<span style="color:#078;font-weight:bold">string</span>{<span style="color:#c30">&#34;http://127.0.0.1:2180&#34;</span>}
+
+ mresp, err <span style="color:#555">:=</span> cli.<span style="color:#c0f">MemberAdd</span>(context.<span style="color:#c0f">Background</span>(), peerURLs)
+ <span style="color:#069;font-weight:bold">if</span> err <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span> {
+  log.<span style="color:#c0f">Fatal</span>(err)
+ }
+ fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;added member.PeerURLs:&#34;</span>, mresp.Member.PeerURLs)
+ resp, err <span style="color:#555">:=</span> cli.<span style="color:#c0f">MemberList</span>(context.<span style="color:#c0f">Background</span>())
+ <span style="color:#069;font-weight:bold">if</span> err <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span> {
+  log.<span style="color:#c0f">Fatal</span>(err)
+ }
+ fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;添加后 members:&#34;</span>, resp.Members)
+}
+
+<span style="color:#09f;font-style:italic">// 删除节点
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">delMember</span> (cli <span style="color:#555">*</span>clientv3.Client, memberId <span style="color:#078;font-weight:bold">uint64</span>) {
+
+ resp, err <span style="color:#555">:=</span> cli.<span style="color:#c0f">MemberList</span>(context.<span style="color:#c0f">Background</span>())
+ <span style="color:#069;font-weight:bold">if</span> err <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span> {
+  log.<span style="color:#c0f">Fatal</span>(err)
+ }
+
+ _, err = cli.<span style="color:#c0f">MemberRemove</span>(context.<span style="color:#c0f">Background</span>(), memberId)
+ <span style="color:#069;font-weight:bold">if</span> err <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span> {
+  log.<span style="color:#c0f">Fatal</span>(err)
+ }
+
+ resp, err = cli.<span style="color:#c0f">MemberList</span>(context.<span style="color:#c0f">Background</span>())
+ <span style="color:#069;font-weight:bold">if</span> err <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span> {
+  log.<span style="color:#c0f">Fatal</span>(err)
+ }
+ fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;删除后 members:&#34;</span>, resp.Members)
+}
+</code></pre></td></tr></table>
+</div>
+</div><!-- raw HTML omitted -->
+<blockquote>
+<p>参考：<br>
+<a href="https://www.jianshu.com/p/2966b6ef5d10">https://www.jianshu.com/p/2966b6ef5d10</a></p>
+<p><a href="https://mritd.me/2016/09/01/Etcd-%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/">https://mritd.me/2016/09/01/Etcd-%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/</a></p>
+<p><a href="https://blog.csdn.net/ShouTouDeXingFu/article/details/81167302">https://blog.csdn.net/ShouTouDeXingFu/article/details/81167302</a></p>
+<p><a href="https://blog.csdn.net/bbwangj/article/details/82584988">https://blog.csdn.net/bbwangj/article/details/82584988</a></p>
+<p><a href="https://www.liwenzhou.com/posts/Go/go_etcd/">https://www.liwenzhou.com/posts/Go/go_etcd/</a></p>
+<p><a href="http://www.iigrowing.cn/etcd_shi_yong_ru_men.html">http://www.iigrowing.cn/etcd_shi_yong_ru_men.html</a></p>
+<p><a href="https://www.jianshu.com/p/8e4bbe7e276c">https://www.jianshu.com/p/8e4bbe7e276c</a></p>
+<p><a href="https://segmentfault.com/a/1190000014045625">https://segmentfault.com/a/1190000014045625</a></p>
+<p><a href="https://www.cnblogs.com/davygeek/p/7154780.html">https://www.cnblogs.com/davygeek/p/7154780.html</a></p>
+<p><a href="https://www.cnblogs.com/zhenghongxin/p/7029173.html">https://www.cnblogs.com/zhenghongxin/p/7029173.html</a></p>
+<p><a href="https://blog.csdn.net/zhaominpro/article/details/82630528">https://blog.csdn.net/zhaominpro/article/details/82630528</a></p>
+<p><a href="https://blog.csdn.net/weixin_34080571/article/details/93621638">https://blog.csdn.net/weixin_34080571/article/details/93621638</a></p>
+<p><a href="https://www.orchome.com/620">https://www.orchome.com/620</a></p>
+<p><a href="https://www.cnblogs.com/linuxws/p/11194403.html">https://www.cnblogs.com/linuxws/p/11194403.html</a> 配置</p>
+<p><a href="https://www.jianshu.com/p/71f4af1815d9">https://www.jianshu.com/p/71f4af1815d9</a></p>
+</blockquote>
+
+                
+                
+                <hr> 
+
+<div class="entry-shang text-center">
+    
+    <p> 「真诚赞赏，手留余香」</p>
+    
+    <button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+    <div class="zs-modal-head">
+        <button type="button" class="close">×</button>
+        <span class="author">
+            <a href="http://www.mafool.com">
+                <img src="http://www.mafool.com/img/reward/hollson.png" alt="史布斯" />码夫庄园
+            </a>
+        </span>
+        
+        <p class="tip"><i></i><span>嗯，我的梦想是被读者的稿费包养~</span></p>
+        
+
+    </div>
+    <div class="zs-modal-body">
+        <div class="zs-modal-btns">
+            <button class="btn btn-blink" data-num="2">2元</button>
+            <button class="btn btn-blink" data-num="5">5元</button>
+            <button class="btn btn-blink" data-num="10">10元</button>
+            <button class="btn btn-blink" data-num="50">50元</button>
+            <button class="btn btn-blink" data-num="100">100元</button>
+            <button class="btn btn-blink" data-num="1">任意金额</button>
+        </div>
+        <div class="zs-modal-pay">
+            <button class="btn btn-bred" id="pay-text">2元</button>
+            <p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+            <img src="http://www.mafool.com/img/reward/wechat-2.png" alt="史布斯" id="pay-image" />
+        </div>
+    </div>
+    <div class="zs-modal-footer">
+        <label>
+            <span class="zs-wechat"></span>
+            <input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked">
+            <img src="http://www.mafool.com/img/reward/wechat-btn.png" alt="史布斯" />
+            </span>&nbsp;
+            <span>
+                <input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay">
+                <img src="http://www.mafool.com/img/reward/alipay-btn.png" alt="史布斯" />
+            </span>
+        </label>
+    </div>
+</div>
+
+ 
+
+                <br>
+                <br>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="column is-3">
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">最近发布</h2>
+        
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/0742b474a643d63a774461726a6201203/">Go语言中的原子操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年12月2日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/1600330472/">Go基础笔记 - 2.3 常量</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月10日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/15996311192/">Go - Gin框架快速入门</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月9日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480249/">Gorm快速指南</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480218/">18. Go语言MySQL数据库操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+    </div>
+</div>
+<br>
+        
+
+
+
+
+<div class="card">
+  <div class="card-content">
+    <h2 class="title is-6">相关文章</h2>
+    
+    
+    <h2><a href="http://www.mafool.com/posts/d40cede24573717edfd927aad8bb5042/">分布式系统概述</a></h2>
+    <time class="has-text-grey-light is-size-7">8 April 2020</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585819046/">Go操作Zookeeper</a></h2>
+    <time class="has-text-grey-light is-size-7">8 January 2020</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585838490/">CAP定理和分布式数据库管理系统</a></h2>
+    <time class="has-text-grey-light is-size-7">11 November 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585749845/">Redis哨兵模式和集群搭建</a></h2>
+    <time class="has-text-grey-light is-size-7">1 November 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585839366/">分布式理论(一) - CAP定理</a></h2>
+    <time class="has-text-grey-light is-size-7">6 July 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585838938/">分布式理论(二) - BASE理论</a></h2>
+    <time class="has-text-grey-light is-size-7">5 July 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585839040/">分布式理论(三) - 2PC协议</a></h2>
+    <time class="has-text-grey-light is-size-7">4 July 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585839114/">分布式理论(四) - 3PC协议</a></h2>
+    <time class="has-text-grey-light is-size-7">3 July 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585839221/">分布式理论(五) 一致性算法Paxos</a></h2>
+    <time class="has-text-grey-light is-size-7">2 July 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585839270/">分布式理论(六) - 一致性协议Raft</a></h2>
+    <time class="has-text-grey-light is-size-7">1 July 2019</time>
+    
+  </div>
+</div>
+<br>
+
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">标签</h2>
+        <div>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/atomic">atomic</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/blog">blog</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cgo">cgo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cloud">cloud</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/config">config</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/copy">copy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/docker">docker</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/exam">exam</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/gin">gin</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/git">git</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/golang">golang</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/hugo">hugo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/install">install</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/istio">istio</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/jenkins">jenkins</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/kubernetes">kubernetes</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/map">map</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/microservice">microservice</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/mycat">mycat</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/nginx">nginx</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/plan9">plan9</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/posix">posix</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/proxy">proxy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/raft">raft</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ssh">ssh</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/tips">tips</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ymal">ymal</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%B8%BB%E4%BB%8E">主从</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BA%8B%E5%8A%A1">事务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BB%A3%E7%90%86">代理</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BD%9C%E7%94%A8%E5%9F%9F">作用域</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%86%85%E5%AD%98">内存</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%8B%E7%BC%A9">压缩</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%88%9B">原创</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%AD%90">原子</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%91%BD%E4%BB%A4%E8%A1%8C">命令行</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%93%A8%E5%85%B5">哨兵</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%AD%98%E5%82%A8">存储</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B8%B8%E9%87%8F">常量</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B9%B6%E5%8F%91">并发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BC%82%E5%B8%B8">异常</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1">微服务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%88%E6%9D%83%E8%AE%A4%E8%AF%81">授权认证</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%92%E5%BA%8F">排序</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%A5%E5%8F%A3">接口</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%97%A5%E5%BF%97">日志</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%9D%83%E9%99%90">权限</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE1">标签1</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE2">标签2</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%AD%A3%E5%88%99">正则</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%81%E9%87%8F%E5%88%86%E5%8F%91">流量分发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%8B%E8%AF%95">测试</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%BA%90%E7%A0%81">源码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%8A%B6%E6%80%81%E7%A0%81">状态码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%AE%97%E6%B3%95">算法</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%BC%8F">编程模式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%80%81%E5%A6%96%E7%AC%94%E8%AE%B0">老妖笔记</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%BF%87%E6%BB%A4%E5%99%A8">过滤器</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%80%83%E9%80%B8">逃逸</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%85%8D%E7%BD%AE">配置</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%86%99">重写</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%AE%9A%E5%90%91">重定向</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9B%86%E7%BE%A4">集群</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9D%A2%E8%AF%95">面试</a>
+            </span>
+            
+        </div>
+    </div>
+</div>
+<br>
+    </div>
+</div>
+
+        </div>
+    </div>
+
+    
+    <footer class="footer has-background-grey-darker has-text-white">
+    <div class="content has-text-centered">
+        <p>
+            <span class="icon is-large">
+                <a href="https://twitter.com/" class="mysocial" rel="me">
+                    <i class="fab fa-twitter fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://www.youtube.com/" class="mysocial" rel="me">
+                    <i class="fab fa-youtube fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://github.com/" class="mysocial" rel="me">
+                    <i class="fab fa-github fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <br><br>
+            友情链接：
+            
+            <a class="mysocial" href="http://www.mafool.com" target="_blank">Mafool</a>
+            
+            <a class="mysocial" href="https://gohugo.io/documentation/" target="_blank">Hugo</a>
+            
+            <a class="mysocial" href="https://bulma.io/" target="_blank">Bulma</a>
+            
+            <a class="mysocial" href="https://bootstrapious.com/" target="_blank">Bootstrapious</a>
+            
+            <a class="mysocial" href="https://youzhixueyuan.com/" target="_blank">Youzhixueyuan</a>
+            
+            <br><br />
+            版权所有 &copy; 码夫庄园 2021
+            - <a class="mysocial" href="https://github.com/hollson/hugo-theme-dooz">Hugo Theme</a>
+        </p>
+    </div>
+</footer>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='http://www.mafool.com/js/dooz.totop.js?v=0.0.0' async=""></script>
+
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = 'https://hm.baidu.com/hm.js?f185359ec6b829a6a93e1e1f2597f6d9';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DK042XSJ2J"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-DK042XSJ2J');
+</script>
+
+    
+    
+<script type="text/javascript" src="http://www.mafool.com/js/reward.js"></script>
+
+    
+    <script defer src="https://cdn.staticfile.org/font-awesome/5.13.0/js/all.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>码夫庄园-Zookeeper集群部署</title>
+    <meta name="keywords"
+        content='zookeeper,zk,集群,分布式'>
+    <meta name="description" content="ZooKeeper是一个分布式的，开放源码的分布式应用程序协调服务，是Google的Chubby一个开源的实现，是Hadoop和Hbase的重要组件。它是一个为分布式应用提供一致性服务的软件，提供的功能包括：配置维护、域名服务、分布式同步、组服务等。" />
+
+    
+    <meta name="baidu-site-verification" content="v9szEmQLra" />
+    <meta name="360-site-verification" content="d8e961f98fb655e4b8cf9439cfd9ac7f" />
+    <meta name="sogou_site_verification" content="40NC9EdZDC" />
+    <meta name="shenma-site-verification" content="3200e3042e92157713a3b0aceeecb20a_1586020187" />
+    <meta name="google-site-verification" content="r8987bkunZHJeKut3ocu5NIJ5QEu53NA6Q_r7RrZ46c" />
+    <meta name="msvalidate.01" content="893A2865ABC54AC2782D118536831056" />
+
+    
+    <link rel="shortcut icon" href="http://www.mafool.com/img/res/favicon.ico">
+    
+
+    
+
+    <link crossorigin="anonymous" integrity="sha384-5kGFOAqgEKnuF6c2jk2JANKHZgYVt38Wn2dVJENtq1EBCP54/1uzXU5mpxqL8WjN"
+        href="https://lib.baomitu.com/bulma/0.8.0/css/bulma.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="http://www.mafool.com/css/dooz.blog.css" />
+    <script crossorigin="anonymous" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh"
+        src="https://lib.baomitu.com/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/jquery.share.min.js"></script>
+    
+
+    
+
+    
+    
+<link rel="stylesheet" href="http://www.mafool.com/css/reward.css">
+
+
+    <link href="http://www.mafool.com/css/fonts.googleapi.css" rel="stylesheet">
+    <script src=http://www.mafool.com/js/dooz.blog.js></script>
+
+    
+    <script>
+        $(document).ready(function () {
+            $('.content a[href^="http"]').each(function () {
+                $(this).attr('target', '_blank');
+            });
+        });
+
+        $(document).on('click', '.modal-wechat', function () {
+            $(".modal").addClass("is-active");
+        });
+
+        $(document).on('click', '.modal-background', function () {
+            $(".modal").removeClass("is-active");
+        });
+    </script>
+</head>
+
+<body>
+    
+    
+<section class="hero is-info is-medium"
+    style="background-image: url('/img/res/blog.jpg');">
+    <div class="hero-head">
+        <nav class="navbar is-transparent container has-text-white">
+    <div class="navbar-brand">
+        <div class="navbar-item">
+            <a class="title is-5 is-white" href="http://www.mafool.com/">码夫庄园</a>
+        </div>
+
+        
+        <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <div id="navbarExampleTransparentExample" class="navbar-menu has-text-dark">
+        
+
+        <div class="navbar-end">
+            <a class="navbar-item" href='http://www.mafool.com/'>首页</a>
+            <a class="navbar-item" href='http://www.mafool.com/archives'>归档 </a>
+            <a class="navbar-item" href='http://www.mafool.com/about'>关于</a>
+            <span class="navbar-item">
+                <a class="button is-primary is-inverted" href="https://github.com/hollson/hugo-theme-dooz">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>主题</span>
+                </a>
+            </span>
+        </div>
+    </div>
+</nav>
+    </div>
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <div class='container has-text-left column is-7'>
+                
+                <span>
+                    <a class="bar_tag" href="http://www.mafool.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F" title="分布式">分布式</a>
+                </span>
+                
+                <span>
+                    <a class="bar_tag" href="http://www.mafool.com/tags/%E9%9B%86%E7%BE%A4" title="集群">集群</a>
+                </span>
+                
+                <h1 class="title is-size-2" style="margin-bottom:0.2rem;">
+                    
+                    Zookeeper集群部署
+                    
+                </h1>
+                
+                <span class="title is-size-6" style="font-style: italic;"> </span><br>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    
+    <div class="container">
+        <div class="section">
+            
+<div class="columns">
+    <div class="column is-9">
+        <div class="tile is-child box">
+            <div class="content">
+                
+                <nav class="level">
+                    
+                    <div class="level-left">
+                        <div class="level-item">
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2019年5月2日,
+    星期四 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 5分钟阅读
+</p>
+                        </div>
+                    </div>
+
+                    
+                    
+                    <div class="share-component level-right" data-disabled="google,diandian,tencent,qzone"
+                        data-description="Share.js - 一键分享到微博，QQ空间，腾讯微博，人人，豆瓣"
+                        data-mobile-sites="weibo,qq,qzone,tencent">
+                    </div>
+                    
+                </nav>
+                <hr>
+                
+                <header>
+                    <h2>目录</h2>
+                </header>
+                <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一-zookeeper要点">一. Zookeeper要点</a></li>
+    <li><a href="#二-安装java环境">二. 安装Java环境</a></li>
+    <li><a href="#三-zk单机部署">三. ZK单机部署</a></li>
+    <li><a href="#四-zk单机伪集群">四. ZK单机伪集群</a></li>
+    <li><a href="#五-zk客户端命令">五. ZK客户端命令</a></li>
+    <li><a href="#参考链接">参考链接</a></li>
+  </ul>
+</nav>
+                
+                <hr>
+                <h2 id="一-zookeeper要点">一. Zookeeper要点</h2>
+<ul>
+<li>zookeeper开放源码的<code>分布式协调服务框架</code> ；</li>
+<li>zookeeper功能包括：<code>配置维护</code>、<code>域名服务</code>、<code>分布式锁</code>、<code>组服务</code>等；</li>
+<li>zookeeper由java开发，需要有<code>Jdk 1.6</code>以上的运行环境支持；</li>
+<li>zookeeper集群一般需要一、三、五等<code>奇数台服务器</code>（<code>2*n+1</code>台）；</li>
+<li>zookeeper核心功能有：<code>文件系统</code>和<code>通知机制</code>；</li>
+</ul>
+<!-- raw HTML omitted -->
+<h2 id="二-安装java环境">二. 安装Java环境</h2>
+<p>Zookeeper是用Java开发的，所以需要JDK的支持，这里安装JRE即可，<a href="https://blog.csdn.net/gusand/article/details/99680190">JRE安装参考</a>。</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">$ java -version
+</code></pre></td></tr></table>
+</div>
+</div><!-- raw HTML omitted -->
+<h2 id="三-zk单机部署">三. ZK单机部署</h2>
+<p><strong>1. 下载安装ZK</strong> , 参考 <a href="https://www-us.apache.org/dist/zookeeper/">Zookeeper官网地址</a></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell"><span style="color:#09f;font-style:italic"># 下载解压</span>
+$ curl -O  http://mirror.bit.edu.cn/apache/zookeeper/zookeeper-3.5.6/apache-zookeeper-3.5.6-bin.tar.gz
+$ tar -zxvf apache-zookeeper-3.5.6-bin.tar.gz
+
+<span style="color:#09f;font-style:italic"># 安装到目标目录</span>
+$ mv apache-zookeeper-3.5.6-bin /usr/local/zookeeper
+
+<span style="color:#09f;font-style:italic">#删除windows的文件</span>
+$ rm -f /usr/local/zookeeper/bin/*.cmd
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>2. 配置环境变量</strong></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">$ vim /etc/profile
+<span style="color:#09f;font-style:italic">#*********************ZK环境变量******************</span>
+<span style="color:#366">export</span> <span style="color:#033">ZOOKEEPER_HOME</span><span style="color:#555">=</span>/usr/local/zookeeper
+<span style="color:#366">export</span> <span style="color:#033">PATH</span><span style="color:#555">=</span><span style="color:#033">$ZOOKEEPER_HOME</span>/bin:<span style="color:#033">$PATH</span>
+<span style="color:#09f;font-style:italic">#*************************************************</span>
+
+$ <span style="color:#366">source</span> /etc/profile <span style="color:#09f;font-style:italic">#刷新配置</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>3. 修改配置文件</strong></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">$ <span style="color:#366">cd</span> <span style="color:#033">$ZOOKEEPER_HOME</span>
+$ cat ./conf/zoo_sample.cfg | grep -v <span style="color:#c30">&#34;#&#34;</span>|grep -v <span style="color:#c30">&#34;^</span>$<span style="color:#c30">&#34;</span> &gt;./conf/zoo.cfg
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell"><span style="color:#09f;font-style:italic"># 配置文件示例：conf/zoo.cfg</span>
+<span style="color:#033">tickTime</span><span style="color:#555">=</span><span style="color:#f60">2000</span>    <span style="color:#09f;font-style:italic">#心跳间隔（ms）,即2秒</span>
+<span style="color:#033">initLimit</span><span style="color:#555">=</span><span style="color:#f60">10</span>     <span style="color:#09f;font-style:italic">#初始化超过10个心跳则视为失败</span>
+<span style="color:#033">syncLimit</span><span style="color:#555">=</span><span style="color:#f60">5</span>      <span style="color:#09f;font-style:italic">#同步最大心跳间隔(超过5个则断开连接)</span>
+<span style="color:#033">dataDir</span><span style="color:#555">=</span>/tmp/zookeeper
+<span style="color:#033">clientPort</span><span style="color:#555">=</span><span style="color:#f60">2181</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>5.管理ZK服务</strong></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell"><span style="color:#09f;font-style:italic"># 启动</span>
+$ zkServer.sh start   
+
+<span style="color:#09f;font-style:italic"># 查看状态</span>
+$ zkServer.sh status  
+/usr/bin/java
+ZooKeeper JMX enabled by default
+Using config: /usr/local/zookeeper/bin/../conf/zoo.cfg
+Client port found: 2181. Client address: localhost.
+Mode: standalone    <span style="color:#09f;font-style:italic">#单机模式</span>
+
+$ zkServer.sh restart <span style="color:#09f;font-style:italic">#重启</span>
+$ zkServer.sh sop     <span style="color:#09f;font-style:italic">#停止</span>
+</code></pre></td></tr></table>
+</div>
+</div><!-- raw HTML omitted -->
+<h2 id="四-zk单机伪集群">四. ZK单机伪集群</h2>
+<p><strong>1. 创建集群工作目录</strong></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">$ <span style="color:#366">cd</span> <span style="color:#033">$ZOOKEEPER_HOME</span> 
+$ mkdir zk2181 zk2182 zk2183
+</code></pre></td></tr></table>
+</div>
+</div><table>
+<thead>
+<tr>
+<th>服务标识</th>
+<th>IP地址</th>
+<th>zookeeper</th>
+<th>myid</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>zookeeper-1</td>
+<td>127.0.0.1:2181</td>
+<td>server.1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>zookeeper-2</td>
+<td>127.0.0.1:2182</td>
+<td>server.2</td>
+<td>2</td>
+</tr>
+<tr>
+<td>zookeeper-3</td>
+<td>127.0.0.1:2183</td>
+<td>server.3</td>
+<td>3</td>
+</tr>
+</tbody>
+</table>
+<p><strong>2. 创建配置文件</strong> ，如：<code>./zk2181/zoo.cfg</code></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-toml" data-lang="toml"><span style="color:#09f;font-style:italic"># 服务端口号</span>
+clientPort=<span style="color:#f60">2181</span>
+
+<span style="color:#09f;font-style:italic"># 客户端每两秒钟发送一次心跳</span>
+tickTime=<span style="color:#f60">2000</span>
+
+<span style="color:#09f;font-style:italic">#初始化超过10个心跳则视为失败</span>
+initLimit=<span style="color:#f60">10</span>
+
+<span style="color:#09f;font-style:italic">#同步最大心跳间隔(超过5个则断开连接)</span>
+syncLimit=<span style="color:#f60">5</span>
+
+<span style="color:#09f;font-style:italic"># 数据目录</span>
+dataDir=<span style="color:#a00;background-color:#faa">/</span>usr<span style="color:#a00;background-color:#faa">/</span>local<span style="color:#a00;background-color:#faa">/</span>zookeeper<span style="color:#a00;background-color:#faa">/</span>zk2181
+
+<span style="color:#09f;font-style:italic"># 日志目录</span>
+dataLogDir=<span style="color:#a00;background-color:#faa">/</span>usr<span style="color:#a00;background-color:#faa">/</span>local<span style="color:#a00;background-color:#faa">/</span>zookeeper<span style="color:#a00;background-color:#faa">/</span>zk2181
+
+<span style="color:#09f;font-style:italic"># 集群配置</span>
+<span style="color:#09f;font-style:italic"># server.A=B:C:D</span>
+<span style="color:#09f;font-style:italic"># A：其中A是一个数字，表示这个是服务器的编号；</span>
+<span style="color:#09f;font-style:italic"># B：是这个服务器的ip地址；</span>
+<span style="color:#09f;font-style:italic"># C：Leader选举的端口；</span>
+<span style="color:#09f;font-style:italic"># D：Zookeeper服务器之间的通信端口。</span>
+server.<span style="color:#f60">1</span>=localhost<span style="color:#a00;background-color:#faa">:</span><span style="color:#f60">2101</span><span style="color:#a00;background-color:#faa">:</span><span style="color:#f60">3101</span>
+server.<span style="color:#f60">2</span>=localhost<span style="color:#a00;background-color:#faa">:</span><span style="color:#f60">2102</span><span style="color:#a00;background-color:#faa">:</span><span style="color:#f60">3102</span>
+server.<span style="color:#f60">3</span>=localhost<span style="color:#a00;background-color:#faa">:</span><span style="color:#f60">2103</span><span style="color:#a00;background-color:#faa">:</span><span style="color:#f60">3103</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>以<code>./zk2181/zoo.cfg</code>为模板，复制<code>./zk2182/zoo.cfg</code>、<code>./zk2183/zoo.cfg</code>两个配置文件</li>
+</ul>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">$ sed <span style="color:#c30">&#34;s/2181/2182/g&#34;</span> ./zk2181/zoo.cfg &gt;./zk2182/zoo.cfg
+$ sed <span style="color:#c30">&#34;s/2181/2183/g&#34;</span> ./zk2181/zoo.cfg &gt;./zk2183/zoo.cfg
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>3. 创建服务器编号</strong> 与配置文件中<code>Server.编号</code> 保持一致</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">$ <span style="color:#366">echo</span> <span style="color:#c30">&#34;1&#34;</span>&gt;./zk2181/myid
+$ <span style="color:#366">echo</span> <span style="color:#c30">&#34;2&#34;</span>&gt;./zk2182/myid
+$ <span style="color:#366">echo</span> <span style="color:#c30">&#34;3&#34;</span>&gt;./zk2183/myid
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>4.  启动集群</strong></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">$ zkServer.sh --config <span style="color:#033">$ZOOKEEPER_HOME</span>/zk2181 start
+$ zkServer.sh --config <span style="color:#033">$ZOOKEEPER_HOME</span>/zk2182 start
+$ zkServer.sh --config <span style="color:#033">$ZOOKEEPER_HOME</span>/zk2183 start
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>5. 查看集群状态</strong>，可以看到<code>Mode: leader</code>(主节点)，<code>Mode: follower</code>(从节点)。</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">$ zkServer.sh --config /usr/local/zookeeper/zk2181 status
+$ zkServer.sh --config /usr/local/zookeeper/zk2182 status
+$ zkServer.sh --config /usr/local/zookeeper/zk2183 status
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>6. 测试故障转移</strong>， 杀掉leader进程，再次查看集群状态</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">$ ps -ef |grep zookeeper|grep <span style="color:#f60">2182</span>
+$ <span style="color:#366">kill</span> -9 <span style="color:#f60">3977</span>  
+...
+<span style="color:#09f;font-style:italic"># 再次查看集群状态，主从关系已转移</span>
+</code></pre></td></tr></table>
+</div>
+</div><!-- raw HTML omitted -->
+<h2 id="五-zk客户端命令">五. ZK客户端命令</h2>
+<p><strong>1. 登录ZK</strong></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">$ zkCli                            <span style="color:#09f;font-style:italic">#登录本地</span>
+$ zkCli.sh -server localhost:2182  <span style="color:#09f;font-style:italic">#登录远程</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>2. 查看API命令</strong>，输入<code>&quot;help&quot;</code>(不存在的命令)，会打印API帮助命令</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">ZooKeeper -server host:port cmd args
+ addauth scheme auth
+ close
+ config <span style="color:#555">[</span>-c<span style="color:#555">]</span> <span style="color:#555">[</span>-w<span style="color:#555">]</span> <span style="color:#555">[</span>-s<span style="color:#555">]</span>
+ connect host:port
+ create <span style="color:#555">[</span>-s<span style="color:#555">]</span> <span style="color:#555">[</span>-e<span style="color:#555">]</span> <span style="color:#555">[</span>-c<span style="color:#555">]</span> <span style="color:#555">[</span>-t ttl<span style="color:#555">]</span> path <span style="color:#555">[</span>data<span style="color:#555">]</span> <span style="color:#555">[</span>acl<span style="color:#555">]</span>
+ delete <span style="color:#555">[</span>-v version<span style="color:#555">]</span> path
+ deleteall path
+ delquota <span style="color:#555">[</span>-n|-b<span style="color:#555">]</span> path
+ get <span style="color:#555">[</span>-s<span style="color:#555">]</span> <span style="color:#555">[</span>-w<span style="color:#555">]</span> path
+ getAcl <span style="color:#555">[</span>-s<span style="color:#555">]</span> path
+ <span style="color:#366">history</span>
+ listquota path
+ ls <span style="color:#555">[</span>-s<span style="color:#555">]</span> <span style="color:#555">[</span>-w<span style="color:#555">]</span> <span style="color:#555">[</span>-R<span style="color:#555">]</span> path
+ ls2 path <span style="color:#555">[</span>watch<span style="color:#555">]</span>
+ printwatches on|off
+ quit
+ reconfig <span style="color:#555">[</span>-s<span style="color:#555">]</span> <span style="color:#555">[</span>-v version<span style="color:#555">]</span> <span style="color:#555">[[</span>-file path<span style="color:#555">]</span> | <span style="color:#555">[</span>-members <span style="color:#033">serverID</span><span style="color:#555">=</span>host:port1:port2;port3<span style="color:#555">[</span>,...<span style="color:#555">]</span>*<span style="color:#555">]]</span> | <span style="color:#555">[</span>-add <span style="color:#033">serverId</span><span style="color:#555">=</span>host:port1:port2;port3<span style="color:#555">[</span>,...<span style="color:#555">]]</span>* <span style="color:#555">[</span>-remove serverId<span style="color:#555">[</span>,...<span style="color:#555">]</span>*<span style="color:#555">]</span>
+ redo cmdno
+ removewatches path <span style="color:#555">[</span>-c|-d|-a<span style="color:#555">]</span> <span style="color:#555">[</span>-l<span style="color:#555">]</span>
+ rmr path
+ <span style="color:#366">set</span> <span style="color:#555">[</span>-s<span style="color:#555">]</span> <span style="color:#555">[</span>-v version<span style="color:#555">]</span> path data
+ setAcl <span style="color:#555">[</span>-s<span style="color:#555">]</span> <span style="color:#555">[</span>-v version<span style="color:#555">]</span> <span style="color:#555">[</span>-R<span style="color:#555">]</span> path acl
+ setquota -n|-b val path
+ stat <span style="color:#555">[</span>-w<span style="color:#555">]</span> path
+ sync path
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>3. 操作示例</strong></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell"><span style="color:#09f;font-style:italic"># 创建节点(临时节点/序列节点)</span>
+$ create /test <span style="color:#c30">&#34;hello world&#34;</span>
+
+<span style="color:#09f;font-style:italic"># 创建顺序节点 自动累加(全局)</span>
+$ create  -s /test/code    
+
+<span style="color:#09f;font-style:italic"># 查看节点</span>
+$ get /test
+
+<span style="color:#09f;font-style:italic"># 修改节点</span>
+$ <span style="color:#366">set</span> /test <span style="color:#c30">&#34;hello zookeeper&#34;</span>
+
+<span style="color:#09f;font-style:italic"># 删除节点</span>
+$ delete /test
+
+<span style="color:#09f;font-style:italic"># 查看目录</span>
+<span style="color:#09f;font-style:italic"># ls /test</span>
+
+<span style="color:#09f;font-style:italic"># 目录统计</span>
+$ ls -s /test
+
+<span style="color:#09f;font-style:italic"># 递归删除(多级目录)</span>
+$ deleteall /test
+
+<span style="color:#09f;font-style:italic"># zk中 watcher是一次性的，触发后立即销毁</span>
+<span style="color:#09f;font-style:italic"># - stat [-w] path 设置watch事件 </span>
+<span style="color:#09f;font-style:italic"># - get [-w] path 设置watch事件 </span>
+<span style="color:#09f;font-style:italic"># 监控节点(在新建的cli端修改节点信息)</span>
+$ stat -w /test watch
+$ get -w /test watch
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>4. 四字命令</strong></p>
+<ul>
+<li>ZooKeeper 支持某些特定的四字命令(The Four Letter Words)与其进行交互。它们大多是查询命令，用来获取 ZooKeeper 服务的当前状态及相关信息。用户在客户端可以通过 telnet 或 nc 向 ZooKeeper 提交相应的命令。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th style="text-align:left">功能描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>conf</td>
+<td style="text-align:left">3.3.0版本引入的。打印出服务相关配置的详细信息。</td>
+</tr>
+<tr>
+<td>cons</td>
+<td style="text-align:left">3.3.0版本引入的。列出所有连接到这台服务器的客户端全部连接/会话详细信息。包括&quot;接受/发送&quot;的包数量、会话id、操作延迟、最后的操作执行等等信息。</td>
+</tr>
+<tr>
+<td>crst</td>
+<td style="text-align:left">3.3.0版本引入的。重置所有连接的连接和会话统计信息。</td>
+</tr>
+<tr>
+<td>dump</td>
+<td style="text-align:left">列出那些比较重要的会话和临时节点。这个命令只能在leader节点上有用。</td>
+</tr>
+<tr>
+<td>envi</td>
+<td style="text-align:left">打印出服务环境的详细信息。</td>
+</tr>
+<tr>
+<td>reqs</td>
+<td style="text-align:left">列出未经处理的请求</td>
+</tr>
+<tr>
+<td>ruok</td>
+<td style="text-align:left">测试服务是否处于正确状态。如果确实如此，那么服务返回&quot;imok&quot;，否则不做任何相应。</td>
+</tr>
+<tr>
+<td>stat</td>
+<td style="text-align:left">输出关于性能和连接的客户端的列表。</td>
+</tr>
+<tr>
+<td>srst</td>
+<td style="text-align:left">重置服务器的统计。</td>
+</tr>
+<tr>
+<td>srvr</td>
+<td style="text-align:left">3.3.0版本引入的。列出连接服务器的详细信息</td>
+</tr>
+<tr>
+<td>wchs</td>
+<td style="text-align:left">3.3.0版本引入的。列出服务器watch的详细信息。</td>
+</tr>
+<tr>
+<td>wchc</td>
+<td style="text-align:left">3.3.0版本引入的。通过session列出服务器watch的详细信息，它的输出是一个与watch相关的会话的列表。</td>
+</tr>
+<tr>
+<td>wchp</td>
+<td style="text-align:left">3.3.0版本引入的。通过路径列出服务器watch的详细信息。它输出一个与session相关的路径。</td>
+</tr>
+<tr>
+<td>mntr</td>
+<td style="text-align:left">3.4.0版本引入的。输出可用于检测集群健康状态的变量列表</td>
+</tr>
+</tbody>
+</table>
+<p>示例：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell"><span style="color:#09f;font-style:italic"># 查看状态信息</span>
+$ <span style="color:#366">echo</span> stat | nc 127.0.0.1 <span style="color:#f60">2181</span>
+
+<span style="color:#09f;font-style:italic">#查看服务器配置</span>
+$ <span style="color:#366">echo</span> conf | nc 192.168.0.68 <span style="color:#f60">2181</span>
+</code></pre></td></tr></table>
+</div>
+</div><!-- raw HTML omitted -->
+<h2 id="参考链接">参考链接</h2>
+<blockquote>
+<p><a href="https://www.cnblogs.com/raphael5200/p/5285583.html">https://www.cnblogs.com/raphael5200/p/5285583.html</a><br>
+<a href="https://blog.csdn.net/dandandeshangni/article/details/80558383">https://blog.csdn.net/dandandeshangni/article/details/80558383</a><br>
+<a href="https://www.kancloud.cn/liupengjie/go/745743">https://www.kancloud.cn/liupengjie/go/745743</a> 【golang-Zookeeper命令行使用】</p>
+</blockquote>
+
+                
+                
+                <hr> 
+
+<div class="entry-shang text-center">
+    
+    <p> 「真诚赞赏，手留余香」</p>
+    
+    <button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+    <div class="zs-modal-head">
+        <button type="button" class="close">×</button>
+        <span class="author">
+            <a href="http://www.mafool.com">
+                <img src="http://www.mafool.com/img/reward/hollson.png" alt="史布斯" />码夫庄园
+            </a>
+        </span>
+        
+        <p class="tip"><i></i><span>嗯，我的梦想是被读者的稿费包养~</span></p>
+        
+
+    </div>
+    <div class="zs-modal-body">
+        <div class="zs-modal-btns">
+            <button class="btn btn-blink" data-num="2">2元</button>
+            <button class="btn btn-blink" data-num="5">5元</button>
+            <button class="btn btn-blink" data-num="10">10元</button>
+            <button class="btn btn-blink" data-num="50">50元</button>
+            <button class="btn btn-blink" data-num="100">100元</button>
+            <button class="btn btn-blink" data-num="1">任意金额</button>
+        </div>
+        <div class="zs-modal-pay">
+            <button class="btn btn-bred" id="pay-text">2元</button>
+            <p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+            <img src="http://www.mafool.com/img/reward/wechat-2.png" alt="史布斯" id="pay-image" />
+        </div>
+    </div>
+    <div class="zs-modal-footer">
+        <label>
+            <span class="zs-wechat"></span>
+            <input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked">
+            <img src="http://www.mafool.com/img/reward/wechat-btn.png" alt="史布斯" />
+            </span>&nbsp;
+            <span>
+                <input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay">
+                <img src="http://www.mafool.com/img/reward/alipay-btn.png" alt="史布斯" />
+            </span>
+        </label>
+    </div>
+</div>
+
+ 
+
+                <br>
+                <br>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="column is-3">
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">最近发布</h2>
+        
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/0742b474a643d63a774461726a6201203/">Go语言中的原子操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年12月2日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/1600330472/">Go基础笔记 - 2.3 常量</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月10日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/15996311192/">Go - Gin框架快速入门</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月9日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480249/">Gorm快速指南</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480218/">18. Go语言MySQL数据库操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+    </div>
+</div>
+<br>
+        
+
+
+
+
+<div class="card">
+  <div class="card-content">
+    <h2 class="title is-6">相关文章</h2>
+    
+    
+    <h2><a href="http://www.mafool.com/posts/d40cede24573717edfd927aad8bb5042/">分布式系统概述</a></h2>
+    <time class="has-text-grey-light is-size-7">8 April 2020</time>
+    
+    <h2><a href="http://www.mafool.com/posts/aff3b81a3477dddf3a0e9115dd348b11/">Etcd - 搭建伪集群</a></h2>
+    <time class="has-text-grey-light is-size-7">13 March 2020</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585819046/">Go操作Zookeeper</a></h2>
+    <time class="has-text-grey-light is-size-7">8 January 2020</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585838490/">CAP定理和分布式数据库管理系统</a></h2>
+    <time class="has-text-grey-light is-size-7">11 November 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585749845/">Redis哨兵模式和集群搭建</a></h2>
+    <time class="has-text-grey-light is-size-7">1 November 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585839366/">分布式理论(一) - CAP定理</a></h2>
+    <time class="has-text-grey-light is-size-7">6 July 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585838938/">分布式理论(二) - BASE理论</a></h2>
+    <time class="has-text-grey-light is-size-7">5 July 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585839040/">分布式理论(三) - 2PC协议</a></h2>
+    <time class="has-text-grey-light is-size-7">4 July 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585839114/">分布式理论(四) - 3PC协议</a></h2>
+    <time class="has-text-grey-light is-size-7">3 July 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585839221/">分布式理论(五) 一致性算法Paxos</a></h2>
+    <time class="has-text-grey-light is-size-7">2 July 2019</time>
+    
+  </div>
+</div>
+<br>
+
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">标签</h2>
+        <div>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/atomic">atomic</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/blog">blog</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cgo">cgo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cloud">cloud</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/config">config</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/copy">copy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/docker">docker</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/exam">exam</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/gin">gin</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/git">git</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/golang">golang</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/hugo">hugo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/install">install</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/istio">istio</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/jenkins">jenkins</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/kubernetes">kubernetes</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/map">map</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/microservice">microservice</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/mycat">mycat</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/nginx">nginx</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/plan9">plan9</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/posix">posix</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/proxy">proxy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/raft">raft</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ssh">ssh</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/tips">tips</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ymal">ymal</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%B8%BB%E4%BB%8E">主从</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BA%8B%E5%8A%A1">事务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BB%A3%E7%90%86">代理</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BD%9C%E7%94%A8%E5%9F%9F">作用域</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%86%85%E5%AD%98">内存</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%8B%E7%BC%A9">压缩</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%88%9B">原创</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%AD%90">原子</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%91%BD%E4%BB%A4%E8%A1%8C">命令行</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%93%A8%E5%85%B5">哨兵</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%AD%98%E5%82%A8">存储</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B8%B8%E9%87%8F">常量</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B9%B6%E5%8F%91">并发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BC%82%E5%B8%B8">异常</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1">微服务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%88%E6%9D%83%E8%AE%A4%E8%AF%81">授权认证</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%92%E5%BA%8F">排序</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%A5%E5%8F%A3">接口</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%97%A5%E5%BF%97">日志</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%9D%83%E9%99%90">权限</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE1">标签1</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE2">标签2</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%AD%A3%E5%88%99">正则</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%81%E9%87%8F%E5%88%86%E5%8F%91">流量分发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%8B%E8%AF%95">测试</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%BA%90%E7%A0%81">源码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%8A%B6%E6%80%81%E7%A0%81">状态码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%AE%97%E6%B3%95">算法</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%BC%8F">编程模式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%80%81%E5%A6%96%E7%AC%94%E8%AE%B0">老妖笔记</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%BF%87%E6%BB%A4%E5%99%A8">过滤器</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%80%83%E9%80%B8">逃逸</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%85%8D%E7%BD%AE">配置</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%86%99">重写</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%AE%9A%E5%90%91">重定向</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9B%86%E7%BE%A4">集群</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9D%A2%E8%AF%95">面试</a>
+            </span>
+            
+        </div>
+    </div>
+</div>
+<br>
+    </div>
+</div>
+
+        </div>
+    </div>
+
+    
+    <footer class="footer has-background-grey-darker has-text-white">
+    <div class="content has-text-centered">
+        <p>
+            <span class="icon is-large">
+                <a href="https://twitter.com/" class="mysocial" rel="me">
+                    <i class="fab fa-twitter fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://www.youtube.com/" class="mysocial" rel="me">
+                    <i class="fab fa-youtube fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://github.com/" class="mysocial" rel="me">
+                    <i class="fab fa-github fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <br><br>
+            友情链接：
+            
+            <a class="mysocial" href="http://www.mafool.com" target="_blank">Mafool</a>
+            
+            <a class="mysocial" href="https://gohugo.io/documentation/" target="_blank">Hugo</a>
+            
+            <a class="mysocial" href="https://bulma.io/" target="_blank">Bulma</a>
+            
+            <a class="mysocial" href="https://bootstrapious.com/" target="_blank">Bootstrapious</a>
+            
+            <a class="mysocial" href="https://youzhixueyuan.com/" target="_blank">Youzhixueyuan</a>
+            
+            <br><br />
+            版权所有 &copy; 码夫庄园 2021
+            - <a class="mysocial" href="https://github.com/hollson/hugo-theme-dooz">Hugo Theme</a>
+        </p>
+    </div>
+</footer>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='http://www.mafool.com/js/dooz.totop.js?v=0.0.0' async=""></script>
+
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = 'https://hm.baidu.com/hm.js?f185359ec6b829a6a93e1e1f2597f6d9';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DK042XSJ2J"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-DK042XSJ2J');
+</script>
+
+    
+    
+<script type="text/javascript" src="http://www.mafool.com/js/reward.js"></script>
+
+    
+    <script defer src="https://cdn.staticfile.org/font-awesome/5.13.0/js/all.min.js"></script>
+</body>
+
+</html>

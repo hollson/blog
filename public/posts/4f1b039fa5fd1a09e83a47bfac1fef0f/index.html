@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>码夫庄园-Go - 内存分配原理</title>
+    <meta name="keywords"
+        content='内存,分配'>
+    <meta name="description" content="Go内存管理基于tcmalloc，使用连续虚拟地址，以页(8k)为单位、多级缓存进行管理；在分配内存时，需要对size进行对齐处理，根据best-fit找到合适的mspan，对未用完的内存还会拆分成其他大小的mspan继续使用。" />
+
+    
+    <meta name="baidu-site-verification" content="v9szEmQLra" />
+    <meta name="360-site-verification" content="d8e961f98fb655e4b8cf9439cfd9ac7f" />
+    <meta name="sogou_site_verification" content="40NC9EdZDC" />
+    <meta name="shenma-site-verification" content="3200e3042e92157713a3b0aceeecb20a_1586020187" />
+    <meta name="google-site-verification" content="r8987bkunZHJeKut3ocu5NIJ5QEu53NA6Q_r7RrZ46c" />
+    <meta name="msvalidate.01" content="893A2865ABC54AC2782D118536831056" />
+
+    
+    <link rel="shortcut icon" href="http://www.mafool.com/img/res/favicon.ico">
+    
+
+    
+
+    <link crossorigin="anonymous" integrity="sha384-5kGFOAqgEKnuF6c2jk2JANKHZgYVt38Wn2dVJENtq1EBCP54/1uzXU5mpxqL8WjN"
+        href="https://lib.baomitu.com/bulma/0.8.0/css/bulma.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="http://www.mafool.com/css/dooz.blog.css" />
+    <script crossorigin="anonymous" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh"
+        src="https://lib.baomitu.com/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/jquery.share.min.js"></script>
+    
+
+    
+
+    
+    
+<link rel="stylesheet" href="http://www.mafool.com/css/reward.css">
+
+
+    <link href="http://www.mafool.com/css/fonts.googleapi.css" rel="stylesheet">
+    <script src=http://www.mafool.com/js/dooz.blog.js></script>
+
+    
+    <script>
+        $(document).ready(function () {
+            $('.content a[href^="http"]').each(function () {
+                $(this).attr('target', '_blank');
+            });
+        });
+
+        $(document).on('click', '.modal-wechat', function () {
+            $(".modal").addClass("is-active");
+        });
+
+        $(document).on('click', '.modal-background', function () {
+            $(".modal").removeClass("is-active");
+        });
+    </script>
+</head>
+
+<body>
+    
+    
+<section class="hero is-info is-medium"
+    style="background-image: url('/img/res/blog.jpg');">
+    <div class="hero-head">
+        <nav class="navbar is-transparent container has-text-white">
+    <div class="navbar-brand">
+        <div class="navbar-item">
+            <a class="title is-5 is-white" href="http://www.mafool.com/">码夫庄园</a>
+        </div>
+
+        
+        <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <div id="navbarExampleTransparentExample" class="navbar-menu has-text-dark">
+        
+
+        <div class="navbar-end">
+            <a class="navbar-item" href='http://www.mafool.com/'>首页</a>
+            <a class="navbar-item" href='http://www.mafool.com/archives'>归档 </a>
+            <a class="navbar-item" href='http://www.mafool.com/about'>关于</a>
+            <span class="navbar-item">
+                <a class="button is-primary is-inverted" href="https://github.com/hollson/hugo-theme-dooz">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>主题</span>
+                </a>
+            </span>
+        </div>
+    </div>
+</nav>
+    </div>
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <div class='container has-text-left column is-7'>
+                
+                <span>
+                    <a class="bar_tag" href="http://www.mafool.com/tags/%E9%80%83%E9%80%B8" title="逃逸">逃逸</a>
+                </span>
+                
+                <span>
+                    <a class="bar_tag" href="http://www.mafool.com/tags/%E5%86%85%E5%AD%98" title="内存">内存</a>
+                </span>
+                
+                <h1 class="title is-size-2" style="margin-bottom:0.2rem;">
+                    
+                    Go - 内存分配原理
+                    
+                </h1>
+                
+                <span class="title is-size-6" style="font-style: italic;"> </span><br>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    
+    <div class="container">
+        <div class="section">
+            
+<div class="columns">
+    <div class="column is-9">
+        <div class="tile is-child box">
+            <div class="content">
+                
+                <nav class="level">
+                    
+                    <div class="level-left">
+                        <div class="level-item">
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年4月14日,
+    星期二 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 6分钟阅读
+</p>
+                        </div>
+                    </div>
+
+                    
+                    
+                    <div class="share-component level-right" data-disabled="google,diandian,tencent,qzone"
+                        data-description="Share.js - 一键分享到微博，QQ空间，腾讯微博，人人，豆瓣"
+                        data-mobile-sites="weibo,qq,qzone,tencent">
+                    </div>
+                    
+                </nav>
+                <hr>
+                
+                <header>
+                    <h2>目录</h2>
+                </header>
+                <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一-前言">一. 前言</a></li>
+    <li><a href="#二-内存分配">二. 内存分配</a>
+      <ul>
+        <li><a href="#1-这里先了解四个相关数据结构">(1) 这里先了解四个相关数据结构</a>
+          <ul>
+            <li><a href="#1mspan">1，mspan</a></li>
+            <li><a href="#2mcache">2，mcache</a></li>
+            <li><a href="#3mcentral">3，mcentral</a></li>
+            <li><a href="#4mheap">4，mheap</a></li>
+          </ul>
+        </li>
+        <li><a href="#2-内存分配细节">(2) 内存分配细节</a></li>
+      </ul>
+    </li>
+    <li><a href="#三-内存模型">三. 内存模型</a>
+      <ul>
+        <li>
+          <ul>
+            <li><a href="#1-init-函数">(1) Init 函数</a></li>
+            <li><a href="#2-channel">(2) Channel</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#四-逃逸分析">四. 逃逸分析</a>
+      <ul>
+        <li><a href="#1-什么是内存逃逸">(1) 什么是内存逃逸</a></li>
+        <li><a href="#2-引起逃逸的情况">(2) 引起逃逸的情况</a>
+          <ul>
+            <li><a href="#1指针">1，指针</a></li>
+            <li><a href="#2切片">2，切片</a></li>
+            <li><a href="#3interface">3，interface</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#参考链接">参考链接</a></li>
+  </ul>
+</nav>
+                
+                <hr>
+                <h1 id="深入理解go语言之内存详解">深入理解GO语言之内存详解</h1>
+<h2 id="一-前言">一. 前言</h2>
+<p>Go语言内置运行时（就是runtime），抛弃了传统的内存分配方式，改为自主管理。这样可以自主地实现更好的内存使用模式，比如内存池、预分配等等。这样，不会每次内存分配都需要进行系统调用。</p>
+<p>Golang运行时的内存分配算法主要源自 Google 为 C 语言开发的TCMalloc算法，全称Thread-Caching Malloc。核心思想就是把内存分为多级管理，从而降低锁的粒度。它将可用的堆内存采用二级分配的方式进行管理：每个线程都会自行维护一个独立的内存池，进行内存分配时优先从该内存池中分配，当内存池不足时才会向全局内存池申请，以避免不同线程对全局内存池的频繁竞争。</p>
+<h2 id="二-内存分配">二. 内存分配</h2>
+<h3 id="1-这里先了解四个相关数据结构">(1) 这里先了解四个相关数据结构</h3>
+<h4 id="1mspan">1，mspan</h4>
+<p>通过next和prev，组成一个<code>双向链表</code>，mspan负责管理从startAddr开始的N个page的地址空间。是基本的内存分配单位。是一个管理内存的基本单位。</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#09f;font-style:italic">//保留重要成员变量
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">type</span> mspan <span style="color:#069;font-weight:bold">struct</span> {
+    next <span style="color:#555">*</span>mspan     <span style="color:#09f;font-style:italic">// 链表中下个span
+</span><span style="color:#09f;font-style:italic"></span>    prev <span style="color:#555">*</span>mspan     <span style="color:#09f;font-style:italic">// 链表中上个span	startAddr uintptr // 该mspan的起始地址
+</span><span style="color:#09f;font-style:italic"></span>    freeindex <span style="color:#078;font-weight:bold">uintptr</span> <span style="color:#09f;font-style:italic">// 表示分配到第几个块
+</span><span style="color:#09f;font-style:italic"></span>    npages    <span style="color:#078;font-weight:bold">uintptr</span> <span style="color:#09f;font-style:italic">// 一个span中含有几页
+</span><span style="color:#09f;font-style:italic"></span>    sweepgen    <span style="color:#078;font-weight:bold">uint32</span> <span style="color:#09f;font-style:italic">// GC相关
+</span><span style="color:#09f;font-style:italic"></span>    incache     <span style="color:#078;font-weight:bold">bool</span>       <span style="color:#09f;font-style:italic">// 是否被mcache占用
+</span><span style="color:#09f;font-style:italic"></span>    spanclass   spanClass  <span style="color:#09f;font-style:italic">// 0 ~ _NumSizeClasses之间的一个值，比如，为3，那么这个mspan被分割成32byte的块
+</span><span style="color:#09f;font-style:italic"></span>}
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="2mcache">2，mcache</h4>
+<p>在go中，每个P都会被分配一个mcache，是私有的，从这里分配内存不需要加锁</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">type</span> mcache <span style="color:#069;font-weight:bold">struct</span> {
+    tiny             <span style="color:#078;font-weight:bold">uintptr</span> <span style="color:#09f;font-style:italic">// 小对象分配器
+</span><span style="color:#09f;font-style:italic"></span>    tinyoffset       <span style="color:#078;font-weight:bold">uintptr</span> <span style="color:#09f;font-style:italic">// 小对象分配偏移
+</span><span style="color:#09f;font-style:italic"></span>    local_tinyallocs <span style="color:#078;font-weight:bold">uintptr</span> <span style="color:#09f;font-style:italic">// number of tiny allocs not counted in other stats
+</span><span style="color:#09f;font-style:italic"></span>    alloc [numSpanClasses]<span style="color:#555">*</span>mspan <span style="color:#09f;font-style:italic">// 存储不同级别的mspan
+</span><span style="color:#09f;font-style:italic"></span>}
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="3mcentral">3，mcentral</h4>
+<p>当mcache不够时候，会向mcentral申请内存。该结构实际上是在mheap中的，所以在我看来，这起到桥梁的作用。</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">type</span> mcentral <span style="color:#069;font-weight:bold">struct</span> {
+    lock      mutex    <span style="color:#09f;font-style:italic">// 多个P会访问，需要加锁
+</span><span style="color:#09f;font-style:italic"></span>    spanclass spanClass  <span style="color:#09f;font-style:italic">// 对应了mspan中的spanclass
+</span><span style="color:#09f;font-style:italic"></span>    nonempty  mSpanList <span style="color:#09f;font-style:italic">// 该mcentral可用的mspan列表
+</span><span style="color:#09f;font-style:italic"></span>    empty     mSpanList <span style="color:#09f;font-style:italic">// 该mcentral中已经被使用的mspan列表
+</span><span style="color:#09f;font-style:italic"></span>}
+
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="4mheap">4，mheap</h4>
+<p>mheap是真实拥有虚拟地址的，当mcentral不够时候，会向mheap申请。</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">type</span> mheap <span style="color:#069;font-weight:bold">struct</span> {
+    lock      mutex                    <span style="color:#09f;font-style:italic">// 是公有的，需要加锁
+</span><span style="color:#09f;font-style:italic"></span>    free      [_MaxMHeapList]mSpanList <span style="color:#09f;font-style:italic">// 未分配的spanlist，比如free[3]是由包含3个 page 的 mspan 组成的链表	
+</span><span style="color:#09f;font-style:italic"></span>    freelarge mTreap                   <span style="color:#09f;font-style:italic">// mspan组成的链表，每个mspan的 page 个数大于_MaxMHeapList
+</span><span style="color:#09f;font-style:italic"></span>    busy      [_MaxMHeapList]mSpanList <span style="color:#09f;font-style:italic">// busy lists of large spans of given length
+</span><span style="color:#09f;font-style:italic"></span>    busylarge mSpanList                <span style="color:#09f;font-style:italic">// busy lists of large spans length &gt;= _MaxMHeapList
+</span><span style="color:#09f;font-style:italic"></span>    allspans []<span style="color:#555">*</span>mspan                  <span style="color:#09f;font-style:italic">// 所有申请过的 mspan 都会记录在 allspans
+</span><span style="color:#09f;font-style:italic"></span>    spans []<span style="color:#555">*</span>mspan                     <span style="color:#09f;font-style:italic">// 记录 arena 区域页号（page number）和 mspan 的映射关系
+</span><span style="color:#09f;font-style:italic"></span>
+    arena_start <span style="color:#078;font-weight:bold">uintptr</span> <span style="color:#09f;font-style:italic">// arena是Golang中用于分配内存的连续虚拟地址区域，这是该区域开始的指针
+</span><span style="color:#09f;font-style:italic"></span>    arena_used  <span style="color:#078;font-weight:bold">uintptr</span> <span style="color:#09f;font-style:italic">// 已经使用的内存的指针
+</span><span style="color:#09f;font-style:italic"></span>    arena_alloc <span style="color:#078;font-weight:bold">uintptr</span>
+    arena_end   <span style="color:#078;font-weight:bold">uintptr</span>
+
+    central [numSpanClasses]<span style="color:#069;font-weight:bold">struct</span> {
+        mcentral mcentral
+        pad      [sys.CacheLineSize <span style="color:#555">-</span> unsafe.<span style="color:#c0f">Sizeof</span>(mcentral{})<span style="color:#555">%</span>sys.CacheLineSize]<span style="color:#078;font-weight:bold">byte</span> <span style="color:#09f;font-style:italic">//避免伪共享（false sharing）问题
+</span><span style="color:#09f;font-style:italic"></span>    }
+    
+    spanalloc             fixalloc <span style="color:#09f;font-style:italic">// allocator for span*
+</span><span style="color:#09f;font-style:italic"></span>    cachealloc            fixalloc <span style="color:#09f;font-style:italic">// mcache分配器
+</span><span style="color:#09f;font-style:italic"></span>
+}
+
+
+</code></pre></td></tr></table>
+</div>
+</div><p>接下来请细看下图，结合前面的讲解进行理解(务必看懂)。</p>
+<p><img src="https://user-gold-cdn.xitu.io/2018/8/9/1651d981f04e0e5a?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt="img"></p>
+<h3 id="2-内存分配细节">(2) 内存分配细节</h3>
+<p>这里不展开源代码，知道分配规则即可。(在golang1.10，MacOs 10.12中，下面的32K改为64K)</p>
+<p>1, object size &gt; 32K；则使用 mheap 直接分配。</p>
+<p>2，object size &lt; 16 byte；则使用 mcache 的小对象分配器 tiny 直接分配。</p>
+<p>3，object size &gt; 16 byte &amp;&amp; size &lt;= 32K byte时，先在mcache申请分配。如果 mcache对应的已经没有可用的块，则向mcentral请求，如果mcentral也没有可用的块，则向mheap申请，如果 mheap 也没有合适的span，则向操作系统申请。</p>
+<h2 id="三-内存模型">三. 内存模型</h2>
+<p>这里说下在golang中的happen-before(<strong>假设A和B表示一个多线程的程序执行的两个操作。如果A happens-before B，那么A操作对内存的影响将对执行B的线程(且执行B之前)可见</strong>)</p>
+<h4 id="1-init-函数">(1) Init 函数</h4>
+<p>1, P1中导入了包P2，则P2中的init函数Happens BeforeP1中所有的操作</p>
+<p>2, 所有的init函数Happens Before Main函数</p>
+<h4 id="2-channel">(2) Channel</h4>
+<p>1, 对一个元素的send操作Happens Before对应的receive操作</p>
+<p>2, 对channel的close操作Happens Before receive端的收到关闭通知操作</p>
+<p>3, 对于无缓存的Channel，对一个元素的receive 操作Happens Before对应的send完成操作</p>
+<p>4, 对于带缓存的Channel，假设Channel 的buffer 大小为C，那么对第k个元素的receive操作，Happens Before第k+C个send完成操作。 。</p>
+<h2 id="四-逃逸分析">四. 逃逸分析</h2>
+<p>为什么要做逃逸分析呢，因为在栈上分配的代价要远小于在堆上进行分配，这块是目前很多人缺乏的一个思维，包括我。最近看了一些这方面的文章，再回去看自己的代码，发现很多不合理的地方，希望通过这次讲解，能一起进步。</p>
+<h3 id="1-什么是内存逃逸">(1) 什么是内存逃逸</h3>
+<p>简单来说就是原本应在栈上分配内存的对象，逃逸到了堆上进行分配。如果能在栈上进行分配，那么只需要两个指令，入栈和出栈，GC压力也小了。所以相比之下，在栈上分配代价会小很多。</p>
+<h3 id="2-引起逃逸的情况">(2) 引起逃逸的情况</h3>
+<p>个人总结了一下，如果无法在编译期确定变量的作用域和占用内存大小，则会逃逸到堆上。</p>
+<h4 id="1指针">1，指针</h4>
+<p>我们平时会知道，传递指针可以减少底层值的拷贝，可以提高效率，在一般情况下是如此，但是如果拷贝的是少量的数据，那么传递指针效率不一定会高于值拷贝。</p>
+<p>(1) 指针是间接访址，所指向的地址大多保存在堆上，因此考虑到GC，指针不一定是高效的。看个例子</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">type</span> test <span style="color:#069;font-weight:bold">struct</span>{}
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+    t1 <span style="color:#555">:=</span> <span style="color:#c0f">test1</span>()
+    t2 <span style="color:#555">:=</span> <span style="color:#c0f">test2</span>()
+    <span style="color:#366">println</span>(<span style="color:#c30">&#34;t1&#34;</span>, <span style="color:#555">&amp;</span>t1, <span style="color:#c30">&#34;t2&#34;</span>, <span style="color:#555">&amp;</span>t2)
+}
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">test1</span>() test {
+    t1 <span style="color:#555">:=</span> test{}
+    <span style="color:#366">println</span>(<span style="color:#c30">&#34;t1&#34;</span>, <span style="color:#555">&amp;</span>t1)
+    <span style="color:#069;font-weight:bold">return</span> t1
+}
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">test2</span>() <span style="color:#555">*</span>test {
+    t2 <span style="color:#555">:=</span> test{}
+    <span style="color:#366">println</span>(<span style="color:#c30">&#34;t2&#34;</span>, <span style="color:#555">&amp;</span>t2)
+    <span style="color:#069;font-weight:bold">return</span> <span style="color:#555">&amp;</span>t2
+}
+
+</code></pre></td></tr></table>
+</div>
+</div><p>运行查看逃逸情况(禁止内联)</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">go</span> run <span style="color:#555">-</span>gcflags <span style="color:#a00;background-color:#faa">&#39;</span><span style="color:#555">-</span>m <span style="color:#555">-</span>l<span style="color:#a00;background-color:#faa">&#39;</span> main.<span style="color:#069;font-weight:bold">go</span>
+<span style="color:#a00;background-color:#faa">#</span> command<span style="color:#555">-</span>line<span style="color:#555">-</span>arguments
+.<span style="color:#555">/</span>main.<span style="color:#069;font-weight:bold">go</span>:<span style="color:#f60">36</span>:<span style="color:#f60">16</span>: test1 <span style="color:#555">&amp;</span>t1 does not escape
+.<span style="color:#555">/</span>main.<span style="color:#069;font-weight:bold">go</span>:<span style="color:#f60">43</span>:<span style="color:#f60">9</span>: <span style="color:#555">&amp;</span>t2 escapes to heap
+.<span style="color:#555">/</span>main.<span style="color:#069;font-weight:bold">go</span>:<span style="color:#f60">41</span>:<span style="color:#f60">2</span>: moved to heap: t2
+.<span style="color:#555">/</span>main.<span style="color:#069;font-weight:bold">go</span>:<span style="color:#f60">42</span>:<span style="color:#f60">16</span>: test2 <span style="color:#555">&amp;</span>t2 does not escape
+.<span style="color:#555">/</span>main.<span style="color:#069;font-weight:bold">go</span>:<span style="color:#f60">31</span>:<span style="color:#f60">16</span>: main <span style="color:#555">&amp;</span>t1 does not escape
+.<span style="color:#555">/</span>main.<span style="color:#069;font-weight:bold">go</span>:<span style="color:#f60">31</span>:<span style="color:#f60">27</span>: main <span style="color:#555">&amp;</span>t2 does not escape
+t1 <span style="color:#f60">0xc420049f50</span>
+t2 <span style="color:#f60">0x10c1648</span>
+t1 <span style="color:#f60">0xc420049f70</span> t2 <span style="color:#f60">0xc420049f70</span>
+
+
+</code></pre></td></tr></table>
+</div>
+</div><p>从上面可以看出，返回指针的test2函数中的t2逃逸到堆上，等待它的将是残忍的GC。</p>
+<h4 id="2切片">2，切片</h4>
+<p>如果编译期无法确定切片的大小或者切片大小过大，超出栈大小限制，或者在append时候会导致重新分配内存，这时候很可能会分配到堆上。</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#09f;font-style:italic">// 切片超过栈大小
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>(){
+    s <span style="color:#555">:=</span> <span style="color:#366">make</span>([]<span style="color:#078;font-weight:bold">byte</span>, <span style="color:#f60">1</span>, <span style="color:#f60">64</span> <span style="color:#555">*</span> <span style="color:#f60">1024</span>)
+    _ = s
+}
+
+<span style="color:#09f;font-style:italic">// 无法确定切片大小
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+    s <span style="color:#555">:=</span> <span style="color:#366">make</span>([]<span style="color:#078;font-weight:bold">byte</span>, <span style="color:#f60">1</span>, rand2.<span style="color:#c0f">Intn</span>(<span style="color:#f60">10</span>))
+    _ = s
+}
+
+</code></pre></td></tr></table>
+</div>
+</div><p>看完上述的例子，我们来看个有意思的例子。我们知道，切片比数组高效，但是，确实是如此吗？</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">array</span>() [<span style="color:#f60">1000</span>]<span style="color:#078;font-weight:bold">int</span> {
+    <span style="color:#069;font-weight:bold">var</span> x [<span style="color:#f60">1000</span>]<span style="color:#078;font-weight:bold">int</span>
+    <span style="color:#069;font-weight:bold">for</span> i <span style="color:#555">:=</span> <span style="color:#f60">0</span>; i &lt; <span style="color:#366">len</span>(x); i<span style="color:#555">++</span> {
+        x[i] = i
+    }
+    <span style="color:#069;font-weight:bold">return</span> x
+}
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">slice</span>() []<span style="color:#078;font-weight:bold">int</span> {
+    x <span style="color:#555">:=</span> <span style="color:#366">make</span>([]<span style="color:#078;font-weight:bold">int</span>, <span style="color:#f60">1000</span>)
+    <span style="color:#069;font-weight:bold">for</span> i <span style="color:#555">:=</span> <span style="color:#f60">0</span>; i &lt; <span style="color:#366">len</span>(x); i<span style="color:#555">++</span> {
+        x[i] = i
+    }
+    <span style="color:#069;font-weight:bold">return</span> x
+}
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">BenchmarkArray</span>(b <span style="color:#555">*</span>testing.B) {
+    <span style="color:#069;font-weight:bold">for</span> i <span style="color:#555">:=</span> <span style="color:#f60">0</span>; i &lt; b.N; i<span style="color:#555">++</span> {
+        <span style="color:#c0f">array</span>()
+    }
+}
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">BenchmarkSlice</span>(b <span style="color:#555">*</span>testing.B) {
+    <span style="color:#069;font-weight:bold">for</span> i <span style="color:#555">:=</span> <span style="color:#f60">0</span>; i &lt; b.N; i<span style="color:#555">++</span> {
+        <span style="color:#c0f">slice</span>()
+    }
+}
+
+</code></pre></td></tr></table>
+</div>
+</div><p>运行结果如下</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">go</span> test <span style="color:#555">-</span>bench . <span style="color:#555">-</span>benchmem <span style="color:#555">-</span>gcflags <span style="color:#c30">&#34;-N -l -m&#34;</span>
+BenchmarkArray<span style="color:#555">-</span><span style="color:#f60">4</span>        <span style="color:#f60">30000000</span>                <span style="color:#f60">52.8</span> ns<span style="color:#555">/</span>op             <span style="color:#f60">0</span> B<span style="color:#555">/</span>op          <span style="color:#f60">0</span> allocs<span style="color:#555">/</span>op
+BenchmarkSlice<span style="color:#555">-</span><span style="color:#f60">4</span>        <span style="color:#f60">20000000</span>                <span style="color:#f60">82.4</span> ns<span style="color:#555">/</span>op           <span style="color:#f60">160</span> B<span style="color:#555">/</span>op          <span style="color:#f60">1</span> allocs<span style="color:#555">/</span>op
+
+</code></pre></td></tr></table>
+</div>
+</div><p>可见，我们不一定是一定要用切片代替数组，因为切片底层数组可能会在堆上分配内存，而且小数组在栈上拷贝的消耗也未必比切片大。</p>
+<h4 id="3interface">3，interface</h4>
+<p>interface是我们在go中经常会用到的特性，非常好用，但是由于interface类型在编译期间，编译期很难确定其具体类型，因此也导致了逃逸现象。举个最简单的例子</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+    s <span style="color:#555">:=</span> <span style="color:#c30">&#34;abc&#34;</span>
+    fmt.<span style="color:#c0f">Println</span>(s)
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>上述代码会产生逃逸，原因是fmt.Println这个方法接收的参数是interface类型。但是这块只是作为科普，毕竟interface带来的好处要大于它这个缺陷</p>
+<h2 id="参考链接">参考链接</h2>
+<blockquote>
+<p><a href="https://segment.com/blog/allocation-efficiency-in-high-performance-go-services/">https://segment.com/blog/allocation-efficiency-in-high-performance-go-services/</a><br>
+<a href="https://www.jianshu.com/p/47691d870756">https://www.jianshu.com/p/47691d870756</a><br>
+<a href="https://link.jianshu.com/?t=http://legendtkl.com/2017/04/02/golang-alloc/">https://link.jianshu.com/?t=http://legendtkl.com/2017/04/02/golang-alloc/</a><br>
+<a href="https://link.jianshu.com/?t=https://tracymacding.gitbooks.io/implementation-of-golang/content/memory/memory_core_data_structure.html">https://link.jianshu.com/?t=https://tracymacding.gitbooks.io/implementation-of-golang/content/memory/memory_core_data_structure.html</a><br>
+<a href="https://www.iminho.me/wiki/blog-27.html">https://www.iminho.me/wiki/blog-27.html</a></p>
+</blockquote>
+
+                
+                
+                <hr> 
+
+<div class="entry-shang text-center">
+    
+    <p> 「真诚赞赏，手留余香」</p>
+    
+    <button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+    <div class="zs-modal-head">
+        <button type="button" class="close">×</button>
+        <span class="author">
+            <a href="http://www.mafool.com">
+                <img src="http://www.mafool.com/img/reward/hollson.png" alt="史布斯" />码夫庄园
+            </a>
+        </span>
+        
+        <p class="tip"><i></i><span>嗯，我的梦想是被读者的稿费包养~</span></p>
+        
+
+    </div>
+    <div class="zs-modal-body">
+        <div class="zs-modal-btns">
+            <button class="btn btn-blink" data-num="2">2元</button>
+            <button class="btn btn-blink" data-num="5">5元</button>
+            <button class="btn btn-blink" data-num="10">10元</button>
+            <button class="btn btn-blink" data-num="50">50元</button>
+            <button class="btn btn-blink" data-num="100">100元</button>
+            <button class="btn btn-blink" data-num="1">任意金额</button>
+        </div>
+        <div class="zs-modal-pay">
+            <button class="btn btn-bred" id="pay-text">2元</button>
+            <p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+            <img src="http://www.mafool.com/img/reward/wechat-2.png" alt="史布斯" id="pay-image" />
+        </div>
+    </div>
+    <div class="zs-modal-footer">
+        <label>
+            <span class="zs-wechat"></span>
+            <input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked">
+            <img src="http://www.mafool.com/img/reward/wechat-btn.png" alt="史布斯" />
+            </span>&nbsp;
+            <span>
+                <input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay">
+                <img src="http://www.mafool.com/img/reward/alipay-btn.png" alt="史布斯" />
+            </span>
+        </label>
+    </div>
+</div>
+
+ 
+
+                <br>
+                <br>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="column is-3">
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">最近发布</h2>
+        
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/0742b474a643d63a774461726a6201203/">Go语言中的原子操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年12月2日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/1600330472/">Go基础笔记 - 2.3 常量</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月10日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/15996311192/">Go - Gin框架快速入门</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月9日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480249/">Gorm快速指南</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480218/">18. Go语言MySQL数据库操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+    </div>
+</div>
+<br>
+        
+
+
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">标签</h2>
+        <div>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/atomic">atomic</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/blog">blog</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cgo">cgo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cloud">cloud</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/config">config</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/copy">copy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/docker">docker</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/exam">exam</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/gin">gin</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/git">git</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/golang">golang</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/hugo">hugo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/install">install</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/istio">istio</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/jenkins">jenkins</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/kubernetes">kubernetes</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/map">map</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/microservice">microservice</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/mycat">mycat</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/nginx">nginx</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/plan9">plan9</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/posix">posix</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/proxy">proxy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/raft">raft</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ssh">ssh</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/tips">tips</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ymal">ymal</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%B8%BB%E4%BB%8E">主从</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BA%8B%E5%8A%A1">事务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BB%A3%E7%90%86">代理</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BD%9C%E7%94%A8%E5%9F%9F">作用域</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%86%85%E5%AD%98">内存</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%8B%E7%BC%A9">压缩</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%88%9B">原创</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%AD%90">原子</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%91%BD%E4%BB%A4%E8%A1%8C">命令行</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%93%A8%E5%85%B5">哨兵</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%AD%98%E5%82%A8">存储</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B8%B8%E9%87%8F">常量</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B9%B6%E5%8F%91">并发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BC%82%E5%B8%B8">异常</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1">微服务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%88%E6%9D%83%E8%AE%A4%E8%AF%81">授权认证</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%92%E5%BA%8F">排序</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%A5%E5%8F%A3">接口</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%97%A5%E5%BF%97">日志</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%9D%83%E9%99%90">权限</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE1">标签1</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE2">标签2</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%AD%A3%E5%88%99">正则</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%81%E9%87%8F%E5%88%86%E5%8F%91">流量分发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%8B%E8%AF%95">测试</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%BA%90%E7%A0%81">源码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%8A%B6%E6%80%81%E7%A0%81">状态码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%AE%97%E6%B3%95">算法</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%BC%8F">编程模式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%80%81%E5%A6%96%E7%AC%94%E8%AE%B0">老妖笔记</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%BF%87%E6%BB%A4%E5%99%A8">过滤器</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%80%83%E9%80%B8">逃逸</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%85%8D%E7%BD%AE">配置</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%86%99">重写</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%AE%9A%E5%90%91">重定向</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9B%86%E7%BE%A4">集群</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9D%A2%E8%AF%95">面试</a>
+            </span>
+            
+        </div>
+    </div>
+</div>
+<br>
+    </div>
+</div>
+
+        </div>
+    </div>
+
+    
+    <footer class="footer has-background-grey-darker has-text-white">
+    <div class="content has-text-centered">
+        <p>
+            <span class="icon is-large">
+                <a href="https://twitter.com/" class="mysocial" rel="me">
+                    <i class="fab fa-twitter fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://www.youtube.com/" class="mysocial" rel="me">
+                    <i class="fab fa-youtube fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://github.com/" class="mysocial" rel="me">
+                    <i class="fab fa-github fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <br><br>
+            友情链接：
+            
+            <a class="mysocial" href="http://www.mafool.com" target="_blank">Mafool</a>
+            
+            <a class="mysocial" href="https://gohugo.io/documentation/" target="_blank">Hugo</a>
+            
+            <a class="mysocial" href="https://bulma.io/" target="_blank">Bulma</a>
+            
+            <a class="mysocial" href="https://bootstrapious.com/" target="_blank">Bootstrapious</a>
+            
+            <a class="mysocial" href="https://youzhixueyuan.com/" target="_blank">Youzhixueyuan</a>
+            
+            <br><br />
+            版权所有 &copy; 码夫庄园 2021
+            - <a class="mysocial" href="https://github.com/hollson/hugo-theme-dooz">Hugo Theme</a>
+        </p>
+    </div>
+</footer>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='http://www.mafool.com/js/dooz.totop.js?v=0.0.0' async=""></script>
+
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = 'https://hm.baidu.com/hm.js?f185359ec6b829a6a93e1e1f2597f6d9';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DK042XSJ2J"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-DK042XSJ2J');
+</script>
+
+    
+    
+<script type="text/javascript" src="http://www.mafool.com/js/reward.js"></script>
+
+    
+    <script defer src="https://cdn.staticfile.org/font-awesome/5.13.0/js/all.min.js"></script>
+</body>
+
+</html>

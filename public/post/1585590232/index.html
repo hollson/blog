@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>码夫庄园-接口转换的原理</title>
+    <meta name="keywords"
+        content='interface,接口'>
+    <meta name="description" content="golang接口原理" />
+
+    
+    <meta name="baidu-site-verification" content="v9szEmQLra" />
+    <meta name="360-site-verification" content="d8e961f98fb655e4b8cf9439cfd9ac7f" />
+    <meta name="sogou_site_verification" content="40NC9EdZDC" />
+    <meta name="shenma-site-verification" content="3200e3042e92157713a3b0aceeecb20a_1586020187" />
+    <meta name="google-site-verification" content="r8987bkunZHJeKut3ocu5NIJ5QEu53NA6Q_r7RrZ46c" />
+    <meta name="msvalidate.01" content="893A2865ABC54AC2782D118536831056" />
+
+    
+    <link rel="shortcut icon" href="http://www.mafool.com/img/res/favicon.ico">
+    
+
+    
+
+    <link crossorigin="anonymous" integrity="sha384-5kGFOAqgEKnuF6c2jk2JANKHZgYVt38Wn2dVJENtq1EBCP54/1uzXU5mpxqL8WjN"
+        href="https://lib.baomitu.com/bulma/0.8.0/css/bulma.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="http://www.mafool.com/css/dooz.blog.css" />
+    <script crossorigin="anonymous" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh"
+        src="https://lib.baomitu.com/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/jquery.share.min.js"></script>
+    
+
+    
+
+    
+    
+<link rel="stylesheet" href="http://www.mafool.com/css/reward.css">
+
+
+    <link href="http://www.mafool.com/css/fonts.googleapi.css" rel="stylesheet">
+    <script src=http://www.mafool.com/js/dooz.blog.js></script>
+
+    
+    <script>
+        $(document).ready(function () {
+            $('.content a[href^="http"]').each(function () {
+                $(this).attr('target', '_blank');
+            });
+        });
+
+        $(document).on('click', '.modal-wechat', function () {
+            $(".modal").addClass("is-active");
+        });
+
+        $(document).on('click', '.modal-background', function () {
+            $(".modal").removeClass("is-active");
+        });
+    </script>
+</head>
+
+<body>
+    
+    
+<section class="hero is-info is-medium"
+    style="background-image: url('/img/res/blog.jpg');">
+    <div class="hero-head">
+        <nav class="navbar is-transparent container has-text-white">
+    <div class="navbar-brand">
+        <div class="navbar-item">
+            <a class="title is-5 is-white" href="http://www.mafool.com/">码夫庄园</a>
+        </div>
+
+        
+        <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <div id="navbarExampleTransparentExample" class="navbar-menu has-text-dark">
+        
+
+        <div class="navbar-end">
+            <a class="navbar-item" href='http://www.mafool.com/'>首页</a>
+            <a class="navbar-item" href='http://www.mafool.com/archives'>归档 </a>
+            <a class="navbar-item" href='http://www.mafool.com/about'>关于</a>
+            <span class="navbar-item">
+                <a class="button is-primary is-inverted" href="https://github.com/hollson/hugo-theme-dooz">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>主题</span>
+                </a>
+            </span>
+        </div>
+    </div>
+</nav>
+    </div>
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <div class='container has-text-left column is-7'>
+                
+                <span>
+                    <a class="bar_tag" href="http://www.mafool.com/tags/%E6%8E%A5%E5%8F%A3" title="接口">接口</a>
+                </span>
+                
+                <h1 class="title is-size-2" style="margin-bottom:0.2rem;">
+                    
+                    接口转换的原理
+                    
+                </h1>
+                
+                <span class="title is-size-6" style="font-style: italic;"> </span><br>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    
+    <div class="container">
+        <div class="section">
+            
+<div class="columns">
+    <div class="column is-9">
+        <div class="tile is-child box">
+            <div class="content">
+                
+                <nav class="level">
+                    
+                    <div class="level-left">
+                        <div class="level-item">
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2018年12月31日,
+    星期一 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 6分钟阅读
+</p>
+                        </div>
+                    </div>
+
+                    
+                    
+                    <div class="share-component level-right" data-disabled="google,diandian,tencent,qzone"
+                        data-description="Share.js - 一键分享到微博，QQ空间，腾讯微博，人人，豆瓣"
+                        data-mobile-sites="weibo,qq,qzone,tencent">
+                    </div>
+                    
+                </nav>
+                <hr>
+                
+                <header>
+                    <h2>目录</h2>
+                </header>
+                <nav id="TableOfContents"></nav>
+                
+                <hr>
+                <p>通过前面提到的 <code>iface</code> 的源码可以看到，实际上它包含接口的类型 <code>interfacetype</code> 和 实体类型的类型 <code>_type</code>，这两者都是 <code>iface</code> 的字段 <code>itab</code> 的成员。也就是说生成一个 <code>itab</code> 同时需要接口的类型和实体的类型。</p>
+<blockquote>
+<p>&lt;interface 类型， 实体类型&gt; -&gt;itable</p>
+</blockquote>
+<p>当判定一种类型是否满足某个接口时，Go 使用类型的方法集和接口所需要的方法集进行匹配，如果类型的方法集完全包含接口的方法集，则可认为该类型实现了该接口。</p>
+<p>例如某类型有 <code>m</code> 个方法，某接口有 <code>n</code> 个方法，则很容易知道这种判定的时间复杂度为 <code>O(mn)</code>，Go 会对方法集的函数按照函数名的字典序进行排序，所以实际的时间复杂度为 <code>O(m+n)</code>。</p>
+<p>这里我们来探索将一个接口转换给另外一个接口背后的原理，当然，能转换的原因必然是类型兼容。</p>
+<p>直接来看一个例子：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-golang" data-lang="golang"><span style="color:#069;font-weight:bold">package</span> main
+
+<span style="color:#069;font-weight:bold">import</span> <span style="color:#c30">&#34;fmt&#34;</span>
+
+<span style="color:#069;font-weight:bold">type</span> coder <span style="color:#069;font-weight:bold">interface</span> {
+	<span style="color:#c0f">code</span>()
+	<span style="color:#c0f">run</span>()
+}
+
+<span style="color:#069;font-weight:bold">type</span> runner <span style="color:#069;font-weight:bold">interface</span> {
+	<span style="color:#c0f">run</span>()
+}
+
+<span style="color:#069;font-weight:bold">type</span> Gopher <span style="color:#069;font-weight:bold">struct</span> {
+	language <span style="color:#078;font-weight:bold">string</span>
+}
+
+<span style="color:#069;font-weight:bold">func</span> (g Gopher) <span style="color:#c0f">code</span>() {
+	<span style="color:#069;font-weight:bold">return</span>
+}
+
+<span style="color:#069;font-weight:bold">func</span> (g Gopher) <span style="color:#c0f">run</span>() {
+	<span style="color:#069;font-weight:bold">return</span>
+}
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+	<span style="color:#069;font-weight:bold">var</span> c coder = Gopher{}
+
+	<span style="color:#069;font-weight:bold">var</span> r runner
+	r = c
+	fmt.<span style="color:#c0f">Println</span>(c, r)
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>简单解释下上述代码：定义了两个 <code>interface</code>: <code>coder</code> 和 <code>runner</code>。定义了一个实体类型 <code>Gopher</code>，类型 <code>Gopher</code> 实现了两个方法，分别是 <code>run()</code> 和 <code>code()</code>。main 函数里定义了一个接口变量 <code>c</code>，绑定了一个 <code>Gopher</code> 对象，之后将 <code>c</code> 赋值给另外一个接口变量 <code>r</code> 。赋值成功的原因是 <code>c</code> 中包含 <code>run()</code> 方法。这样，两个接口变量完成了转换。</p>
+<p>执行命令：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">go tool compile -S ./src/main.go
+</code></pre></td></tr></table>
+</div>
+</div><p>得到 main 函数的汇编命令，可以看到： <code>r = c</code> 这一行语句实际上是调用了 <code>runtime.convI2I(SB)</code>，也就是 <code>convI2I</code> 函数，从函数名来看，就是将一个 <code>interface</code> 转换成另外一个 <code>interface</code>，看下它的源代码：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-golang" data-lang="golang"><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">convI2I</span>(inter <span style="color:#555">*</span>interfacetype, i iface) (r iface) {
+	tab <span style="color:#555">:=</span> i.tab
+	<span style="color:#069;font-weight:bold">if</span> tab <span style="color:#555">==</span> <span style="color:#069;font-weight:bold">nil</span> {
+		<span style="color:#069;font-weight:bold">return</span>
+	}
+	<span style="color:#069;font-weight:bold">if</span> tab.inter <span style="color:#555">==</span> inter {
+		r.tab = tab
+		r.data = i.data
+		<span style="color:#069;font-weight:bold">return</span>
+	}
+	r.tab = <span style="color:#c0f">getitab</span>(inter, tab._type, <span style="color:#069;font-weight:bold">false</span>)
+	r.data = i.data
+	<span style="color:#069;font-weight:bold">return</span>
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>代码比较简单，函数参数 <code>inter</code> 表示接口类型，<code>i</code> 表示绑定了实体类型的接口，<code>r</code> 则表示接口转换了之后的新的 <code>iface</code>。通过前面的分析，我们又知道， <code>iface</code> 是由 <code>tab</code> 和 <code>data</code> 两个字段组成。所以，实际上 <code>convI2I</code> 函数真正要做的事，找到新 <code>interface</code> 的 <code>tab</code> 和 <code>data</code>，就大功告成了。</p>
+<p>我们还知道，<code>tab</code> 是由接口类型 <code>interfacetype</code> 和 实体类型 <code>_type</code>。所以最关键的语句是 <code>r.tab = getitab(inter, tab._type, false)</code>。</p>
+<p>因此，重点来看下 <code>getitab</code> 函数的源码，只看关键的地方：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-golang" data-lang="golang"><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">getitab</span>(inter <span style="color:#555">*</span>interfacetype, typ <span style="color:#555">*</span>_type, canfail <span style="color:#078;font-weight:bold">bool</span>) <span style="color:#555">*</span>itab {
+	<span style="color:#09f;font-style:italic">// ……
+</span><span style="color:#09f;font-style:italic"></span>
+    <span style="color:#09f;font-style:italic">// 根据 inter, typ 计算出 hash 值
+</span><span style="color:#09f;font-style:italic"></span>	h <span style="color:#555">:=</span> <span style="color:#c0f">itabhash</span>(inter, typ)
+
+	<span style="color:#09f;font-style:italic">// look twice - once without lock, once with.
+</span><span style="color:#09f;font-style:italic"></span>	<span style="color:#09f;font-style:italic">// common case will be no lock contention.
+</span><span style="color:#09f;font-style:italic"></span>	<span style="color:#069;font-weight:bold">var</span> m <span style="color:#555">*</span>itab
+	<span style="color:#069;font-weight:bold">var</span> locked <span style="color:#078;font-weight:bold">int</span>
+	<span style="color:#069;font-weight:bold">for</span> locked = <span style="color:#f60">0</span>; locked &lt; <span style="color:#f60">2</span>; locked<span style="color:#555">++</span> {
+		<span style="color:#069;font-weight:bold">if</span> locked <span style="color:#555">!=</span> <span style="color:#f60">0</span> {
+			<span style="color:#c0f">lock</span>(<span style="color:#555">&amp;</span>ifaceLock)
+        }
+        
+        <span style="color:#09f;font-style:italic">// 遍历哈希表的一个 slot
+</span><span style="color:#09f;font-style:italic"></span>		<span style="color:#069;font-weight:bold">for</span> m = (<span style="color:#555">*</span>itab)(atomic.<span style="color:#c0f">Loadp</span>(unsafe.<span style="color:#c0f">Pointer</span>(<span style="color:#555">&amp;</span>hash[h]))); m <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span>; m = m.link {
+
+            <span style="color:#09f;font-style:italic">// 如果在 hash 表中已经找到了 itab（inter 和 typ 指针都相同）
+</span><span style="color:#09f;font-style:italic"></span>			<span style="color:#069;font-weight:bold">if</span> m.inter <span style="color:#555">==</span> inter <span style="color:#555">&amp;&amp;</span> m._type <span style="color:#555">==</span> typ {
+                <span style="color:#09f;font-style:italic">// ……
+</span><span style="color:#09f;font-style:italic"></span>                
+				<span style="color:#069;font-weight:bold">if</span> locked <span style="color:#555">!=</span> <span style="color:#f60">0</span> {
+					<span style="color:#c0f">unlock</span>(<span style="color:#555">&amp;</span>ifaceLock)
+				}
+				<span style="color:#069;font-weight:bold">return</span> m
+			}
+		}
+	}
+
+    <span style="color:#09f;font-style:italic">// 在 hash 表中没有找到 itab，那么新生成一个 itab
+</span><span style="color:#09f;font-style:italic"></span>	m = (<span style="color:#555">*</span>itab)(<span style="color:#c0f">persistentalloc</span>(unsafe.<span style="color:#c0f">Sizeof</span>(itab{})<span style="color:#555">+</span><span style="color:#366">uintptr</span>(<span style="color:#366">len</span>(inter.mhdr)<span style="color:#555">-</span><span style="color:#f60">1</span>)<span style="color:#555">*</span>sys.PtrSize, <span style="color:#f60">0</span>, <span style="color:#555">&amp;</span>memstats.other_sys))
+	m.inter = inter
+    m._type = typ
+    
+    <span style="color:#09f;font-style:italic">// 添加到全局的 hash 表中
+</span><span style="color:#09f;font-style:italic"></span>	<span style="color:#c0f">additab</span>(m, <span style="color:#069;font-weight:bold">true</span>, canfail)
+	<span style="color:#c0f">unlock</span>(<span style="color:#555">&amp;</span>ifaceLock)
+	<span style="color:#069;font-weight:bold">if</span> m.bad {
+		<span style="color:#069;font-weight:bold">return</span> <span style="color:#069;font-weight:bold">nil</span>
+	}
+	<span style="color:#069;font-weight:bold">return</span> m
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>简单总结一下：getitab 函数会根据 <code>interfacetype</code> 和 <code>_type</code> 去全局的 itab 哈希表中查找，如果能找到，则直接返回；否则，会根据给定的 <code>interfacetype</code> 和 <code>_type</code> 新生成一个 <code>itab</code>，并插入到 itab 哈希表，这样下一次就可以直接拿到 <code>itab</code>。</p>
+<p>这里查找了两次，并且第二次上锁了，这是因为如果第一次没找到，在第二次仍然没有找到相应的 <code>itab</code> 的情况下，需要新生成一个，并且写入哈希表，因此需要加锁。这样，其他协程在查找相同的 <code>itab</code> 并且也没有找到时，第二次查找时，会被挂住，之后，就会查到第一个协程写入哈希表的 <code>itab</code>。</p>
+<p>再来看一下 <code>additab</code> 函数的代码：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">58
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">59
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">60
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">61
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">62
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">63
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-golang" data-lang="golang"><span style="color:#09f;font-style:italic">// 检查 _type 是否符合 interface_type 并且创建对应的 itab 结构体 将其放到 hash 表中
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">additab</span>(m <span style="color:#555">*</span>itab, locked, canfail <span style="color:#078;font-weight:bold">bool</span>) {
+	inter <span style="color:#555">:=</span> m.inter
+	typ <span style="color:#555">:=</span> m._type
+	x <span style="color:#555">:=</span> typ.<span style="color:#c0f">uncommon</span>()
+
+	<span style="color:#09f;font-style:italic">// both inter and typ have method sorted by name,
+</span><span style="color:#09f;font-style:italic"></span>	<span style="color:#09f;font-style:italic">// and interface names are unique,
+</span><span style="color:#09f;font-style:italic"></span>	<span style="color:#09f;font-style:italic">// so can iterate over both in lock step;
+</span><span style="color:#09f;font-style:italic"></span>    <span style="color:#09f;font-style:italic">// the loop is O(ni+nt) not O(ni*nt).
+</span><span style="color:#09f;font-style:italic"></span>    <span style="color:#09f;font-style:italic">// 
+</span><span style="color:#09f;font-style:italic"></span>    <span style="color:#09f;font-style:italic">// inter 和 typ 的方法都按方法名称进行了排序
+</span><span style="color:#09f;font-style:italic"></span>    <span style="color:#09f;font-style:italic">// 并且方法名都是唯一的。所以循环的次数是固定的
+</span><span style="color:#09f;font-style:italic"></span>    <span style="color:#09f;font-style:italic">// 只用循环 O(ni+nt)，而非 O(ni*nt)
+</span><span style="color:#09f;font-style:italic"></span>	ni <span style="color:#555">:=</span> <span style="color:#366">len</span>(inter.mhdr)
+	nt <span style="color:#555">:=</span> <span style="color:#366">int</span>(x.mcount)
+	xmhdr <span style="color:#555">:=</span> (<span style="color:#555">*</span>[<span style="color:#f60">1</span> <span style="color:#555">&lt;&lt;</span> <span style="color:#f60">16</span>]method)(<span style="color:#c0f">add</span>(unsafe.<span style="color:#c0f">Pointer</span>(x), <span style="color:#366">uintptr</span>(x.moff)))[:nt:nt]
+	j <span style="color:#555">:=</span> <span style="color:#f60">0</span>
+	<span style="color:#069;font-weight:bold">for</span> k <span style="color:#555">:=</span> <span style="color:#f60">0</span>; k &lt; ni; k<span style="color:#555">++</span> {
+		i <span style="color:#555">:=</span> <span style="color:#555">&amp;</span>inter.mhdr[k]
+		itype <span style="color:#555">:=</span> inter.typ.<span style="color:#c0f">typeOff</span>(i.ityp)
+		name <span style="color:#555">:=</span> inter.typ.<span style="color:#c0f">nameOff</span>(i.name)
+		iname <span style="color:#555">:=</span> name.<span style="color:#c0f">name</span>()
+		ipkg <span style="color:#555">:=</span> name.<span style="color:#c0f">pkgPath</span>()
+		<span style="color:#069;font-weight:bold">if</span> ipkg <span style="color:#555">==</span> <span style="color:#c30">&#34;&#34;</span> {
+			ipkg = inter.pkgpath.<span style="color:#c0f">name</span>()
+		}
+		<span style="color:#069;font-weight:bold">for</span> ; j &lt; nt; j<span style="color:#555">++</span> {
+			t <span style="color:#555">:=</span> <span style="color:#555">&amp;</span>xmhdr[j]
+            tname <span style="color:#555">:=</span> typ.<span style="color:#c0f">nameOff</span>(t.name)
+            <span style="color:#09f;font-style:italic">// 检查方法名字是否一致
+</span><span style="color:#09f;font-style:italic"></span>			<span style="color:#069;font-weight:bold">if</span> typ.<span style="color:#c0f">typeOff</span>(t.mtyp) <span style="color:#555">==</span> itype <span style="color:#555">&amp;&amp;</span> tname.<span style="color:#c0f">name</span>() <span style="color:#555">==</span> iname {
+				pkgPath <span style="color:#555">:=</span> tname.<span style="color:#c0f">pkgPath</span>()
+				<span style="color:#069;font-weight:bold">if</span> pkgPath <span style="color:#555">==</span> <span style="color:#c30">&#34;&#34;</span> {
+					pkgPath = typ.<span style="color:#c0f">nameOff</span>(x.pkgpath).<span style="color:#c0f">name</span>()
+				}
+				<span style="color:#069;font-weight:bold">if</span> tname.<span style="color:#c0f">isExported</span>() <span style="color:#555">||</span> pkgPath <span style="color:#555">==</span> ipkg {
+					<span style="color:#069;font-weight:bold">if</span> m <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span> {
+                        <span style="color:#09f;font-style:italic">// 获取函数地址，并加入到itab.fun数组中
+</span><span style="color:#09f;font-style:italic"></span>						ifn <span style="color:#555">:=</span> typ.<span style="color:#c0f">textOff</span>(t.ifn)
+						<span style="color:#555">*</span>(<span style="color:#555">*</span>unsafe.Pointer)(<span style="color:#c0f">add</span>(unsafe.<span style="color:#c0f">Pointer</span>(<span style="color:#555">&amp;</span>m.fun[<span style="color:#f60">0</span>]), <span style="color:#366">uintptr</span>(k)<span style="color:#555">*</span>sys.PtrSize)) = ifn
+					}
+					<span style="color:#069;font-weight:bold">goto</span> nextimethod
+				}
+			}
+		}
+        <span style="color:#09f;font-style:italic">// ……
+</span><span style="color:#09f;font-style:italic"></span>        
+		m.bad = <span style="color:#069;font-weight:bold">true</span>
+		<span style="color:#069;font-weight:bold">break</span>
+	nextimethod:
+	}
+	<span style="color:#069;font-weight:bold">if</span> !locked {
+		<span style="color:#c0f">throw</span>(<span style="color:#c30">&#34;invalid itab locking&#34;</span>)
+    }
+
+    <span style="color:#09f;font-style:italic">// 计算 hash 值
+</span><span style="color:#09f;font-style:italic"></span>    h <span style="color:#555">:=</span> <span style="color:#c0f">itabhash</span>(inter, typ)
+    <span style="color:#09f;font-style:italic">// 加到Hash Slot链表中
+</span><span style="color:#09f;font-style:italic"></span>	m.link = hash[h]
+	m.inhash = <span style="color:#069;font-weight:bold">true</span>
+	<span style="color:#c0f">atomicstorep</span>(unsafe.<span style="color:#c0f">Pointer</span>(<span style="color:#555">&amp;</span>hash[h]), unsafe.<span style="color:#c0f">Pointer</span>(m))
+}
+</code></pre></td></tr></table>
+</div>
+</div><p><code>additab</code> 会检查 <code>itab</code> 持有的 <code>interfacetype</code> 和 <code>_type</code> 是否符合，就是看 <code>_type</code> 是否完全实现了 <code>interfacetype</code> 的方法，也就是看两者的方法列表重叠的部分就是 <code>interfacetype</code> 所持有的方法列表。注意到其中有一个双层循环，乍一看，循环次数是 <code>ni * nt</code>，但由于两者的函数列表都按照函数名称进行了排序，因此最终只执行了 <code>ni + nt</code> 次，代码里通过一个小技巧来实现：第二层循环并没有从 0 开始计数，而是从上一次遍历到的位置开始。</p>
+<p>求 hash 值的函数比较简单：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-golang" data-lang="golang"><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">itabhash</span>(inter <span style="color:#555">*</span>interfacetype, typ <span style="color:#555">*</span>_type) <span style="color:#078;font-weight:bold">uint32</span> {
+	h <span style="color:#555">:=</span> inter.typ.hash
+	h <span style="color:#555">+=</span> <span style="color:#f60">17</span> <span style="color:#555">*</span> typ.hash
+	<span style="color:#069;font-weight:bold">return</span> h <span style="color:#555">%</span> hashSize
+}
+</code></pre></td></tr></table>
+</div>
+</div><p><code>hashSize</code> 的值是 1009。</p>
+<p>更一般的，当把实体类型赋值给接口的时候，会调用 <code>conv</code> 系列函数，例如空接口调用 <code>convT2E</code> 系列、非空接口调用 <code>convT2I</code> 系列。这些函数比较相似：</p>
+<blockquote>
+<ol>
+<li>具体类型转空接口时，_type 字段直接复制源类型的 _type；调用 mallocgc 获得一块新内存，把值复制进去，data 再指向这块新内存。</li>
+<li>具体类型转非空接口时，入参 tab 是编译器在编译阶段预先生成好的，新接口 tab 字段直接指向入参 tab 指向的 itab；调用 mallocgc 获得一块新内存，把值复制进去，data 再指向这块新内存。</li>
+<li>而对于接口转接口，itab 调用 getitab 函数获取。只用生成一次，之后直接从 hash 表中获取。</li>
+</ol>
+</blockquote>
+<h1 id="参考资料">参考资料</h1>
+<p>【接口赋值、反射】http://wudaijun.com/2018/01/go-interface-implement/</p>
+<p>【itab】http://legendtkl.com/2017/07/01/golang-interface-implement/</p>
+<p>【和 C++ 的对比】https://www.jianshu.com/p/b38b1719636e</p>
+<p>【itab 原理】https://ninokop.github.io/2017/10/29/Go-%E6%96%B9%E6%B3%95%E8%B0%83%E7%94%A8%E4%B8%8E%E6%8E%A5%E5%8F%A3/</p>
+<p>【getitab源码说明】https://www.twblogs.net/a/5c245d59bd9eee16b3db561d</p>
+
+                
+                
+                <hr> 
+
+<div class="entry-shang text-center">
+    
+    <p> 「真诚赞赏，手留余香」</p>
+    
+    <button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+    <div class="zs-modal-head">
+        <button type="button" class="close">×</button>
+        <span class="author">
+            <a href="http://www.mafool.com">
+                <img src="http://www.mafool.com/img/reward/hollson.png" alt="史布斯" />码夫庄园
+            </a>
+        </span>
+        
+        <p class="tip"><i></i><span>嗯，我的梦想是被读者的稿费包养~</span></p>
+        
+
+    </div>
+    <div class="zs-modal-body">
+        <div class="zs-modal-btns">
+            <button class="btn btn-blink" data-num="2">2元</button>
+            <button class="btn btn-blink" data-num="5">5元</button>
+            <button class="btn btn-blink" data-num="10">10元</button>
+            <button class="btn btn-blink" data-num="50">50元</button>
+            <button class="btn btn-blink" data-num="100">100元</button>
+            <button class="btn btn-blink" data-num="1">任意金额</button>
+        </div>
+        <div class="zs-modal-pay">
+            <button class="btn btn-bred" id="pay-text">2元</button>
+            <p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+            <img src="http://www.mafool.com/img/reward/wechat-2.png" alt="史布斯" id="pay-image" />
+        </div>
+    </div>
+    <div class="zs-modal-footer">
+        <label>
+            <span class="zs-wechat"></span>
+            <input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked">
+            <img src="http://www.mafool.com/img/reward/wechat-btn.png" alt="史布斯" />
+            </span>&nbsp;
+            <span>
+                <input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay">
+                <img src="http://www.mafool.com/img/reward/alipay-btn.png" alt="史布斯" />
+            </span>
+        </label>
+    </div>
+</div>
+
+ 
+
+                <br>
+                <br>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="column is-3">
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">最近发布</h2>
+        
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/0742b474a643d63a774461726a6201203/">Go语言中的原子操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年12月2日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/1600330472/">Go基础笔记 - 2.3 常量</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月10日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/15996311192/">Go - Gin框架快速入门</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月9日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480249/">Gorm快速指南</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480218/">18. Go语言MySQL数据库操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+    </div>
+</div>
+<br>
+        
+
+
+
+
+<div class="card">
+  <div class="card-content">
+    <h2 class="title is-6">相关文章</h2>
+    
+    
+    <h2><a href="http://www.mafool.com/posts/09f6faa09d79344eba8fcef184997d68/">Go之接口解读</a></h2>
+    <time class="has-text-grey-light is-size-7">7 March 2020</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585590231003/">「转」iface 和 eface 的区别是什么</a></h2>
+    <time class="has-text-grey-light is-size-7">16 March 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585590231005/">「转」如何用 interface 实现多态</a></h2>
+    <time class="has-text-grey-light is-size-7">16 March 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585590231006/">「转」接口的动态类型和动态值</a></h2>
+    <time class="has-text-grey-light is-size-7">16 March 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585590231007/">「转」接口的构造过程是怎样的</a></h2>
+    <time class="has-text-grey-light is-size-7">16 March 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585590231004/">值接收者和指针接收者的区别</a></h2>
+    <time class="has-text-grey-light is-size-7">16 March 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585590231/">类型转换和断言的区别</a></h2>
+    <time class="has-text-grey-light is-size-7">31 December 2018</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585590230/">编译器自动检测类型是否实现接口</a></h2>
+    <time class="has-text-grey-light is-size-7">31 December 2018</time>
+    
+  </div>
+</div>
+<br>
+
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">标签</h2>
+        <div>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/atomic">atomic</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/blog">blog</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cgo">cgo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cloud">cloud</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/config">config</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/copy">copy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/docker">docker</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/exam">exam</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/gin">gin</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/git">git</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/golang">golang</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/hugo">hugo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/install">install</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/istio">istio</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/jenkins">jenkins</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/kubernetes">kubernetes</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/map">map</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/microservice">microservice</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/mycat">mycat</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/nginx">nginx</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/plan9">plan9</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/posix">posix</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/proxy">proxy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/raft">raft</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ssh">ssh</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/tips">tips</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ymal">ymal</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%B8%BB%E4%BB%8E">主从</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BA%8B%E5%8A%A1">事务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BB%A3%E7%90%86">代理</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BD%9C%E7%94%A8%E5%9F%9F">作用域</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%86%85%E5%AD%98">内存</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%8B%E7%BC%A9">压缩</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%88%9B">原创</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%AD%90">原子</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%91%BD%E4%BB%A4%E8%A1%8C">命令行</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%93%A8%E5%85%B5">哨兵</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%AD%98%E5%82%A8">存储</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B8%B8%E9%87%8F">常量</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B9%B6%E5%8F%91">并发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BC%82%E5%B8%B8">异常</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1">微服务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%88%E6%9D%83%E8%AE%A4%E8%AF%81">授权认证</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%92%E5%BA%8F">排序</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%A5%E5%8F%A3">接口</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%97%A5%E5%BF%97">日志</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%9D%83%E9%99%90">权限</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE1">标签1</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE2">标签2</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%AD%A3%E5%88%99">正则</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%81%E9%87%8F%E5%88%86%E5%8F%91">流量分发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%8B%E8%AF%95">测试</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%BA%90%E7%A0%81">源码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%8A%B6%E6%80%81%E7%A0%81">状态码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%AE%97%E6%B3%95">算法</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%BC%8F">编程模式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%80%81%E5%A6%96%E7%AC%94%E8%AE%B0">老妖笔记</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%BF%87%E6%BB%A4%E5%99%A8">过滤器</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%80%83%E9%80%B8">逃逸</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%85%8D%E7%BD%AE">配置</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%86%99">重写</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%AE%9A%E5%90%91">重定向</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9B%86%E7%BE%A4">集群</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9D%A2%E8%AF%95">面试</a>
+            </span>
+            
+        </div>
+    </div>
+</div>
+<br>
+    </div>
+</div>
+
+        </div>
+    </div>
+
+    
+    <footer class="footer has-background-grey-darker has-text-white">
+    <div class="content has-text-centered">
+        <p>
+            <span class="icon is-large">
+                <a href="https://twitter.com/" class="mysocial" rel="me">
+                    <i class="fab fa-twitter fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://www.youtube.com/" class="mysocial" rel="me">
+                    <i class="fab fa-youtube fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://github.com/" class="mysocial" rel="me">
+                    <i class="fab fa-github fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <br><br>
+            友情链接：
+            
+            <a class="mysocial" href="http://www.mafool.com" target="_blank">Mafool</a>
+            
+            <a class="mysocial" href="https://gohugo.io/documentation/" target="_blank">Hugo</a>
+            
+            <a class="mysocial" href="https://bulma.io/" target="_blank">Bulma</a>
+            
+            <a class="mysocial" href="https://bootstrapious.com/" target="_blank">Bootstrapious</a>
+            
+            <a class="mysocial" href="https://youzhixueyuan.com/" target="_blank">Youzhixueyuan</a>
+            
+            <br><br />
+            版权所有 &copy; 码夫庄园 2021
+            - <a class="mysocial" href="https://github.com/hollson/hugo-theme-dooz">Hugo Theme</a>
+        </p>
+    </div>
+</footer>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='http://www.mafool.com/js/dooz.totop.js?v=0.0.0' async=""></script>
+
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = 'https://hm.baidu.com/hm.js?f185359ec6b829a6a93e1e1f2597f6d9';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DK042XSJ2J"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-DK042XSJ2J');
+</script>
+
+    
+    
+<script type="text/javascript" src="http://www.mafool.com/js/reward.js"></script>
+
+    
+    <script defer src="https://cdn.staticfile.org/font-awesome/5.13.0/js/all.min.js"></script>
+</body>
+
+</html>

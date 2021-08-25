@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>码夫庄园-Cgo编程笔记 - 2.8 C&#43;&#43; 类包装</title>
+    <meta name="keywords"
+        content='码农,hugo,theme,blog,coder,geek,github,golang,技术,源码,代码,编程,程序员,主题,个人,博客,微服务,容器'>
+    <meta name="description" content="最初CGO是为了达到方便从Go语言函数调用C语言函数（用C语言实现Go语言声明的函数）以复用C语言资源这一目的而出现的（因为C语言还会涉及回调函数，自然也会涉及到从C语言函数调用Go语言函数（用Go语言实现C语言声明的函数））。" />
+
+    
+    <meta name="baidu-site-verification" content="v9szEmQLra" />
+    <meta name="360-site-verification" content="d8e961f98fb655e4b8cf9439cfd9ac7f" />
+    <meta name="sogou_site_verification" content="40NC9EdZDC" />
+    <meta name="shenma-site-verification" content="3200e3042e92157713a3b0aceeecb20a_1586020187" />
+    <meta name="google-site-verification" content="r8987bkunZHJeKut3ocu5NIJ5QEu53NA6Q_r7RrZ46c" />
+    <meta name="msvalidate.01" content="893A2865ABC54AC2782D118536831056" />
+
+    
+    <link rel="shortcut icon" href="http://www.mafool.com/img/res/favicon.ico">
+    
+
+    
+
+    <link crossorigin="anonymous" integrity="sha384-5kGFOAqgEKnuF6c2jk2JANKHZgYVt38Wn2dVJENtq1EBCP54/1uzXU5mpxqL8WjN"
+        href="https://lib.baomitu.com/bulma/0.8.0/css/bulma.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="http://www.mafool.com/css/dooz.blog.css" />
+    <script crossorigin="anonymous" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh"
+        src="https://lib.baomitu.com/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/jquery.share.min.js"></script>
+    
+
+    
+
+    
+    
+<link rel="stylesheet" href="http://www.mafool.com/css/reward.css">
+
+
+    <link href="http://www.mafool.com/css/fonts.googleapi.css" rel="stylesheet">
+    <script src=http://www.mafool.com/js/dooz.blog.js></script>
+
+    
+    <script>
+        $(document).ready(function () {
+            $('.content a[href^="http"]').each(function () {
+                $(this).attr('target', '_blank');
+            });
+        });
+
+        $(document).on('click', '.modal-wechat', function () {
+            $(".modal").addClass("is-active");
+        });
+
+        $(document).on('click', '.modal-background', function () {
+            $(".modal").removeClass("is-active");
+        });
+    </script>
+</head>
+
+<body>
+    
+    
+<section class="hero is-info is-medium"
+    style="background-image: url('/img/res/blog.jpg');">
+    <div class="hero-head">
+        <nav class="navbar is-transparent container has-text-white">
+    <div class="navbar-brand">
+        <div class="navbar-item">
+            <a class="title is-5 is-white" href="http://www.mafool.com/">码夫庄园</a>
+        </div>
+
+        
+        <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <div id="navbarExampleTransparentExample" class="navbar-menu has-text-dark">
+        
+
+        <div class="navbar-end">
+            <a class="navbar-item" href='http://www.mafool.com/'>首页</a>
+            <a class="navbar-item" href='http://www.mafool.com/archives'>归档 </a>
+            <a class="navbar-item" href='http://www.mafool.com/about'>关于</a>
+            <span class="navbar-item">
+                <a class="button is-primary is-inverted" href="https://github.com/hollson/hugo-theme-dooz">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>主题</span>
+                </a>
+            </span>
+        </div>
+    </div>
+</nav>
+    </div>
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <div class='container has-text-left column is-7'>
+                
+                <span>
+                    <a class="bar_tag" href="http://www.mafool.com/tags/cgo" title="Cgo">Cgo</a>
+                </span>
+                
+                <h1 class="title is-size-2" style="margin-bottom:0.2rem;">
+                    
+                    Cgo编程笔记 - 2.8 C&#43;&#43; 类包装
+                    
+                </h1>
+                
+                <span class="title is-size-6" style="font-style: italic;"> </span><br>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    
+    <div class="container">
+        <div class="section">
+            
+<div class="columns">
+    <div class="column is-9">
+        <div class="tile is-child box">
+            <div class="content">
+                
+                <nav class="level">
+                    
+                    <div class="level-left">
+                        <div class="level-item">
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2019年12月16日,
+    星期一 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 9分钟阅读
+</p>
+                        </div>
+                    </div>
+
+                    
+                    
+                    <div class="share-component level-right" data-disabled="google,diandian,tencent,qzone"
+                        data-description="Share.js - 一键分享到微博，QQ空间，腾讯微博，人人，豆瓣"
+                        data-mobile-sites="weibo,qq,qzone,tencent">
+                    </div>
+                    
+                </nav>
+                <hr>
+                
+                <header>
+                    <h2>目录</h2>
+                </header>
+                <nav id="TableOfContents">
+  <ul>
+    <li><a href="#281-c-类到-go-语言对象">2.8.1 C++ 类到 Go 语言对象</a>
+      <ul>
+        <li><a href="#2811-准备一个-c-类">2.8.1.1 准备一个 C++ 类</a></li>
+        <li><a href="#2812-用纯c函数接口封装-c-类">2.8.1.2 用纯C函数接口封装 C++ 类</a></li>
+        <li><a href="#2813-将纯c接口函数转为go函数">2.8.1.3 将纯C接口函数转为Go函数</a></li>
+        <li><a href="#2814-包装为go对象">2.8.1.4 包装为Go对象</a></li>
+      </ul>
+    </li>
+    <li><a href="#282-go-语言对象到-c-类">2.8.2 Go 语言对象到 C++ 类</a>
+      <ul>
+        <li><a href="#2821-构造一个go对象">2.8.2.1 构造一个Go对象</a></li>
+        <li><a href="#2822-导出c接口">2.8.2.2 导出C接口</a></li>
+        <li><a href="#2823-封装c对象">2.8.2.3 封装C++对象</a></li>
+        <li><a href="#2824-封装c对象改进">2.8.2.4 封装C++对象改进</a></li>
+      </ul>
+    </li>
+    <li><a href="#283-彻底解放c的this指针">2.8.3 彻底解放C++的this指针</a></li>
+  </ul>
+</nav>
+                
+                <hr>
+                <blockquote>
+<p>本文为Go学习笔记，感谢<a href="https://github.com/chai2010/advanced-go-programming-book">《Go语言高级编程》</a>开源图书</p>
+</blockquote>
+<h1 id="28-c-类包装">2.8 C++ 类包装</h1>
+<p>CGO是C语言和Go语言之间的桥梁，原则上无法直接支持C++的类。CGO不支持C++语法的根本原因是C++至今为止还没有一个二进制接口规范(ABI)。一个C++类的构造函数在编译为目标文件时如何生成链接符号名称、方法在不同平台甚至是C++的不同版本之间都是不一样的。但是C++是兼容C语言，所以我们可以通过增加一组C语言函数接口作为C++类和CGO之间的桥梁，这样就可以间接地实现C++和Go之间的互联。当然，因为CGO只支持C语言中值类型的数据类型，所以我们是无法直接使用C++的引用参数等特性的。</p>
+<h2 id="281-c-类到-go-语言对象">2.8.1 C++ 类到 Go 语言对象</h2>
+<p>实现C++类到Go语言对象的包装需要经过以下几个步骤：首先是用纯C函数接口包装该C++类；其次是通过CGO将纯C函数接口映射到Go函数；最后是做一个Go包装对象，将C++类到方法用Go对象的方法实现。</p>
+<h3 id="2811-准备一个-c-类">2.8.1.1 准备一个 C++ 类</h3>
+<p>为了演示简单，我们基于<code>std::string</code>做一个最简单的缓存类MyBuffer。除了构造函数和析构函数之外，只有两个成员函数分别是返回底层的数据指针和缓存的大小。因为是二进制缓存，所以我们可以在里面中放置任意数据。</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-c++" data-lang="c++"><span style="color:#09f;font-style:italic">// my_buffer.h
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#099">#include</span> <span style="color:#099">&lt;string&gt;</span><span style="color:#099">
+</span><span style="color:#099"></span>
+<span style="color:#069;font-weight:bold">struct</span> <span style="color:#0a8;font-weight:bold">MyBuffer</span> {
+	std<span style="color:#555">::</span>string<span style="color:#555">*</span> s_;
+
+	MyBuffer(<span style="color:#078;font-weight:bold">int</span> size) {
+		<span style="color:#069;font-weight:bold">this</span><span style="color:#555">-&gt;</span>s_ <span style="color:#555">=</span> <span style="color:#069;font-weight:bold">new</span> std<span style="color:#555">::</span>string(size, <span style="color:#078;font-weight:bold">char</span>(<span style="color:#c30">&#39;\0&#39;</span>));
+	}
+	<span style="color:#555">~</span>MyBuffer() {
+		<span style="color:#069;font-weight:bold">delete</span> <span style="color:#069;font-weight:bold">this</span><span style="color:#555">-&gt;</span>s_;
+	}
+
+	<span style="color:#078;font-weight:bold">int</span> <span style="color:#c0f">Size</span>() <span style="color:#069;font-weight:bold">const</span> {
+		<span style="color:#069;font-weight:bold">return</span> <span style="color:#069;font-weight:bold">this</span><span style="color:#555">-&gt;</span>s_<span style="color:#555">-&gt;</span>size();
+	}
+	<span style="color:#078;font-weight:bold">char</span><span style="color:#555">*</span> <span style="color:#c0f">Data</span>() {
+		<span style="color:#069;font-weight:bold">return</span> (<span style="color:#078;font-weight:bold">char</span><span style="color:#555">*</span>)<span style="color:#069;font-weight:bold">this</span><span style="color:#555">-&gt;</span>s_<span style="color:#555">-&gt;</span>data();
+	}
+};
+</code></pre></td></tr></table>
+</div>
+</div><p>我们在构造函数中指定缓存的大小并分配空间，在使用完之后通过析构函数释放内部分配的内存空间。下面是简单的使用方式：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-c++" data-lang="c++"><span style="color:#078;font-weight:bold">int</span> <span style="color:#c0f">main</span>() {
+	<span style="color:#069;font-weight:bold">auto</span> pBuf <span style="color:#555">=</span> <span style="color:#069;font-weight:bold">new</span> MyBuffer(<span style="color:#f60">1024</span>);
+
+	<span style="color:#069;font-weight:bold">auto</span> data <span style="color:#555">=</span> pBuf<span style="color:#555">-&gt;</span>Data();
+	<span style="color:#069;font-weight:bold">auto</span> size <span style="color:#555">=</span> pBuf<span style="color:#555">-&gt;</span>Size();
+
+	<span style="color:#069;font-weight:bold">delete</span> pBuf;
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>为了方便向C语言接口过渡，在此处我们故意没有定义C++的拷贝构造函数。我们必须以new和delete来分配和释放缓存对象，而不能以值风格的方式来使用。</p>
+<h3 id="2812-用纯c函数接口封装-c-类">2.8.1.2 用纯C函数接口封装 C++ 类</h3>
+<p>如果要将上面的C++类用C语言函数接口封装，我们可以从使用方式入手。我们可以将new和delete映射为C语言函数，将对象的方法也映射为C语言函数。</p>
+<p>在C语言中我们期望MyBuffer类可以这样使用：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-c" data-lang="c"><span style="color:#078;font-weight:bold">int</span> <span style="color:#c0f">main</span>() {
+	MyBuffer<span style="color:#555">*</span> pBuf <span style="color:#555">=</span> NewMyBuffer(<span style="color:#f60">1024</span>);
+
+	<span style="color:#078;font-weight:bold">char</span><span style="color:#555">*</span> data <span style="color:#555">=</span> MyBuffer_Data(pBuf);
+	<span style="color:#069;font-weight:bold">auto</span> size <span style="color:#555">=</span> MyBuffer_Size(pBuf);
+
+	DeleteMyBuffer(pBuf);
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>先从C语言接口用户的角度思考需要什么样的接口，然后创建 <code>my_buffer_capi.h</code> 头文件接口规范：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-c++" data-lang="c++"><span style="color:#09f;font-style:italic">// my_buffer_capi.h
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">typedef</span> <span style="color:#069;font-weight:bold">struct</span> <span style="color:#0a8;font-weight:bold">MyBuffer_T</span> MyBuffer_T;
+
+MyBuffer_T<span style="color:#555">*</span> <span style="color:#c0f">NewMyBuffer</span>(<span style="color:#078;font-weight:bold">int</span> size);
+<span style="color:#078;font-weight:bold">void</span> <span style="color:#c0f">DeleteMyBuffer</span>(MyBuffer_T<span style="color:#555">*</span> p);
+
+<span style="color:#078;font-weight:bold">char</span><span style="color:#555">*</span> <span style="color:#c0f">MyBuffer_Data</span>(MyBuffer_T<span style="color:#555">*</span> p);
+<span style="color:#078;font-weight:bold">int</span> <span style="color:#c0f">MyBuffer_Size</span>(MyBuffer_T<span style="color:#555">*</span> p);
+</code></pre></td></tr></table>
+</div>
+</div><p>然后就可以基于C++的MyBuffer类定义这些C语言包装函数。我们创建对应的<code>my_buffer_capi.cc</code>文件如下：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-c++" data-lang="c++"><span style="color:#09f;font-style:italic">// my_buffer_capi.cc
+</span><span style="color:#09f;font-style:italic"></span>
+<span style="color:#099">#include</span> <span style="color:#099">&#34;./my_buffer.h&#34;</span><span style="color:#099">
+</span><span style="color:#099"></span>
+<span style="color:#069;font-weight:bold">extern</span> <span style="color:#c30">&#34;C&#34;</span> {
+	<span style="color:#099">#include</span> <span style="color:#099">&#34;./my_buffer_capi.h&#34;</span><span style="color:#099">
+</span><span style="color:#099"></span>}
+
+<span style="color:#069;font-weight:bold">struct</span> <span style="color:#0a8;font-weight:bold">MyBuffer_T</span><span style="color:#555">:</span> MyBuffer {
+	MyBuffer_T(<span style="color:#078;font-weight:bold">int</span> size)<span style="color:#555">:</span> MyBuffer(size) {}
+	<span style="color:#555">~</span>MyBuffer_T() {}
+};
+
+MyBuffer_T<span style="color:#555">*</span> <span style="color:#c0f">NewMyBuffer</span>(<span style="color:#078;font-weight:bold">int</span> size) {
+	<span style="color:#069;font-weight:bold">auto</span> p <span style="color:#555">=</span> <span style="color:#069;font-weight:bold">new</span> MyBuffer_T(size);
+	<span style="color:#069;font-weight:bold">return</span> p;
+}
+<span style="color:#078;font-weight:bold">void</span> <span style="color:#c0f">DeleteMyBuffer</span>(MyBuffer_T<span style="color:#555">*</span> p) {
+	<span style="color:#069;font-weight:bold">delete</span> p;
+}
+
+<span style="color:#078;font-weight:bold">char</span><span style="color:#555">*</span> <span style="color:#c0f">MyBuffer_Data</span>(MyBuffer_T<span style="color:#555">*</span> p) {
+	<span style="color:#069;font-weight:bold">return</span> p<span style="color:#555">-&gt;</span>Data();
+}
+<span style="color:#078;font-weight:bold">int</span> <span style="color:#c0f">MyBuffer_Size</span>(MyBuffer_T<span style="color:#555">*</span> p) {
+	<span style="color:#069;font-weight:bold">return</span> p<span style="color:#555">-&gt;</span>Size();
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>因为头文件<code>my_buffer_capi.h</code>是用于CGO，必须是采用C语言规范的名字修饰规则。在C++源文件包含时需要用<code>extern &quot;C&quot;</code>语句说明。另外MyBuffer_T的实现只是从MyBuffer继承的类，这样可以简化包装代码的实现。同时和CGO通信时必须通过<code>MyBuffer_T</code>指针，我们无法将具体的实现暴露给CGO，因为实现中包含了C++特有的语法，CGO无法识别C++特性。</p>
+<p>将C++类包装为纯C接口之后，下一步的工作就是将C函数转为Go函数。</p>
+<h3 id="2813-将纯c接口函数转为go函数">2.8.1.3 将纯C接口函数转为Go函数</h3>
+<p>将纯C函数包装为对应的Go函数的过程比较简单。需要注意的是，因为我们的包中包含C++11的语法，因此需要通过<code>#cgo CXXFLAGS: -std=c++11</code>打开C++11的选项。</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#09f;font-style:italic">// my_buffer_capi.go
+</span><span style="color:#09f;font-style:italic"></span>
+<span style="color:#069;font-weight:bold">package</span> main
+
+<span style="color:#09f;font-style:italic">/*
+</span><span style="color:#09f;font-style:italic">#cgo CXXFLAGS: -std=c++11
+</span><span style="color:#09f;font-style:italic">
+</span><span style="color:#09f;font-style:italic">#include &#34;my_buffer_capi.h&#34;
+</span><span style="color:#09f;font-style:italic">*/</span>
+<span style="color:#069;font-weight:bold">import</span> <span style="color:#c30">&#34;C&#34;</span>
+
+<span style="color:#069;font-weight:bold">type</span> cgo_MyBuffer_T C.MyBuffer_T
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">cgo_NewMyBuffer</span>(size <span style="color:#078;font-weight:bold">int</span>) <span style="color:#555">*</span>cgo_MyBuffer_T {
+	p <span style="color:#555">:=</span> C.<span style="color:#c0f">NewMyBuffer</span>(C.<span style="color:#366">int</span>(size))
+	<span style="color:#069;font-weight:bold">return</span> (<span style="color:#555">*</span>cgo_MyBuffer_T)(p)
+}
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">cgo_DeleteMyBuffer</span>(p <span style="color:#555">*</span>cgo_MyBuffer_T) {
+	C.<span style="color:#c0f">DeleteMyBuffer</span>((<span style="color:#555">*</span>C.MyBuffer_T)(p))
+}
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">cgo_MyBuffer_Data</span>(p <span style="color:#555">*</span>cgo_MyBuffer_T) <span style="color:#555">*</span>C.char {
+	<span style="color:#069;font-weight:bold">return</span> C.<span style="color:#c0f">MyBuffer_Data</span>((<span style="color:#555">*</span>C.MyBuffer_T)(p))
+}
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">cgo_MyBuffer_Size</span>(p <span style="color:#555">*</span>cgo_MyBuffer_T) C.<span style="color:#078;font-weight:bold">int</span> {
+	<span style="color:#069;font-weight:bold">return</span> C.<span style="color:#c0f">MyBuffer_Size</span>((<span style="color:#555">*</span>C.MyBuffer_T)(p))
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>为了区分，我们在Go中的每个类型和函数名称前面增加了<code>cgo_</code>前缀，比如cgo_MyBuffer_T是对应C中的MyBuffer_T类型。</p>
+<p>为了处理简单，在包装纯C函数到Go函数时，除了cgo_MyBuffer_T类型外，对输入参数和返回值的基础类型，我们依然是用的C语言的类型。</p>
+<h3 id="2814-包装为go对象">2.8.1.4 包装为Go对象</h3>
+<p>在将纯C接口包装为Go函数之后，我们就可以很容易地基于包装的Go函数构造出Go对象来。因为cgo_MyBuffer_T是从C语言空间导入的类型，它无法定义自己的方法，因此我们构造了一个新的MyBuffer类型，里面的成员持有cgo_MyBuffer_T指向的C语言缓存对象。</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#09f;font-style:italic">// my_buffer.go
+</span><span style="color:#09f;font-style:italic"></span>
+<span style="color:#069;font-weight:bold">package</span> main
+
+<span style="color:#069;font-weight:bold">import</span> <span style="color:#c30">&#34;unsafe&#34;</span>
+
+<span style="color:#069;font-weight:bold">type</span> MyBuffer <span style="color:#069;font-weight:bold">struct</span> {
+	cptr <span style="color:#555">*</span>cgo_MyBuffer_T
+}
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">NewMyBuffer</span>(size <span style="color:#078;font-weight:bold">int</span>) <span style="color:#555">*</span>MyBuffer {
+	<span style="color:#069;font-weight:bold">return</span> <span style="color:#555">&amp;</span>MyBuffer{
+		cptr: <span style="color:#c0f">cgo_NewMyBuffer</span>(size),
+	}
+}
+
+<span style="color:#069;font-weight:bold">func</span> (p <span style="color:#555">*</span>MyBuffer) <span style="color:#c0f">Delete</span>() {
+	<span style="color:#c0f">cgo_DeleteMyBuffer</span>(p.cptr)
+}
+
+<span style="color:#069;font-weight:bold">func</span> (p <span style="color:#555">*</span>MyBuffer) <span style="color:#c0f">Data</span>() []<span style="color:#078;font-weight:bold">byte</span> {
+	data <span style="color:#555">:=</span> <span style="color:#c0f">cgo_MyBuffer_Data</span>(p.cptr)
+	size <span style="color:#555">:=</span> <span style="color:#c0f">cgo_MyBuffer_Size</span>(p.cptr)
+	<span style="color:#069;font-weight:bold">return</span> ((<span style="color:#555">*</span>[<span style="color:#f60">1</span> <span style="color:#555">&lt;&lt;</span> <span style="color:#f60">31</span>]<span style="color:#078;font-weight:bold">byte</span>)(unsafe.<span style="color:#c0f">Pointer</span>(data)))[<span style="color:#f60">0</span>:<span style="color:#366">int</span>(size):<span style="color:#366">int</span>(size)]
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>同时，因为Go语言的切片本身含有长度信息，我们将cgo_MyBuffer_Data和cgo_MyBuffer_Size两个函数合并为<code>MyBuffer.Data</code>方法，它返回一个对应底层C语言缓存空间的切片。</p>
+<p>现在我们就可以很容易在Go语言中使用包装后的缓存对象了（底层是基于C++的<code>std::string</code>实现）：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">package</span> main
+
+<span style="color:#09f;font-style:italic">//#include &lt;stdio.h&gt;
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">import</span> <span style="color:#c30">&#34;C&#34;</span>
+<span style="color:#069;font-weight:bold">import</span> <span style="color:#c30">&#34;unsafe&#34;</span>
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+	buf <span style="color:#555">:=</span> <span style="color:#c0f">NewMyBuffer</span>(<span style="color:#f60">1024</span>)
+	<span style="color:#069;font-weight:bold">defer</span> buf.<span style="color:#c0f">Delete</span>()
+
+	<span style="color:#366">copy</span>(buf.<span style="color:#c0f">Data</span>(), []<span style="color:#366">byte</span>(<span style="color:#c30">&#34;hello\x00&#34;</span>))
+	C.<span style="color:#c0f">puts</span>((<span style="color:#555">*</span>C.char)(unsafe.<span style="color:#c0f">Pointer</span>(<span style="color:#555">&amp;</span>(buf.<span style="color:#c0f">Data</span>()[<span style="color:#f60">0</span>]))))
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>例子中，我们创建了一个1024字节大小的缓存，然后通过copy函数向缓存填充了一个字符串。为了方便C语言字符串函数处理，我们在填充字符串的默认用'\0&rsquo;表示字符串结束。最后我们直接获取缓存的底层数据指针，用C语言的puts函数打印缓存的内容。</p>
+<h2 id="282-go-语言对象到-c-类">2.8.2 Go 语言对象到 C++ 类</h2>
+<p>要实现Go语言对象到C++类的包装需要经过以下几个步骤：首先是将Go对象映射为一个id；然后基于id导出对应的C接口函数；最后是基于C接口函数包装为C++对象。</p>
+<h3 id="2821-构造一个go对象">2.8.2.1 构造一个Go对象</h3>
+<p>为了便于演示，我们用Go语言构建了一个Person对象，每个Person可以有名字和年龄信息：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">package</span> main
+
+<span style="color:#069;font-weight:bold">type</span> Person <span style="color:#069;font-weight:bold">struct</span> {
+	name <span style="color:#078;font-weight:bold">string</span>
+	age  <span style="color:#078;font-weight:bold">int</span>
+}
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">NewPerson</span>(name <span style="color:#078;font-weight:bold">string</span>, age <span style="color:#078;font-weight:bold">int</span>) <span style="color:#555">*</span>Person {
+	<span style="color:#069;font-weight:bold">return</span> <span style="color:#555">&amp;</span>Person{
+		name: name,
+		age:  age,
+	}
+}
+
+<span style="color:#069;font-weight:bold">func</span> (p <span style="color:#555">*</span>Person) <span style="color:#c0f">Set</span>(name <span style="color:#078;font-weight:bold">string</span>, age <span style="color:#078;font-weight:bold">int</span>) {
+	p.name = name
+	p.age = age
+}
+
+<span style="color:#069;font-weight:bold">func</span> (p <span style="color:#555">*</span>Person) <span style="color:#c0f">Get</span>() (name <span style="color:#078;font-weight:bold">string</span>, age <span style="color:#078;font-weight:bold">int</span>) {
+	<span style="color:#069;font-weight:bold">return</span> p.name, p.age
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>Person对象如果想要在C/C++中访问，需要通过cgo导出C接口来访问。</p>
+<h3 id="2822-导出c接口">2.8.2.2 导出C接口</h3>
+<p>我们前面仿照C++对象到C接口的过程，也抽象一组C接口描述Person对象。创建一个<code>person_capi.h</code>文件，对应C接口规范文件：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-c" data-lang="c"><span style="color:#09f;font-style:italic">// person_capi.h
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#099">#include</span> <span style="color:#099">&lt;stdint.h&gt;</span><span style="color:#099">
+</span><span style="color:#099"></span>
+<span style="color:#069;font-weight:bold">typedef</span> uintptr_t person_handle_t;
+
+person_handle_t <span style="color:#c0f">person_new</span>(<span style="color:#078;font-weight:bold">char</span><span style="color:#555">*</span> name, <span style="color:#078;font-weight:bold">int</span> age);
+<span style="color:#078;font-weight:bold">void</span> <span style="color:#c0f">person_delete</span>(person_handle_t p);
+
+<span style="color:#078;font-weight:bold">void</span> <span style="color:#c0f">person_set</span>(person_handle_t p, <span style="color:#078;font-weight:bold">char</span><span style="color:#555">*</span> name, <span style="color:#078;font-weight:bold">int</span> age);
+<span style="color:#078;font-weight:bold">char</span><span style="color:#555">*</span> <span style="color:#c0f">person_get_name</span>(person_handle_t p, <span style="color:#078;font-weight:bold">char</span><span style="color:#555">*</span> buf, <span style="color:#078;font-weight:bold">int</span> size);
+<span style="color:#078;font-weight:bold">int</span> <span style="color:#c0f">person_get_age</span>(person_handle_t p);
+</code></pre></td></tr></table>
+</div>
+</div><p>然后是在Go语言中实现这一组C函数。</p>
+<p>需要注意的是，通过CGO导出C函数时，输入参数和返回值类型都不支持const修饰，同时也不支持可变参数的函数类型。同时如内存模式一节所述，我们无法在C/C++中直接长期访问Go内存对象。因此我们使用前一节所讲述的技术将Go对象映射为一个整数id。</p>
+<p>下面是<code>person_capi.go</code>文件，对应C接口函数的实现：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#09f;font-style:italic">// person_capi.go
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">package</span> main
+
+<span style="color:#09f;font-style:italic">//#include &#34;./person_capi.h&#34;
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">import</span> <span style="color:#c30">&#34;C&#34;</span>
+<span style="color:#069;font-weight:bold">import</span> <span style="color:#c30">&#34;unsafe&#34;</span>
+
+<span style="color:#09f;font-style:italic">//export person_new
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">person_new</span>(name <span style="color:#555">*</span>C.char, age C.<span style="color:#078;font-weight:bold">int</span>) C.person_handle_t {
+	id <span style="color:#555">:=</span> <span style="color:#c0f">NewObjectId</span>(<span style="color:#c0f">NewPerson</span>(C.<span style="color:#c0f">GoString</span>(name), <span style="color:#366">int</span>(age)))
+	<span style="color:#069;font-weight:bold">return</span> C.<span style="color:#c0f">person_handle_t</span>(id)
+}
+
+<span style="color:#09f;font-style:italic">//export person_delete
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">person_delete</span>(h C.person_handle_t) {
+	<span style="color:#c0f">ObjectId</span>(h).<span style="color:#c0f">Free</span>()
+}
+
+<span style="color:#09f;font-style:italic">//export person_set
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">person_set</span>(h C.person_handle_t, name <span style="color:#555">*</span>C.char, age C.<span style="color:#078;font-weight:bold">int</span>) {
+	p <span style="color:#555">:=</span> <span style="color:#c0f">ObjectId</span>(h).<span style="color:#c0f">Get</span>().(<span style="color:#555">*</span>Person)
+	p.<span style="color:#c0f">Set</span>(C.<span style="color:#c0f">GoString</span>(name), <span style="color:#366">int</span>(age))
+}
+
+<span style="color:#09f;font-style:italic">//export person_get_name
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">person_get_name</span>(h C.person_handle_t, buf <span style="color:#555">*</span>C.char, size C.<span style="color:#078;font-weight:bold">int</span>) <span style="color:#555">*</span>C.char {
+	p <span style="color:#555">:=</span> <span style="color:#c0f">ObjectId</span>(h).<span style="color:#c0f">Get</span>().(<span style="color:#555">*</span>Person)
+	name, _ <span style="color:#555">:=</span> p.<span style="color:#c0f">Get</span>()
+
+	n <span style="color:#555">:=</span> <span style="color:#366">int</span>(size) <span style="color:#555">-</span> <span style="color:#f60">1</span>
+	bufSlice <span style="color:#555">:=</span> ((<span style="color:#555">*</span>[<span style="color:#f60">1</span> <span style="color:#555">&lt;&lt;</span> <span style="color:#f60">31</span>]<span style="color:#078;font-weight:bold">byte</span>)(unsafe.<span style="color:#c0f">Pointer</span>(buf)))[<span style="color:#f60">0</span>:n:n]
+	n = <span style="color:#366">copy</span>(bufSlice, []<span style="color:#366">byte</span>(name))
+	bufSlice[n] = <span style="color:#f60">0</span>
+
+	<span style="color:#069;font-weight:bold">return</span> buf
+}
+
+<span style="color:#09f;font-style:italic">//export person_get_age
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">person_get_age</span>(h C.person_handle_t) C.<span style="color:#078;font-weight:bold">int</span> {
+	p <span style="color:#555">:=</span> <span style="color:#c0f">ObjectId</span>(h).<span style="color:#c0f">Get</span>().(<span style="color:#555">*</span>Person)
+	_, age <span style="color:#555">:=</span> p.<span style="color:#c0f">Get</span>()
+	<span style="color:#069;font-weight:bold">return</span> C.<span style="color:#366">int</span>(age)
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>在创建Go对象后，我们通过NewObjectId将Go对应映射为id。然后将id强制转义为person_handle_t类型返回。其它的接口函数则是根据person_handle_t所表示的id，让根据id解析出对应的Go对象。</p>
+<h3 id="2823-封装c对象">2.8.2.3 封装C++对象</h3>
+<p>有了C接口之后封装C++对象就比较简单了。常见的做法是新建一个Person类，里面包含一个person_handle_t类型的成员对应真实的Go对象，然后在Person类的构造函数中通过C接口创建Go对象，在析构函数中通过C接口释放Go对象。下面是采用这种技术的实现：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-c++" data-lang="c++"><span style="color:#069;font-weight:bold">extern</span> <span style="color:#c30">&#34;C&#34;</span> {
+	<span style="color:#099">#include</span> <span style="color:#099">&#34;./person_capi.h&#34;</span><span style="color:#099">
+</span><span style="color:#099"></span>}
+
+<span style="color:#069;font-weight:bold">struct</span> <span style="color:#0a8;font-weight:bold">Person</span> {
+	person_handle_t goobj_;
+
+	Person(<span style="color:#069;font-weight:bold">const</span> <span style="color:#078;font-weight:bold">char</span><span style="color:#555">*</span> name, <span style="color:#078;font-weight:bold">int</span> age) {
+		<span style="color:#069;font-weight:bold">this</span><span style="color:#555">-&gt;</span>goobj_ <span style="color:#555">=</span> person_new((<span style="color:#078;font-weight:bold">char</span><span style="color:#555">*</span>)name, age);
+	}
+	<span style="color:#555">~</span>Person() {
+		person_delete(<span style="color:#069;font-weight:bold">this</span><span style="color:#555">-&gt;</span>goobj_);
+	}
+
+	<span style="color:#078;font-weight:bold">void</span> <span style="color:#c0f">Set</span>(<span style="color:#078;font-weight:bold">char</span><span style="color:#555">*</span> name, <span style="color:#078;font-weight:bold">int</span> age) {
+		person_set(<span style="color:#069;font-weight:bold">this</span><span style="color:#555">-&gt;</span>goobj_, name, age);
+	}
+	<span style="color:#078;font-weight:bold">char</span><span style="color:#555">*</span> <span style="color:#c0f">GetName</span>(<span style="color:#078;font-weight:bold">char</span><span style="color:#555">*</span> buf, <span style="color:#078;font-weight:bold">int</span> size) {
+		<span style="color:#069;font-weight:bold">return</span> person_get_name(<span style="color:#069;font-weight:bold">this</span><span style="color:#555">-&gt;</span>goobj_ buf, size);
+	}
+	<span style="color:#078;font-weight:bold">int</span> <span style="color:#c0f">GetAge</span>() {
+		<span style="color:#069;font-weight:bold">return</span> person_get_age(<span style="color:#069;font-weight:bold">this</span><span style="color:#555">-&gt;</span>goobj_);
+	}
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>包装后我们就可以像普通C++类那样使用了：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-c++" data-lang="c++"><span style="color:#099">#include</span> <span style="color:#099">&#34;person.h&#34;</span><span style="color:#099">
+</span><span style="color:#099"></span>
+<span style="color:#099">#include</span> <span style="color:#099">&lt;stdio.h&gt;</span><span style="color:#099">
+</span><span style="color:#099"></span>
+<span style="color:#078;font-weight:bold">int</span> <span style="color:#c0f">main</span>() {
+	<span style="color:#069;font-weight:bold">auto</span> p <span style="color:#555">=</span> <span style="color:#069;font-weight:bold">new</span> Person(<span style="color:#c30">&#34;gopher&#34;</span>, <span style="color:#f60">10</span>);
+
+	<span style="color:#078;font-weight:bold">char</span> buf[<span style="color:#f60">64</span>];
+	<span style="color:#078;font-weight:bold">char</span><span style="color:#555">*</span> name <span style="color:#555">=</span> p<span style="color:#555">-&gt;</span>GetName(buf, <span style="color:#069;font-weight:bold">sizeof</span>(buf)<span style="color:#555">-</span><span style="color:#f60">1</span>);
+	<span style="color:#078;font-weight:bold">int</span> age <span style="color:#555">=</span> p<span style="color:#555">-&gt;</span>GetAge();
+
+	printf(<span style="color:#c30">&#34;%s, %d years old.</span><span style="color:#c30;font-weight:bold">\n</span><span style="color:#c30">&#34;</span>, name, age);
+	<span style="color:#069;font-weight:bold">delete</span> p;
+
+	<span style="color:#069;font-weight:bold">return</span> <span style="color:#f60">0</span>;
+}
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="2824-封装c对象改进">2.8.2.4 封装C++对象改进</h3>
+<p>在前面的封装C++对象的实现中，每次通过new创建一个Person实例需要进行两次内存分配：一次是针对C++版本的Person，再一次是针对Go语言版本的Person。其实C++版本的Person内部只有一个person_handle_t类型的id，用于映射Go对象。我们完全可以将person_handle_t直接当中C++对象来使用。</p>
+<p>下面时改进后的包装方式：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-c++" data-lang="c++"><span style="color:#069;font-weight:bold">extern</span> <span style="color:#c30">&#34;C&#34;</span> {
+	<span style="color:#099">#include</span> <span style="color:#099">&#34;./person_capi.h&#34;</span><span style="color:#099">
+</span><span style="color:#099"></span>}
+
+<span style="color:#069;font-weight:bold">struct</span> <span style="color:#0a8;font-weight:bold">Person</span> {
+	<span style="color:#069;font-weight:bold">static</span> Person<span style="color:#555">*</span> <span style="color:#c0f">New</span>(<span style="color:#069;font-weight:bold">const</span> <span style="color:#078;font-weight:bold">char</span><span style="color:#555">*</span> name, <span style="color:#078;font-weight:bold">int</span> age) {
+		<span style="color:#069;font-weight:bold">return</span> (Person<span style="color:#555">*</span>)person_new((<span style="color:#078;font-weight:bold">char</span><span style="color:#555">*</span>)name, age);
+	}
+	<span style="color:#078;font-weight:bold">void</span> <span style="color:#c0f">Delete</span>() {
+		person_delete(person_handle_t(<span style="color:#069;font-weight:bold">this</span>));
+	}
+
+	<span style="color:#078;font-weight:bold">void</span> <span style="color:#c0f">Set</span>(<span style="color:#078;font-weight:bold">char</span><span style="color:#555">*</span> name, <span style="color:#078;font-weight:bold">int</span> age) {
+		person_set(person_handle_t(<span style="color:#069;font-weight:bold">this</span>), name, age);
+	}
+	<span style="color:#078;font-weight:bold">char</span><span style="color:#555">*</span> <span style="color:#c0f">GetName</span>(<span style="color:#078;font-weight:bold">char</span><span style="color:#555">*</span> buf, <span style="color:#078;font-weight:bold">int</span> size) {
+		<span style="color:#069;font-weight:bold">return</span> person_get_name(person_handle_t(<span style="color:#069;font-weight:bold">this</span>), buf, size);
+	}
+	<span style="color:#078;font-weight:bold">int</span> <span style="color:#c0f">GetAge</span>() {
+		<span style="color:#069;font-weight:bold">return</span> person_get_age(person_handle_t(<span style="color:#069;font-weight:bold">this</span>));
+	}
+};
+</code></pre></td></tr></table>
+</div>
+</div><p>我们在Person类中增加了一个叫New静态成员函数，用于创建新的Person实例。在New函数中通过调用person_new来创建Person实例，返回的是<code>person_handle_t</code>类型的id，我们将其强制转型作为<code>Person*</code>类型指针返回。在其它的成员函数中，我们通过将this指针再反向转型为<code>person_handle_t</code>类型，然后通过C接口调用对应的函数。</p>
+<p>到此，我们就达到了将Go对象导出为C接口，然后基于C接口再包装为C++对象以便于使用的目的。</p>
+<h2 id="283-彻底解放c的this指针">2.8.3 彻底解放C++的this指针</h2>
+<p>熟悉Go语言的用法会发现Go语言中方法是绑定到类型的。比如我们基于int定义一个新的Int类型，就可以有自己的方法：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">type</span> Int <span style="color:#078;font-weight:bold">int</span>
+
+<span style="color:#069;font-weight:bold">func</span> (p Int) <span style="color:#c0f">Twice</span>() <span style="color:#078;font-weight:bold">int</span> {
+	<span style="color:#069;font-weight:bold">return</span> <span style="color:#366">int</span>(p)<span style="color:#555">*</span><span style="color:#f60">2</span>
+}
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+	<span style="color:#069;font-weight:bold">var</span> x = <span style="color:#c0f">Int</span>(<span style="color:#f60">42</span>)
+	fmt.<span style="color:#c0f">Println</span>(<span style="color:#366">int</span>(x))
+	fmt.<span style="color:#c0f">Println</span>(x.<span style="color:#c0f">Twice</span>())
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>这样就可以在不改变原有数据底层内存结构的前提下，自由切换int和Int类型来使用变量。</p>
+<p>而在C++中要实现类似的特性，一般会采用以下实现：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-c++" data-lang="c++"><span style="color:#069;font-weight:bold">class</span> <span style="color:#0a8;font-weight:bold">Int</span> {
+	<span style="color:#078;font-weight:bold">int</span> v_;
+
+	Int(v <span style="color:#078;font-weight:bold">int</span>) { <span style="color:#069;font-weight:bold">this</span>.v_ <span style="color:#555">=</span> v; }
+	<span style="color:#078;font-weight:bold">int</span> <span style="color:#c0f">Twice</span>() <span style="color:#069;font-weight:bold">const</span>{ <span style="color:#069;font-weight:bold">return</span> <span style="color:#069;font-weight:bold">this</span>.v_<span style="color:#555">*</span><span style="color:#f60">2</span>; }
+};
+
+<span style="color:#078;font-weight:bold">int</span> <span style="color:#c0f">main</span>() {
+	Int v(<span style="color:#f60">42</span>);
+
+	printf(<span style="color:#c30">&#34;%d</span><span style="color:#c30;font-weight:bold">\n</span><span style="color:#c30">&#34;</span>, v); <span style="color:#09f;font-style:italic">// error
+</span><span style="color:#09f;font-style:italic"></span>	printf(<span style="color:#c30">&#34;%d</span><span style="color:#c30;font-weight:bold">\n</span><span style="color:#c30">&#34;</span>, v.Twice());
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>新包装后的Int类虽然增加了Twice方法，但是失去了自由转回int类型的权利。这时候不仅连printf都无法输出Int本身的值，而且也失去了int类型运算的所有特性。这就是C++构造函数的邪恶之处：以失去原有的一切特性的代价换取class的施舍。</p>
+<p>造成这个问题的根源是C++中this被固定为class的指针类型了。我们重新回顾下this在Go语言中的本质：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">func</span> (this Int) <span style="color:#c0f">Twice</span>() <span style="color:#078;font-weight:bold">int</span>
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">Int_Twice</span>(this Int) <span style="color:#078;font-weight:bold">int</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>在Go语言中，和this有着相似功能的类型接收者参数其实只是一个普通的函数参数，我们可以自由选择值或指针类型。</p>
+<p>如果以C语言的角度来思考，this也只是一个普通的<code>void*</code>类型的指针，我们可以随意自由地将this转换为其它类型。</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-c++" data-lang="c++"><span style="color:#069;font-weight:bold">struct</span> <span style="color:#0a8;font-weight:bold">Int</span> {
+	<span style="color:#078;font-weight:bold">int</span> <span style="color:#c0f">Twice</span>() {
+		<span style="color:#069;font-weight:bold">const</span> <span style="color:#078;font-weight:bold">int</span><span style="color:#555">*</span> p <span style="color:#555">=</span> (<span style="color:#078;font-weight:bold">int</span><span style="color:#555">*</span>)(<span style="color:#069;font-weight:bold">this</span>);
+		<span style="color:#069;font-weight:bold">return</span> (<span style="color:#555">*</span>p) <span style="color:#555">*</span> <span style="color:#f60">2</span>;
+	}
+};
+<span style="color:#078;font-weight:bold">int</span> <span style="color:#c0f">main</span>() {
+	<span style="color:#078;font-weight:bold">int</span> x <span style="color:#555">=</span> <span style="color:#f60">42</span>;
+	printf(<span style="color:#c30">&#34;%d</span><span style="color:#c30;font-weight:bold">\n</span><span style="color:#c30">&#34;</span>, x);
+	printf(<span style="color:#c30">&#34;%d</span><span style="color:#c30;font-weight:bold">\n</span><span style="color:#c30">&#34;</span>, ((Int<span style="color:#555">*</span>)(<span style="color:#555">&amp;</span>x))<span style="color:#555">-&gt;</span>Twice());
+	<span style="color:#069;font-weight:bold">return</span> <span style="color:#f60">0</span>;
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>这样我们就可以通过将int类型指针强制转为Int类型指针，代替通过默认的构造函数后new来构造Int对象。<br>
+在Twice函数的内部，以相反的操作将this指针转回int类型的指针，就可以解析出原有的int类型的值了。<br>
+这时候Int类型只是编译时的一个壳子，并不会在运行时占用额外的空间。</p>
+<p>因此C++的方法其实也可以用于普通非 class 类型，C++到普通成员函数其实也是可以绑定到类型的。<br>
+只有纯虚方法是绑定到对象，那就是接口。</p>
+
+                
+                
+                <hr> 
+
+<div class="entry-shang text-center">
+    
+    <p> 「真诚赞赏，手留余香」</p>
+    
+    <button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+    <div class="zs-modal-head">
+        <button type="button" class="close">×</button>
+        <span class="author">
+            <a href="http://www.mafool.com">
+                <img src="http://www.mafool.com/img/reward/hollson.png" alt="史布斯" />码夫庄园
+            </a>
+        </span>
+        
+        <p class="tip"><i></i><span>嗯，我的梦想是被读者的稿费包养~</span></p>
+        
+
+    </div>
+    <div class="zs-modal-body">
+        <div class="zs-modal-btns">
+            <button class="btn btn-blink" data-num="2">2元</button>
+            <button class="btn btn-blink" data-num="5">5元</button>
+            <button class="btn btn-blink" data-num="10">10元</button>
+            <button class="btn btn-blink" data-num="50">50元</button>
+            <button class="btn btn-blink" data-num="100">100元</button>
+            <button class="btn btn-blink" data-num="1">任意金额</button>
+        </div>
+        <div class="zs-modal-pay">
+            <button class="btn btn-bred" id="pay-text">2元</button>
+            <p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+            <img src="http://www.mafool.com/img/reward/wechat-2.png" alt="史布斯" id="pay-image" />
+        </div>
+    </div>
+    <div class="zs-modal-footer">
+        <label>
+            <span class="zs-wechat"></span>
+            <input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked">
+            <img src="http://www.mafool.com/img/reward/wechat-btn.png" alt="史布斯" />
+            </span>&nbsp;
+            <span>
+                <input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay">
+                <img src="http://www.mafool.com/img/reward/alipay-btn.png" alt="史布斯" />
+            </span>
+        </label>
+    </div>
+</div>
+
+ 
+
+                <br>
+                <br>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="column is-3">
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">最近发布</h2>
+        
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/0742b474a643d63a774461726a6201203/">Go语言中的原子操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年12月2日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/1600330472/">Go基础笔记 - 2.3 常量</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月10日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/15996311192/">Go - Gin框架快速入门</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月9日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480249/">Gorm快速指南</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480218/">18. Go语言MySQL数据库操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+    </div>
+</div>
+<br>
+        
+
+
+
+
+<div class="card">
+  <div class="card-content">
+    <h2 class="title is-6">相关文章</h2>
+    
+    
+    <h2><a href="http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch201/">Cgo编程笔记 - 2.1 快速入门</a></h2>
+    <time class="has-text-grey-light is-size-7">16 December 2019</time>
+    
+    <h2><a href="http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch210/">Cgo编程笔记 - 2.10 编译和链接参数</a></h2>
+    <time class="has-text-grey-light is-size-7">16 December 2019</time>
+    
+    <h2><a href="http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch202/">Cgo编程笔记 - 2.2 CGO基础</a></h2>
+    <time class="has-text-grey-light is-size-7">16 December 2019</time>
+    
+    <h2><a href="http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch203/">Cgo编程笔记 - 2.3 类型转换</a></h2>
+    <time class="has-text-grey-light is-size-7">16 December 2019</time>
+    
+    <h2><a href="http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch204/">Cgo编程笔记 - 2.4 函数调用</a></h2>
+    <time class="has-text-grey-light is-size-7">16 December 2019</time>
+    
+    <h2><a href="http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch205/">Cgo编程笔记 - 2.5 内部机制</a></h2>
+    <time class="has-text-grey-light is-size-7">16 December 2019</time>
+    
+    <h2><a href="http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch206/">Cgo编程笔记 - 2.6 实战: 封装qsort</a></h2>
+    <time class="has-text-grey-light is-size-7">16 December 2019</time>
+    
+    <h2><a href="http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch207/">Cgo编程笔记 - 2.7 CGO内存模型</a></h2>
+    <time class="has-text-grey-light is-size-7">16 December 2019</time>
+    
+    <h2><a href="http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch209/">Cgo编程笔记 - 2.9 静态库和动态库</a></h2>
+    <time class="has-text-grey-light is-size-7">16 December 2019</time>
+    
+  </div>
+</div>
+<br>
+
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">标签</h2>
+        <div>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/atomic">atomic</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/blog">blog</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cgo">cgo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cloud">cloud</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/config">config</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/copy">copy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/docker">docker</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/exam">exam</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/gin">gin</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/git">git</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/golang">golang</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/hugo">hugo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/install">install</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/istio">istio</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/jenkins">jenkins</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/kubernetes">kubernetes</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/map">map</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/microservice">microservice</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/mycat">mycat</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/nginx">nginx</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/plan9">plan9</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/posix">posix</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/proxy">proxy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/raft">raft</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ssh">ssh</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/tips">tips</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ymal">ymal</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%B8%BB%E4%BB%8E">主从</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BA%8B%E5%8A%A1">事务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BB%A3%E7%90%86">代理</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BD%9C%E7%94%A8%E5%9F%9F">作用域</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%86%85%E5%AD%98">内存</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%8B%E7%BC%A9">压缩</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%88%9B">原创</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%AD%90">原子</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%91%BD%E4%BB%A4%E8%A1%8C">命令行</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%93%A8%E5%85%B5">哨兵</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%AD%98%E5%82%A8">存储</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B8%B8%E9%87%8F">常量</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B9%B6%E5%8F%91">并发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BC%82%E5%B8%B8">异常</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1">微服务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%88%E6%9D%83%E8%AE%A4%E8%AF%81">授权认证</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%92%E5%BA%8F">排序</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%A5%E5%8F%A3">接口</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%97%A5%E5%BF%97">日志</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%9D%83%E9%99%90">权限</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE1">标签1</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE2">标签2</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%AD%A3%E5%88%99">正则</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%81%E9%87%8F%E5%88%86%E5%8F%91">流量分发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%8B%E8%AF%95">测试</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%BA%90%E7%A0%81">源码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%8A%B6%E6%80%81%E7%A0%81">状态码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%AE%97%E6%B3%95">算法</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%BC%8F">编程模式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%80%81%E5%A6%96%E7%AC%94%E8%AE%B0">老妖笔记</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%BF%87%E6%BB%A4%E5%99%A8">过滤器</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%80%83%E9%80%B8">逃逸</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%85%8D%E7%BD%AE">配置</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%86%99">重写</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%AE%9A%E5%90%91">重定向</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9B%86%E7%BE%A4">集群</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9D%A2%E8%AF%95">面试</a>
+            </span>
+            
+        </div>
+    </div>
+</div>
+<br>
+    </div>
+</div>
+
+        </div>
+    </div>
+
+    
+    <footer class="footer has-background-grey-darker has-text-white">
+    <div class="content has-text-centered">
+        <p>
+            <span class="icon is-large">
+                <a href="https://twitter.com/" class="mysocial" rel="me">
+                    <i class="fab fa-twitter fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://www.youtube.com/" class="mysocial" rel="me">
+                    <i class="fab fa-youtube fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://github.com/" class="mysocial" rel="me">
+                    <i class="fab fa-github fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <br><br>
+            友情链接：
+            
+            <a class="mysocial" href="http://www.mafool.com" target="_blank">Mafool</a>
+            
+            <a class="mysocial" href="https://gohugo.io/documentation/" target="_blank">Hugo</a>
+            
+            <a class="mysocial" href="https://bulma.io/" target="_blank">Bulma</a>
+            
+            <a class="mysocial" href="https://bootstrapious.com/" target="_blank">Bootstrapious</a>
+            
+            <a class="mysocial" href="https://youzhixueyuan.com/" target="_blank">Youzhixueyuan</a>
+            
+            <br><br />
+            版权所有 &copy; 码夫庄园 2021
+            - <a class="mysocial" href="https://github.com/hollson/hugo-theme-dooz">Hugo Theme</a>
+        </p>
+    </div>
+</footer>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='http://www.mafool.com/js/dooz.totop.js?v=0.0.0' async=""></script>
+
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = 'https://hm.baidu.com/hm.js?f185359ec6b829a6a93e1e1f2597f6d9';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DK042XSJ2J"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-DK042XSJ2J');
+</script>
+
+    
+    
+<script type="text/javascript" src="http://www.mafool.com/js/reward.js"></script>
+
+    
+    <script defer src="https://cdn.staticfile.org/font-awesome/5.13.0/js/all.min.js"></script>
+</body>
+
+</html>

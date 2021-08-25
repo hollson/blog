@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>码夫庄园-CSS框架Bulma教程</title>
+    <meta name="keywords"
+        content='码农,hugo,theme,blog,coder,geek,github,golang,技术,源码,代码,编程,程序员,主题,个人,博客,微服务,容器'>
+    <meta name="description" content="Bulma是一个轻量级CSS框架，最大的特点，就是简单好用。所有样式都基于class，只需为 HTML 元素指定class，样式立刻生效" />
+
+    
+    <meta name="baidu-site-verification" content="v9szEmQLra" />
+    <meta name="360-site-verification" content="d8e961f98fb655e4b8cf9439cfd9ac7f" />
+    <meta name="sogou_site_verification" content="40NC9EdZDC" />
+    <meta name="shenma-site-verification" content="3200e3042e92157713a3b0aceeecb20a_1586020187" />
+    <meta name="google-site-verification" content="r8987bkunZHJeKut3ocu5NIJ5QEu53NA6Q_r7RrZ46c" />
+    <meta name="msvalidate.01" content="893A2865ABC54AC2782D118536831056" />
+
+    
+    <link rel="shortcut icon" href="http://www.mafool.com/img/res/favicon.ico">
+    
+
+    
+
+    <link crossorigin="anonymous" integrity="sha384-5kGFOAqgEKnuF6c2jk2JANKHZgYVt38Wn2dVJENtq1EBCP54/1uzXU5mpxqL8WjN"
+        href="https://lib.baomitu.com/bulma/0.8.0/css/bulma.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="http://www.mafool.com/css/dooz.blog.css" />
+    <script crossorigin="anonymous" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh"
+        src="https://lib.baomitu.com/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/jquery.share.min.js"></script>
+    
+
+    
+
+    
+    
+<link rel="stylesheet" href="http://www.mafool.com/css/reward.css">
+
+
+    <link href="http://www.mafool.com/css/fonts.googleapi.css" rel="stylesheet">
+    <script src=http://www.mafool.com/js/dooz.blog.js></script>
+
+    
+    <script>
+        $(document).ready(function () {
+            $('.content a[href^="http"]').each(function () {
+                $(this).attr('target', '_blank');
+            });
+        });
+
+        $(document).on('click', '.modal-wechat', function () {
+            $(".modal").addClass("is-active");
+        });
+
+        $(document).on('click', '.modal-background', function () {
+            $(".modal").removeClass("is-active");
+        });
+    </script>
+</head>
+
+<body>
+    
+    
+<section class="hero is-info is-medium"
+    style="background-image: url('/img/res/blog.jpg');">
+    <div class="hero-head">
+        <nav class="navbar is-transparent container has-text-white">
+    <div class="navbar-brand">
+        <div class="navbar-item">
+            <a class="title is-5 is-white" href="http://www.mafool.com/">码夫庄园</a>
+        </div>
+
+        
+        <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <div id="navbarExampleTransparentExample" class="navbar-menu has-text-dark">
+        
+
+        <div class="navbar-end">
+            <a class="navbar-item" href='http://www.mafool.com/'>首页</a>
+            <a class="navbar-item" href='http://www.mafool.com/archives'>归档 </a>
+            <a class="navbar-item" href='http://www.mafool.com/about'>关于</a>
+            <span class="navbar-item">
+                <a class="button is-primary is-inverted" href="https://github.com/hollson/hugo-theme-dooz">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>主题</span>
+                </a>
+            </span>
+        </div>
+    </div>
+</nav>
+    </div>
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <div class='container has-text-left column is-7'>
+                
+                <h1 class="title is-size-2" style="margin-bottom:0.2rem;">
+                    
+                    CSS框架Bulma教程
+                    
+                </h1>
+                
+                <span class="title is-size-6" style="font-style: italic;"> </span><br>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    
+    <div class="container">
+        <div class="section">
+            
+<div class="columns">
+    <div class="column is-9">
+        <div class="tile is-child box">
+            <div class="content">
+                
+                <nav class="level">
+                    
+                    <div class="level-left">
+                        <div class="level-item">
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年2月21日,
+    星期五 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 5分钟阅读
+</p>
+                        </div>
+                    </div>
+
+                    
+                    
+                    <div class="share-component level-right" data-disabled="google,diandian,tencent,qzone"
+                        data-description="Share.js - 一键分享到微博，QQ空间，腾讯微博，人人，豆瓣"
+                        data-mobile-sites="weibo,qq,qzone,tencent">
+                    </div>
+                    
+                </nav>
+                <hr>
+                
+                <header>
+                    <h2>目录</h2>
+                </header>
+                <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一简介">一、简介</a></li>
+    <li><a href="#二基本用法">二、基本用法</a></li>
+    <li><a href="#三网格体系">三、网格体系</a></li>
+    <li><a href="#四响应式布局">四、响应式布局</a></li>
+    <li><a href="#五文字">五、文字</a></li>
+    <li><a href="#六定制">六、定制</a></li>
+  </ul>
+</nav>
+                
+                <hr>
+                <p><a href="https://bulma.io/">Bulma</a>是一个比<a href="http://getbootstrap.com/">Bootstrap</a> 更轻量化、更易用的CSS框架。有了它，即使完全不懂 CSS，也可以轻而易举做出美观的网页。</p>
+<h2 id="一简介">一、简介</h2>
+<p>Bulma框架最大的特点，就是简单好用。所有样式都基于<code>class</code>，只需为 HTML 元素指定<code>class</code>，样式立刻生效。</p>
+<blockquote>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">&lt;a class=&#34;button is-primary is-large&#34;&gt;Login&lt;/a&gt;
+</code></pre></td></tr></table>
+</div>
+</div></blockquote>
+<p>上面代码中，a 元素只需加上几个<code>class</code>，就会出现一个主色调（<code>is-primary</code>）的大（<code>is-large</code>）按钮。</p>
+<p><img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017102302.png" alt="img"></p>
+<p>Bulma 是一个手机优先的框架，提供五个宽度断点，具有良好的自适应特性，可以随心所欲为不同设备设置不同样式。</p>
+<blockquote>
+<ul>
+<li>mobile：小于等于768px</li>
+<li>tablet：大于等于769px</li>
+<li>desktop：大于等于1024px</li>
+<li>widescreen：大于等于1216px</li>
+<li>fullhd：大于等于1408px</li>
+</ul>
+</blockquote>
+<p><img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017102303.png" alt="img"></p>
+<p>它提供二十多种常用组件，比如<a href="https://bulma.io/documentation/form/general/">表单</a> 、<a href="https://bulma.io/documentation/elements/table/">表格</a>、<a href="https://bulma.io/documentation/elements/icon/">图标</a>、<a href="https://bulma.io/documentation/components/breadcrumb/">面包屑</a>、<a href="https://bulma.io/documentation/components/menu/">菜单</a>、<a href="https://bulma.io/documentation/components/navbar/">导航</a>、<a href="https://bulma.io/documentation/components/modal/">Modal 窗口</a>等等。简单的网站，可以不用写任何 CSS 代码。</p>
+<h2 id="二基本用法">二、基本用法</h2>
+<p>Bulma 的安装只需一步，把<a href="https://github.com/jgthms/bulma/blob/master/css/bulma.css">样式表</a>插入网页即可。</p>
+<blockquote>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">&lt;link rel=&#34;stylesheet&#34; href=&#34;css/bulma.min.css&#34;/&gt;
+</code></pre></td></tr></table>
+</div>
+</div></blockquote>
+<p>使用更简单，就是为 HTML 元素加上<code>class</code>。</p>
+<blockquote>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">&lt;a class=&#34;button&#34;&gt;Button&lt;/a&gt;
+</code></pre></td></tr></table>
+</div>
+</div></blockquote>
+<p>上面的代码为 a 元素加上<code>button</code>类，这个链接就会被渲染成按钮。</p>
+<p><img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017102304.png" alt="img"></p>
+<p>Bulma 提供大量的修饰类，用来改变基类的样式。它们都是以<code>is-</code>或<code>has-</code>开头。比如，要改变 Button 的大小，就可以使用下面的修饰类。</p>
+<blockquote>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">&lt;a class=&#34;button is-small&#34;&gt;Small&lt;/a&gt;
+&lt;a class=&#34;button&#34;&gt;Normal&lt;/a&gt;
+&lt;a class=&#34;button is-medium&#34;&gt;Medium&lt;/a&gt;
+&lt;a class=&#34;button is-large&#34;&gt;Large&lt;/a&gt;
+</code></pre></td></tr></table>
+</div>
+</div></blockquote>
+<p><img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017102306.png" alt="img"></p>
+<p>Bulma 默认提供6种颜色。</p>
+<blockquote>
+<ul>
+<li>is-primary</li>
+<li>is-link</li>
+<li>is-info</li>
+<li>is-success</li>
+<li>is-warning</li>
+<li>is-danger</li>
+</ul>
+</blockquote>
+<p><img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017102305.png" alt="img"></p>
+<p>按钮状态的修饰类如下。</p>
+<blockquote>
+<ul>
+<li>is-hovered</li>
+<li>is-focused</li>
+<li>is-active</li>
+<li>is-loading</li>
+</ul>
+</blockquote>
+<p>完整的修饰类清单请看<a href="https://bulma.io/documentation/elements/button/">官方文档</a>。</p>
+<h2 id="三网格体系">三、网格体系</h2>
+<p>Bulma 的网格体系基于 <a href="http://www.ruanyifeng.com/blog/2015/07/flex-grammar.html">Flex 布局</a>，写起来非常容易。最简单的用法就是使用<code>columns</code>指定容器，使用<code>column</code>指定项目。</p>
+<p><img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017102307.png" alt="img"></p>
+<blockquote>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">&lt;div class=&#34;columns&#34;&gt;
+  &lt;div class=&#34;column&#34;&gt;First column&lt;/div&gt;
+  &lt;div class=&#34;column&#34;&gt;Second column&lt;/div&gt;
+  &lt;div class=&#34;column&#34;&gt;Third column&lt;/div&gt;
+  &lt;div class=&#34;column&#34;&gt;Fourth&lt;/div&gt;
+&lt;/div&gt;
+</code></pre></td></tr></table>
+</div>
+</div></blockquote>
+<p>屏幕宽度大于 768px 时，所有项目平铺，平分容器的宽度；宽度小于等于 768px 时，所有项目变成垂直堆叠。</p>
+<p><img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017102311.png" alt="img"></p>
+<p>以下的修饰类用来指定项目的宽度。</p>
+<blockquote>
+<ul>
+<li>四分之三：is-three-quarters</li>
+<li>四分之一： is-one-quarter</li>
+<li>三分之二：is-two-thirds</li>
+<li>三分之一：is-one-third</li>
+<li>二分之一：is-half</li>
+<li>五分之四：is-four-fifths</li>
+<li>五分之三：is-three-fifths</li>
+<li>五分之二：is-two-fifths</li>
+<li>五分之一：is-one-fifth</li>
+</ul>
+</blockquote>
+<p><img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017102309.png" alt="img"></p>
+<p>此外，还有一些修饰类也非常有用。</p>
+<blockquote>
+<ul>
+<li>is-narrow：网格的宽度由内容的宽度决定</li>
+<li>is-centered：网格内容居中对齐</li>
+<li>is-gapless：网格之间没有间距</li>
+</ul>
+</blockquote>
+<p>Bulma 也支持12网格体系。</p>
+<blockquote>
+<ul>
+<li>is-2</li>
+<li>is-3</li>
+<li>is-4</li>
+<li>is-5</li>
+<li>is-6</li>
+<li>is-7</li>
+<li>is-8</li>
+<li>is-9</li>
+<li>is-10</li>
+<li>is-11</li>
+</ul>
+</blockquote>
+<p><img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017102310.png" alt="img"></p>
+<p>如果要指定某个网格偏移，可以用<code>is-offset-</code>修饰类。</p>
+<blockquote>
+<ul>
+<li>is-offset-one-quarter</li>
+<li>is-offset-one-fifth</li>
+<li>is-offset-8</li>
+<li>is-offset-1</li>
+</ul>
+</blockquote>
+<h2 id="四响应式布局">四、响应式布局</h2>
+<p>前面说过，Bulma 有五个宽度断点，分别是 mobile（手机）、tablet（平板）、desktop（桌面）、widescreen（宽屏）、fullHD（高清）。</p>
+<p><code>columns</code>布局默认是在手机上垂直堆叠，其他宽度都是平铺。如果希望手机也保持平铺，可以加上<code>is-mobile</code>修饰类。</p>
+<blockquote>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">&lt;div class=&#34;columns is-mobile&#34;&gt;
+  &lt;div class=&#34;column&#34;&gt;1&lt;/div&gt;
+  &lt;div class=&#34;column&#34;&gt;2&lt;/div&gt;
+  &lt;div class=&#34;column&#34;&gt;3&lt;/div&gt;
+  &lt;div class=&#34;column&#34;&gt;4&lt;/div&gt;
+&lt;/div&gt;
+</code></pre></td></tr></table>
+</div>
+</div></blockquote>
+<p>如果希望手机和平板是垂直堆叠，其他宽度平铺，可以使用<code>is-desktop</code>修饰类。</p>
+<blockquote>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">&lt;div class=&#34;columns is-desktop&#34;&gt;
+  &lt;div class=&#34;column&#34;&gt;1&lt;/div&gt;
+  &lt;div class=&#34;column&#34;&gt;2&lt;/div&gt;
+  &lt;div class=&#34;column&#34;&gt;3&lt;/div&gt;
+  &lt;div class=&#34;column&#34;&gt;4&lt;/div&gt;
+&lt;/div&gt;
+</code></pre></td></tr></table>
+</div>
+</div></blockquote>
+<p>如果希望在不同设备，网格占据不同的宽度，可以像下面这样写。</p>
+<blockquote>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">&lt;div class=&#34;
+  column
+  is-half-mobile
+  is-one-third-tablet
+  is-one-quarter-desktop
+&#34;&gt;
+&lt;/div&gt;
+</code></pre></td></tr></table>
+</div>
+</div></blockquote>
+<p>上面代码中，这个网格在手机上占据二分之一宽度，平板三分之一宽度，桌面四分之一宽度，宽屏和高清则是平铺。</p>
+<p>Bulma 允许为不同设备指定不同的布局。</p>
+<blockquote>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-fallback" data-lang="fallback">&lt;div class=&#34;
+  column
+  is-flex-mobile
+  is-inline-tablet
+  is-block-desktop
+&#34;&gt;
+&lt;/div&gt;
+</code></pre></td></tr></table>
+</div>
+</div></blockquote>
+<p>上面代码中，手机是 flex 布局，平板是 inline 布局，其他宽度是 block 布局。</p>
+<p>下面是隐藏某个项目的修饰类。</p>
+<blockquote>
+<ul>
+<li>is-hidden-mobile：只在手机隐藏</li>
+<li>is-hidden-tablet-only：只在平板隐藏</li>
+<li>is-hidden-desktop-only ：只在桌面隐藏</li>
+<li>is-hidden-touch：手机和平板隐藏，其他宽度显示</li>
+</ul>
+</blockquote>
+<p>完整的清单请看<a href="https://bulma.io/documentation/modifiers/responsive-helpers/#hide">官方文档</a>。</p>
+<h2 id="五文字">五、文字</h2>
+<p>Bulma 提供7个修饰指定文字大小。</p>
+<blockquote>
+<ul>
+<li>is-size-1： 3rem</li>
+<li>is-size-2： 2.5rem</li>
+<li>is-size-3： 2rem</li>
+<li>is-size-4： 1.5rem</li>
+<li>is-size-5： 1.25rem</li>
+<li>is-size-6： 1rem</li>
+<li>is-size-7： 0.75rem</li>
+</ul>
+</blockquote>
+<p>可以为不同设备指定不同的文字大小。</p>
+<blockquote>
+<ul>
+<li>is-size-1-mobile：手机是 size-1</li>
+<li>is-size-1-tablet：平板是 size-1</li>
+<li>is-size-1-touch：手机和平板是 size-1</li>
+<li>is-size-1-desktop：桌面、宽屏和高清是 size-1</li>
+<li>is-size-1-widescreen：宽屏和高清是 size-1</li>
+<li>is-size-1-fullhd：高清是 size-1</li>
+</ul>
+</blockquote>
+<p>此外，还有字体<a href="https://bulma.io/documentation/modifiers/typography-helpers/#colors">颜色</a>、<a href="https://bulma.io/documentation/modifiers/typography-helpers/#alignment">对齐</a>、<a href="https://bulma.io/documentation/modifiers/typography-helpers/#text-weight">轻重</a>的修饰类。</p>
+<h2 id="六定制">六、定制</h2>
+<p>最后这个部分是高级内容，讲解如何定制 Bulma，也就是修改默认样式。Bulma 采用 Sass 语法（注意，不是 Scss 语法），所以定制的样式也必须使用 <a href="http://www.ruanyifeng.com/blog/2012/06/sass.html">SASS</a>。</p>
+<p>首先，克隆或<a href="https://github.com/jgthms/bulma/archive/master.zip">下载</a>源码。</p>
+<blockquote>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-bash" data-lang="bash">$ git clone https://github.com/jgthms/bulma.git
+</code></pre></td></tr></table>
+</div>
+</div></blockquote>
+<p>然后，安装依赖。</p>
+<blockquote>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-bash" data-lang="bash">$ <span style="color:#366">cd</span> bulma
+$ npm install
+</code></pre></td></tr></table>
+</div>
+</div></blockquote>
+<p>接着，在源码的根目录里面，新建一个<code>app.sass</code>文件，定制的代码都写在这个文件。在它里面，先引入 Bulma <a href="https://github.com/jgthms/bulma/blob/master/sass/utilities/initial-variables.sass">基础变量</a>。如果需要的话，可以改掉。</p>
+<blockquote>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-css" data-lang="css">@<span style="color:#069;font-weight:bold">import</span> <span style="color:#c30">&#34;./sass/utilities/initial-variables&#34;</span>
+
+<span style="color:#555">$</span><span style="color:#309;font-weight:bold">blue</span><span style="color:#555">:</span> #<span style="color:#0cf;font-weight:bold">72d0eb</span>
+<span style="color:#555">$</span><span style="color:#309;font-weight:bold">pink</span><span style="color:#555">:</span> #<span style="color:#0cf;font-weight:bold">ffb3b3</span>
+<span style="color:#555">$</span><span style="color:#309;font-weight:bold">family-serif</span><span style="color:#555">:</span> <span style="color:#c30">&#34;Merriweather&#34;</span><span style="color:#555">,</span> <span style="color:#c30">&#34;Georgia&#34;</span><span style="color:#555">,</span> <span style="color:#309;font-weight:bold">serif</span>
+</code></pre></td></tr></table>
+</div>
+</div></blockquote>
+<p>上面代码中，预设的<code>blue</code>、<code>pink</code>和<code>family-serif</code>变量被改掉。</p>
+<p>有一些 Bulma 变量是从基础变量衍生的，需要的话也可以改掉。</p>
+<blockquote>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-css" data-lang="css"><span style="color:#555">$</span><span style="color:#309;font-weight:bold">primary</span><span style="color:#555">:</span> <span style="color:#555">$</span><span style="color:#309;font-weight:bold">pink</span>
+</code></pre></td></tr></table>
+</div>
+</div></blockquote>
+<p>上面代码中，主色调改成了<code>pink</code>变量。</p>
+<p>接着，在这个文件里面加载 Bulma 的<a href="https://github.com/jgthms/bulma/blob/master/bulma.sass">入口脚本</a>。</p>
+<blockquote>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-css" data-lang="css">@<span style="color:#069;font-weight:bold">import</span> <span style="color:#c30">&#34;./bulma&#34;</span>
+</code></pre></td></tr></table>
+</div>
+</div></blockquote>
+<p>这一行的下面，你就可以写自己的样式了，比如为所有标题加一个下划线。</p>
+<blockquote>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-css" data-lang="css">.<span style="color:#0a8;font-weight:bold">title</span> {
+  <span style="color:#069;font-weight:bold">text-decoration</span>: <span style="color:#069;font-weight:bold">underline</span>;
+}
+</code></pre></td></tr></table>
+</div>
+</div></blockquote>
+<p>最后，打开<code>package.json</code>，找到下面这一行。</p>
+<blockquote>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-javascript" data-lang="javascript"><span style="color:#c30">&#34;build-sass&#34;</span><span style="color:#555">:</span> <span style="color:#c30">&#34;node-sass --output-style expanded --source-map true bulma.sass css/bulma.css&#34;</span>,
+</code></pre></td></tr></table>
+</div>
+</div></blockquote>
+<p>把里面的<code>bulma.sass</code>改成<code>app.sass</code>。</p>
+<blockquote>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-javascript" data-lang="javascript"><span style="color:#c30">&#34;build-sass&#34;</span><span style="color:#555">:</span> <span style="color:#c30">&#34;node-sass --output-style expanded --source-map true app.sass css/bulma.css&#34;</span>,
+</code></pre></td></tr></table>
+</div>
+</div></blockquote>
+<p>以后每次修改完样式，运行一下<code>npm run build</code>，就会生成自己的样式表<code>css/bulma.css</code>了。</p>
+<!-- raw HTML omitted -->
+<p>（全文完）</p>
+<hr>
+<p>参考：</p>
+<blockquote>
+<p><a href="https://github.com/jgthms/bulma">https://github.com/jgthms/bulma</a> Bluma源码链接<br>
+<a href="https://buefy.org">https://buefy.org</a> 基于Bulma的Vue.js的轻量级 UI组件</p>
+</blockquote>
+
+                
+                
+                <hr> 
+
+<div class="entry-shang text-center">
+    
+    <p> 「真诚赞赏，手留余香」</p>
+    
+    <button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+    <div class="zs-modal-head">
+        <button type="button" class="close">×</button>
+        <span class="author">
+            <a href="http://www.mafool.com">
+                <img src="http://www.mafool.com/img/reward/hollson.png" alt="史布斯" />码夫庄园
+            </a>
+        </span>
+        
+        <p class="tip"><i></i><span>嗯，我的梦想是被读者的稿费包养~</span></p>
+        
+
+    </div>
+    <div class="zs-modal-body">
+        <div class="zs-modal-btns">
+            <button class="btn btn-blink" data-num="2">2元</button>
+            <button class="btn btn-blink" data-num="5">5元</button>
+            <button class="btn btn-blink" data-num="10">10元</button>
+            <button class="btn btn-blink" data-num="50">50元</button>
+            <button class="btn btn-blink" data-num="100">100元</button>
+            <button class="btn btn-blink" data-num="1">任意金额</button>
+        </div>
+        <div class="zs-modal-pay">
+            <button class="btn btn-bred" id="pay-text">2元</button>
+            <p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+            <img src="http://www.mafool.com/img/reward/wechat-2.png" alt="史布斯" id="pay-image" />
+        </div>
+    </div>
+    <div class="zs-modal-footer">
+        <label>
+            <span class="zs-wechat"></span>
+            <input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked">
+            <img src="http://www.mafool.com/img/reward/wechat-btn.png" alt="史布斯" />
+            </span>&nbsp;
+            <span>
+                <input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay">
+                <img src="http://www.mafool.com/img/reward/alipay-btn.png" alt="史布斯" />
+            </span>
+        </label>
+    </div>
+</div>
+
+ 
+
+                <br>
+                <br>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="column is-3">
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">最近发布</h2>
+        
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/0742b474a643d63a774461726a6201203/">Go语言中的原子操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年12月2日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/1600330472/">Go基础笔记 - 2.3 常量</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月10日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/15996311192/">Go - Gin框架快速入门</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月9日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480249/">Gorm快速指南</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480218/">18. Go语言MySQL数据库操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+    </div>
+</div>
+<br>
+        
+
+
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">标签</h2>
+        <div>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/atomic">atomic</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/blog">blog</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cgo">cgo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cloud">cloud</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/config">config</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/copy">copy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/docker">docker</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/exam">exam</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/gin">gin</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/git">git</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/golang">golang</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/hugo">hugo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/install">install</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/istio">istio</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/jenkins">jenkins</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/kubernetes">kubernetes</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/map">map</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/microservice">microservice</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/mycat">mycat</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/nginx">nginx</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/plan9">plan9</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/posix">posix</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/proxy">proxy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/raft">raft</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ssh">ssh</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/tips">tips</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ymal">ymal</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%B8%BB%E4%BB%8E">主从</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BA%8B%E5%8A%A1">事务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BB%A3%E7%90%86">代理</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BD%9C%E7%94%A8%E5%9F%9F">作用域</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%86%85%E5%AD%98">内存</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%8B%E7%BC%A9">压缩</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%88%9B">原创</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%AD%90">原子</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%91%BD%E4%BB%A4%E8%A1%8C">命令行</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%93%A8%E5%85%B5">哨兵</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%AD%98%E5%82%A8">存储</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B8%B8%E9%87%8F">常量</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B9%B6%E5%8F%91">并发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BC%82%E5%B8%B8">异常</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1">微服务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%88%E6%9D%83%E8%AE%A4%E8%AF%81">授权认证</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%92%E5%BA%8F">排序</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%A5%E5%8F%A3">接口</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%97%A5%E5%BF%97">日志</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%9D%83%E9%99%90">权限</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE1">标签1</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE2">标签2</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%AD%A3%E5%88%99">正则</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%81%E9%87%8F%E5%88%86%E5%8F%91">流量分发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%8B%E8%AF%95">测试</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%BA%90%E7%A0%81">源码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%8A%B6%E6%80%81%E7%A0%81">状态码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%AE%97%E6%B3%95">算法</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%BC%8F">编程模式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%80%81%E5%A6%96%E7%AC%94%E8%AE%B0">老妖笔记</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%BF%87%E6%BB%A4%E5%99%A8">过滤器</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%80%83%E9%80%B8">逃逸</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%85%8D%E7%BD%AE">配置</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%86%99">重写</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%AE%9A%E5%90%91">重定向</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9B%86%E7%BE%A4">集群</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9D%A2%E8%AF%95">面试</a>
+            </span>
+            
+        </div>
+    </div>
+</div>
+<br>
+    </div>
+</div>
+
+        </div>
+    </div>
+
+    
+    <footer class="footer has-background-grey-darker has-text-white">
+    <div class="content has-text-centered">
+        <p>
+            <span class="icon is-large">
+                <a href="https://twitter.com/" class="mysocial" rel="me">
+                    <i class="fab fa-twitter fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://www.youtube.com/" class="mysocial" rel="me">
+                    <i class="fab fa-youtube fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://github.com/" class="mysocial" rel="me">
+                    <i class="fab fa-github fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <br><br>
+            友情链接：
+            
+            <a class="mysocial" href="http://www.mafool.com" target="_blank">Mafool</a>
+            
+            <a class="mysocial" href="https://gohugo.io/documentation/" target="_blank">Hugo</a>
+            
+            <a class="mysocial" href="https://bulma.io/" target="_blank">Bulma</a>
+            
+            <a class="mysocial" href="https://bootstrapious.com/" target="_blank">Bootstrapious</a>
+            
+            <a class="mysocial" href="https://youzhixueyuan.com/" target="_blank">Youzhixueyuan</a>
+            
+            <br><br />
+            版权所有 &copy; 码夫庄园 2021
+            - <a class="mysocial" href="https://github.com/hollson/hugo-theme-dooz">Hugo Theme</a>
+        </p>
+    </div>
+</footer>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='http://www.mafool.com/js/dooz.totop.js?v=0.0.0' async=""></script>
+
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = 'https://hm.baidu.com/hm.js?f185359ec6b829a6a93e1e1f2597f6d9';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DK042XSJ2J"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-DK042XSJ2J');
+</script>
+
+    
+    
+<script type="text/javascript" src="http://www.mafool.com/js/reward.js"></script>
+
+    
+    <script defer src="https://cdn.staticfile.org/font-awesome/5.13.0/js/all.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>码夫庄园-Kafka环境部署</title>
+    <meta name="keywords"
+        content='kafka,安装,java,zookeeper,部署'>
+    <meta name="description" content="Kafka是分布式发布-订阅消息系统，它最初是由LinkedIn公司开发的，之后成为Apache项目的一部分，Kafka是一个分布式，可划分的，冗余备份的持久性的日志服务，它主要用于处理流式数据。" />
+
+    
+    <meta name="baidu-site-verification" content="v9szEmQLra" />
+    <meta name="360-site-verification" content="d8e961f98fb655e4b8cf9439cfd9ac7f" />
+    <meta name="sogou_site_verification" content="40NC9EdZDC" />
+    <meta name="shenma-site-verification" content="3200e3042e92157713a3b0aceeecb20a_1586020187" />
+    <meta name="google-site-verification" content="r8987bkunZHJeKut3ocu5NIJ5QEu53NA6Q_r7RrZ46c" />
+    <meta name="msvalidate.01" content="893A2865ABC54AC2782D118536831056" />
+
+    
+    <link rel="shortcut icon" href="http://www.mafool.com/img/res/favicon.ico">
+    
+
+    
+
+    <link crossorigin="anonymous" integrity="sha384-5kGFOAqgEKnuF6c2jk2JANKHZgYVt38Wn2dVJENtq1EBCP54/1uzXU5mpxqL8WjN"
+        href="https://lib.baomitu.com/bulma/0.8.0/css/bulma.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="http://www.mafool.com/css/dooz.blog.css" />
+    <script crossorigin="anonymous" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh"
+        src="https://lib.baomitu.com/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/jquery.share.min.js"></script>
+    
+
+    
+
+    
+    
+<link rel="stylesheet" href="http://www.mafool.com/css/reward.css">
+
+
+    <link href="http://www.mafool.com/css/fonts.googleapi.css" rel="stylesheet">
+    <script src=http://www.mafool.com/js/dooz.blog.js></script>
+
+    
+    <script>
+        $(document).ready(function () {
+            $('.content a[href^="http"]').each(function () {
+                $(this).attr('target', '_blank');
+            });
+        });
+
+        $(document).on('click', '.modal-wechat', function () {
+            $(".modal").addClass("is-active");
+        });
+
+        $(document).on('click', '.modal-background', function () {
+            $(".modal").removeClass("is-active");
+        });
+    </script>
+</head>
+
+<body>
+    
+    
+<section class="hero is-info is-medium"
+    style="background-image: url('/img/res/coder.jpg');">
+    <div class="hero-head">
+        <nav class="navbar is-transparent container has-text-white">
+    <div class="navbar-brand">
+        <div class="navbar-item">
+            <a class="title is-5 is-white" href="http://www.mafool.com/">码夫庄园</a>
+        </div>
+
+        
+        <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <div id="navbarExampleTransparentExample" class="navbar-menu has-text-dark">
+        
+
+        <div class="navbar-end">
+            <a class="navbar-item" href='http://www.mafool.com/'>首页</a>
+            <a class="navbar-item" href='http://www.mafool.com/archives'>归档 </a>
+            <a class="navbar-item" href='http://www.mafool.com/about'>关于</a>
+            <span class="navbar-item">
+                <a class="button is-primary is-inverted" href="https://github.com/hollson/hugo-theme-dooz">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>主题</span>
+                </a>
+            </span>
+        </div>
+    </div>
+</nav>
+    </div>
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <div class='container has-text-left column is-7'>
+                
+                <span>
+                    <a class="bar_tag" href="http://www.mafool.com/tags/install" title="install">install</a>
+                </span>
+                
+                <h1 class="title is-size-2" style="margin-bottom:0.2rem;">
+                    
+                    Kafka环境部署
+                    
+                </h1>
+                
+                <span class="title is-size-6" style="font-style: italic;"> </span><br>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    
+    <div class="container">
+        <div class="section">
+            
+<div class="columns">
+    <div class="column is-9">
+        <div class="tile is-child box">
+            <div class="content">
+                
+                <nav class="level">
+                    
+                    <div class="level-left">
+                        <div class="level-item">
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年2月3日,
+    星期一 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 2分钟阅读
+</p>
+                        </div>
+                    </div>
+
+                    
+                    
+                    <div class="share-component level-right" data-disabled="google,diandian,tencent,qzone"
+                        data-description="Share.js - 一键分享到微博，QQ空间，腾讯微博，人人，豆瓣"
+                        data-mobile-sites="weibo,qq,qzone,tencent">
+                    </div>
+                    
+                </nav>
+                <hr>
+                
+                <header>
+                    <h2>目录</h2>
+                </header>
+                <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一-搭建zookeeper">一. 搭建Zookeeper</a></li>
+    <li><a href="#二-搭建单机kafka">二. 搭建单机Kafka</a></li>
+    <li><a href="#三-搭建kafaka伪集群">三. 搭建Kafaka伪集群</a></li>
+    <li><a href="#四-kafka服务配置参考">四. Kafka服务配置参考</a></li>
+    <li><a href="#参考链接">参考链接</a></li>
+  </ul>
+</nav>
+                
+                <hr>
+                <h2 id="一-搭建zookeeper">一. 搭建Zookeeper</h2>
+<ul>
+<li>参考<a href="https://blog.csdn.net/Gusand/article/details/104336646">Zookeeper安装教程</a></li>
+</ul>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-py" data-lang="py"><span style="color:#a00;background-color:#faa">$</span> jps
+<span style="color:#f60">1699</span> QuorumPeerMain <span style="color:#09f;font-style:italic"># zookeeper进程</span>
+<span style="color:#f60">1702</span> Jps
+</code></pre></td></tr></table>
+</div>
+</div><!-- raw HTML omitted -->
+<h2 id="二-搭建单机kafka">二. 搭建单机Kafka</h2>
+<p><strong>1. 下载Kafka：</strong> 参考<a href="http://kafka.apache.org/downloads">官网下载地址</a>。</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-py" data-lang="py"><span style="color:#09f;font-style:italic"># 下载编译版本(2.12代表Scala版本，2.3.0表示Kafka的版本)</span>
+<span style="color:#a00;background-color:#faa">$</span> curl <span style="color:#555">-</span>O http:<span style="color:#555">//</span>mirror<span style="color:#555">.</span>bit<span style="color:#555">.</span>edu<span style="color:#555">.</span>cn<span style="color:#555">/</span>apache<span style="color:#555">/</span>kafka<span style="color:#555">/</span><span style="color:#f60">2.3</span><span style="color:#555">.</span><span style="color:#f60">0</span><span style="color:#555">/</span>kafka_2<span style="color:#555">.</span><span style="color:#f60">12</span><span style="color:#555">-</span><span style="color:#f60">2.3</span><span style="color:#555">.</span><span style="color:#f60">0.</span>tgz 
+<span style="color:#a00;background-color:#faa">$</span> tar <span style="color:#555">-</span>zxvf kafka_2<span style="color:#555">.</span><span style="color:#f60">12</span><span style="color:#555">-</span><span style="color:#f60">2.3</span><span style="color:#555">.</span><span style="color:#f60">0.</span>tgz
+
+<span style="color:#09f;font-style:italic"># 安装到目标目录下</span>
+<span style="color:#a00;background-color:#faa">$</span> mv <span style="color:#555">./</span>kafka_2<span style="color:#555">.</span><span style="color:#f60">12</span><span style="color:#555">-</span><span style="color:#f60">2.3</span><span style="color:#555">.</span><span style="color:#f60">0</span> <span style="color:#555">/</span>usr<span style="color:#555">/</span>local<span style="color:#555">/</span>kafka
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>2. 配置环境变量</strong></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-py" data-lang="py"><span style="color:#a00;background-color:#faa">$</span> vim <span style="color:#555">/</span>etc<span style="color:#555">/</span>profile
+<span style="color:#09f;font-style:italic">#********************Kafka配置*********************</span>
+export KAFKA_HOME<span style="color:#555">=/</span>usr<span style="color:#555">/</span>local<span style="color:#555">/</span>kafka
+export PATH<span style="color:#555">=</span><span style="color:#a00;background-color:#faa">$</span>KAFKA_HOME<span style="color:#555">/</span><span style="color:#366">bin</span>:<span style="color:#a00;background-color:#faa">$</span>PATH
+<span style="color:#09f;font-style:italic">#**************************************************</span>
+
+ZOOKEEPER_HOME<span style="color:#555">=/</span>usr<span style="color:#555">/</span>local<span style="color:#555">/</span>zookeeper
+
+<span style="color:#09f;font-style:italic"># 刷新使立即生效</span>
+<span style="color:#a00;background-color:#faa">$</span> souce <span style="color:#555">/</span>etc<span style="color:#555">/</span>profile
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>3. 启动服务</strong></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-py" data-lang="py"><span style="color:#09f;font-style:italic"># 启动服务</span>
+<span style="color:#a00;background-color:#faa">$</span> kafka<span style="color:#555">-</span>server<span style="color:#555">-</span>start<span style="color:#555">.</span>sh <span style="color:#555">-</span>daemon <span style="color:#a00;background-color:#faa">$</span>KAFKA_HOME<span style="color:#555">/</span>config<span style="color:#555">/</span>server<span style="color:#555">.</span>properties
+<span style="color:#a00;background-color:#faa">$</span> ps <span style="color:#555">-</span>ef<span style="color:#555">|</span>grep kafka
+
+<span style="color:#09f;font-style:italic"># 停止服务</span>
+<span style="color:#a00;background-color:#faa">$</span> kafka<span style="color:#555">-</span>server<span style="color:#555">-</span>stop<span style="color:#555">.</span>sh <span style="color:#555">./</span>config<span style="color:#555">/</span>server<span style="color:#555">.</span>properties
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>4. 测试服务</strong></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-py" data-lang="py"><span style="color:#09f;font-style:italic"># 创建topic</span>
+<span style="color:#a00;background-color:#faa">$</span> kafka<span style="color:#555">-</span>topics<span style="color:#555">.</span>sh <span style="color:#555">--</span>create <span style="color:#555">--</span>zookeeper localhost:<span style="color:#f60">2181</span> <span style="color:#555">--</span>replication<span style="color:#555">-</span>factor <span style="color:#f60">1</span> <span style="color:#555">--</span>partitions <span style="color:#f60">1</span> <span style="color:#555">--</span>topic test
+
+<span style="color:#09f;font-style:italic"># 查看topic</span>
+<span style="color:#a00;background-color:#faa">$</span> kafka<span style="color:#555">-</span>topics<span style="color:#555">.</span>sh <span style="color:#555">--</span><span style="color:#366">list</span> <span style="color:#555">--</span>zookeeper localhost:<span style="color:#f60">2181</span>
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-py" data-lang="py"><span style="color:#09f;font-style:italic"># 查看Kafka在ZK中的数据</span>
+<span style="color:#a00;background-color:#faa">$</span> zkCli<span style="color:#555">.</span>sh ls <span style="color:#555">/</span>
+</code></pre></td></tr></table>
+</div>
+</div><!-- raw HTML omitted -->
+<h2 id="三-搭建kafaka伪集群">三. 搭建Kafaka伪集群</h2>
+<table>
+<thead>
+<tr>
+<th>服务名称</th>
+<th>IP地址</th>
+<th>broker.id</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>kafka-1</td>
+<td>127.0.0.1:9092</td>
+<td>0</td>
+</tr>
+<tr>
+<td>kafka-2</td>
+<td>127.0.0.1:9093</td>
+<td>1</td>
+</tr>
+<tr>
+<td>kafka-3</td>
+<td>127.0.0.1:9094</td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+<p><strong>1. 创建集群配置目录</strong></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-py" data-lang="py"><span style="color:#a00;background-color:#faa">$</span> cd <span style="color:#555">/</span>usr<span style="color:#555">/</span>local<span style="color:#555">/</span>kafka
+
+<span style="color:#09f;font-style:italic"># 集群工作目录</span>
+<span style="color:#a00;background-color:#faa">$</span> mkdir kfk9092 kfk9093 kfk9094
+
+<span style="color:#09f;font-style:italic"># 创建config副本</span>
+<span style="color:#a00;background-color:#faa">$</span> cp <span style="color:#555">-</span>rp <span style="color:#555">./</span>config <span style="color:#555">./</span>kfk9092
+<span style="color:#a00;background-color:#faa">$</span> cp <span style="color:#555">-</span>rp <span style="color:#555">./</span>config <span style="color:#555">./</span>kfk9093
+<span style="color:#a00;background-color:#faa">$</span> cp <span style="color:#555">-</span>rp <span style="color:#555">./</span>config <span style="color:#555">./</span>kfk9094
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>2. 创建集群配置文件</strong>，以<code>$KAFKA_HOME/config/server.properties</code>为模板，修改配置文件，如<code>./kfk9092/config/server.properties</code>:</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-py" data-lang="py"><span style="color:#09f;font-style:italic"># 配置信息参考</span>
+broker<span style="color:#555">.</span>id<span style="color:#555">=</span><span style="color:#f60">0</span>
+listeners<span style="color:#555">=</span>PLAINTEXT:<span style="color:#555">//</span>:<span style="color:#f60">9092</span>
+log<span style="color:#555">.</span>dirs<span style="color:#555">=</span>usr<span style="color:#555">/</span>local<span style="color:#555">/</span>kafka<span style="color:#555">/</span>kfk9092
+zookeeper<span style="color:#555">.</span>connect<span style="color:#555">=</span>localhost:<span style="color:#f60">2181</span>,localhost:<span style="color:#f60">2182</span>,localhost:<span style="color:#f60">2183</span>
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-py" data-lang="py"><span style="color:#a00;background-color:#faa">$</span> sed <span style="color:#c30">&#34;s/9092/9093/g&#34;</span> <span style="color:#555">./</span>kfk9092<span style="color:#555">/</span>config<span style="color:#555">/</span>server<span style="color:#555">.</span>properties <span style="color:#555">&gt;</span> <span style="color:#555">./</span>kfk9093<span style="color:#555">/</span>config<span style="color:#555">/</span>server<span style="color:#555">.</span>properties
+<span style="color:#a00;background-color:#faa">$</span> sed <span style="color:#c30">&#34;s/9092/9094/g&#34;</span> <span style="color:#555">./</span>kfk9092<span style="color:#555">/</span>config<span style="color:#555">/</span>server<span style="color:#555">.</span>properties <span style="color:#555">&gt;</span> <span style="color:#555">./</span>kfk9094<span style="color:#555">/</span>config<span style="color:#555">/</span>server<span style="color:#555">.</span>properties
+
+<span style="color:#a00;background-color:#faa">$</span> sed <span style="color:#555">-</span>i <span style="color:#c30">&#34;s/broker.id=0/broker.id=1/g&#34;</span> <span style="color:#555">./</span>kfk9093<span style="color:#555">/</span>config<span style="color:#555">/</span>server<span style="color:#555">.</span>properties 
+<span style="color:#a00;background-color:#faa">$</span> sed <span style="color:#555">-</span>i <span style="color:#c30">&#34;s/broker.id=0/broker.id=2/g&#34;</span> <span style="color:#555">./</span>kfk9094<span style="color:#555">/</span>config<span style="color:#555">/</span>server<span style="color:#555">.</span>properties
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>3. 分别启动集群服务</strong></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-py" data-lang="py"><span style="color:#a00;background-color:#faa">$</span> sudo kafka<span style="color:#555">-</span>server<span style="color:#555">-</span>start<span style="color:#555">.</span>sh <span style="color:#555">-</span>daemon <span style="color:#a00;background-color:#faa">$</span>KAFKA_HOME<span style="color:#555">/</span>kfk9092<span style="color:#555">/</span>config<span style="color:#555">/</span>server<span style="color:#555">.</span>properties
+<span style="color:#a00;background-color:#faa">$</span> sudo kafka<span style="color:#555">-</span>server<span style="color:#555">-</span>start<span style="color:#555">.</span>sh <span style="color:#555">-</span>daemon <span style="color:#a00;background-color:#faa">$</span>KAFKA_HOME<span style="color:#555">/</span>kfk9093<span style="color:#555">/</span>config<span style="color:#555">/</span>server<span style="color:#555">.</span>properties
+<span style="color:#a00;background-color:#faa">$</span> sudo kafka<span style="color:#555">-</span>server<span style="color:#555">-</span>start<span style="color:#555">.</span>sh <span style="color:#555">-</span>daemon <span style="color:#a00;background-color:#faa">$</span>KAFKA_HOME<span style="color:#555">/</span>kfk9094<span style="color:#555">/</span>config<span style="color:#555">/</span>server<span style="color:#555">.</span>properties
+
+<span style="color:#a00;background-color:#faa">$</span> sudo kafka<span style="color:#555">-</span>server<span style="color:#555">-</span>stop<span style="color:#555">.</span>sh <span style="color:#a00;background-color:#faa">$</span>KAFKA_HOME <span style="color:#555">/</span>kfk9092<span style="color:#555">/</span>config<span style="color:#555">/</span>server<span style="color:#555">.</span>properties
+<span style="color:#a00;background-color:#faa">$</span> sudo kafka<span style="color:#555">-</span>server<span style="color:#555">-</span>stop<span style="color:#555">.</span>sh <span style="color:#a00;background-color:#faa">$</span>KAFKA_HOME <span style="color:#555">/</span>kfk9093<span style="color:#555">/</span>config<span style="color:#555">/</span>server<span style="color:#555">.</span>properties
+<span style="color:#a00;background-color:#faa">$</span> sudo kafka<span style="color:#555">-</span>server<span style="color:#555">-</span>stop<span style="color:#555">.</span>sh <span style="color:#a00;background-color:#faa">$</span>KAFKA_HOME <span style="color:#555">/</span>kfk9094<span style="color:#555">/</span>config<span style="color:#555">/</span>server<span style="color:#555">.</span>properties
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>6. 测试</strong></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-py" data-lang="py"><span style="color:#366">bin</span><span style="color:#555">/</span>kafka<span style="color:#555">-</span>topics<span style="color:#555">.</span>sh <span style="color:#555">--</span>describe <span style="color:#555">--</span>zookeeper localhost:<span style="color:#f60">2181</span> <span style="color:#555">--</span>topic my<span style="color:#555">-</span>replicated<span style="color:#555">-</span>topic
+<span style="color:#366">bin</span><span style="color:#555">/</span>kafka<span style="color:#555">-</span>console<span style="color:#555">-</span>producer<span style="color:#555">.</span>sh <span style="color:#555">--</span>broker<span style="color:#555">-</span><span style="color:#366">list</span> localhost:<span style="color:#f60">9092</span> <span style="color:#555">--</span>topic test
+
+<span style="color:#366">bin</span><span style="color:#555">/</span>kafka<span style="color:#555">-</span>console<span style="color:#555">-</span>consumer<span style="color:#555">.</span>sh <span style="color:#555">--</span>bootstrap<span style="color:#555">-</span>server localhost:<span style="color:#f60">9092</span> <span style="color:#555">--</span>topic test <span style="color:#555">--</span>from<span style="color:#555">-</span>beginning
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="四-kafka服务配置参考">四. Kafka服务配置参考</h2>
+<ul>
+<li>参考：<code>$KAFKA_HOME/config/server.properties</code></li>
+</ul>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-toml" data-lang="toml"><span style="color:#09f;font-style:italic">############################# Server Basics #############################</span>
+
+broker.id=<span style="color:#f60">0</span>
+
+listeners=PLAINTEXT<span style="color:#a00;background-color:#faa">://:</span><span style="color:#f60">9092</span>
+
+num.network.threads=<span style="color:#f60">3</span>
+
+num.io.threads=<span style="color:#f60">8</span>
+
+socket.send.buffer.bytes=<span style="color:#f60">102400</span>
+
+socket.receive.buffer.bytes=<span style="color:#f60">102400</span>
+
+socket.request.max.bytes=<span style="color:#f60">104857600</span>
+<span style="color:#09f;font-style:italic">############################# Log Basics #############################</span>
+
+log.dirs=<span style="color:#a00;background-color:#faa">/</span>tmp<span style="color:#a00;background-color:#faa">/</span>kafka<span style="color:#a00;background-color:#faa">-</span>logs
+
+num.partitions=<span style="color:#f60">1</span>
+
+num.recovery.threads.per.data.dir=<span style="color:#f60">1</span>
+<span style="color:#09f;font-style:italic">############################# Internal Topic Settings  #############################</span>
+offsets.topic.replication.factor=<span style="color:#f60">1</span>
+transaction.state.log.replication.factor=<span style="color:#f60">1</span>
+transaction.state.log.min.isr=<span style="color:#f60">1</span>
+<span style="color:#09f;font-style:italic">############################# Log Flush Policy #############################</span>
+<span style="color:#09f;font-style:italic">#log.flush.interval.messages=10000</span>
+<span style="color:#09f;font-style:italic">#log.flush.interval.ms=1000</span>
+<span style="color:#09f;font-style:italic">############################# Log Retention Policy #############################</span>
+log.retention.hours=<span style="color:#f60">168</span>
+
+<span style="color:#09f;font-style:italic">#log.retention.bytes=1073741824</span>
+
+log.segment.bytes=<span style="color:#f60">1073741824</span>
+
+log.retention.check.interval.ms=<span style="color:#f60">300000</span>
+<span style="color:#09f;font-style:italic">############################# Zookeeper #############################</span>
+zookeeper.connect=localhost<span style="color:#a00;background-color:#faa">:</span><span style="color:#f60">2181</span>
+
+zookeeper.connection.timeout.ms=<span style="color:#f60">6000</span>
+<span style="color:#09f;font-style:italic">############################# Group Coordinator Settings #############################</span>
+group.initial.rebalance.delay.ms=<span style="color:#f60">0</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="参考链接">参考链接</h2>
+<blockquote>
+<p><a href="http://kafka.apache.org/documentation.html#quickstart">http://kafka.apache.org/documentation.html#quickstart</a><br>
+<a href="https://blog.csdn.net/u012965203/article/details/92634343">https://blog.csdn.net/u012965203/article/details/92634343</a><br>
+<a href="https://www.cnblogs.com/mythdoraemon/p/10171883.html">https://www.cnblogs.com/mythdoraemon/p/10171883.html</a><br>
+更换kafka在ZK中的路径<br>
+<a href="https://www.cnblogs.com/mediocreWorld/p/11311998.html">https://www.cnblogs.com/mediocreWorld/p/11311998.html</a></p>
+</blockquote>
+
+                
+                
+                <hr> 
+
+<div class="entry-shang text-center">
+    
+    <p> 「真诚赞赏，手留余香」</p>
+    
+    <button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+    <div class="zs-modal-head">
+        <button type="button" class="close">×</button>
+        <span class="author">
+            <a href="http://www.mafool.com">
+                <img src="http://www.mafool.com/img/reward/hollson.png" alt="史布斯" />码夫庄园
+            </a>
+        </span>
+        
+        <p class="tip"><i></i><span>嗯，我的梦想是被读者的稿费包养~</span></p>
+        
+
+    </div>
+    <div class="zs-modal-body">
+        <div class="zs-modal-btns">
+            <button class="btn btn-blink" data-num="2">2元</button>
+            <button class="btn btn-blink" data-num="5">5元</button>
+            <button class="btn btn-blink" data-num="10">10元</button>
+            <button class="btn btn-blink" data-num="50">50元</button>
+            <button class="btn btn-blink" data-num="100">100元</button>
+            <button class="btn btn-blink" data-num="1">任意金额</button>
+        </div>
+        <div class="zs-modal-pay">
+            <button class="btn btn-bred" id="pay-text">2元</button>
+            <p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+            <img src="http://www.mafool.com/img/reward/wechat-2.png" alt="史布斯" id="pay-image" />
+        </div>
+    </div>
+    <div class="zs-modal-footer">
+        <label>
+            <span class="zs-wechat"></span>
+            <input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked">
+            <img src="http://www.mafool.com/img/reward/wechat-btn.png" alt="史布斯" />
+            </span>&nbsp;
+            <span>
+                <input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay">
+                <img src="http://www.mafool.com/img/reward/alipay-btn.png" alt="史布斯" />
+            </span>
+        </label>
+    </div>
+</div>
+
+ 
+
+                <br>
+                <br>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="column is-3">
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">最近发布</h2>
+        
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/0742b474a643d63a774461726a6201203/">Go语言中的原子操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年12月2日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/1600330472/">Go基础笔记 - 2.3 常量</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月10日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/15996311192/">Go - Gin框架快速入门</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月9日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480249/">Gorm快速指南</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480218/">18. Go语言MySQL数据库操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+    </div>
+</div>
+<br>
+        
+
+
+
+
+<div class="card">
+  <div class="card-content">
+    <h2 class="title is-6">相关文章</h2>
+    
+    
+    <h2><a href="http://www.mafool.com/post/1585730181/">Docker搭建Wordpress博客</a></h2>
+    <time class="has-text-grey-light is-size-7">2 November 2018</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585671937/">Java环境部署</a></h2>
+    <time class="has-text-grey-light is-size-7">9 August 2018</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585906284/">Mysql安装教程</a></h2>
+    <time class="has-text-grey-light is-size-7">2 May 2018</time>
+    
+  </div>
+</div>
+<br>
+
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">标签</h2>
+        <div>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/atomic">atomic</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/blog">blog</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cgo">cgo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cloud">cloud</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/config">config</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/copy">copy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/docker">docker</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/exam">exam</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/gin">gin</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/git">git</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/golang">golang</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/hugo">hugo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/install">install</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/istio">istio</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/jenkins">jenkins</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/kubernetes">kubernetes</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/map">map</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/microservice">microservice</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/mycat">mycat</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/nginx">nginx</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/plan9">plan9</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/posix">posix</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/proxy">proxy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/raft">raft</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ssh">ssh</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/tips">tips</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ymal">ymal</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%B8%BB%E4%BB%8E">主从</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BA%8B%E5%8A%A1">事务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BB%A3%E7%90%86">代理</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BD%9C%E7%94%A8%E5%9F%9F">作用域</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%86%85%E5%AD%98">内存</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%8B%E7%BC%A9">压缩</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%88%9B">原创</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%AD%90">原子</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%91%BD%E4%BB%A4%E8%A1%8C">命令行</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%93%A8%E5%85%B5">哨兵</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%AD%98%E5%82%A8">存储</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B8%B8%E9%87%8F">常量</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B9%B6%E5%8F%91">并发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BC%82%E5%B8%B8">异常</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1">微服务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%88%E6%9D%83%E8%AE%A4%E8%AF%81">授权认证</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%92%E5%BA%8F">排序</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%A5%E5%8F%A3">接口</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%97%A5%E5%BF%97">日志</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%9D%83%E9%99%90">权限</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE1">标签1</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE2">标签2</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%AD%A3%E5%88%99">正则</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%81%E9%87%8F%E5%88%86%E5%8F%91">流量分发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%8B%E8%AF%95">测试</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%BA%90%E7%A0%81">源码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%8A%B6%E6%80%81%E7%A0%81">状态码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%AE%97%E6%B3%95">算法</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%BC%8F">编程模式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%80%81%E5%A6%96%E7%AC%94%E8%AE%B0">老妖笔记</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%BF%87%E6%BB%A4%E5%99%A8">过滤器</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%80%83%E9%80%B8">逃逸</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%85%8D%E7%BD%AE">配置</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%86%99">重写</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%AE%9A%E5%90%91">重定向</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9B%86%E7%BE%A4">集群</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9D%A2%E8%AF%95">面试</a>
+            </span>
+            
+        </div>
+    </div>
+</div>
+<br>
+    </div>
+</div>
+
+        </div>
+    </div>
+
+    
+    <footer class="footer has-background-grey-darker has-text-white">
+    <div class="content has-text-centered">
+        <p>
+            <span class="icon is-large">
+                <a href="https://twitter.com/" class="mysocial" rel="me">
+                    <i class="fab fa-twitter fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://www.youtube.com/" class="mysocial" rel="me">
+                    <i class="fab fa-youtube fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://github.com/" class="mysocial" rel="me">
+                    <i class="fab fa-github fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <br><br>
+            友情链接：
+            
+            <a class="mysocial" href="http://www.mafool.com" target="_blank">Mafool</a>
+            
+            <a class="mysocial" href="https://gohugo.io/documentation/" target="_blank">Hugo</a>
+            
+            <a class="mysocial" href="https://bulma.io/" target="_blank">Bulma</a>
+            
+            <a class="mysocial" href="https://bootstrapious.com/" target="_blank">Bootstrapious</a>
+            
+            <a class="mysocial" href="https://youzhixueyuan.com/" target="_blank">Youzhixueyuan</a>
+            
+            <br><br />
+            版权所有 &copy; 码夫庄园 2021
+            - <a class="mysocial" href="https://github.com/hollson/hugo-theme-dooz">Hugo Theme</a>
+        </p>
+    </div>
+</footer>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='http://www.mafool.com/js/dooz.totop.js?v=0.0.0' async=""></script>
+
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = 'https://hm.baidu.com/hm.js?f185359ec6b829a6a93e1e1f2597f6d9';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DK042XSJ2J"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-DK042XSJ2J');
+</script>
+
+    
+    
+<script type="text/javascript" src="http://www.mafool.com/js/reward.js"></script>
+
+    
+    <script defer src="https://cdn.staticfile.org/font-awesome/5.13.0/js/all.min.js"></script>
+</body>
+
+</html>

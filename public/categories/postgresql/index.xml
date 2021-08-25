@@ -1,0 +1,33 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Postgresql on 码夫庄园</title>
+    <link>http://www.mafool.com/categories/postgresql/</link>
+    <description>Recent content in Postgresql on 码夫庄园</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <copyright>版权所有</copyright>
+    <lastBuildDate>Mon, 06 Jul 2020 17:32:52 +0800</lastBuildDate>
+    
+        <atom:link href="http://www.mafool.com/categories/postgresql/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>PostgreSQL&#43;Pgpool实现HA主备切换</title>
+      <link>http://www.mafool.com/posts/4a08ebfa30e31cfbc6f0e1305fb21fdb/</link>
+      <pubDate>Mon, 06 Jul 2020 17:32:52 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/posts/4a08ebfa30e31cfbc6f0e1305fb21fdb/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>安装Postgresql数据库</title>
+      <link>http://www.mafool.com/posts/postgresql-install/</link>
+      <pubDate>Mon, 06 Jul 2020 16:35:12 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/posts/postgresql-install/</guid>
+      <description>1. Yum安装 参考官方安装向导 。 1 2 3 4 5 6 7 8 9 10 11 12 13 # 安装服务(CENTOS7) yum install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm yum install -y postgresql96-server /usr/pgsql-9.6/bin/postgresql96-setup initdb systemctl enable postgresql-9.6 systemctl start postgresql-9.6 #查看服务 psql --version ps -ef|grep postgres # 卸</description>
+    </item>
+    
+  </channel>
+</rss>

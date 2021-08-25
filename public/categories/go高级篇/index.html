@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>码夫庄园-Go高级篇</title>
+    <meta name="keywords"
+        content='码农,hugo,theme,blog,coder,geek,github,golang,技术,源码,代码,编程,程序员,主题,个人,博客,微服务,容器'>
+    <meta name="description" content="" />
+
+    
+    <meta name="baidu-site-verification" content="v9szEmQLra" />
+    <meta name="360-site-verification" content="d8e961f98fb655e4b8cf9439cfd9ac7f" />
+    <meta name="sogou_site_verification" content="40NC9EdZDC" />
+    <meta name="shenma-site-verification" content="3200e3042e92157713a3b0aceeecb20a_1586020187" />
+    <meta name="google-site-verification" content="r8987bkunZHJeKut3ocu5NIJ5QEu53NA6Q_r7RrZ46c" />
+    <meta name="msvalidate.01" content="893A2865ABC54AC2782D118536831056" />
+
+    
+    <link rel="shortcut icon" href="http://www.mafool.com/img/res/favicon.ico">
+    
+
+    
+
+    <link crossorigin="anonymous" integrity="sha384-5kGFOAqgEKnuF6c2jk2JANKHZgYVt38Wn2dVJENtq1EBCP54/1uzXU5mpxqL8WjN"
+        href="https://lib.baomitu.com/bulma/0.8.0/css/bulma.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="http://www.mafool.com/css/dooz.blog.css" />
+    <script crossorigin="anonymous" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh"
+        src="https://lib.baomitu.com/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/jquery.share.min.js"></script>
+    
+
+    
+    <link href="http://www.mafool.com/categories/go%E9%AB%98%E7%BA%A7%E7%AF%87/index.xml" rel="alternate" type="application/rss+xml" title="码夫庄园" />
+    <link href="http://www.mafool.com/categories/go%E9%AB%98%E7%BA%A7%E7%AF%87/index.xml" rel="feed" type="application/rss+xml" title="码夫庄园" />
+    
+
+    
+    
+<link rel="stylesheet" href="http://www.mafool.com/css/reward.css">
+
+
+    <link href="http://www.mafool.com/css/fonts.googleapi.css" rel="stylesheet">
+    <script src=http://www.mafool.com/js/dooz.blog.js></script>
+
+    
+    <script>
+        $(document).ready(function () {
+            $('.content a[href^="http"]').each(function () {
+                $(this).attr('target', '_blank');
+            });
+        });
+
+        $(document).on('click', '.modal-wechat', function () {
+            $(".modal").addClass("is-active");
+        });
+
+        $(document).on('click', '.modal-background', function () {
+            $(".modal").removeClass("is-active");
+        });
+    </script>
+</head>
+
+<body>
+    
+    
+<section class="hero is-info is-medium"
+    style="background-image: url('/img/res/hero.jpg');">
+    <div class="hero-head">
+        <nav class="navbar is-transparent container has-text-white">
+    <div class="navbar-brand">
+        <div class="navbar-item">
+            <a class="title is-5 is-white" href="http://www.mafool.com/">码夫庄园</a>
+        </div>
+
+        
+        <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <div id="navbarExampleTransparentExample" class="navbar-menu has-text-dark">
+        
+
+        <div class="navbar-end">
+            <a class="navbar-item" href='http://www.mafool.com/'>首页</a>
+            <a class="navbar-item" href='http://www.mafool.com/archives'>归档 </a>
+            <a class="navbar-item" href='http://www.mafool.com/about'>关于</a>
+            <span class="navbar-item">
+                <a class="button is-primary is-inverted" href="https://github.com/hollson/hugo-theme-dooz">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>主题</span>
+                </a>
+            </span>
+        </div>
+    </div>
+</nav>
+    </div>
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <div class='container column is-7'>
+                
+                <h1 class="title is-size-2" style="margin-bottom:0.2rem;">
+                    
+                    Category -> Go高级篇
+                    
+                </h1>
+                
+                <span class="title is-size-6" style="font-style: italic;"> </span><br>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    
+    <div class="container">
+        <div class="section">
+            
+
+
+<div class="columns">
+    <div class="column is-9">
+        <div class="tile is-child box">
+            <div class="content">
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/posts/0742b474a643d63a774461726a6201203/">Go语言中的原子操作</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年12月2日,
+    星期三 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 3分钟阅读
+</p>
+                            <p> 原子操作中，针对某个值的操作在被进行的过程中，CPU绝不会再去进行其他的针对该值的操作。为了实现这样的严谨性，原子操作仅会由一个独立的CPU指令代表和完成。原子操作是无锁的，常常直接通过 CPU 指令直接实现。 事实上，其它同步技术的实现常常依赖于原子操作 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/posts/4f1b039fa5fd1a09e83a47bfac1fef0f/">Go - 内存分配原理</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年4月14日,
+    星期二 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 6分钟阅读
+</p>
+                            <p> Go内存管理基于tcmalloc，使用连续虚拟地址，以页(8k)为单位、多级缓存进行管理；在分配内存时，需要对size进行对齐处理，根据best-fit找到合适的mspan，对未用完的内存还会拆分成其他大小的mspan继续使用。 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/posts/0742b474a643d63a774461726a6d328c/">「转」Go并发之优雅退出</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年4月10日,
+    星期五 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 4分钟阅读
+</p>
+                            <p> goroutine作为Golang并发的核心，我们不仅要关注它们的创建和管理，当然还要关注如何合理的退出这些协程，不（合理）退出不然可能会造成阻塞、panic、程序行为异常、数据结果不正确等问题。 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/post/1585573653/">深度解密Go语言之map</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年3月30日,
+    星期一 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 36分钟阅读
+</p>
+                            <p> Hash table是计算机数据结构中一个最重要的设计。大部分hash table都实现了快速查找、添加、删除的功能，Go 语言内置的 map 实现了上述所有功能。map的任务是设计一种数据结构用来维护一个集合的数据，并且可以同时对集合进行增删查改的操作。最主要的数据结构有两种：哈希查找表（Hash table）、搜索树（Search tree）。 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/post/1585577658/">深度解密Go语言之slice</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年3月30日,
+    星期一 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 1分钟阅读
+</p>
+                            <p> 源码 1 open -a goland $GOROOT/src/runtime/slice.go 源码简读 原型 1 2 3 4 5 type slice struct { array unsafe.Pointer len int cap int } make操作 经常被问到new和make读区别，来看一看到底干来啥 1 2 3 4 5 6 7 8 9 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/2020/03/%E7%94%A8go%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E6%95%B0%E5%AD%A6%E8%A1%A8%E8%BE%BE%E5%BC%8F%E8%AE%A1%E7%AE%97%E5%BC%95%E6%93%8E/">用Go实现一个数学表达式计算引擎</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年3月22日,
+    星期日 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 14分钟阅读
+</p>
+                            <p> 这里是内容该要信息 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/posts/f0e1186f6b7f094003d14539f38425d6/">sync.errgroup 源码解读</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年3月8日,
+    星期日 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 3分钟阅读
+</p>
+                            <p> 包errgroup可以为处理常见任务的子任务的goroutine组提供同步，错误传播和上下文取消。 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/posts/09f6faa09d79344eba8fcef184997d68/">Go之接口解读</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年3月7日,
+    星期六 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 20分钟阅读
+</p>
+                            <p> 用于SEO的内容说明 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/posts/1f880505b15bc9af30837c3286fdd2c5/">「转」图解go反射实现原理</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年2月17日,
+    星期一 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 7分钟阅读
+</p>
+                            <p> 用于SEO的内容说明 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/post/1585677184/">Go并发1-并发模型</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2019年12月19日,
+    星期四 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 4分钟阅读
+</p>
+                            <p> 用于SEO的内容说明 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/post/1585677428/">Go并发2-同步编程</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2019年12月19日,
+    星期四 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 4分钟阅读
+</p>
+                            <p> 用于SEO的内容说明 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/post/1585855719/">Go并发3-Channel进程通信</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2019年10月8日,
+    星期二 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 6分钟阅读
+</p>
+                            <p> Do not communicate by sharing memory; instead, share memory by communicating. </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/post/1585856050/">Go并发4-Context</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2019年10月7日,
+    星期一 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 3分钟阅读
+</p>
+                            <p> 在WebServer中，每个请求都对应一个goroutine，同时还会启动若干goroutine去处理后端业务，如数据库、RPC服务、身份认证信息等。当一个请求被 取消或超时 时，所有用来处理该请求的goroutine都应该迅速退出，然后系统才能释放这些goroutine占用的资源。 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/posts/d780d847caf0f29efb743f0ae0c8d2aa/">「转」Go之优雅代码之道</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2019年8月7日,
+    星期三 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 32分钟阅读
+</p>
+                            <p> Go 语言是一门简单、易学的编程语言，对于有编程背景的工程师来说，学习 Go 语言并写出能够运行的代码并不是一件困难的事情，对于之前有过其他语言经验的开发者来说，写什么语言都像自己学过的语言其实是有问题的，想要真正融入生态写出优雅的代码就一定要花一些时间和精力了解语言背后的设计哲学和最佳实践。 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/post/1585590231003/">「转」iface 和 eface 的区别是什么</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2019年3月16日,
+    星期六 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 3分钟阅读
+</p>
+                            <p> 接口定义了一种规范，描述了类的行为和功能，而不做具体实现 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/post/1585590231005/">「转」如何用 interface 实现多态</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2019年3月16日,
+    星期六 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 2分钟阅读
+</p>
+                            <p> 接口定义了一种规范，描述了类的行为和功能，而不做具体实现 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/post/1585590231006/">「转」接口的动态类型和动态值</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2019年3月16日,
+    星期六 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 2分钟阅读
+</p>
+                            <p> 接口定义了一种规范，描述了类的行为和功能，而不做具体实现 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/post/1585590231007/">「转」接口的构造过程是怎样的</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2019年3月16日,
+    星期六 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 4分钟阅读
+</p>
+                            <p> 接口定义了一种规范，描述了类的行为和功能，而不做具体实现 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/post/1585590231004/">值接收者和指针接收者的区别</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2019年3月16日,
+    星期六 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 1分钟阅读
+</p>
+                            <p> 接口定义了一种规范，描述了类的行为和功能，而不做具体实现 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/posts/21a9dcd7220eb509dbc8e49fee882300/">Go语言变量逃逸分析</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2019年3月15日,
+    星期五 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 13分钟阅读
+</p>
+                            <p> Go 内存逃逸详细分析 Slice 怪异现象分析实例 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 package main import ( &#34;fmt&#34; ) func main(){ s := []byte(&#34;&#34;) s1 := append(s, &#39;a&#39;) s2 := append(s, &#39;b&#39;) // 如果有此行，打印的结果是 a b，否 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+                <article class="media">
+                    <div class="media-content">
+                        <div class="content">
+                            <p class="title is-4"><a href="http://www.mafool.com/post/1585590232/">接口转换的原理</a></p>
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2018年12月31日,
+    星期一 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 6分钟阅读
+</p>
+                            <p> golang接口原理 </p>
+                        </div>
+                    </div>
+                </article>
+                <br>
+                
+            </div>
+        </div>
+    </div>
+    <div class="column is-3">
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">最近发布</h2>
+        
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/0742b474a643d63a774461726a6201203/">Go语言中的原子操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年12月2日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/1600330472/">Go基础笔记 - 2.3 常量</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月10日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/15996311192/">Go - Gin框架快速入门</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月9日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480249/">Gorm快速指南</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480218/">18. Go语言MySQL数据库操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+    </div>
+</div>
+<br><br>
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">分类</h2>
+        <ul class="widget-list">
+            
+            <li><a href="http://www.mafool.com/categories/algorithm/">Algorithm (13)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/architect/">Architect (8)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/blockchain/">BlockChain (1)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/docker/">Docker (4)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/etcd/">Etcd (1)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/git%E5%BA%94%E7%94%A8/">Git应用 (5)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/golang/">Golang (1)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/go%E5%9F%BA%E7%A1%80%E7%AF%87/">Go基础篇 (13)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/go%E5%BA%94%E7%94%A8%E7%AF%87/">Go应用篇 (8)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/go%E6%B7%B1%E5%BA%A6%E6%8F%AD%E7%A7%98/">Go深度揭秘 (1)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/go%E7%AC%94%E8%AE%B0/">Go笔记 (14)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/go%E9%AB%98%E7%BA%A7%E7%AF%87/">Go高级篇 (21)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/hugo/">Hugo (2)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/istio/">Istio (7)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/k8s/">K8s (1)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/kafka/">Kafka (4)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/linux/">Linux (4)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/mysql/">Mysql (9)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/nginx/">Nginx (7)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/postgresql/">Postgresql (2)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/redis/">Redis (5)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/sundry/">Sundry (5)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/tech/">Tech (7)</a></li>
+            
+            <li><a href="http://www.mafool.com/categories/zookeeper/">Zookeeper (2)</a></li>
+            
+        </ul>
+    </div>
+</div>
+<br />
+    </div>
+</div>
+
+
+        </div>
+    </div>
+
+    
+    <footer class="footer has-background-grey-darker has-text-white">
+    <div class="content has-text-centered">
+        <p>
+            <span class="icon is-large">
+                <a href="https://twitter.com/" class="mysocial" rel="me">
+                    <i class="fab fa-twitter fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://www.youtube.com/" class="mysocial" rel="me">
+                    <i class="fab fa-youtube fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://github.com/" class="mysocial" rel="me">
+                    <i class="fab fa-github fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <br><br>
+            友情链接：
+            
+            <a class="mysocial" href="http://www.mafool.com" target="_blank">Mafool</a>
+            
+            <a class="mysocial" href="https://gohugo.io/documentation/" target="_blank">Hugo</a>
+            
+            <a class="mysocial" href="https://bulma.io/" target="_blank">Bulma</a>
+            
+            <a class="mysocial" href="https://bootstrapious.com/" target="_blank">Bootstrapious</a>
+            
+            <a class="mysocial" href="https://youzhixueyuan.com/" target="_blank">Youzhixueyuan</a>
+            
+            <br><br />
+            版权所有 &copy; 码夫庄园 2021
+            - <a class="mysocial" href="https://github.com/hollson/hugo-theme-dooz">Hugo Theme</a>
+        </p>
+    </div>
+</footer>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='http://www.mafool.com/js/dooz.totop.js?v=0.0.0' async=""></script>
+
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = 'https://hm.baidu.com/hm.js?f185359ec6b829a6a93e1e1f2597f6d9';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DK042XSJ2J"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-DK042XSJ2J');
+</script>
+
+    
+    
+<script type="text/javascript" src="http://www.mafool.com/js/reward.js"></script>
+
+    
+    <script defer src="https://cdn.staticfile.org/font-awesome/5.13.0/js/all.min.js"></script>
+</body>
+
+</html>

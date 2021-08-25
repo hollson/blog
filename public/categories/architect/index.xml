@@ -1,0 +1,87 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Architect on 码夫庄园</title>
+    <link>http://www.mafool.com/categories/architect/</link>
+    <description>Recent content in Architect on 码夫庄园</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <copyright>版权所有</copyright>
+    <lastBuildDate>Wed, 08 Apr 2020 22:26:52 +0800</lastBuildDate>
+    
+        <atom:link href="http://www.mafool.com/categories/architect/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>分布式系统概述</title>
+      <link>http://www.mafool.com/posts/d40cede24573717edfd927aad8bb5042/</link>
+      <pubDate>Wed, 08 Apr 2020 22:26:52 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/posts/d40cede24573717edfd927aad8bb5042/</guid>
+      <description>前言 说起分布式系统，我们就不得不说下分布式系统的祖先——集中式系统。集中式系统跟分布式系统是完全相反的两个概念。集中式系统就是把所有的程序、</description>
+    </item>
+    
+    <item>
+      <title>CAP定理和分布式数据库管理系统</title>
+      <link>http://www.mafool.com/post/1585838490/</link>
+      <pubDate>Mon, 11 Nov 2019 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585838490/</guid>
+      <description>过去，当我们想存储更多数据或提高处理能力时，通常的选择是垂直扩展（获得功能更强大的计算机）或进一步优化现有代码库。但是，随着并行处理和分布式</description>
+    </item>
+    
+    <item>
+      <title>分布式理论(一) - CAP定理</title>
+      <link>http://www.mafool.com/post/1585839366/</link>
+      <pubDate>Sat, 06 Jul 2019 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585839366/</guid>
+      <description>前言 CAP原则又称CAP定理，指的是在一个分布式系统中，Consistency（一致性）、 Availability（可用性）、Partiti</description>
+    </item>
+    
+    <item>
+      <title>分布式理论(二) - BASE理论</title>
+      <link>http://www.mafool.com/post/1585838938/</link>
+      <pubDate>Fri, 05 Jul 2019 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585838938/</guid>
+      <description>前言 BASE理论是由eBay架构师提出的。BASE是对CAP中一致性和可用性权衡的结果，其来源于对大规模互联网分布式系统实践的总结，是基于C</description>
+    </item>
+    
+    <item>
+      <title>分布式理论(三) - 2PC协议</title>
+      <link>http://www.mafool.com/post/1585839040/</link>
+      <pubDate>Thu, 04 Jul 2019 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585839040/</guid>
+      <description>前言 由于BASE理论需要在一致性和可用性方面做出权衡，因此涌现了很多关于一致性的算法和协议。其中比较著名的有二阶提交协议（2 Phase Commitment Protoc</description>
+    </item>
+    
+    <item>
+      <title>分布式理论(四) - 3PC协议</title>
+      <link>http://www.mafool.com/post/1585839114/</link>
+      <pubDate>Wed, 03 Jul 2019 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585839114/</guid>
+      <description>分布式理论(四) - 3PC协议 前言 由于二阶段提交存在着诸如同步阻塞、单点问题、脑裂等缺陷。所以，研究者们在二阶段提交的基础上做了改进，提出了三</description>
+    </item>
+    
+    <item>
+      <title>分布式理论(五) 一致性算法Paxos</title>
+      <link>http://www.mafool.com/post/1585839221/</link>
+      <pubDate>Tue, 02 Jul 2019 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585839221/</guid>
+      <description>前言 世界上只有一种一致性算法，就是 Paxos。出自一位 Google 大神之口。Paxos 也是出名的 晦涩难懂，推理过程极其复杂。 Paxos 有点类似之前说的 2PC，</description>
+    </item>
+    
+    <item>
+      <title>分布式理论(六) - 一致性协议Raft</title>
+      <link>http://www.mafool.com/post/1585839270/</link>
+      <pubDate>Mon, 01 Jul 2019 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585839270/</guid>
+      <description>分布式理论(六) - 一致性协议Raft 前言 Raft 也是一个 一致性算法，和 Paxos 目标相同。但它还有另一个名字 - 易于理解的一致性算法。Paxos 和 Raft 都是为了</description>
+    </item>
+    
+  </channel>
+</rss>

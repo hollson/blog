@@ -1,0 +1,1645 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>码夫庄园-用Go实现一个数学表达式计算引擎</title>
+    <meta name="keywords"
+        content='码农,hugo,theme,blog,coder,geek,github,golang,技术,源码,代码,编程,程序员,主题,个人,博客,微服务,容器'>
+    <meta name="description" content="这里是内容该要信息" />
+
+    
+    <meta name="baidu-site-verification" content="v9szEmQLra" />
+    <meta name="360-site-verification" content="d8e961f98fb655e4b8cf9439cfd9ac7f" />
+    <meta name="sogou_site_verification" content="40NC9EdZDC" />
+    <meta name="shenma-site-verification" content="3200e3042e92157713a3b0aceeecb20a_1586020187" />
+    <meta name="google-site-verification" content="r8987bkunZHJeKut3ocu5NIJ5QEu53NA6Q_r7RrZ46c" />
+    <meta name="msvalidate.01" content="893A2865ABC54AC2782D118536831056" />
+
+    
+    <link rel="shortcut icon" href="http://www.mafool.com/img/res/favicon.ico">
+    
+
+    
+
+    <link crossorigin="anonymous" integrity="sha384-5kGFOAqgEKnuF6c2jk2JANKHZgYVt38Wn2dVJENtq1EBCP54/1uzXU5mpxqL8WjN"
+        href="https://lib.baomitu.com/bulma/0.8.0/css/bulma.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="http://www.mafool.com/css/dooz.blog.css" />
+    <script crossorigin="anonymous" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh"
+        src="https://lib.baomitu.com/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/jquery.share.min.js"></script>
+    
+
+    
+
+    
+    
+<link rel="stylesheet" href="http://www.mafool.com/css/reward.css">
+
+
+    <link href="http://www.mafool.com/css/fonts.googleapi.css" rel="stylesheet">
+    <script src=http://www.mafool.com/js/dooz.blog.js></script>
+
+    
+    <script>
+        $(document).ready(function () {
+            $('.content a[href^="http"]').each(function () {
+                $(this).attr('target', '_blank');
+            });
+        });
+
+        $(document).on('click', '.modal-wechat', function () {
+            $(".modal").addClass("is-active");
+        });
+
+        $(document).on('click', '.modal-background', function () {
+            $(".modal").removeClass("is-active");
+        });
+    </script>
+</head>
+
+<body>
+    
+    
+<section class="hero is-info is-medium"
+    style="background-image: url('/img/res/blog.jpg');">
+    <div class="hero-head">
+        <nav class="navbar is-transparent container has-text-white">
+    <div class="navbar-brand">
+        <div class="navbar-item">
+            <a class="title is-5 is-white" href="http://www.mafool.com/">码夫庄园</a>
+        </div>
+
+        
+        <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <div id="navbarExampleTransparentExample" class="navbar-menu has-text-dark">
+        
+
+        <div class="navbar-end">
+            <a class="navbar-item" href='http://www.mafool.com/'>首页</a>
+            <a class="navbar-item" href='http://www.mafool.com/archives'>归档 </a>
+            <a class="navbar-item" href='http://www.mafool.com/about'>关于</a>
+            <span class="navbar-item">
+                <a class="button is-primary is-inverted" href="https://github.com/hollson/hugo-theme-dooz">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>主题</span>
+                </a>
+            </span>
+        </div>
+    </div>
+</nav>
+    </div>
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <div class='container has-text-left column is-7'>
+                
+                <span>
+                    <a class="bar_tag" href="http://www.mafool.com/tags/golang" title="golang">golang</a>
+                </span>
+                
+                <h1 class="title is-size-2" style="margin-bottom:0.2rem;">
+                    
+                    用Go实现一个数学表达式计算引擎
+                    
+                </h1>
+                
+                <span class="title is-size-6" style="font-style: italic;"> </span><br>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    
+    <div class="container">
+        <div class="section">
+            
+<div class="columns">
+    <div class="column is-9">
+        <div class="tile is-child box">
+            <div class="content">
+                
+                <nav class="level">
+                    
+                    <div class="level-left">
+                        <div class="level-item">
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年3月22日,
+    星期日 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 14分钟阅读
+</p>
+                        </div>
+                    </div>
+
+                    
+                    
+                    <div class="share-component level-right" data-disabled="google,diandian,tencent,qzone"
+                        data-description="Share.js - 一键分享到微博，QQ空间，腾讯微博，人人，豆瓣"
+                        data-mobile-sites="weibo,qq,qzone,tencent">
+                    </div>
+                    
+                </nav>
+                <hr>
+                
+                <header>
+                    <h2>目录</h2>
+                </header>
+                <nav id="TableOfContents">
+  <ul>
+    <li><a href="#导读">导读</a></li>
+    <li><a href="#概述">概述</a></li>
+    <li><a href="#题目分析思路">题目分析思路</a></li>
+    <li><a href="#词法分析">词法分析</a></li>
+    <li><a href="#语法分析构建-ast">语法分析、构建 AST</a></li>
+    <li><a href="#ast-求解">AST 求解</a></li>
+    <li><a href="#结尾">结尾</a></li>
+    <li><a href="#代码资源">代码资源</a></li>
+  </ul>
+</nav>
+                
+                <hr>
+                <h1 id="用go实现一个数学表达式计算引擎">用Go实现一个数学表达式计算引擎</h1>
+<p><a href="https://www.yoytang.com/about.me.html">deng-dev</a> 发布在 10个月前 更新于 4个月前 <a href="https://www.yoytang.com/tag/%E7%AE%97%E6%B3%95/index.html">算法</a><a href="https://www.yoytang.com/tag/%E8%AE%A1%E7%AE%97%E5%BC%95%E6%93%8E/index.html">计算引擎</a><a href="https://www.yoytang.com/tag/AST/index.html">AST</a><a href="https://www.yoytang.com/tag/Go/index.html">Go</a></p>
+<p><a href="https://www.yoytang.com/images/smart-code/math-engine-demo.png"><img src="https://www.yoytang.com/images/smart-code/math-engine-demo.png" alt="math-engine-demo"></a></p>
+<p>math-engine-demo</p>
+<h2 id="导读">导读</h2>
+<p>这篇文章将从头开始，使用 <code>Go</code> 语言来实现一个完整的数学表达式计算引擎。本文采用的是抽象语法树（Abstract Syntax Tree，AST）实现方式。<br>
+虽然本文的实现代码为 <code>Go</code>，但不用纠结于此，语言只是实现方式的一种选择，作为开发工程师，相信你读起来它并不会感到费力。你完全可以在读完文章后，用 <code>C/C++</code>，<code>Rust</code> 或者任意你喜欢的语言来实现一遍，甚至，这是检验你学习成果的最佳方式。<br>
+文章的所有代码和编译后的二进制可执行文件都会放在 Github, 文章末尾附有链接。<br>
+那么，就让我们开始吧。</p>
+<h2 id="概述">概述</h2>
+<p>我们来先做一道题数学题，计算下面的式子：<br>
+<code>92 + 5 + 5 * 27 - (92 - 12) / 4 + 26</code></p>
+<p>什么？没了？？就这么简单？？？( 是的，就这么简单 🤣</p>
+<p>凭借个人实力，我觉得大家完全可以口算给出这道题的答案。但是，你并不会这么做，因为你觉得你是一名工程师，你要用你所擅长的代码来解决这个问题，以至于一发不可收，最后解决了这类问题。(我没有、我不想、别瞎说.jpg)</p>
+<p>如果不往下看，停顿思考，你的实现思路是什么样的？每个人都会有一个自己的实现思路，事实上，解决这个问题的方法很多，没有必要拘泥于某一种算法。本文为了保证代码实现质量的同时，还能够阐述基础的语言处理结构，这里使用的是抽象语法树（Abstract Syntax Tree，AST，下称:AST）实现方式。使用抽象语法树还有一个目的，就是窥一斑而知全豹，让大家能了解脚本语言（典型的如PHP、Javascript）是如何动态解析执行的。</p>
+<p>所以，看完本章，你会了解到：</p>
+<ul>
+<li>词法分析，如何手写一个词法分析器</li>
+<li>语法分析，如何手写一个语法分析器</li>
+<li>AST，如何构建一个AST</li>
+<li>运算优先级算法的实现</li>
+<li>执行一个 AST</li>
+</ul>
+<h2 id="题目分析思路">题目分析思路</h2>
+<p>首先，我们先来分析一下这个题目。<br>
+<code>92 + 5 + 5 * 27 - (92 - 12) / 4 + 26</code><br>
+根据小学学过的理论知识，我们知道：先乘除后加减，有括号最优先。所以在我们口算这道题的时候，我们的计算顺序应该是：<br>
+<code>X = ( 92 - 12 ) = 80</code><br>
+<code>Y = 5 * 27 = 135</code><br>
+<code>Z = X / 4 = 80 / 4 = 20</code><br>
+原题 = <code>92 + 5 + Y - Z + 26</code> = <code>92 + 5 + 135 - 20 + 26</code> = <code>238</code></p>
+<p>为了能够用代码实现这个算法，我们需要提炼出口算时的计算模式，或者说，计算的规律。有了规律，转换成代码实现就会很容易。</p>
+<p>不知道你有没有注意到，我们口算解这道题的时候，并没有说一下子把题目解出来，而是对题目先做了分解，比如 <code>(92-12)</code>是第一步分解出来的，我们可以先计算这个小的子题，得出<code>80</code>这个结果后，再代入到原式中。这个思路正是上面说的”先乘除后加减，有括号最优先”的具体实践，也就是说，运算符是有优先级的，需要根据算式中优先级的高低，先分解优先级高的计算出来，然后计算优先级低的，而不是简单的从题目的起始一直计算到结尾。</p>
+<p>很明显，在这道题中，<code>()</code>、的优先级最高，<code>*</code>、<code>/</code>的优先级次之，<code>+</code>、<code>-</code>的优先级最低。同一优先级可以从左到右顺序计算。<br>
+确立了优先级，我们就能根据上面的口算步骤，模拟一个算法流程：</p>
+<p>1、找出较高优先级的子算式 <code>92-12</code>,得出结果 <code>80</code>，代替<code>92-12</code>的位置；<br>
+2、找出较高优先级的子算式 <code>5*7</code>,得出结果 <code>35</code>，代替<code>5*7</code>的位置；<br>
+3、找出较高优先级的子算式 <code>80/4</code>,得出结果 <code>20</code>，代替<code>80/4</code>的位置；<br>
+4、发现优先级都是一样的，可以顺序计算，依次计算得出结果<code>238</code></p>
+<p>图解如下：<br>
+<a href="https://www.yoytang.com/images/smart-code/exp-engine-1.png"><img src="https://www.yoytang.com/images/smart-code/exp-engine-1.png" alt="图解"></a></p>
+<p>图解</p>
+<p>模拟的算法流程有了，但是，emmm… 好像还是不知道该从哪里开始码代码，难道要一遍遍的遍历查找计算吗？不。</p>
+<p>那就进一步分析这个流程，可以发现，在每一步的最后一个操作都是做一个简单的运算，然后得出结果，这个简单运算遵循 <code>number opeator number</code>，可以很明确的知道，这是一个二元运算，我们记作<code>(lhs op rhs)</code>。<br>
+所以，回过头，再来规划一下上面的题目和流程，可以总结出：计算一个数学表达式，本质上就是把表达式按照运算优先级分出二元运算、运算合并的过程。<br>
+有了这个认知后，我们就可以把这个问题跟我们的数据结构结合在一起，用某种或者多种数据结构来描述这个题目。在计算机中，该如何描述呢？我们可以先改进一下<code>lhs op rhs</code>, 把<code>op</code>提到最前面, 转化成<code>op lhs rhs</code>, 因为它们都是一个个二元运算，而每个二元运算都可以看做是一个<code>Root</code>为<code>op</code>，<code>LeftNode</code>为<code>lhs</code>，<code>RightNode</code>为<code>rhs</code>的二叉树（<code>Root=op LeftNode=lhs RightNode=rhs</code>），那么按照算法流程来构建一个二叉树就可以很好的表示这个题目。</p>
+<p>最终，我们可以得出这张图：<br>
+<a href="https://www.yoytang.com/images/smart-code/exp-engine-2.png"><img src="https://www.yoytang.com/images/smart-code/exp-engine-2.png" alt="二叉树的表示"></a></p>
+<p>二叉树的表示</p>
+<p>整个待计算的表达式可以用二叉树来完美的表示。这是一个令人兴奋的事情，因为我们把一道数学问题成功的转化成了一道数据结构的算法问题，也就是说，我们只需要一种算法对这个二叉树求解，就能得出原算式的答案。事实上，这就是解决这道题的核心所在(不仅仅是这道数学运算题，把范围扩展到整个计算机领域都会适用)，一旦我们能够通过数据结构和算法描述现实问题，那么我们就可以利用计算机完成问题的映射，并且通过计算得出答案。</p>
+<p>解决问题的思路有了，那我们就可以开始准备 Coding，实现我们说的数据结构。</p>
+<h2 id="词法分析">词法分析</h2>
+<blockquote>
+<p>词法分析：将字符序列转换为单词（Token）序列的过程。</p>
+</blockquote>
+<p>为了能让计算机理解我们输入的字符串，我们需要对这个字符串做解析，那第一个阶段就是词法分析。<br>
+不要惊慌！即使你从来没接触过这类知识，这个小节也并不会出现让你感到晦涩难懂的地方。相信我！（其实，看完你会觉得很简单）</p>
+<p><code>92 + 5 + 5 * 27 - (92 - 12) / 4 + 26</code> 这个算式，对我们而言，有意义的字符/词是什么？我们来逐个拆解一下：</p>
+<ul>
+<li><code>92</code> 有意义，因为它是数字，参与运算；</li>
+<li><code>+</code> 有意义，因为它是操作符，参与运算；</li>
+<li><code>5</code>, <code>+</code>, <code>5</code>, <code>*</code>, <code>27</code>, <code>-</code> , <code>92</code>, <code>-</code>, <code>12</code>, <code>/</code>, <code>4</code>, <code>+</code>, <code>26</code>都有意义，原因同上；</li>
+<li><code>(</code> 有意义，它表示一个优先级开始；</li>
+<li><code>)</code> 有意思，它表示一个优先级结束；</li>
+</ul>
+<p>当我们把所有有意义的词拆解出来，那剩下的自然就是无意义的了。在这个式子中就是空格。</p>
+<p>上面的这个拆解过程，我们就称之为<code>词法分析</code>。通俗的来讲，词法分析是将输入的字符串逐个分析，通过某种方式（一般是有限状态机）来识别有意义的字符，转化成相应的标记<code>Token</code>，无意义的字符直接忽略丢弃，最终得到一个全部是有意义的<code>Token</code>序列的过程。<br>
+上面我们提到了两种类型，一个是数字，一个是操作符（<code>()</code>我们也当做是操作符）,在代码中可以定义成常量，供接下来使用：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">const</span> (
+  <span style="color:#09f;font-style:italic">// 字面量，e.g. 50
+</span><span style="color:#09f;font-style:italic"></span>    Literal = <span style="color:#069;font-weight:bold">iota</span>
+  <span style="color:#09f;font-style:italic">// 操作符, e.g. + - * /
+</span><span style="color:#09f;font-style:italic"></span>    Operator
+)
+</code></pre></td></tr></table>
+</div>
+</div><p>定义好类型，我们接下来可以定义 <code>Token</code>：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">type</span> Token <span style="color:#069;font-weight:bold">struct</span> {
+  <span style="color:#09f;font-style:italic">// 原始字符
+</span><span style="color:#09f;font-style:italic"></span>    Tok  <span style="color:#078;font-weight:bold">string</span>
+  <span style="color:#09f;font-style:italic">// 类型，有 Literal、Operator 两种
+</span><span style="color:#09f;font-style:italic"></span>    Type <span style="color:#078;font-weight:bold">int</span>
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>只要能够通过词法分析得到的 <code>Token</code>，都是有意义的，对于本文来讲，<code>Token</code>只有<code>Literal</code>, <code>Operator</code>两种类型，所以，接下来的扫描过程只需要处理这两种类型就行了。<br>
+词法分析的具体实现代码：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 58
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 59
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 60
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 61
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 62
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 63
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 64
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 65
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 66
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 67
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 68
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 69
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 70
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 71
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 72
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 73
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 74
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 75
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 76
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 77
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 78
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 79
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 80
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 81
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 82
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 83
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 84
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 85
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 86
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 87
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 88
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 89
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 90
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 91
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 92
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 93
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 94
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 95
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 96
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 97
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 98
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 99
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">100
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">101
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">102
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">103
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">104
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">105
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">106
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">107
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">108
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">109
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">110
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">111
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">112
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">113
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">114
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">115
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">116
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">117
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">118
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">119
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">120
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">121
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">122
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">123
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">124
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">125
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">126
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">127
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">128
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">129
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#09f;font-style:italic">// 定义一个结构体，描述一个词法分析器
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">type</span> Parser <span style="color:#069;font-weight:bold">struct</span> {
+  <span style="color:#09f;font-style:italic">// 输入的字符串
+</span><span style="color:#09f;font-style:italic"></span>    Source <span style="color:#078;font-weight:bold">string</span>
+  <span style="color:#09f;font-style:italic">// 扫描器当前所在的字符
+</span><span style="color:#09f;font-style:italic"></span>    ch     <span style="color:#078;font-weight:bold">byte</span>
+  <span style="color:#09f;font-style:italic">// 扫描器当前所在的位置
+</span><span style="color:#09f;font-style:italic"></span>    offset <span style="color:#078;font-weight:bold">int</span>
+  <span style="color:#09f;font-style:italic">// 扫描过程出现的错误收集
+</span><span style="color:#09f;font-style:italic"></span>    err <span style="color:#078;font-weight:bold">error</span>
+}
+
+<span style="color:#09f;font-style:italic">// 逐个字符扫描，得到一串 Token 序列
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> (p <span style="color:#555">*</span>Parser) <span style="color:#c0f">parse</span>() []<span style="color:#555">*</span>Token {
+    toks <span style="color:#555">:=</span> <span style="color:#366">make</span>([]<span style="color:#555">*</span>Token, <span style="color:#f60">0</span>)
+  <span style="color:#09f;font-style:italic">// 一直获取下一个 Token
+</span><span style="color:#09f;font-style:italic"></span>    <span style="color:#069;font-weight:bold">for</span> {
+        tok <span style="color:#555">:=</span> p.<span style="color:#c0f">nextTok</span>()
+        <span style="color:#069;font-weight:bold">if</span> tok <span style="color:#555">==</span> <span style="color:#069;font-weight:bold">nil</span> {
+      <span style="color:#09f;font-style:italic">// 已经到达末尾或者出现错误时，停止
+</span><span style="color:#09f;font-style:italic"></span>            <span style="color:#069;font-weight:bold">break</span>
+        }
+    <span style="color:#09f;font-style:italic">// 收集 Token
+</span><span style="color:#09f;font-style:italic"></span>        toks = <span style="color:#366">append</span>(toks, tok)
+    }
+    <span style="color:#069;font-weight:bold">return</span> toks
+}
+
+<span style="color:#09f;font-style:italic">// 获取下一个 Token
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> (p <span style="color:#555">*</span>Parser) <span style="color:#c0f">nextTok</span>() <span style="color:#555">*</span>Token {
+  <span style="color:#09f;font-style:italic">// 已经到达末尾或者出现错误
+</span><span style="color:#09f;font-style:italic"></span>    <span style="color:#069;font-weight:bold">if</span> p.offset <span style="color:#555">&gt;=</span> <span style="color:#366">len</span>(p.Source) <span style="color:#555">||</span> p.err <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span> {
+        <span style="color:#069;font-weight:bold">return</span> <span style="color:#069;font-weight:bold">nil</span>
+    }
+    <span style="color:#069;font-weight:bold">var</span> err <span style="color:#078;font-weight:bold">error</span>
+  <span style="color:#09f;font-style:italic">// 跳过所有无意义的空白符
+</span><span style="color:#09f;font-style:italic"></span>    <span style="color:#069;font-weight:bold">for</span> p.<span style="color:#c0f">isWhitespace</span>(p.ch) <span style="color:#555">&amp;&amp;</span> err <span style="color:#555">==</span> <span style="color:#069;font-weight:bold">nil</span> {
+        err = p.<span style="color:#c0f">nextCh</span>()
+    }
+    start <span style="color:#555">:=</span> p.offset
+    <span style="color:#069;font-weight:bold">var</span> tok <span style="color:#555">*</span>Token
+    <span style="color:#069;font-weight:bold">switch</span> p.ch {
+  <span style="color:#09f;font-style:italic">// 操作符
+</span><span style="color:#09f;font-style:italic"></span>    <span style="color:#069;font-weight:bold">case</span>
+        <span style="color:#c30">&#39;(&#39;</span>,
+        <span style="color:#c30">&#39;)&#39;</span>,
+        <span style="color:#c30">&#39;+&#39;</span>,
+        <span style="color:#c30">&#39;-&#39;</span>,
+        <span style="color:#c30">&#39;*&#39;</span>,
+        <span style="color:#c30">&#39;/&#39;</span>,
+        <span style="color:#c30">&#39;^&#39;</span>,
+        <span style="color:#c30">&#39;%&#39;</span>:
+        tok = <span style="color:#555">&amp;</span>Token{
+            Tok:  <span style="color:#366">string</span>(p.ch),
+            Type: Operator,
+        }
+        tok.Offset = start
+    <span style="color:#09f;font-style:italic">// 前进到下一个字符
+</span><span style="color:#09f;font-style:italic"></span>        err = p.<span style="color:#c0f">nextCh</span>()
+
+  <span style="color:#09f;font-style:italic">// 字面量(数字)
+</span><span style="color:#09f;font-style:italic"></span>    <span style="color:#069;font-weight:bold">case</span>
+        <span style="color:#c30">&#39;0&#39;</span>,
+        <span style="color:#c30">&#39;1&#39;</span>,
+        <span style="color:#c30">&#39;2&#39;</span>,
+        <span style="color:#c30">&#39;3&#39;</span>,
+        <span style="color:#c30">&#39;4&#39;</span>,
+        <span style="color:#c30">&#39;5&#39;</span>,
+        <span style="color:#c30">&#39;6&#39;</span>,
+        <span style="color:#c30">&#39;7&#39;</span>,
+        <span style="color:#c30">&#39;8&#39;</span>,
+        <span style="color:#c30">&#39;9&#39;</span>:
+        <span style="color:#069;font-weight:bold">for</span> p.<span style="color:#c0f">isDigitNum</span>(p.ch) <span style="color:#555">&amp;&amp;</span> p.<span style="color:#c0f">nextCh</span>() <span style="color:#555">==</span> <span style="color:#069;font-weight:bold">nil</span> {
+        }
+        tok = <span style="color:#555">&amp;</span>Token{
+            Tok:  strings.<span style="color:#c0f">ReplaceAll</span>(p.Source[start:p.offset], <span style="color:#c30">&#34;_&#34;</span>, <span style="color:#c30">&#34;&#34;</span>),
+            Type: Literal,
+        }
+        tok.Offset = start
+
+  <span style="color:#09f;font-style:italic">// 捕获错误
+</span><span style="color:#09f;font-style:italic"></span>    <span style="color:#069;font-weight:bold">default</span>:
+        <span style="color:#069;font-weight:bold">if</span> p.ch <span style="color:#555">!=</span> <span style="color:#c30">&#39; &#39;</span> {
+            s <span style="color:#555">:=</span> fmt.<span style="color:#c0f">Sprintf</span>(<span style="color:#c30">&#34;symbol error: unkown &#39;%v&#39;, pos [%v:]\n%s&#34;</span>,
+                <span style="color:#366">string</span>(p.ch),
+                start,
+                <span style="color:#c0f">ErrPos</span>(p.Source, start))
+            p.err = errors.<span style="color:#c0f">New</span>(s)
+        }
+    }
+    <span style="color:#069;font-weight:bold">return</span> tok
+}
+
+<span style="color:#09f;font-style:italic">// 前进到下一个字符
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> (p <span style="color:#555">*</span>Parser) <span style="color:#c0f">nextCh</span>() <span style="color:#078;font-weight:bold">error</span> {
+    p.offset<span style="color:#555">++</span>
+    <span style="color:#069;font-weight:bold">if</span> p.offset &lt; <span style="color:#366">len</span>(p.Source) {
+        p.ch = p.Source[p.offset]
+        <span style="color:#069;font-weight:bold">return</span> <span style="color:#069;font-weight:bold">nil</span>
+    }
+  <span style="color:#09f;font-style:italic">// 到达字符串末尾
+</span><span style="color:#09f;font-style:italic"></span>    <span style="color:#069;font-weight:bold">return</span> errors.<span style="color:#c0f">New</span>(<span style="color:#c30">&#34;EOF&#34;</span>)
+}
+
+<span style="color:#09f;font-style:italic">// 空白符
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> (p <span style="color:#555">*</span>Parser) <span style="color:#c0f">isWhitespace</span>(c <span style="color:#078;font-weight:bold">byte</span>) <span style="color:#078;font-weight:bold">bool</span> {
+    <span style="color:#069;font-weight:bold">return</span> c <span style="color:#555">==</span> <span style="color:#c30">&#39; &#39;</span> <span style="color:#555">||</span>
+        c <span style="color:#555">==</span> <span style="color:#c30">&#39;\t&#39;</span> <span style="color:#555">||</span>
+        c <span style="color:#555">==</span> <span style="color:#c30">&#39;\n&#39;</span> <span style="color:#555">||</span>
+        c <span style="color:#555">==</span> <span style="color:#c30">&#39;\v&#39;</span> <span style="color:#555">||</span>
+        c <span style="color:#555">==</span> <span style="color:#c30">&#39;\f&#39;</span> <span style="color:#555">||</span>
+        c <span style="color:#555">==</span> <span style="color:#c30">&#39;\r&#39;</span>
+}
+
+<span style="color:#09f;font-style:italic">// 数字
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> (p <span style="color:#555">*</span>Parser) <span style="color:#c0f">isDigitNum</span>(c <span style="color:#078;font-weight:bold">byte</span>) <span style="color:#078;font-weight:bold">bool</span> {
+    <span style="color:#069;font-weight:bold">return</span> <span style="color:#c30">&#39;0&#39;</span> <span style="color:#555">&lt;=</span> c <span style="color:#555">&amp;&amp;</span> c <span style="color:#555">&lt;=</span> <span style="color:#c30">&#39;9&#39;</span> <span style="color:#555">||</span> c <span style="color:#555">==</span> <span style="color:#c30">&#39;.&#39;</span> <span style="color:#555">||</span> c <span style="color:#555">==</span> <span style="color:#c30">&#39;_&#39;</span> <span style="color:#555">||</span> c <span style="color:#555">==</span> <span style="color:#c30">&#39;e&#39;</span>
+}
+
+<span style="color:#09f;font-style:italic">// 对错误包装，进行可视化展示
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">ErrPos</span>(s <span style="color:#078;font-weight:bold">string</span>, pos <span style="color:#078;font-weight:bold">int</span>) <span style="color:#078;font-weight:bold">string</span> {
+    r <span style="color:#555">:=</span> strings.<span style="color:#c0f">Repeat</span>(<span style="color:#c30">&#34;-&#34;</span>, <span style="color:#366">len</span>(s)) <span style="color:#555">+</span> <span style="color:#c30">&#34;\n&#34;</span>
+    s <span style="color:#555">+=</span> <span style="color:#c30">&#34;\n&#34;</span>
+    <span style="color:#069;font-weight:bold">for</span> i <span style="color:#555">:=</span> <span style="color:#f60">0</span>; i &lt; pos; i<span style="color:#555">++</span> {
+        s <span style="color:#555">+=</span> <span style="color:#c30">&#34; &#34;</span>
+    }
+    s <span style="color:#555">+=</span> <span style="color:#c30">&#34;^\n&#34;</span>
+    <span style="color:#069;font-weight:bold">return</span> r <span style="color:#555">+</span> s <span style="color:#555">+</span> r
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>为了方便调用，我们封装一下这个<code>Parser</code>结构体，通过一个函数来把它变成一个黑箱，简化流程：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#09f;font-style:italic">// 封装词法分析过程，直接调用该函数即可解析字符串为[]Token
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">Parse</span>(s <span style="color:#078;font-weight:bold">string</span>) ([]<span style="color:#555">*</span>Token, <span style="color:#078;font-weight:bold">error</span>) {
+  <span style="color:#09f;font-style:italic">// 初始化 Parser
+</span><span style="color:#09f;font-style:italic"></span>    p <span style="color:#555">:=</span> <span style="color:#555">&amp;</span>Parser{
+        Source: s,
+        err:    <span style="color:#069;font-weight:bold">nil</span>,
+        ch:     s[<span style="color:#f60">0</span>],
+    }
+  <span style="color:#09f;font-style:italic">// 调用 parse 方法
+</span><span style="color:#09f;font-style:italic"></span>    toks <span style="color:#555">:=</span> p.<span style="color:#c0f">parse</span>()
+    <span style="color:#069;font-weight:bold">if</span> p.err <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span> {
+        <span style="color:#069;font-weight:bold">return</span> <span style="color:#069;font-weight:bold">nil</span>, p.err
+    }
+    <span style="color:#069;font-weight:bold">return</span> toks, <span style="color:#069;font-weight:bold">nil</span>
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>现在我们只需要调用 <code>Parse</code>函数，就能够对任意字符串进行分析，得到一串 <code>Token</code>序列。</p>
+<p>至此，我们所有的词法分析的代码全部就完成了。这短短不到100行代码，我们就得到了一个可以工作的很好的词法分析器，它能够处理目前我们需要计算数学表达式的输入字符串。（放大一下视角，在编译器领域，对于源代码的第一阶段的词法分析，和我们现在写的代码并没什么两样，只不过是它们的类型更多，逻辑更复杂而已。这种通过有限状态机的方式来写，虽然会比较繁琐、代码量多，但是贵在逻辑很清楚，大多数语言会用这种算法来实现）</p>
+<p>有了 <code>Token</code> 序列是没有什么卵用的，我们的目的是求解。接下来我们要用它来进行下一阶段：语法分析和构建一个 AST。</p>
+<h2 id="语法分析构建-ast">语法分析、构建 AST</h2>
+<blockquote>
+<p>语法分析：在词法分析的基础上将单词<code>Token</code>序列组合成各类语法短语, 判断源代码在结构上是否正确。</p>
+</blockquote>
+<p>拿到一串 <code>Token</code> 序列，把它当做一个输入，由一个函数去执行，然后得到一个检查结果，这个就是语法分析阶段要做的事情，这个函数就是语法分析器。语法分析器得出的结果是对我们输入的整个字符串在语法上的检查结果，它能够告诉我们，这个输入的字符串内容是否能够被识别格式化为下一个阶段目标（这里的目标是构建一个 AST ），举个例子：</p>
+<blockquote>
+<p><code>1+2+3+4+5</code> &raquo;&raquo;词法分析&raquo;&raquo;语法分析&raquo;&raquo;无错误&raquo;&raquo;AST</p>
+<p><code>1+2+(3-4</code> &raquo;&raquo;词法分析&raquo;&raquo;语法分析&raquo;&raquo;出错,<code>4</code>之后应该要有一个操作符，可能是<code>)</code>或者<code>+//*</code>等等</p>
+</blockquote>
+<p>可以看出，语法分析阶段是我们能够确定是否可以继续进行求解很重要的一步。有了它，原始输入的算式字符串才有转成计算机所能理解的数据结构的可能。一般来讲，语法分析不仅仅孤立存在于本身的语法语义检查，他还会产生一个数据结构，这个数据结构通常是一个语法树。要注意的是，并不是只有完全的语法分析通过才会产生这个数据结构，部分语法通过也可以有这个数据结构，具体要看你的语法分析器的宽容度，也就是纠错能力。说的比较抽象，我们来看个例子：</p>
+<p>输入 <code>1+2+3 0 5 06 9*4</code>，词法分析通过，然后到语法分析，很明显整个算式是无法通过语法检查的，但是语法分析器可以只解析到正确的部分 <code>1+2+3</code>，然后返回一个<code>1+2+3</code>的语法树结构，这样即使语法没通过，但是也能得到一个语法树结构。</p>
+<p>就目前的问题而言，我们可以在语法分析阶段生成一个 AST, 用这个 AST 描述数学表达式，就像做思路分析里的这张图一样：</p>
+<p><a href="https://www.yoytang.com/images/smart-code/exp-engine-2.png"><img src="https://www.yoytang.com/images/smart-code/exp-engine-2.png" alt="二叉树的表示"></a></p>
+<p>二叉树的表示</p>
+<p>根据这张图，先定义用到的两个 AST 节点:</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#09f;font-style:italic">// 基础表达式节点接口
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">type</span> ExprAST <span style="color:#069;font-weight:bold">interface</span> {
+    <span style="color:#c0f">toStr</span>() <span style="color:#078;font-weight:bold">string</span>
+}
+
+<span style="color:#09f;font-style:italic">// 数字表达式节点
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">type</span> NumberExprAST <span style="color:#069;font-weight:bold">struct</span> {
+    <span style="color:#09f;font-style:italic">// 具体的值
+</span><span style="color:#09f;font-style:italic"></span>    Val <span style="color:#078;font-weight:bold">float64</span>
+}
+
+<span style="color:#09f;font-style:italic">// 操作表达式节点
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">type</span> BinaryExprAST <span style="color:#069;font-weight:bold">struct</span> {
+    <span style="color:#09f;font-style:italic">// 操作符
+</span><span style="color:#09f;font-style:italic"></span>    Op <span style="color:#078;font-weight:bold">string</span>
+    <span style="color:#09f;font-style:italic">// 左右节点，可能是 数字表达式节点/操作表达式节点/nil
+</span><span style="color:#09f;font-style:italic"></span>    Lhs,
+    Rhs ExprAST
+}
+
+<span style="color:#09f;font-style:italic">// 实现接口
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> (n NumberExprAST) <span style="color:#c0f">toStr</span>() <span style="color:#078;font-weight:bold">string</span> {
+    <span style="color:#069;font-weight:bold">return</span> fmt.<span style="color:#c0f">Sprintf</span>(
+        <span style="color:#c30">&#34;NumberExprAST:%s&#34;</span>,
+        strconv.<span style="color:#c0f">FormatFloat</span>(n.Val, <span style="color:#c30">&#39;f&#39;</span>, <span style="color:#f60">0</span>, <span style="color:#f60">64</span>),
+    )
+}
+
+<span style="color:#09f;font-style:italic">// 实现接口
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> (b BinaryExprAST) <span style="color:#c0f">toStr</span>() <span style="color:#078;font-weight:bold">string</span> {
+    <span style="color:#069;font-weight:bold">return</span> fmt.<span style="color:#c0f">Sprintf</span>(
+        <span style="color:#c30">&#34;BinaryExprAST: (%s %s %s)&#34;</span>,
+        b.Op,
+        b.Lhs.<span style="color:#c0f">toStr</span>(),
+        b.Rhs.<span style="color:#c0f">toStr</span>(),
+    )
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>解析数学表达式这类问题，只需要 <code>NumberExprAST</code> 和 <code>BinaryExprAST</code> 这两个节点就可以了。原因词法分析阶段已经说过的，只有 <code>Literal</code>、<code>Operator</code> 两种类型。</p>
+<p>定义基础的 AST 结构：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#09f;font-style:italic">// AST 生成器结构体
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">type</span> AST <span style="color:#069;font-weight:bold">struct</span> {
+    <span style="color:#09f;font-style:italic">// 词法分析的结果
+</span><span style="color:#09f;font-style:italic"></span>    Tokens []<span style="color:#555">*</span>Token
+    <span style="color:#09f;font-style:italic">// 源字符串
+</span><span style="color:#09f;font-style:italic"></span>    source    <span style="color:#078;font-weight:bold">string</span>
+    <span style="color:#09f;font-style:italic">// 当前分析器分析的 Token
+</span><span style="color:#09f;font-style:italic"></span>    currTok   <span style="color:#555">*</span>Token
+    <span style="color:#09f;font-style:italic">// 当前分析器的位置
+</span><span style="color:#09f;font-style:italic"></span>    currIndex <span style="color:#078;font-weight:bold">int</span>
+    <span style="color:#09f;font-style:italic">// 错误收集
+</span><span style="color:#09f;font-style:italic"></span>    Err <span style="color:#078;font-weight:bold">error</span>
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>下面开始实现语法分析和构建 AST 的核心代码：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 58
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 59
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 60
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 61
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 62
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 63
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 64
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 65
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 66
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 67
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 68
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 69
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 70
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 71
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 72
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 73
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 74
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 75
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 76
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 77
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 78
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 79
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 80
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 81
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 82
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 83
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 84
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 85
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 86
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 87
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 88
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 89
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 90
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 91
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 92
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 93
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 94
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 95
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 96
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 97
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 98
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 99
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">100
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">101
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">102
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">103
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">104
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">105
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">106
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">107
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#09f;font-style:italic">// 定义操作符优先级，value 越高，优先级越高
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">var</span> precedence = <span style="color:#069;font-weight:bold">map</span>[<span style="color:#078;font-weight:bold">string</span>]<span style="color:#078;font-weight:bold">int</span>{<span style="color:#c30">&#34;+&#34;</span>: <span style="color:#f60">20</span>, <span style="color:#c30">&#34;-&#34;</span>: <span style="color:#f60">20</span>, <span style="color:#c30">&#34;*&#34;</span>: <span style="color:#f60">40</span>, <span style="color:#c30">&#34;/&#34;</span>: <span style="color:#f60">40</span>, <span style="color:#c30">&#34;%&#34;</span>: <span style="color:#f60">40</span>, <span style="color:#c30">&#34;^&#34;</span>: <span style="color:#f60">60</span>}
+
+<span style="color:#09f;font-style:italic">// 语法分析器入口
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> (a <span style="color:#555">*</span>AST) <span style="color:#c0f">ParseExpression</span>() ExprAST {
+    lhs <span style="color:#555">:=</span> a.<span style="color:#c0f">parsePrimary</span>()
+    <span style="color:#069;font-weight:bold">return</span> a.<span style="color:#c0f">parseBinOpRHS</span>(<span style="color:#f60">0</span>, lhs)
+}
+
+<span style="color:#09f;font-style:italic">// 获取下一个 Token
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> (a <span style="color:#555">*</span>AST) <span style="color:#c0f">getNextToken</span>() <span style="color:#555">*</span>Token {
+    a.currIndex<span style="color:#555">++</span>
+    <span style="color:#069;font-weight:bold">if</span> a.currIndex &lt; <span style="color:#366">len</span>(a.Tokens) {
+        a.currTok = a.Tokens[a.currIndex]
+        <span style="color:#069;font-weight:bold">return</span> a.currTok
+    }
+    <span style="color:#069;font-weight:bold">return</span> <span style="color:#069;font-weight:bold">nil</span>
+}
+
+<span style="color:#09f;font-style:italic">// 获取操作优先级
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> (a <span style="color:#555">*</span>AST) <span style="color:#c0f">getTokPrecedence</span>() <span style="color:#078;font-weight:bold">int</span> {
+    <span style="color:#069;font-weight:bold">if</span> p, ok <span style="color:#555">:=</span> precedence[a.currTok.Tok]; ok {
+        <span style="color:#069;font-weight:bold">return</span> p
+    }
+    <span style="color:#069;font-weight:bold">return</span> <span style="color:#555">-</span><span style="color:#f60">1</span>
+}
+
+<span style="color:#09f;font-style:italic">// 解析数字，并生成一个 NumberExprAST 节点
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> (a <span style="color:#555">*</span>AST) <span style="color:#c0f">parseNumber</span>() NumberExprAST {
+    f64, err <span style="color:#555">:=</span> strconv.<span style="color:#c0f">ParseFloat</span>(a.currTok.Tok, <span style="color:#f60">64</span>)
+    <span style="color:#069;font-weight:bold">if</span> err <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span> {
+        a.Err = errors.<span style="color:#c0f">New</span>(
+            fmt.<span style="color:#c0f">Sprintf</span>(<span style="color:#c30">&#34;%v\nwant &#39;(&#39; or &#39;0-9&#39; but get &#39;%s&#39;\n%s&#34;</span>,
+                err.<span style="color:#c0f">Error</span>(),
+                a.currTok.Tok,
+                <span style="color:#c0f">ErrPos</span>(a.source, a.currTok.Offset)))
+        <span style="color:#069;font-weight:bold">return</span> NumberExprAST{}
+    }
+    n <span style="color:#555">:=</span> NumberExprAST{
+        Val: f64,
+    }
+    a.<span style="color:#c0f">getNextToken</span>()
+    <span style="color:#069;font-weight:bold">return</span> n
+}
+
+<span style="color:#09f;font-style:italic">// 获取一个节点，返回 ExprAST
+</span><span style="color:#09f;font-style:italic">// 这里会处理所有可能出现的类型，并对相应类型做解析
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> (a <span style="color:#555">*</span>AST) <span style="color:#c0f">parsePrimary</span>() ExprAST {
+    <span style="color:#069;font-weight:bold">switch</span> a.currTok.Type {
+    <span style="color:#069;font-weight:bold">case</span> Literal:
+        <span style="color:#069;font-weight:bold">return</span> a.<span style="color:#c0f">parseNumber</span>()
+    <span style="color:#069;font-weight:bold">case</span> Operator:
+        <span style="color:#09f;font-style:italic">// 对 () 语法处理
+</span><span style="color:#09f;font-style:italic"></span>        <span style="color:#069;font-weight:bold">if</span> a.currTok.Tok <span style="color:#555">==</span> <span style="color:#c30">&#34;(&#34;</span> {
+            a.<span style="color:#c0f">getNextToken</span>()
+            e <span style="color:#555">:=</span> a.<span style="color:#c0f">ParseExpression</span>()
+            <span style="color:#069;font-weight:bold">if</span> e <span style="color:#555">==</span> <span style="color:#069;font-weight:bold">nil</span> {
+                <span style="color:#069;font-weight:bold">return</span> <span style="color:#069;font-weight:bold">nil</span>
+            }
+            <span style="color:#069;font-weight:bold">if</span> a.currTok.Tok <span style="color:#555">!=</span> <span style="color:#c30">&#34;)&#34;</span> {
+                a.Err = errors.<span style="color:#c0f">New</span>(
+                    fmt.<span style="color:#c0f">Sprintf</span>(<span style="color:#c30">&#34;want &#39;)&#39; but get %s\n%s&#34;</span>,
+                        a.currTok.Tok,
+                        <span style="color:#c0f">ErrPos</span>(a.source, a.currTok.Offset)))
+                <span style="color:#069;font-weight:bold">return</span> <span style="color:#069;font-weight:bold">nil</span>
+            }
+            a.<span style="color:#c0f">getNextToken</span>()
+            <span style="color:#069;font-weight:bold">return</span> e
+        } <span style="color:#069;font-weight:bold">else</span> {
+            <span style="color:#069;font-weight:bold">return</span> a.<span style="color:#c0f">parseNumber</span>()
+        }
+    <span style="color:#069;font-weight:bold">default</span>:
+        <span style="color:#069;font-weight:bold">return</span> <span style="color:#069;font-weight:bold">nil</span>
+    }
+}
+
+<span style="color:#09f;font-style:italic">// 循环获取操作符的优先级，将高优先级的递归成较深的节点
+</span><span style="color:#09f;font-style:italic">// 这是生成正确的 AST 结构最重要的一个算法，一定要仔细阅读、理解
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> (a <span style="color:#555">*</span>AST) <span style="color:#c0f">parseBinOpRHS</span>(execPrec <span style="color:#078;font-weight:bold">int</span>, lhs ExprAST) ExprAST {
+    <span style="color:#069;font-weight:bold">for</span> {
+        tokPrec <span style="color:#555">:=</span> a.<span style="color:#c0f">getTokPrecedence</span>()
+        <span style="color:#069;font-weight:bold">if</span> tokPrec &lt; execPrec {
+            <span style="color:#069;font-weight:bold">return</span> lhs
+        }
+        binOp <span style="color:#555">:=</span> a.currTok.Tok
+        <span style="color:#069;font-weight:bold">if</span> a.<span style="color:#c0f">getNextToken</span>() <span style="color:#555">==</span> <span style="color:#069;font-weight:bold">nil</span> {
+            <span style="color:#069;font-weight:bold">return</span> lhs
+        }
+        rhs <span style="color:#555">:=</span> a.<span style="color:#c0f">parsePrimary</span>()
+        <span style="color:#069;font-weight:bold">if</span> rhs <span style="color:#555">==</span> <span style="color:#069;font-weight:bold">nil</span> {
+            <span style="color:#069;font-weight:bold">return</span> <span style="color:#069;font-weight:bold">nil</span>
+        }
+        nextPrec <span style="color:#555">:=</span> a.<span style="color:#c0f">getTokPrecedence</span>()
+        <span style="color:#069;font-weight:bold">if</span> tokPrec &lt; nextPrec {
+            <span style="color:#09f;font-style:italic">// 递归，将当前优先级+1
+</span><span style="color:#09f;font-style:italic"></span>            rhs = a.<span style="color:#c0f">parseBinOpRHS</span>(tokPrec<span style="color:#555">+</span><span style="color:#f60">1</span>, rhs)
+            <span style="color:#069;font-weight:bold">if</span> rhs <span style="color:#555">==</span> <span style="color:#069;font-weight:bold">nil</span> {
+                <span style="color:#069;font-weight:bold">return</span> <span style="color:#069;font-weight:bold">nil</span>
+            }
+        }
+        lhs = BinaryExprAST{
+            Op:  binOp,
+            Lhs: lhs,
+            Rhs: rhs,
+        }
+    }
+}
+</code></pre></td></tr></table>
+</div>
+</div><p><code>parseBinOpRHS</code>是一个非常重要的算法，他根据定义的操作符优先级进行高优先级递归，从而使高优先级的节点具有更深的 AST 节点，这样，我们遍历 AST 的时候就会天然的进行高优先级的计算。（这是一个成熟的算法，更多的细节可以阅读这篇 Wiki <a href="https://en.wikipedia.org/wiki/Operator-precedence_parser">Operator-precedence_parser</a>）。</p>
+<p>同样，为了便于调用，我们封装一下生成 AST 的方法：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#09f;font-style:italic">// 生成一个 AST 结构指针
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">NewAST</span>(toks []<span style="color:#555">*</span>Token, s <span style="color:#078;font-weight:bold">string</span>) <span style="color:#555">*</span>AST {
+    a <span style="color:#555">:=</span> <span style="color:#555">&amp;</span>AST{
+        Tokens: toks,
+        source: s,
+    }
+    <span style="color:#069;font-weight:bold">if</span> a.Tokens <span style="color:#555">==</span> <span style="color:#069;font-weight:bold">nil</span> <span style="color:#555">||</span> <span style="color:#366">len</span>(a.Tokens) <span style="color:#555">==</span> <span style="color:#f60">0</span> {
+        a.Err = errors.<span style="color:#c0f">New</span>(<span style="color:#c30">&#34;empty token&#34;</span>)
+    } <span style="color:#069;font-weight:bold">else</span> {
+        a.currIndex = <span style="color:#f60">0</span>
+        a.currTok = a.Tokens[<span style="color:#f60">0</span>]
+    }
+    <span style="color:#069;font-weight:bold">return</span> a
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>OK！所有的语法分析和 AST 构建的代码都已经完成了。你现在可以通过下面的代码来尝试查看生成的 AST 结构：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+    exp <span style="color:#555">:=</span> <span style="color:#c30">&#34;92 + 5 + 5 * 27 - (92 - 12) / 4 + 26&#34;</span>
+    <span style="color:#09f;font-style:italic">// input text -&gt; []token
+</span><span style="color:#09f;font-style:italic"></span>    toks, err <span style="color:#555">:=</span> <span style="color:#c0f">Parse</span>(exp)
+    <span style="color:#069;font-weight:bold">if</span> err <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span> {
+        fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;ERROR: &#34;</span> <span style="color:#555">+</span> err.<span style="color:#c0f">Error</span>())
+        <span style="color:#069;font-weight:bold">return</span>
+    }
+    <span style="color:#09f;font-style:italic">// []token -&gt; AST Tree
+</span><span style="color:#09f;font-style:italic"></span>    ast <span style="color:#555">:=</span> <span style="color:#c0f">NewAST</span>(toks, exp)
+    <span style="color:#069;font-weight:bold">if</span> ast.Err <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span> {
+        fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;ERROR: &#34;</span> <span style="color:#555">+</span> ast.Err.<span style="color:#c0f">Error</span>())
+        <span style="color:#069;font-weight:bold">return</span>
+    }
+    <span style="color:#09f;font-style:italic">// AST builder
+</span><span style="color:#09f;font-style:italic"></span>    ar <span style="color:#555">:=</span> ast.<span style="color:#c0f">ParseExpression</span>()
+    <span style="color:#069;font-weight:bold">if</span> ast.Err <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span> {
+        fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;ERROR: &#34;</span> <span style="color:#555">+</span> ast.Err.<span style="color:#c0f">Error</span>())
+        <span style="color:#069;font-weight:bold">return</span>
+    }
+    fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;ExprAST: %+v\n&#34;</span>, ar)
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>运行这段代码，应该可以看到如下输出：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-bash" data-lang="bash">ExprAST: <span style="color:#555">{</span>Op:+ Lhs:<span style="color:#555">{</span>Op:- Lhs:<span style="color:#555">{</span>Op:+ Lhs:<span style="color:#555">{</span>Op:+ Lhs:<span style="color:#555">{</span>Val:92<span style="color:#555">}</span> Rhs:<span style="color:#555">{</span>Val:5<span style="color:#555">}}</span> Rhs:<span style="color:#555">{</span>Op:* Lhs:<span style="color:#555">{</span>Val:5<span style="color:#555">}</span> Rhs:<span style="color:#555">{</span>Val:27<span style="color:#555">}}}</span> Rhs:<span style="color:#555">{</span>Op:/ Lhs:<span style="color:#555">{</span>Op:- Lhs:<span style="color:#555">{</span>Val:92<span style="color:#555">}</span> Rhs:<span style="color:#555">{</span>Val:12<span style="color:#555">}}</span> Rhs:<span style="color:#555">{</span>Val:4<span style="color:#555">}}}</span> Rhs:<span style="color:#555">{</span>Val:26<span style="color:#555">}}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>成功的将一段源字符串转化成了一个 ExprAST 结构！</p>
+<h2 id="ast-求解">AST 求解</h2>
+<p>现在离我们成功只差一步之遥，我们只需要对这个 ExprAST 进行某种算法运算，就可以得出答案。事实上，我们得到的这个 ExprAST 是一个二叉树结构，根据经验，写一个后序遍历算法（LRD）进行求解即可。</p>
+<p>代码如下：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#09f;font-style:italic">// 一个典型的后序遍历求解算法
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">ExprASTResult</span>(expr ExprAST) <span style="color:#078;font-weight:bold">float64</span> {
+    <span style="color:#09f;font-style:italic">// 左右值
+</span><span style="color:#09f;font-style:italic"></span>    <span style="color:#069;font-weight:bold">var</span> l, r <span style="color:#078;font-weight:bold">float64</span>
+    <span style="color:#069;font-weight:bold">switch</span> expr.(<span style="color:#069;font-weight:bold">type</span>) {
+    <span style="color:#09f;font-style:italic">// 传入的根节点是 BinaryExprAST
+</span><span style="color:#09f;font-style:italic"></span>    <span style="color:#069;font-weight:bold">case</span> BinaryExprAST:
+        ast <span style="color:#555">:=</span> expr.(BinaryExprAST)
+        <span style="color:#09f;font-style:italic">// 递归左节点
+</span><span style="color:#09f;font-style:italic"></span>        l = <span style="color:#c0f">ExprASTResult</span>(ast.Lhs)
+        <span style="color:#09f;font-style:italic">// 递归右节点
+</span><span style="color:#09f;font-style:italic"></span>        r = <span style="color:#c0f">ExprASTResult</span>(ast.Rhs)
+        <span style="color:#09f;font-style:italic">// 现在 l,r 都有具体的值了，可以根据运算符运算
+</span><span style="color:#09f;font-style:italic"></span>        <span style="color:#069;font-weight:bold">switch</span> ast.Op {
+        <span style="color:#069;font-weight:bold">case</span> <span style="color:#c30">&#34;+&#34;</span>:
+            <span style="color:#069;font-weight:bold">return</span> l <span style="color:#555">+</span> r
+        <span style="color:#069;font-weight:bold">case</span> <span style="color:#c30">&#34;-&#34;</span>:
+            <span style="color:#069;font-weight:bold">return</span> l <span style="color:#555">-</span> r
+        <span style="color:#069;font-weight:bold">case</span> <span style="color:#c30">&#34;*&#34;</span>:
+            <span style="color:#069;font-weight:bold">return</span> l <span style="color:#555">*</span> r
+        <span style="color:#069;font-weight:bold">case</span> <span style="color:#c30">&#34;/&#34;</span>:
+            <span style="color:#069;font-weight:bold">if</span> r <span style="color:#555">==</span> <span style="color:#f60">0</span> {
+                <span style="color:#366">panic</span>(errors.<span style="color:#c0f">New</span>(
+                    fmt.<span style="color:#c0f">Sprintf</span>(<span style="color:#c30">&#34;violation of arithmetic specification: a division by zero in ExprASTResult: [%g/%g]&#34;</span>,
+                        l,
+                        r)))
+            }
+            <span style="color:#069;font-weight:bold">return</span> l <span style="color:#555">/</span> r
+        <span style="color:#069;font-weight:bold">case</span> <span style="color:#c30">&#34;%&#34;</span>:
+            <span style="color:#069;font-weight:bold">return</span> <span style="color:#366">float64</span>(<span style="color:#366">int</span>(l) <span style="color:#555">%</span> <span style="color:#366">int</span>(r))
+        <span style="color:#069;font-weight:bold">default</span>:
+
+        }
+    <span style="color:#09f;font-style:italic">// 传入的根节点是 NumberExprAST,无需做任何事情，直接返回 Val 值
+</span><span style="color:#09f;font-style:italic"></span>    <span style="color:#069;font-weight:bold">case</span> NumberExprAST:
+        <span style="color:#069;font-weight:bold">return</span> expr.(NumberExprAST).Val
+
+    <span style="color:#069;font-weight:bold">return</span> <span style="color:#f60">0.0</span>
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>改造一下之前的 <code>main()</code>方法：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+    exp <span style="color:#555">:=</span> <span style="color:#c30">&#34;92 + 5 + 5 * 27 - (92 - 12) / 4 + 26&#34;</span>
+    <span style="color:#09f;font-style:italic">// input text -&gt; []token
+</span><span style="color:#09f;font-style:italic"></span>    toks, err <span style="color:#555">:=</span> <span style="color:#c0f">Parse</span>(exp)
+    <span style="color:#069;font-weight:bold">if</span> err <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span> {
+        fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;ERROR: &#34;</span> <span style="color:#555">+</span> err.<span style="color:#c0f">Error</span>())
+        <span style="color:#069;font-weight:bold">return</span>
+    }
+    <span style="color:#09f;font-style:italic">// []token -&gt; AST Tree
+</span><span style="color:#09f;font-style:italic"></span>    ast <span style="color:#555">:=</span> <span style="color:#c0f">NewAST</span>(toks, exp)
+    <span style="color:#069;font-weight:bold">if</span> ast.Err <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span> {
+        fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;ERROR: &#34;</span> <span style="color:#555">+</span> ast.Err.<span style="color:#c0f">Error</span>())
+        <span style="color:#069;font-weight:bold">return</span>
+    }
+    <span style="color:#09f;font-style:italic">// AST builder
+</span><span style="color:#09f;font-style:italic"></span>    ar <span style="color:#555">:=</span> ast.<span style="color:#c0f">ParseExpression</span>()
+    <span style="color:#069;font-weight:bold">if</span> ast.Err <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span> {
+        fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;ERROR: &#34;</span> <span style="color:#555">+</span> ast.Err.<span style="color:#c0f">Error</span>())
+        <span style="color:#069;font-weight:bold">return</span>
+    }
+    fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;ExprAST: %+v\n&#34;</span>, ar)
+    <span style="color:#09f;font-style:italic">// 加入下面的代码
+</span><span style="color:#09f;font-style:italic"></span>    <span style="color:#09f;font-style:italic">// AST traversal -&gt; result
+</span><span style="color:#09f;font-style:italic"></span>    r <span style="color:#555">:=</span> <span style="color:#c0f">ExprASTResult</span>(ar)
+    fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;progressing ...\t&#34;</span>, r)
+    fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;%s = %v\n&#34;</span>, exp, r)
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>再次运行，可以看到如下输出：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-bash" data-lang="bash">ExprAST: <span style="color:#555">{</span>Op:+ Lhs:<span style="color:#555">{</span>Op:- Lhs:<span style="color:#555">{</span>Op:+ Lhs:<span style="color:#555">{</span>Op:+ Lhs:<span style="color:#555">{</span>Val:92<span style="color:#555">}</span> Rhs:<span style="color:#555">{</span>Val:5<span style="color:#555">}}</span> Rhs:<span style="color:#555">{</span>Op:* Lhs:<span style="color:#555">{</span>Val:5<span style="color:#555">}</span> Rhs:<span style="color:#555">{</span>Val:27<span style="color:#555">}}}</span> Rhs:<span style="color:#555">{</span>Op:/ Lhs:<span style="color:#555">{</span>Op:- Lhs:<span style="color:#555">{</span>Val:92<span style="color:#555">}</span> Rhs:<span style="color:#555">{</span>Val:12<span style="color:#555">}}</span> Rhs:<span style="color:#555">{</span>Val:4<span style="color:#555">}}}</span> Rhs:<span style="color:#555">{</span>Val:26<span style="color:#555">}}</span>
+progressing ...  <span style="color:#f60">238</span>
+<span style="color:#f60">92</span> + <span style="color:#f60">5</span> + <span style="color:#f60">5</span> * <span style="color:#f60">27</span> - <span style="color:#555">(</span><span style="color:#f60">92</span> - 12<span style="color:#555">)</span> / <span style="color:#f60">4</span> + <span style="color:#033">26</span> <span style="color:#555">=</span> <span style="color:#f60">238</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>看到了吗，<code>92 + 5 + 5 * 27 - (92 - 12) / 4 + 26 = 238</code>，我们成功的计算出来了这个算式的结果，是不是跟你一开始口算的结果是一样的呢？！（不要怀疑，这个运算的结果是百分百正确的 😉 ）</p>
+<p>所有的代码到这里就全部写完了，你现在可以尝试对这个算法输入任意的数学表达式算式，他都能帮你算出结果！很快！！！</p>
+<h2 id="结尾">结尾</h2>
+<p>我们回顾一下刚刚实现的引擎：它读取一段表达式源字符串，经过词法分析、语法分析、生成 AST ，最后遍历执行 AST 得到结果。这些步骤，会不会让你觉得它跟脚本语言的解释引擎很像？</p>
+<p>是的，典型的如 <code>PHP</code>，如果你有看过<code>Zend</code>引擎的底层实现，你应该就不会对此感到陌生。我们写的这个引擎当然没办法跟 <code>Zend</code> 这种解释引擎去比较，但是完全可以窥一斑而知全豹，通过短短一两百行的代码来模拟实现一个小型的引擎，理解底层系统是如何对输入的源代码进行解析执行的，这对你加深底层编译器的了解有着非常重要的帮助。所以，本文并不是仅仅作为一篇代码讲解或者算法实现的教科文，而是给你一种思路和方式去了解离我们业务较远但是却非常重要的底层系统原理。如果有兴趣，你甚至可以借助 LLVM 来实现一个你自己的编程语言（老实讲，只要你愿意，这并不是一件很难的事情）。</p>
+<p>本文并没有提及一些专业的编译器术语，这是故意而为之。一来是可能看官们并没有这方面的知识储备，会让大家觉得晦涩难懂，二来是我本身对这些概念的理解也不是特别的深刻，怕提及解释不到位误导各位。如果你有兴趣，可以在下面的 Github issue 区跟我探讨交流，期待你的高见！</p>
+<h2 id="代码资源">代码资源</h2>
+<p>Github: <a href="https://github.com/dengsgo/math-engine">math-engine</a><br>
+二进制文件：<a href="https://github.com/dengsgo/math-engine/releases">Releases</a></p>
+<p>Program End Flag ……</p>
+
+                
+                
+                <hr> 
+
+<div class="entry-shang text-center">
+    
+    <p> 「真诚赞赏，手留余香」</p>
+    
+    <button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+    <div class="zs-modal-head">
+        <button type="button" class="close">×</button>
+        <span class="author">
+            <a href="http://www.mafool.com">
+                <img src="http://www.mafool.com/img/reward/hollson.png" alt="史布斯" />码夫庄园
+            </a>
+        </span>
+        
+        <p class="tip"><i></i><span>嗯，我的梦想是被读者的稿费包养~</span></p>
+        
+
+    </div>
+    <div class="zs-modal-body">
+        <div class="zs-modal-btns">
+            <button class="btn btn-blink" data-num="2">2元</button>
+            <button class="btn btn-blink" data-num="5">5元</button>
+            <button class="btn btn-blink" data-num="10">10元</button>
+            <button class="btn btn-blink" data-num="50">50元</button>
+            <button class="btn btn-blink" data-num="100">100元</button>
+            <button class="btn btn-blink" data-num="1">任意金额</button>
+        </div>
+        <div class="zs-modal-pay">
+            <button class="btn btn-bred" id="pay-text">2元</button>
+            <p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+            <img src="http://www.mafool.com/img/reward/wechat-2.png" alt="史布斯" id="pay-image" />
+        </div>
+    </div>
+    <div class="zs-modal-footer">
+        <label>
+            <span class="zs-wechat"></span>
+            <input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked">
+            <img src="http://www.mafool.com/img/reward/wechat-btn.png" alt="史布斯" />
+            </span>&nbsp;
+            <span>
+                <input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay">
+                <img src="http://www.mafool.com/img/reward/alipay-btn.png" alt="史布斯" />
+            </span>
+        </label>
+    </div>
+</div>
+
+ 
+
+                <br>
+                <br>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="column is-3">
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">最近发布</h2>
+        
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/0742b474a643d63a774461726a6201203/">Go语言中的原子操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年12月2日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/1600330472/">Go基础笔记 - 2.3 常量</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月10日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/15996311192/">Go - Gin框架快速入门</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月9日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480249/">Gorm快速指南</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480218/">18. Go语言MySQL数据库操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+    </div>
+</div>
+<br>
+        
+
+
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">标签</h2>
+        <div>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/atomic">atomic</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/blog">blog</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cgo">cgo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cloud">cloud</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/config">config</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/copy">copy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/docker">docker</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/exam">exam</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/gin">gin</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/git">git</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/golang">golang</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/hugo">hugo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/install">install</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/istio">istio</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/jenkins">jenkins</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/kubernetes">kubernetes</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/map">map</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/microservice">microservice</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/mycat">mycat</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/nginx">nginx</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/plan9">plan9</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/posix">posix</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/proxy">proxy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/raft">raft</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ssh">ssh</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/tips">tips</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ymal">ymal</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%B8%BB%E4%BB%8E">主从</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BA%8B%E5%8A%A1">事务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BB%A3%E7%90%86">代理</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BD%9C%E7%94%A8%E5%9F%9F">作用域</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%86%85%E5%AD%98">内存</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%8B%E7%BC%A9">压缩</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%88%9B">原创</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%AD%90">原子</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%91%BD%E4%BB%A4%E8%A1%8C">命令行</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%93%A8%E5%85%B5">哨兵</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%AD%98%E5%82%A8">存储</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B8%B8%E9%87%8F">常量</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B9%B6%E5%8F%91">并发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BC%82%E5%B8%B8">异常</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1">微服务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%88%E6%9D%83%E8%AE%A4%E8%AF%81">授权认证</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%92%E5%BA%8F">排序</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%A5%E5%8F%A3">接口</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%97%A5%E5%BF%97">日志</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%9D%83%E9%99%90">权限</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE1">标签1</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE2">标签2</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%AD%A3%E5%88%99">正则</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%81%E9%87%8F%E5%88%86%E5%8F%91">流量分发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%8B%E8%AF%95">测试</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%BA%90%E7%A0%81">源码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%8A%B6%E6%80%81%E7%A0%81">状态码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%AE%97%E6%B3%95">算法</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%BC%8F">编程模式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%80%81%E5%A6%96%E7%AC%94%E8%AE%B0">老妖笔记</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%BF%87%E6%BB%A4%E5%99%A8">过滤器</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%80%83%E9%80%B8">逃逸</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%85%8D%E7%BD%AE">配置</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%86%99">重写</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%AE%9A%E5%90%91">重定向</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9B%86%E7%BE%A4">集群</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9D%A2%E8%AF%95">面试</a>
+            </span>
+            
+        </div>
+    </div>
+</div>
+<br>
+    </div>
+</div>
+
+        </div>
+    </div>
+
+    
+    <footer class="footer has-background-grey-darker has-text-white">
+    <div class="content has-text-centered">
+        <p>
+            <span class="icon is-large">
+                <a href="https://twitter.com/" class="mysocial" rel="me">
+                    <i class="fab fa-twitter fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://www.youtube.com/" class="mysocial" rel="me">
+                    <i class="fab fa-youtube fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://github.com/" class="mysocial" rel="me">
+                    <i class="fab fa-github fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <br><br>
+            友情链接：
+            
+            <a class="mysocial" href="http://www.mafool.com" target="_blank">Mafool</a>
+            
+            <a class="mysocial" href="https://gohugo.io/documentation/" target="_blank">Hugo</a>
+            
+            <a class="mysocial" href="https://bulma.io/" target="_blank">Bulma</a>
+            
+            <a class="mysocial" href="https://bootstrapious.com/" target="_blank">Bootstrapious</a>
+            
+            <a class="mysocial" href="https://youzhixueyuan.com/" target="_blank">Youzhixueyuan</a>
+            
+            <br><br />
+            版权所有 &copy; 码夫庄园 2021
+            - <a class="mysocial" href="https://github.com/hollson/hugo-theme-dooz">Hugo Theme</a>
+        </p>
+    </div>
+</footer>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='http://www.mafool.com/js/dooz.totop.js?v=0.0.0' async=""></script>
+
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = 'https://hm.baidu.com/hm.js?f185359ec6b829a6a93e1e1f2597f6d9';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DK042XSJ2J"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-DK042XSJ2J');
+</script>
+
+    
+    
+<script type="text/javascript" src="http://www.mafool.com/js/reward.js"></script>
+
+    
+    <script defer src="https://cdn.staticfile.org/font-awesome/5.13.0/js/all.min.js"></script>
+</body>
+
+</html>

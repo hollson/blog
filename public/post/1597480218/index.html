@@ -1,0 +1,1502 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>码夫庄园-18. Go语言MySQL数据库操作</title>
+    <meta name="keywords"
+        content='码农,hugo,theme,blog,coder,geek,github,golang,技术,源码,代码,编程,程序员,主题,个人,博客,微服务,容器'>
+    <meta name="description" content="" />
+
+    
+    <meta name="baidu-site-verification" content="v9szEmQLra" />
+    <meta name="360-site-verification" content="d8e961f98fb655e4b8cf9439cfd9ac7f" />
+    <meta name="sogou_site_verification" content="40NC9EdZDC" />
+    <meta name="shenma-site-verification" content="3200e3042e92157713a3b0aceeecb20a_1586020187" />
+    <meta name="google-site-verification" content="r8987bkunZHJeKut3ocu5NIJ5QEu53NA6Q_r7RrZ46c" />
+    <meta name="msvalidate.01" content="893A2865ABC54AC2782D118536831056" />
+
+    
+    <link rel="shortcut icon" href="http://www.mafool.com/img/res/favicon.ico">
+    
+
+    
+
+    <link crossorigin="anonymous" integrity="sha384-5kGFOAqgEKnuF6c2jk2JANKHZgYVt38Wn2dVJENtq1EBCP54/1uzXU5mpxqL8WjN"
+        href="https://lib.baomitu.com/bulma/0.8.0/css/bulma.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="http://www.mafool.com/css/dooz.blog.css" />
+    <script crossorigin="anonymous" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh"
+        src="https://lib.baomitu.com/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/jquery.share.min.js"></script>
+    
+
+    
+
+    
+    
+<link rel="stylesheet" href="http://www.mafool.com/css/reward.css">
+
+
+    <link href="http://www.mafool.com/css/fonts.googleapi.css" rel="stylesheet">
+    <script src=http://www.mafool.com/js/dooz.blog.js></script>
+
+    
+    <script>
+        $(document).ready(function () {
+            $('.content a[href^="http"]').each(function () {
+                $(this).attr('target', '_blank');
+            });
+        });
+
+        $(document).on('click', '.modal-wechat', function () {
+            $(".modal").addClass("is-active");
+        });
+
+        $(document).on('click', '.modal-background', function () {
+            $(".modal").removeClass("is-active");
+        });
+    </script>
+</head>
+
+<body>
+    
+    
+<section class="hero is-info is-medium"
+    style="background-image: url('/img/res/bg6.jpg');">
+    <div class="hero-head">
+        <nav class="navbar is-transparent container has-text-white">
+    <div class="navbar-brand">
+        <div class="navbar-item">
+            <a class="title is-5 is-white" href="http://www.mafool.com/">码夫庄园</a>
+        </div>
+
+        
+        <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <div id="navbarExampleTransparentExample" class="navbar-menu has-text-dark">
+        
+
+        <div class="navbar-end">
+            <a class="navbar-item" href='http://www.mafool.com/'>首页</a>
+            <a class="navbar-item" href='http://www.mafool.com/archives'>归档 </a>
+            <a class="navbar-item" href='http://www.mafool.com/about'>关于</a>
+            <span class="navbar-item">
+                <a class="button is-primary is-inverted" href="https://github.com/hollson/hugo-theme-dooz">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>主题</span>
+                </a>
+            </span>
+        </div>
+    </div>
+</nav>
+    </div>
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <div class='container has-text-left column is-7'>
+                
+                <span>
+                    <a class="bar_tag" href="http://www.mafool.com/tags/%E8%80%81%E5%A6%96%E7%AC%94%E8%AE%B0" title="老妖笔记">老妖笔记</a>
+                </span>
+                
+                <h1 class="title is-size-2" style="margin-bottom:0.2rem;">
+                    
+                    18. Go语言MySQL数据库操作
+                    
+                </h1>
+                
+                <span class="title is-size-6" style="font-style: italic;"> </span><br>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    
+    <div class="container">
+        <div class="section">
+            
+<div class="columns">
+    <div class="column is-9">
+        <div class="tile is-child box">
+            <div class="content">
+                
+                <nav class="level">
+                    
+                    <div class="level-left">
+                        <div class="level-item">
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年8月14日,
+    星期五 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 7分钟阅读
+</p>
+                        </div>
+                    </div>
+
+                    
+                    
+                    <div class="share-component level-right" data-disabled="google,diandian,tencent,qzone"
+                        data-description="Share.js - 一键分享到微博，QQ空间，腾讯微博，人人，豆瓣"
+                        data-mobile-sites="weibo,qq,qzone,tencent">
+                    </div>
+                    
+                </nav>
+                <hr>
+                
+                <header>
+                    <h2>目录</h2>
+                </header>
+                <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一mysql安装驱动">一、MySQL安装驱动</a></li>
+    <li><a href="#二mysql基本操作">二、MySQL基本操作</a>
+      <ul>
+        <li><a href="#1打开连接">1、打开连接</a></li>
+        <li><a href="#2即时sql">2、即时SQL</a></li>
+        <li><a href="#3预处理sql">3、预处理SQL</a></li>
+      </ul>
+    </li>
+    <li><a href="#三mysql事务操作">三、MySQL事务操作</a></li>
+    <li><a href="#四mysql操作的效率分析">四、MySQL操作的效率分析</a>
+      <ul>
+        <li><a href="#1sql接口效率分析">1、sql接口效率分析</a></li>
+        <li><a href="#2效率分析示例">2、效率分析示例</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+                
+                <hr>
+                <p>[TOC]</p>
+<h2 id="一mysql安装驱动">一、MySQL安装驱动</h2>
+<p><strong>Go官方没有提供数据库驱动</strong>，最常用的开源MySQL数据库驱动非<code>Go-MySQL-Driver</code>莫属:</p>
+<blockquote>
+<ul>
+<li>
+<p>维护比较好。</p>
+</li>
+<li>
+<p>完全支持database/sql接口。</p>
+</li>
+<li>
+<p>支持keepalive，保持长连接。</p>
+</li>
+</ul>
+</blockquote>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell"><span style="color:#09f;font-style:italic"># 安装mysql驱动</span>
+go get -u github.com/go-sql-driver/mysql
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="二mysql基本操作">二、MySQL基本操作</h2>
+<p><em>测试数据：</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-sql" data-lang="sql"><span style="color:#09f;font-style:italic">-- 创建库
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">create</span> <span style="color:#069;font-weight:bold">database</span> <span style="color:#069;font-weight:bold">if</span> <span style="color:#069;font-weight:bold">not</span> <span style="color:#069;font-weight:bold">exists</span> demo <span style="color:#069;font-weight:bold">default</span> charset utf8;
+
+<span style="color:#09f;font-style:italic">-- 创建表
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">drop</span> <span style="color:#069;font-weight:bold">table</span> <span style="color:#069;font-weight:bold">if</span> <span style="color:#069;font-weight:bold">exists</span> student;
+<span style="color:#069;font-weight:bold">CREATE</span> <span style="color:#069;font-weight:bold">TABLE</span> <span style="color:#555">`</span>student<span style="color:#555">`</span> (
+<span style="color:#555">`</span>id<span style="color:#555">`</span> <span style="color:#366">int</span>(<span style="color:#f60">10</span>) <span style="color:#069;font-weight:bold">NOT</span> <span style="color:#069;font-weight:bold">NULL</span> AUTO_INCREMENT,
+<span style="color:#555">`</span>name<span style="color:#555">`</span> <span style="color:#366">varchar</span>(<span style="color:#f60">20</span>) <span style="color:#069;font-weight:bold">DEFAULT</span> <span style="color:#069;font-weight:bold">NULL</span>,
+<span style="color:#555">`</span>age<span style="color:#555">`</span> <span style="color:#366">int</span>(<span style="color:#f60">10</span>) <span style="color:#069;font-weight:bold">DEFAULT</span> <span style="color:#069;font-weight:bold">NULL</span>,
+<span style="color:#069;font-weight:bold">PRIMARY</span> <span style="color:#069;font-weight:bold">KEY</span> (<span style="color:#555">`</span>id<span style="color:#555">`</span>)
+) ENGINE<span style="color:#555">=</span>InnoDB <span style="color:#069;font-weight:bold">DEFAULT</span> CHARSET<span style="color:#555">=</span>utf8;
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="1打开连接">1、打开连接</h3>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">import</span> (
+	<span style="color:#c30">&#34;database/sql&#34;</span>
+	_ <span style="color:#c30">&#34;github.com/go-sql-driver/mysql&#34;</span>
+)
+
+<span style="color:#09f;font-style:italic">// 建立数据库连接
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">Open</span>() <span style="color:#555">*</span>sql.DB {
+	db, err <span style="color:#555">:=</span> sql.<span style="color:#c0f">Open</span>(<span style="color:#c30">&#34;mysql&#34;</span>, <span style="color:#c30">&#34;root:123456@tcp(localhost:3306)/demo?charset=utf8mb4&#34;</span>)
+	<span style="color:#c0f">errorHandler</span>(err)
+	<span style="color:#069;font-weight:bold">return</span> db
+}
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="2即时sql">2、即时SQL</h3>
+<blockquote>
+<p>可使用<code>sql.DB</code>直接执行写入操作或查询操作：</p>
+<p><code>func (db *DB) Exec(query string, args ...interface{}) (Result, error)</code><br>
+<code>func (db *DB) Query(query string, args ...interface{}) (*Rows, error)</code></p>
+</blockquote>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#09f;font-style:italic">// 插入数据
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">TestInsert</span>(t <span style="color:#555">*</span>testing.T) {
+	db <span style="color:#555">:=</span> <span style="color:#c0f">Open</span>()
+	<span style="color:#069;font-weight:bold">defer</span> db.<span style="color:#c0f">Close</span>()
+
+	db.<span style="color:#c0f">Exec</span>(<span style="color:#c30">`INSERT INTO student(name,age) VALUES(?,?),(?,?);`</span>, <span style="color:#c30">&#34;Lucy&#34;</span>, <span style="color:#f60">18</span>, <span style="color:#c30">&#34;Jack&#34;</span>, <span style="color:#f60">22</span>)
+}
+
+<span style="color:#09f;font-style:italic">// 修改数据
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">TestUpdate</span>(t <span style="color:#555">*</span>testing.T) {
+	db <span style="color:#555">:=</span> <span style="color:#c0f">Open</span>()
+	<span style="color:#069;font-weight:bold">defer</span> db.<span style="color:#c0f">Close</span>()
+
+	db.<span style="color:#c0f">Exec</span>(<span style="color:#c30">`UPDATE student SET age=18 WHERE name=&#34;Tom&#34;;`</span>)
+}
+
+<span style="color:#09f;font-style:italic">// 删除记录
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">TestDelete</span>(t <span style="color:#555">*</span>testing.T) {
+	db <span style="color:#555">:=</span> <span style="color:#c0f">Open</span>()
+	<span style="color:#069;font-weight:bold">defer</span> db.<span style="color:#c0f">Close</span>()
+
+	db.<span style="color:#c0f">Exec</span>(<span style="color:#c30">`DELETE FROM student WHERE age&gt;20`</span>)
+}
+
+<span style="color:#09f;font-style:italic">// 查询记录
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">TestQuery</span>(t <span style="color:#555">*</span>testing.T) {
+	db <span style="color:#555">:=</span> <span style="color:#c0f">Open</span>()
+	<span style="color:#069;font-weight:bold">defer</span> db.<span style="color:#c0f">Close</span>()
+
+	rows, err <span style="color:#555">:=</span> db.<span style="color:#c0f">Query</span>(<span style="color:#c30">`SELECT * FROM student;`</span>)
+	<span style="color:#069;font-weight:bold">if</span> err <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span> {
+		fmt.<span style="color:#c0f">Println</span>(err)
+	}
+	<span style="color:#069;font-weight:bold">for</span> rows.<span style="color:#c0f">Next</span>() {
+		<span style="color:#069;font-weight:bold">var</span> name <span style="color:#078;font-weight:bold">string</span>
+		<span style="color:#069;font-weight:bold">var</span> id <span style="color:#078;font-weight:bold">int</span>
+		<span style="color:#069;font-weight:bold">var</span> age <span style="color:#078;font-weight:bold">int</span>
+		<span style="color:#069;font-weight:bold">if</span> err <span style="color:#555">:=</span> rows.<span style="color:#c0f">Scan</span>(<span style="color:#555">&amp;</span>id, <span style="color:#555">&amp;</span>name, <span style="color:#555">&amp;</span>age); err <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span> {
+			fmt.<span style="color:#c0f">Println</span>(err)
+		}
+		fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;%-4d %-10s %4d\n&#34;</span>, id, name, age)
+	}
+}
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="3预处理sql">3、预处理SQL</h3>
+<blockquote>
+<p>预处理SQL(<code>Prepared Statements</code>) 将SQL做了模版化/参数化处理 ，避免每次执行SQL都去执行<code>词法语义解析、语句优化、制定执行计划等</code>重复工作。</p>
+<p>预处理SQL实现了：<code>一次编译、多次运行</code>，省去了<code>解析优化等过程</code>；此外预编译语句能<code>防止 SQL 注入</code>。</p>
+<p>使用<code>sql.DB</code>创建预处理语句，然后执行写入和查询命令</p>
+<p><code>func (db *DB) Prepare(query string) (*Stmt, error)</code><br>
+<code>func (s *Stmt) Exec(args ...interface{}) (Result, error)</code><br>
+<code>func (s *Stmt) Query(args ...interface{}) (*Rows, error)</code></p>
+</blockquote>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go">
+<span style="color:#09f;font-style:italic">// 插入数据
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">TestInsert</span>(t <span style="color:#555">*</span>testing.T) {
+	db <span style="color:#555">:=</span> <span style="color:#c0f">Open</span>()
+	<span style="color:#069;font-weight:bold">defer</span> db.<span style="color:#c0f">Close</span>()
+
+	stmt, _ <span style="color:#555">:=</span> db.<span style="color:#c0f">Prepare</span>(<span style="color:#c30">&#34;INSERT INTO student(name,age) VALUES(?,?);&#34;</span>)
+	stmt.<span style="color:#c0f">Exec</span>(<span style="color:#c30">&#34;如花&#34;</span>, <span style="color:#c30">&#34;22&#34;</span>)
+}
+
+<span style="color:#09f;font-style:italic">// 查询记录
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">TestQuery</span>(t <span style="color:#555">*</span>testing.T) {
+	db <span style="color:#555">:=</span> <span style="color:#c0f">Open</span>()
+	stmt, _ <span style="color:#555">:=</span> db.<span style="color:#c0f">Prepare</span>(<span style="color:#c30">&#34;SELECT * FROM student limit 1;&#34;</span>)
+    <span style="color:#069;font-weight:bold">defer</span> stmt.<span style="color:#c0f">Close</span>()
+	<span style="color:#069;font-weight:bold">defer</span> db.<span style="color:#c0f">Close</span>()
+    
+	row <span style="color:#555">:=</span> stmt.<span style="color:#c0f">QueryRow</span>()
+	<span style="color:#069;font-weight:bold">var</span> name <span style="color:#078;font-weight:bold">string</span>
+	<span style="color:#069;font-weight:bold">var</span> id <span style="color:#078;font-weight:bold">int</span>
+	<span style="color:#069;font-weight:bold">var</span> age <span style="color:#078;font-weight:bold">int</span>
+	row.<span style="color:#c0f">Scan</span>(<span style="color:#555">&amp;</span>id, <span style="color:#555">&amp;</span>name, <span style="color:#555">&amp;</span>age)
+
+	fmt.<span style="color:#c0f">Println</span>(id, name, age)
+}
+
+<span style="color:#09f;font-style:italic">// 其余操作类似...
+</span></code></pre></td></tr></table>
+</div>
+</div><h2 id="三mysql事务操作">三、MySQL事务操作</h2>
+<blockquote>
+<p>事务是一个完整的RW单元，事务相关的方法如下：</p>
+<p><code>func (db *DB) Begin() (*Tx, error)</code><br>
+<code>func (tx *Tx) Commit() error</code><br>
+<code>func (tx *Tx) Rollback() error</code><br>
+<code>func (tx *Tx) Exec(query string, args ...interface{}) (Result, error)</code><br>
+<code>func (tx *Tx) Query(query string, args ...interface{}) (*Rows, error)</code></p>
+</blockquote>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">TestTransaction</span>(t <span style="color:#555">*</span>testing.T) {
+    db <span style="color:#555">:=</span> <span style="color:#c0f">Open</span>()
+	<span style="color:#069;font-weight:bold">defer</span> db.<span style="color:#c0f">Close</span>()
+
+	tx, err <span style="color:#555">:=</span> db.<span style="color:#c0f">Begin</span>()
+	<span style="color:#069;font-weight:bold">if</span> err <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span> {
+		<span style="color:#366">panic</span>(err)
+	}
+	values <span style="color:#555">:=</span> [][]<span style="color:#069;font-weight:bold">interface</span>{}{{ <span style="color:#c30">&#34;迪迦&#34;</span>, <span style="color:#f60">20</span>}, { <span style="color:#c30">&#34;赛罗&#34;</span>, <span style="color:#f60">16</span>}, { <span style="color:#c30">&#34;欧布&#34;</span>, <span style="color:#f60">10</span>}}
+	stmt, _ <span style="color:#555">:=</span> tx.<span style="color:#c0f">Prepare</span>(<span style="color:#c30">&#34;INSERT INTO student(name,age) VALUES(?,?);&#34;</span>)
+	<span style="color:#069;font-weight:bold">for</span> _, val <span style="color:#555">:=</span> <span style="color:#069;font-weight:bold">range</span> values {
+		_, err <span style="color:#555">:=</span> stmt.<span style="color:#c0f">Exec</span>(val<span style="color:#555">...</span>)
+		<span style="color:#069;font-weight:bold">if</span> err <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span> {
+			fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;INSERT failed：%v&#34;</span>, err)
+			tx.<span style="color:#c0f">Rollback</span>()
+		}
+	}
+	tx.<span style="color:#c0f">Commit</span>()
+}
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="四mysql操作的效率分析">四、MySQL操作的效率分析</h2>
+<h3 id="1sql接口效率分析">1、sql接口效率分析</h3>
+<p><code>func sql.Open(driverName, dataSourceName string) (*DB, error)</code><br>
+sql.Open返回一个DB对象，DB对象对于多个goroutines并发使用是安全的，DB对象内部封装了连接池。Open函数并没有创建连接，只是验证参数是否合法，然后开启一个单独goroutine去监听是否需要建立新的连接，当有请求建立新连接时就创建新连接。<br>
+<code>func (db *DB) Exec(query string, args ...interface{}) (Result, error)</code><br>
+执行不返回行（row）的查询，比如INSERT，UPDATE，DELETE<br>
+DB交给内部的exec方法负责查询。exec会首先调用DB内部的conn方法从连接池里面获得一个连接。然后检查内部的driver.Conn是否实现了Execer接口，如果实现了Execer接口，会调用Execer接口的Exec方法执行查询；否则调用Conn接口的Prepare方法负责查询。<br>
+<code>func (db *DB) Query(query string, args ...interface{}) (*Rows, error)</code><br>
+用于查询，DB交给内部的query方法负责查询。query首先调用DB内部的conn方法从连接池里面获得一个连接，然后调用内部的queryConn方法负责查询。<br>
+<code>func (db *DB) Prepare(query string) (*Stmt, error)</code><br>
+返回一个Stmt。Stmt对象可以执行Exec,Query,QueryRow等操作。DB交给内部的prepare方法负责查询。prepare首先调用DB内部的conn方法从连接池里面获得一个连接，然后调用driverConn的prepareLocked方法负责查询。<br>
+<code>func (db *DB) Begin() (*Tx, error)</code><br>
+开启事务，返回Tx对象。调用Begin方法后，TX会与指定的连接绑定，一旦事务提交或者回滚，事务绑定的连接就还给DB的连接池。DB交给内部的begin方法负责处理。begin首先调用DB内部的conn方法从连接池里面获得一个连接，然后调用Conn接口的Begin方法获得一个TX。<br>
+<strong>进行MySQL数据库操作时，如果每次SQL操作都从DB对象的连接池中获取连接，则会在很大程度上损耗效率。因此，必须尽量在一个连接上执行SQL操作。</strong></p>
+<h3 id="2效率分析示例">2、效率分析示例</h3>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 58
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 59
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 60
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 61
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 62
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 63
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 64
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 65
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 66
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 67
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 68
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 69
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 70
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 71
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 72
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 73
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 74
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 75
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 76
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 77
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 78
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 79
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 80
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 81
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 82
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 83
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 84
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 85
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 86
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 87
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 88
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 89
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 90
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 91
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 92
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 93
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 94
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 95
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 96
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 97
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 98
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 99
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">100
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">101
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">102
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">103
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">104
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">105
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">106
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">107
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">108
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">109
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">110
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">111
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">112
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">113
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">114
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">115
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">116
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">117
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">118
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">119
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">120
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">121
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">122
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">123
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">124
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">125
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">126
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">127
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">128
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">129
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">130
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">131
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">132
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">133
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">134
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">135
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">136
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">137
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">138
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">139
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">140
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">141
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">142
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">143
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">144
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">145
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">146
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">147
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">148
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">149
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">150
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">151
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">152
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">153
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">154
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">155
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">156
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">157
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">158
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">159
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">160
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">161
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">162
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">163
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">164
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">165
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">166
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">167
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">168
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">169
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">170
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">171
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">172
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">173
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">174
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">175
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">176
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">177
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">178
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">179
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">180
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">181
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">182
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">183
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">184
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">185
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">186
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">187
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">188
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">189
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">190
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">191
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">192
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">193
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">194
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">195
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">196
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">197
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">198
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">199
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">200
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">201
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">202
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">203
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">204
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">205
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">206
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">207
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">208
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">209
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">210
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">211
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">212
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">213
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">214
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">215
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">216
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">217
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">218
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">219
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">220
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">221
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">222
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">223
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">224
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">225
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">226
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">227
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">228
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">229
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">230
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">231
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">232
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">233
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">234
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">235
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">236
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">237
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">238
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">239
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">240
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">241
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">242
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">243
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">244
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">245
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">246
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">247
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">248
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">249
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">250
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">251
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">252
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">253
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">254
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">255
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">256
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">257
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">258
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">259
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">260
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">261
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">262
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">263
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">264
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">265
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">266
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">267
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">268
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">269
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">package</span> main
+
+<span style="color:#069;font-weight:bold">import</span> (
+   <span style="color:#c30">&#34;database/sql&#34;</span>
+   <span style="color:#c30">&#34;fmt&#34;</span>
+   <span style="color:#c30">&#34;strconv&#34;</span>
+   <span style="color:#c30">&#34;time&#34;</span>
+
+   _ <span style="color:#c30">&#34;github.com/go-sql-driver/mysql&#34;</span>
+)
+
+<span style="color:#069;font-weight:bold">var</span> db = <span style="color:#555">&amp;</span>sql.DB{}
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">init</span>() {
+   db, _ = sql.<span style="color:#c0f">Open</span>(<span style="color:#c30">&#34;mysql&#34;</span>, <span style="color:#c30">&#34;root:xxxxxx@tcp(118.24.159.133:3306)/student?charset=utf8&#34;</span>)
+   CREATE_TABLE <span style="color:#555">:=</span> <span style="color:#c30">&#34;CREATE TABLE student(&#34;</span> <span style="color:#555">+</span>
+      <span style="color:#c30">&#34;sid INT(10) NOT NULL AUTO_INCREMENT,&#34;</span> <span style="color:#555">+</span>
+      <span style="color:#c30">&#34;sname VARCHAR(64) NULL DEFAULT NULL,&#34;</span> <span style="color:#555">+</span>
+      <span style="color:#c30">&#34;age INT(10) DEFAULT NULL,PRIMARY KEY (sid))&#34;</span> <span style="color:#555">+</span>
+      <span style="color:#c30">&#34;ENGINE=InnoDB DEFAULT CHARSET=utf8;&#34;</span>
+   db.<span style="color:#c0f">Exec</span>(CREATE_TABLE)
+}
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">update</span>() {
+   <span style="color:#09f;font-style:italic">//方式1 update
+</span><span style="color:#09f;font-style:italic"></span>   start <span style="color:#555">:=</span> time.<span style="color:#c0f">Now</span>()
+   <span style="color:#069;font-weight:bold">for</span> i <span style="color:#555">:=</span> <span style="color:#f60">1001</span>; i <span style="color:#555">&lt;=</span> <span style="color:#f60">1100</span>; i<span style="color:#555">++</span> {
+      db.<span style="color:#c0f">Exec</span>(<span style="color:#c30">&#34;UPDATE student set age=? where sid=? &#34;</span>, i, i)
+   }
+   end <span style="color:#555">:=</span> time.<span style="color:#c0f">Now</span>()
+   fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;db.Exec update total time:&#34;</span>, end.<span style="color:#c0f">Sub</span>(start).<span style="color:#c0f">Seconds</span>())
+
+   <span style="color:#09f;font-style:italic">//方式2 update
+</span><span style="color:#09f;font-style:italic"></span>   start = time.<span style="color:#c0f">Now</span>()
+   <span style="color:#069;font-weight:bold">for</span> i <span style="color:#555">:=</span> <span style="color:#f60">1101</span>; i <span style="color:#555">&lt;=</span> <span style="color:#f60">1200</span>; i<span style="color:#555">++</span> {
+      stm, _ <span style="color:#555">:=</span> db.<span style="color:#c0f">Prepare</span>(<span style="color:#c30">&#34;UPDATE student set age=? where sid=? &#34;</span>)
+      stm.<span style="color:#c0f">Exec</span>(i, i)
+      stm.<span style="color:#c0f">Close</span>()
+   }
+   end = time.<span style="color:#c0f">Now</span>()
+   fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;db.Prepare 释放连接 update total time:&#34;</span>, end.<span style="color:#c0f">Sub</span>(start).<span style="color:#c0f">Seconds</span>())
+
+   <span style="color:#09f;font-style:italic">//方式3 update
+</span><span style="color:#09f;font-style:italic"></span>   start = time.<span style="color:#c0f">Now</span>()
+   stm, _ <span style="color:#555">:=</span> db.<span style="color:#c0f">Prepare</span>(<span style="color:#c30">&#34;UPDATE student set age=? where sid=?&#34;</span>)
+   <span style="color:#069;font-weight:bold">for</span> i <span style="color:#555">:=</span> <span style="color:#f60">1201</span>; i <span style="color:#555">&lt;=</span> <span style="color:#f60">1300</span>; i<span style="color:#555">++</span> {
+      stm.<span style="color:#c0f">Exec</span>(i, i)
+   }
+   stm.<span style="color:#c0f">Close</span>()
+   end = time.<span style="color:#c0f">Now</span>()
+   fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;db.Prepare 不释放连接 update total time:&#34;</span>, end.<span style="color:#c0f">Sub</span>(start).<span style="color:#c0f">Seconds</span>())
+
+   <span style="color:#09f;font-style:italic">//方式4 update
+</span><span style="color:#09f;font-style:italic"></span>   start = time.<span style="color:#c0f">Now</span>()
+   tx, _ <span style="color:#555">:=</span> db.<span style="color:#c0f">Begin</span>()
+   <span style="color:#069;font-weight:bold">for</span> i <span style="color:#555">:=</span> <span style="color:#f60">1301</span>; i <span style="color:#555">&lt;=</span> <span style="color:#f60">1400</span>; i<span style="color:#555">++</span> {
+      tx.<span style="color:#c0f">Exec</span>(<span style="color:#c30">&#34;UPDATE student set age=? where sid=?&#34;</span>, i, i)
+   }
+   tx.<span style="color:#c0f">Commit</span>()
+
+   end = time.<span style="color:#c0f">Now</span>()
+   fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;tx.Exec 不释放连接 update total time:&#34;</span>, end.<span style="color:#c0f">Sub</span>(start).<span style="color:#c0f">Seconds</span>())
+
+   <span style="color:#09f;font-style:italic">//方式5 update
+</span><span style="color:#09f;font-style:italic"></span>   start = time.<span style="color:#c0f">Now</span>()
+   <span style="color:#069;font-weight:bold">for</span> i <span style="color:#555">:=</span> <span style="color:#f60">1401</span>; i <span style="color:#555">&lt;=</span> <span style="color:#f60">1500</span>; i<span style="color:#555">++</span> {
+      tx, _ <span style="color:#555">:=</span> db.<span style="color:#c0f">Begin</span>()
+      tx.<span style="color:#c0f">Exec</span>(<span style="color:#c30">&#34;UPDATE student set age=? where sid=?&#34;</span>, i, i)
+      tx.<span style="color:#c0f">Commit</span>()
+   }
+   end = time.<span style="color:#c0f">Now</span>()
+   fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;tx.Exec 释放连接 update total time:&#34;</span>, end.<span style="color:#c0f">Sub</span>(start).<span style="color:#c0f">Seconds</span>())
+}
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#366">delete</span>() {
+   <span style="color:#09f;font-style:italic">//方式1 delete
+</span><span style="color:#09f;font-style:italic"></span>   start <span style="color:#555">:=</span> time.<span style="color:#c0f">Now</span>()
+   <span style="color:#069;font-weight:bold">for</span> i <span style="color:#555">:=</span> <span style="color:#f60">1001</span>; i <span style="color:#555">&lt;=</span> <span style="color:#f60">1100</span>; i<span style="color:#555">++</span> {
+      db.<span style="color:#c0f">Exec</span>(<span style="color:#c30">&#34;DELETE FROM student WHERE sid=?&#34;</span>, i)
+   }
+   end <span style="color:#555">:=</span> time.<span style="color:#c0f">Now</span>()
+   fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;db.Exec delete total time:&#34;</span>, end.<span style="color:#c0f">Sub</span>(start).<span style="color:#c0f">Seconds</span>())
+
+   <span style="color:#09f;font-style:italic">//方式2 delete
+</span><span style="color:#09f;font-style:italic"></span>   start = time.<span style="color:#c0f">Now</span>()
+   <span style="color:#069;font-weight:bold">for</span> i <span style="color:#555">:=</span> <span style="color:#f60">1101</span>; i <span style="color:#555">&lt;=</span> <span style="color:#f60">1200</span>; i<span style="color:#555">++</span> {
+      stm, _ <span style="color:#555">:=</span> db.<span style="color:#c0f">Prepare</span>(<span style="color:#c30">&#34;DELETE FROM student WHERE sid=?&#34;</span>)
+      stm.<span style="color:#c0f">Exec</span>(i)
+      stm.<span style="color:#c0f">Close</span>()
+   }
+   end = time.<span style="color:#c0f">Now</span>()
+   fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;db.Prepare 释放连接 delete total time:&#34;</span>, end.<span style="color:#c0f">Sub</span>(start).<span style="color:#c0f">Seconds</span>())
+
+   <span style="color:#09f;font-style:italic">//方式3 delete
+</span><span style="color:#09f;font-style:italic"></span>   start = time.<span style="color:#c0f">Now</span>()
+   stm, _ <span style="color:#555">:=</span> db.<span style="color:#c0f">Prepare</span>(<span style="color:#c30">&#34;DELETE FROM student WHERE sid=?&#34;</span>)
+   <span style="color:#069;font-weight:bold">for</span> i <span style="color:#555">:=</span> <span style="color:#f60">1201</span>; i <span style="color:#555">&lt;=</span> <span style="color:#f60">1300</span>; i<span style="color:#555">++</span> {
+      stm.<span style="color:#c0f">Exec</span>(i)
+   }
+   stm.<span style="color:#c0f">Close</span>()
+   end = time.<span style="color:#c0f">Now</span>()
+   fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;db.Prepare 不释放连接 delete total time:&#34;</span>, end.<span style="color:#c0f">Sub</span>(start).<span style="color:#c0f">Seconds</span>())
+
+   <span style="color:#09f;font-style:italic">//方式4 delete
+</span><span style="color:#09f;font-style:italic"></span>   start = time.<span style="color:#c0f">Now</span>()
+   tx, _ <span style="color:#555">:=</span> db.<span style="color:#c0f">Begin</span>()
+   <span style="color:#069;font-weight:bold">for</span> i <span style="color:#555">:=</span> <span style="color:#f60">1301</span>; i <span style="color:#555">&lt;=</span> <span style="color:#f60">1400</span>; i<span style="color:#555">++</span> {
+      tx.<span style="color:#c0f">Exec</span>(<span style="color:#c30">&#34;DELETE FROM student WHERE sid=?&#34;</span>, i)
+   }
+   tx.<span style="color:#c0f">Commit</span>()
+
+   end = time.<span style="color:#c0f">Now</span>()
+   fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;tx.Exec 不释放连接 delete total time:&#34;</span>, end.<span style="color:#c0f">Sub</span>(start).<span style="color:#c0f">Seconds</span>())
+
+   <span style="color:#09f;font-style:italic">//方式5 delete
+</span><span style="color:#09f;font-style:italic"></span>   start = time.<span style="color:#c0f">Now</span>()
+   <span style="color:#069;font-weight:bold">for</span> i <span style="color:#555">:=</span> <span style="color:#f60">1401</span>; i <span style="color:#555">&lt;=</span> <span style="color:#f60">1500</span>; i<span style="color:#555">++</span> {
+      tx, _ <span style="color:#555">:=</span> db.<span style="color:#c0f">Begin</span>()
+      tx.<span style="color:#c0f">Exec</span>(<span style="color:#c30">&#34;DELETE FROM student WHERE sid=?&#34;</span>, i)
+      tx.<span style="color:#c0f">Commit</span>()
+   }
+   end = time.<span style="color:#c0f">Now</span>()
+   fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;tx.Exec 释放连接 delete total time:&#34;</span>, end.<span style="color:#c0f">Sub</span>(start).<span style="color:#c0f">Seconds</span>())
+
+}
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">query</span>() {
+
+   <span style="color:#09f;font-style:italic">//方式1 query
+</span><span style="color:#09f;font-style:italic"></span>   start <span style="color:#555">:=</span> time.<span style="color:#c0f">Now</span>()
+   rows, _ <span style="color:#555">:=</span> db.<span style="color:#c0f">Query</span>(<span style="color:#c30">&#34;SELECT sid,sname FROM student&#34;</span>)
+   <span style="color:#069;font-weight:bold">defer</span> rows.<span style="color:#c0f">Close</span>()
+   <span style="color:#069;font-weight:bold">for</span> rows.<span style="color:#c0f">Next</span>() {
+      <span style="color:#069;font-weight:bold">var</span> name <span style="color:#078;font-weight:bold">string</span>
+      <span style="color:#069;font-weight:bold">var</span> id <span style="color:#078;font-weight:bold">int</span>
+      <span style="color:#069;font-weight:bold">if</span> err <span style="color:#555">:=</span> rows.<span style="color:#c0f">Scan</span>(<span style="color:#555">&amp;</span>id, <span style="color:#555">&amp;</span>name); err <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span> {
+         fmt.<span style="color:#c0f">Println</span>(err)
+      }
+   }
+   end <span style="color:#555">:=</span> time.<span style="color:#c0f">Now</span>()
+   fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;db.Query query total time:&#34;</span>, end.<span style="color:#c0f">Sub</span>(start).<span style="color:#c0f">Seconds</span>())
+
+   <span style="color:#09f;font-style:italic">//方式2 query
+</span><span style="color:#09f;font-style:italic"></span>   start = time.<span style="color:#c0f">Now</span>()
+   stm, _ <span style="color:#555">:=</span> db.<span style="color:#c0f">Prepare</span>(<span style="color:#c30">&#34;SELECT sid,sname FROM student&#34;</span>)
+   <span style="color:#069;font-weight:bold">defer</span> stm.<span style="color:#c0f">Close</span>()
+   rows, _ = stm.<span style="color:#c0f">Query</span>()
+   <span style="color:#069;font-weight:bold">defer</span> rows.<span style="color:#c0f">Close</span>()
+   <span style="color:#069;font-weight:bold">for</span> rows.<span style="color:#c0f">Next</span>() {
+      <span style="color:#069;font-weight:bold">var</span> name <span style="color:#078;font-weight:bold">string</span>
+      <span style="color:#069;font-weight:bold">var</span> id <span style="color:#078;font-weight:bold">int</span>
+      <span style="color:#069;font-weight:bold">if</span> err <span style="color:#555">:=</span> rows.<span style="color:#c0f">Scan</span>(<span style="color:#555">&amp;</span>id, <span style="color:#555">&amp;</span>name); err <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span> {
+         fmt.<span style="color:#c0f">Println</span>(err)
+      }
+   }
+   end = time.<span style="color:#c0f">Now</span>()
+   fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;db.Prepare query total time:&#34;</span>, end.<span style="color:#c0f">Sub</span>(start).<span style="color:#c0f">Seconds</span>())
+
+   <span style="color:#09f;font-style:italic">//方式3 query
+</span><span style="color:#09f;font-style:italic"></span>   start = time.<span style="color:#c0f">Now</span>()
+   tx, _ <span style="color:#555">:=</span> db.<span style="color:#c0f">Begin</span>()
+   <span style="color:#069;font-weight:bold">defer</span> tx.<span style="color:#c0f">Commit</span>()
+   rows, _ = tx.<span style="color:#c0f">Query</span>(<span style="color:#c30">&#34;SELECT sid,sname FROM student&#34;</span>)
+   <span style="color:#069;font-weight:bold">defer</span> rows.<span style="color:#c0f">Close</span>()
+   <span style="color:#069;font-weight:bold">for</span> rows.<span style="color:#c0f">Next</span>() {
+      <span style="color:#069;font-weight:bold">var</span> name <span style="color:#078;font-weight:bold">string</span>
+      <span style="color:#069;font-weight:bold">var</span> id <span style="color:#078;font-weight:bold">int</span>
+      <span style="color:#069;font-weight:bold">if</span> err <span style="color:#555">:=</span> rows.<span style="color:#c0f">Scan</span>(<span style="color:#555">&amp;</span>id, <span style="color:#555">&amp;</span>name); err <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span> {
+         fmt.<span style="color:#c0f">Println</span>(err)
+      }
+   }
+   end = time.<span style="color:#c0f">Now</span>()
+   fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;tx.Query query total time:&#34;</span>, end.<span style="color:#c0f">Sub</span>(start).<span style="color:#c0f">Seconds</span>())
+}
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">insert</span>() {
+
+   <span style="color:#09f;font-style:italic">//方式1 insert
+</span><span style="color:#09f;font-style:italic"></span>   start <span style="color:#555">:=</span> time.<span style="color:#c0f">Now</span>()
+   <span style="color:#069;font-weight:bold">for</span> i <span style="color:#555">:=</span> <span style="color:#f60">1001</span>; i <span style="color:#555">&lt;=</span> <span style="color:#f60">1100</span>; i<span style="color:#555">++</span> {
+      <span style="color:#09f;font-style:italic">//每次循环内部都会去连接池获取一个新的连接，效率低下
+</span><span style="color:#09f;font-style:italic"></span>      db.<span style="color:#c0f">Exec</span>(<span style="color:#c30">&#34;INSERT INTO student(sid,sname,age) values(?,?,?)&#34;</span>, i, <span style="color:#c30">&#34;student&#34;</span><span style="color:#555">+</span>strconv.<span style="color:#c0f">Itoa</span>(i), i<span style="color:#555">-</span><span style="color:#f60">1000</span>)
+   }
+   end <span style="color:#555">:=</span> time.<span style="color:#c0f">Now</span>()
+   fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;db.Exec insert total time:&#34;</span>, end.<span style="color:#c0f">Sub</span>(start).<span style="color:#c0f">Seconds</span>())
+
+   <span style="color:#09f;font-style:italic">//方式2 insert
+</span><span style="color:#09f;font-style:italic"></span>   start = time.<span style="color:#c0f">Now</span>()
+   <span style="color:#069;font-weight:bold">for</span> i <span style="color:#555">:=</span> <span style="color:#f60">1101</span>; i <span style="color:#555">&lt;=</span> <span style="color:#f60">1200</span>; i<span style="color:#555">++</span> {
+      <span style="color:#09f;font-style:italic">//Prepare函数每次循环内部都会去连接池获取一个新的连接，效率低下
+</span><span style="color:#09f;font-style:italic"></span>      stm, _ <span style="color:#555">:=</span> db.<span style="color:#c0f">Prepare</span>(<span style="color:#c30">&#34;INSERT INTO student(sid,sname,age) values(?,?,?)&#34;</span>)
+      stm.<span style="color:#c0f">Exec</span>(i, <span style="color:#c30">&#34;student&#34;</span><span style="color:#555">+</span>strconv.<span style="color:#c0f">Itoa</span>(i), i<span style="color:#555">-</span><span style="color:#f60">1000</span>)
+      stm.<span style="color:#c0f">Close</span>()
+   }
+   end = time.<span style="color:#c0f">Now</span>()
+   fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;db.Prepare 释放连接 insert total time:&#34;</span>, end.<span style="color:#c0f">Sub</span>(start).<span style="color:#c0f">Seconds</span>())
+
+   <span style="color:#09f;font-style:italic">//方式3 insert
+</span><span style="color:#09f;font-style:italic"></span>   start = time.<span style="color:#c0f">Now</span>()
+   stm, _ <span style="color:#555">:=</span> db.<span style="color:#c0f">Prepare</span>(<span style="color:#c30">&#34;INSERT INTO student(sid,sname,age) values(?,?,?)&#34;</span>)
+   <span style="color:#069;font-weight:bold">for</span> i <span style="color:#555">:=</span> <span style="color:#f60">1201</span>; i <span style="color:#555">&lt;=</span> <span style="color:#f60">1300</span>; i<span style="color:#555">++</span> {
+      <span style="color:#09f;font-style:italic">//Exec内部并没有去获取连接，为什么效率还是低呢？
+</span><span style="color:#09f;font-style:italic"></span>      stm.<span style="color:#c0f">Exec</span>(i, <span style="color:#c30">&#34;user&#34;</span><span style="color:#555">+</span>strconv.<span style="color:#c0f">Itoa</span>(i), i<span style="color:#555">-</span><span style="color:#f60">1000</span>)
+   }
+   stm.<span style="color:#c0f">Close</span>()
+   end = time.<span style="color:#c0f">Now</span>()
+   fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;db.Prepare 不释放连接 insert total time:&#34;</span>, end.<span style="color:#c0f">Sub</span>(start).<span style="color:#c0f">Seconds</span>())
+
+   <span style="color:#09f;font-style:italic">//方式4 insert
+</span><span style="color:#09f;font-style:italic"></span>   start = time.<span style="color:#c0f">Now</span>()
+   <span style="color:#09f;font-style:italic">//Begin函数内部会去获取连接
+</span><span style="color:#09f;font-style:italic"></span>   tx, _ <span style="color:#555">:=</span> db.<span style="color:#c0f">Begin</span>()
+   <span style="color:#069;font-weight:bold">for</span> i <span style="color:#555">:=</span> <span style="color:#f60">1301</span>; i <span style="color:#555">&lt;=</span> <span style="color:#f60">1400</span>; i<span style="color:#555">++</span> {
+      <span style="color:#09f;font-style:italic">//每次循环用的都是tx内部的连接，没有新建连接，效率高
+</span><span style="color:#09f;font-style:italic"></span>      tx.<span style="color:#c0f">Exec</span>(<span style="color:#c30">&#34;INSERT INTO student(sid,sname,age) values(?,?,?)&#34;</span>, i, <span style="color:#c30">&#34;user&#34;</span><span style="color:#555">+</span>strconv.<span style="color:#c0f">Itoa</span>(i), i<span style="color:#555">-</span><span style="color:#f60">1000</span>)
+   }
+   <span style="color:#09f;font-style:italic">//最后释放tx内部的连接
+</span><span style="color:#09f;font-style:italic"></span>   tx.<span style="color:#c0f">Commit</span>()
+
+   end = time.<span style="color:#c0f">Now</span>()
+   fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;tx.Exec 不释放连接 insert total time:&#34;</span>, end.<span style="color:#c0f">Sub</span>(start).<span style="color:#c0f">Seconds</span>())
+
+   <span style="color:#09f;font-style:italic">//方式5 insert
+</span><span style="color:#09f;font-style:italic"></span>   start = time.<span style="color:#c0f">Now</span>()
+   <span style="color:#069;font-weight:bold">for</span> i <span style="color:#555">:=</span> <span style="color:#f60">1401</span>; i <span style="color:#555">&lt;=</span> <span style="color:#f60">1500</span>; i<span style="color:#555">++</span> {
+      <span style="color:#09f;font-style:italic">//Begin函数每次循环内部都会去连接池获取一个新的连接，效率低下
+</span><span style="color:#09f;font-style:italic"></span>      tx, _ <span style="color:#555">:=</span> db.<span style="color:#c0f">Begin</span>()
+      tx.<span style="color:#c0f">Exec</span>(<span style="color:#c30">&#34;INSERT INTO student(sid,sname,age) values(?,?,?)&#34;</span>, i, <span style="color:#c30">&#34;user&#34;</span><span style="color:#555">+</span>strconv.<span style="color:#c0f">Itoa</span>(i), i<span style="color:#555">-</span><span style="color:#f60">1000</span>)
+      <span style="color:#09f;font-style:italic">//Commit执行后释放连接
+</span><span style="color:#09f;font-style:italic"></span>      tx.<span style="color:#c0f">Commit</span>()
+   }
+   end = time.<span style="color:#c0f">Now</span>()
+   fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;tx.Exec 释放连接 insert total time:&#34;</span>, end.<span style="color:#c0f">Sub</span>(start).<span style="color:#c0f">Seconds</span>())
+}
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+   <span style="color:#c0f">insert</span>()
+   <span style="color:#c0f">query</span>()
+   <span style="color:#c0f">update</span>()
+   <span style="color:#c0f">query</span>()
+   <span style="color:#366">delete</span>()
+}
+
+<span style="color:#09f;font-style:italic">// output:
+</span><span style="color:#09f;font-style:italic">// db.Exec insert total time: 2.069104068
+</span><span style="color:#09f;font-style:italic">// db.Prepare 释放连接 insert total time: 1.869348813
+</span><span style="color:#09f;font-style:italic">// db.Prepare 不释放连接 insert total time: 1.447833105
+</span><span style="color:#09f;font-style:italic">// tx.Exec 不释放连接 insert total time: 1.098540307
+</span><span style="color:#09f;font-style:italic">// tx.Exec 释放连接 insert total time: 3.465670469
+</span><span style="color:#09f;font-style:italic"></span>
+<span style="color:#09f;font-style:italic">// db.Query query total time: 0.005803479
+</span><span style="color:#09f;font-style:italic">// db.Prepare query total time: 0.010966584
+</span><span style="color:#09f;font-style:italic">// tx.Query query total time: 0.011800843
+</span><span style="color:#09f;font-style:italic">// db.Exec update total time: 2.117122871
+</span><span style="color:#09f;font-style:italic"></span>
+<span style="color:#09f;font-style:italic">// db.Prepare 释放连接 update total time: 2.132430998
+</span><span style="color:#09f;font-style:italic">// db.Prepare 不释放连接 update total time: 1.523685366
+</span><span style="color:#09f;font-style:italic">// tx.Exec 不释放连接 update total time: 1.346163272
+</span><span style="color:#09f;font-style:italic">// tx.Exec 释放连接 update total time: 3.129312377
+</span><span style="color:#09f;font-style:italic"></span>
+<span style="color:#09f;font-style:italic">// db.Query query total time: 0.00848425
+</span><span style="color:#09f;font-style:italic">// db.Prepare query total time: 0.013472261
+</span><span style="color:#09f;font-style:italic">// tx.Query query total time: 0.012418198
+</span><span style="color:#09f;font-style:italic"></span>
+<span style="color:#09f;font-style:italic">// db.Exec delete total time: 2.100008271
+</span><span style="color:#09f;font-style:italic">// db.Prepare 释放连接 delete total time: 1.9821439490000001
+</span><span style="color:#09f;font-style:italic">// db.Prepare 不释放连接 delete total time: 1.429259466
+</span><span style="color:#09f;font-style:italic">// tx.Exec 不释放连接 delete total time: 1.103143464
+</span><span style="color:#09f;font-style:italic">// tx.Exec 释放连接 delete total time: 2.863670582
+</span></code></pre></td></tr></table>
+</div>
+</div><p>从示例结果看，执行SQL操作时如果不释放连接，则效率比释放连接要高。</p>
+
+                
+                
+                <hr> 
+
+<div class="entry-shang text-center">
+    
+    <p> 「真诚赞赏，手留余香」</p>
+    
+    <button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+    <div class="zs-modal-head">
+        <button type="button" class="close">×</button>
+        <span class="author">
+            <a href="http://www.mafool.com">
+                <img src="http://www.mafool.com/img/reward/hollson.png" alt="史布斯" />码夫庄园
+            </a>
+        </span>
+        
+        <p class="tip"><i></i><span>嗯，我的梦想是被读者的稿费包养~</span></p>
+        
+
+    </div>
+    <div class="zs-modal-body">
+        <div class="zs-modal-btns">
+            <button class="btn btn-blink" data-num="2">2元</button>
+            <button class="btn btn-blink" data-num="5">5元</button>
+            <button class="btn btn-blink" data-num="10">10元</button>
+            <button class="btn btn-blink" data-num="50">50元</button>
+            <button class="btn btn-blink" data-num="100">100元</button>
+            <button class="btn btn-blink" data-num="1">任意金额</button>
+        </div>
+        <div class="zs-modal-pay">
+            <button class="btn btn-bred" id="pay-text">2元</button>
+            <p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+            <img src="http://www.mafool.com/img/reward/wechat-2.png" alt="史布斯" id="pay-image" />
+        </div>
+    </div>
+    <div class="zs-modal-footer">
+        <label>
+            <span class="zs-wechat"></span>
+            <input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked">
+            <img src="http://www.mafool.com/img/reward/wechat-btn.png" alt="史布斯" />
+            </span>&nbsp;
+            <span>
+                <input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay">
+                <img src="http://www.mafool.com/img/reward/alipay-btn.png" alt="史布斯" />
+            </span>
+        </label>
+    </div>
+</div>
+
+ 
+
+                <br>
+                <br>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="column is-3">
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">最近发布</h2>
+        
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/0742b474a643d63a774461726a6201203/">Go语言中的原子操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年12月2日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/1600330472/">Go基础笔记 - 2.3 常量</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月10日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/15996311192/">Go - Gin框架快速入门</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月9日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480249/">Gorm快速指南</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480218/">18. Go语言MySQL数据库操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+    </div>
+</div>
+<br>
+        
+
+
+
+
+<div class="card">
+  <div class="card-content">
+    <h2 class="title is-6">相关文章</h2>
+    
+    
+    <h2><a href="http://www.mafool.com/post/1597480217/">17. Go语言database/sql接口</a></h2>
+    <time class="has-text-grey-light is-size-7">14 August 2020</time>
+    
+  </div>
+</div>
+<br>
+
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">标签</h2>
+        <div>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/atomic">atomic</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/blog">blog</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cgo">cgo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cloud">cloud</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/config">config</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/copy">copy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/docker">docker</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/exam">exam</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/gin">gin</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/git">git</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/golang">golang</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/hugo">hugo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/install">install</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/istio">istio</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/jenkins">jenkins</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/kubernetes">kubernetes</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/map">map</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/microservice">microservice</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/mycat">mycat</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/nginx">nginx</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/plan9">plan9</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/posix">posix</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/proxy">proxy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/raft">raft</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ssh">ssh</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/tips">tips</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ymal">ymal</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%B8%BB%E4%BB%8E">主从</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BA%8B%E5%8A%A1">事务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BB%A3%E7%90%86">代理</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BD%9C%E7%94%A8%E5%9F%9F">作用域</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%86%85%E5%AD%98">内存</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%8B%E7%BC%A9">压缩</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%88%9B">原创</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%AD%90">原子</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%91%BD%E4%BB%A4%E8%A1%8C">命令行</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%93%A8%E5%85%B5">哨兵</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%AD%98%E5%82%A8">存储</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B8%B8%E9%87%8F">常量</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B9%B6%E5%8F%91">并发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BC%82%E5%B8%B8">异常</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1">微服务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%88%E6%9D%83%E8%AE%A4%E8%AF%81">授权认证</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%92%E5%BA%8F">排序</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%A5%E5%8F%A3">接口</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%97%A5%E5%BF%97">日志</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%9D%83%E9%99%90">权限</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE1">标签1</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE2">标签2</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%AD%A3%E5%88%99">正则</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%81%E9%87%8F%E5%88%86%E5%8F%91">流量分发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%8B%E8%AF%95">测试</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%BA%90%E7%A0%81">源码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%8A%B6%E6%80%81%E7%A0%81">状态码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%AE%97%E6%B3%95">算法</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%BC%8F">编程模式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%80%81%E5%A6%96%E7%AC%94%E8%AE%B0">老妖笔记</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%BF%87%E6%BB%A4%E5%99%A8">过滤器</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%80%83%E9%80%B8">逃逸</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%85%8D%E7%BD%AE">配置</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%86%99">重写</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%AE%9A%E5%90%91">重定向</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9B%86%E7%BE%A4">集群</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9D%A2%E8%AF%95">面试</a>
+            </span>
+            
+        </div>
+    </div>
+</div>
+<br>
+    </div>
+</div>
+
+        </div>
+    </div>
+
+    
+    <footer class="footer has-background-grey-darker has-text-white">
+    <div class="content has-text-centered">
+        <p>
+            <span class="icon is-large">
+                <a href="https://twitter.com/" class="mysocial" rel="me">
+                    <i class="fab fa-twitter fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://www.youtube.com/" class="mysocial" rel="me">
+                    <i class="fab fa-youtube fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://github.com/" class="mysocial" rel="me">
+                    <i class="fab fa-github fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <br><br>
+            友情链接：
+            
+            <a class="mysocial" href="http://www.mafool.com" target="_blank">Mafool</a>
+            
+            <a class="mysocial" href="https://gohugo.io/documentation/" target="_blank">Hugo</a>
+            
+            <a class="mysocial" href="https://bulma.io/" target="_blank">Bulma</a>
+            
+            <a class="mysocial" href="https://bootstrapious.com/" target="_blank">Bootstrapious</a>
+            
+            <a class="mysocial" href="https://youzhixueyuan.com/" target="_blank">Youzhixueyuan</a>
+            
+            <br><br />
+            版权所有 &copy; 码夫庄园 2021
+            - <a class="mysocial" href="https://github.com/hollson/hugo-theme-dooz">Hugo Theme</a>
+        </p>
+    </div>
+</footer>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='http://www.mafool.com/js/dooz.totop.js?v=0.0.0' async=""></script>
+
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = 'https://hm.baidu.com/hm.js?f185359ec6b829a6a93e1e1f2597f6d9';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DK042XSJ2J"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-DK042XSJ2J');
+</script>
+
+    
+    
+<script type="text/javascript" src="http://www.mafool.com/js/reward.js"></script>
+
+    
+    <script defer src="https://cdn.staticfile.org/font-awesome/5.13.0/js/all.min.js"></script>
+</body>
+
+</html>

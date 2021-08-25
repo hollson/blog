@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>码夫庄园-17. Go语言database/sql接口</title>
+    <meta name="keywords"
+        content='码农,hugo,theme,blog,coder,geek,github,golang,技术,源码,代码,编程,程序员,主题,个人,博客,微服务,容器'>
+    <meta name="description" content="" />
+
+    
+    <meta name="baidu-site-verification" content="v9szEmQLra" />
+    <meta name="360-site-verification" content="d8e961f98fb655e4b8cf9439cfd9ac7f" />
+    <meta name="sogou_site_verification" content="40NC9EdZDC" />
+    <meta name="shenma-site-verification" content="3200e3042e92157713a3b0aceeecb20a_1586020187" />
+    <meta name="google-site-verification" content="r8987bkunZHJeKut3ocu5NIJ5QEu53NA6Q_r7RrZ46c" />
+    <meta name="msvalidate.01" content="893A2865ABC54AC2782D118536831056" />
+
+    
+    <link rel="shortcut icon" href="http://www.mafool.com/img/res/favicon.ico">
+    
+
+    
+
+    <link crossorigin="anonymous" integrity="sha384-5kGFOAqgEKnuF6c2jk2JANKHZgYVt38Wn2dVJENtq1EBCP54/1uzXU5mpxqL8WjN"
+        href="https://lib.baomitu.com/bulma/0.8.0/css/bulma.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="http://www.mafool.com/css/dooz.blog.css" />
+    <script crossorigin="anonymous" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh"
+        src="https://lib.baomitu.com/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/jquery.share.min.js"></script>
+    
+
+    
+
+    
+    
+<link rel="stylesheet" href="http://www.mafool.com/css/reward.css">
+
+
+    <link href="http://www.mafool.com/css/fonts.googleapi.css" rel="stylesheet">
+    <script src=http://www.mafool.com/js/dooz.blog.js></script>
+
+    
+    <script>
+        $(document).ready(function () {
+            $('.content a[href^="http"]').each(function () {
+                $(this).attr('target', '_blank');
+            });
+        });
+
+        $(document).on('click', '.modal-wechat', function () {
+            $(".modal").addClass("is-active");
+        });
+
+        $(document).on('click', '.modal-background', function () {
+            $(".modal").removeClass("is-active");
+        });
+    </script>
+</head>
+
+<body>
+    
+    
+<section class="hero is-info is-medium"
+    style="background-image: url('/img/res/bg6.jpg');">
+    <div class="hero-head">
+        <nav class="navbar is-transparent container has-text-white">
+    <div class="navbar-brand">
+        <div class="navbar-item">
+            <a class="title is-5 is-white" href="http://www.mafool.com/">码夫庄园</a>
+        </div>
+
+        
+        <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <div id="navbarExampleTransparentExample" class="navbar-menu has-text-dark">
+        
+
+        <div class="navbar-end">
+            <a class="navbar-item" href='http://www.mafool.com/'>首页</a>
+            <a class="navbar-item" href='http://www.mafool.com/archives'>归档 </a>
+            <a class="navbar-item" href='http://www.mafool.com/about'>关于</a>
+            <span class="navbar-item">
+                <a class="button is-primary is-inverted" href="https://github.com/hollson/hugo-theme-dooz">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>主题</span>
+                </a>
+            </span>
+        </div>
+    </div>
+</nav>
+    </div>
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <div class='container has-text-left column is-7'>
+                
+                <span>
+                    <a class="bar_tag" href="http://www.mafool.com/tags/%E8%80%81%E5%A6%96%E7%AC%94%E8%AE%B0" title="老妖笔记">老妖笔记</a>
+                </span>
+                
+                <h1 class="title is-size-2" style="margin-bottom:0.2rem;">
+                    
+                    17. Go语言database/sql接口
+                    
+                </h1>
+                
+                <span class="title is-size-6" style="font-style: italic;"> </span><br>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    
+    <div class="container">
+        <div class="section">
+            
+<div class="columns">
+    <div class="column is-9">
+        <div class="tile is-child box">
+            <div class="content">
+                
+                <nav class="level">
+                    
+                    <div class="level-left">
+                        <div class="level-item">
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年8月14日,
+    星期五 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 6分钟阅读
+</p>
+                        </div>
+                    </div>
+
+                    
+                    
+                    <div class="share-component level-right" data-disabled="google,diandian,tencent,qzone"
+                        data-description="Share.js - 一键分享到微博，QQ空间，腾讯微博，人人，豆瓣"
+                        data-mobile-sites="weibo,qq,qzone,tencent">
+                    </div>
+                    
+                </nav>
+                <hr>
+                
+                <header>
+                    <h2>目录</h2>
+                </header>
+                <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一databasesql接口">一、database/sql接口</a></li>
+    <li><a href="#二databasesql常用接口">二、database/sql常用接口</a>
+      <ul>
+        <li><a href="#1sqlregister">1、sql.Register</a></li>
+        <li><a href="#2driverdriver">2、driver.Driver</a></li>
+        <li><a href="#3driverconn">3、driver.Conn</a></li>
+        <li><a href="#4driverstmt">4、driver.Stmt</a></li>
+        <li><a href="#5drivertx">5、driver.Tx</a></li>
+        <li><a href="#6driverexecer">6、driver.Execer</a></li>
+        <li><a href="#7driverresult">7、driver.Result</a></li>
+        <li><a href="#8driverrows">8、driver.Rows</a></li>
+        <li><a href="#9driverrowsaffected">9、driver.RowsAffected</a></li>
+        <li><a href="#10drivervalue">10、driver.Value</a></li>
+        <li><a href="#11drivervalueconverter">11、driver.ValueConverter</a></li>
+        <li><a href="#12drivervaluer">12、driver.Valuer</a></li>
+        <li><a href="#13sqlopen">13、sql.Open</a></li>
+      </ul>
+    </li>
+    <li><a href="#预处理sql">预处理SQL</a></li>
+    <li><a href="#参考链接">参考链接</a></li>
+  </ul>
+</nav>
+                
+                <hr>
+                <p>[TOC]</p>
+<h2 id="一databasesql接口">一、database/sql接口</h2>
+<p>Go语言官方没有提供数据库驱动，而是为开发数据库驱动定义了<code>标准数据库驱动接口database/sql</code>，开发者可以根据database/sql接口来开发相应的数据库驱动，只要是按照标准接口database/sql开发的代码，以后需要迁移数据库时，不需要任何修改。</p>
+<h2 id="二databasesql常用接口">二、database/sql常用接口</h2>
+<h3 id="1sqlregister">1、sql.Register</h3>
+<blockquote>
+<p>sql.Register函数用来注册数据库驱动，第三方开发者开发数据库驱动时，会在init函数内调用sql.Register完成本驱动的注册。</p>
+</blockquote>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">Register</span>(name <span style="color:#078;font-weight:bold">string</span>, driver driver.Driver) {
+   driversMu.<span style="color:#c0f">Lock</span>()
+   <span style="color:#069;font-weight:bold">defer</span> driversMu.<span style="color:#c0f">Unlock</span>()
+   <span style="color:#069;font-weight:bold">if</span> driver <span style="color:#555">==</span> <span style="color:#069;font-weight:bold">nil</span> {
+      <span style="color:#366">panic</span>(<span style="color:#c30">&#34;sql: Register driver is nil&#34;</span>)
+   }
+   <span style="color:#069;font-weight:bold">if</span> _, dup <span style="color:#555">:=</span> drivers[name]; dup {
+      <span style="color:#366">panic</span>(<span style="color:#c30">&#34;sql: Register called twice for driver &#34;</span> <span style="color:#555">+</span> name)
+   }
+   drivers[name] = driver
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>Go-SQL-Driver/MySQL数据库驱动的实现如下：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">init</span>() {
+   sql.<span style="color:#c0f">Register</span>(<span style="color:#c30">&#34;mysql&#34;</span>, <span style="color:#555">&amp;</span>MySQLDriver{})
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>第三方数据库驱动通常通过调用sql.Register函数来注册自己的数据库驱动名称以及相应的driver实现。在database/sql内部通过一个map来存储用户定义的相应驱动。<br>
+<code>var drivers   = make(map[string]driver.Driver)</code></p>
+<h3 id="2driverdriver">2、driver.Driver</h3>
+<blockquote>
+<p>Driver是一个数据库驱动的接口，定义了一个Open(name string)方法，返回一个数据库的Conn接口。</p>
+</blockquote>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">type</span> Driver <span style="color:#069;font-weight:bold">interface</span> {
+      <span style="color:#c0f">Open</span>(name <span style="color:#078;font-weight:bold">string</span>) (Conn, <span style="color:#078;font-weight:bold">error</span>)
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>Conn只能用来进行一次goroutine操作，即Conn应用于多个goroutine。<br>
+第三方驱动都会实现driver.Driver接口，Open方法会解析name参数来获取相关数据库的连接信息，解析完成后，使用此连接信息来初始化一个Conn并返回。</p>
+<h3 id="3driverconn">3、driver.Conn</h3>
+<blockquote>
+<p>driver.Conn是一个数据库连接的接口，定义了一系列方法，Conn只能应用在一个goroutine中，不能使用在多个goroutine中。</p>
+</blockquote>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">type</span> Conn <span style="color:#069;font-weight:bold">interface</span> {
+   <span style="color:#c0f">Prepare</span>(query <span style="color:#078;font-weight:bold">string</span>) (Stmt, <span style="color:#078;font-weight:bold">error</span>)
+   <span style="color:#c0f">Close</span>() <span style="color:#078;font-weight:bold">error</span>
+   <span style="color:#c0f">Begin</span>() (Tx, <span style="color:#078;font-weight:bold">error</span>)
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>Prepare函数返回与当前连接相关的执行Sql语句的准备状态，可以进行查询、删除等操作。<br>
+Close函数关闭当前的连接，执行释放连接拥有的资源等清理工作。通常第三方数据库驱动实现了database/sql建议的连接池，开发者不必去实现缓存连接。<br>
+Begin函数返回一个代表事务处理的Tx，通过Tx可以进行查询、更新等操作或者对事务进行回滚、递交。</p>
+<h3 id="4driverstmt">4、driver.Stmt</h3>
+<blockquote>
+<p>driver.Stmt是一种准备好的状态，与Conn相关联，而且只能应用于一个goroutine中，不能应用于多个goroutine。</p>
+</blockquote>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">type</span> Stmt <span style="color:#069;font-weight:bold">interface</span> {
+   <span style="color:#c0f">Close</span>() <span style="color:#078;font-weight:bold">error</span>
+
+   <span style="color:#c0f">NumInput</span>() <span style="color:#078;font-weight:bold">int</span>
+   <span style="color:#c0f">Exec</span>(args []Value) (Result, <span style="color:#078;font-weight:bold">error</span>)
+   <span style="color:#c0f">Query</span>(args []Value) (Rows, <span style="color:#078;font-weight:bold">error</span>)
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>Close函数关闭当前的连接状态，但如果当前正在执行query，query还是有效返回rows数据。<br>
+NumInput函数返回当前预留参数的个数，当返回&gt;=0时数据库驱动就会智能检查调用者的参数。当数据库驱动包不知道预留参数的时候，返回-1。<br>
+Exec函数执行Prepare准备好的sql，传入参数执行update/insert等操作，返回Result数据<br>
+Query函数执行Prepare准备好的sql，传入需要的参数执行select操作，返回Rows结果集</p>
+<h3 id="5drivertx">5、driver.Tx</h3>
+<blockquote>
+<p>driver.Tx是事务接口，包含Commit、Rollback方法，数据库驱动只需实现Commit、Rollback函数即可。</p>
+</blockquote>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">type</span> Tx <span style="color:#069;font-weight:bold">interface</span> {
+   <span style="color:#c0f">Commit</span>() <span style="color:#078;font-weight:bold">error</span>
+   <span style="color:#c0f">Rollback</span>() <span style="color:#078;font-weight:bold">error</span>
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>Go-SQL-Driver/MySQL数据库驱动的实现如下：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">type</span> mysqlTx <span style="color:#069;font-weight:bold">struct</span> {
+   mc <span style="color:#555">*</span>mysqlConn
+}
+
+<span style="color:#069;font-weight:bold">func</span> (tx <span style="color:#555">*</span>mysqlTx) <span style="color:#c0f">Commit</span>() (err <span style="color:#078;font-weight:bold">error</span>) {
+   <span style="color:#069;font-weight:bold">if</span> tx.mc <span style="color:#555">==</span> <span style="color:#069;font-weight:bold">nil</span> <span style="color:#555">||</span> tx.mc.closed.<span style="color:#c0f">IsSet</span>() {
+      <span style="color:#069;font-weight:bold">return</span> ErrInvalidConn
+   }
+   err = tx.mc.<span style="color:#c0f">exec</span>(<span style="color:#c30">&#34;COMMIT&#34;</span>)
+   tx.mc = <span style="color:#069;font-weight:bold">nil</span>
+   <span style="color:#069;font-weight:bold">return</span>
+}
+
+<span style="color:#069;font-weight:bold">func</span> (tx <span style="color:#555">*</span>mysqlTx) <span style="color:#c0f">Rollback</span>() (err <span style="color:#078;font-weight:bold">error</span>) {
+   <span style="color:#069;font-weight:bold">if</span> tx.mc <span style="color:#555">==</span> <span style="color:#069;font-weight:bold">nil</span> <span style="color:#555">||</span> tx.mc.closed.<span style="color:#c0f">IsSet</span>() {
+      <span style="color:#069;font-weight:bold">return</span> ErrInvalidConn
+   }
+   err = tx.mc.<span style="color:#c0f">exec</span>(<span style="color:#c30">&#34;ROLLBACK&#34;</span>)
+   tx.mc = <span style="color:#069;font-weight:bold">nil</span>
+   <span style="color:#069;font-weight:bold">return</span>
+}
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="6driverexecer">6、driver.Execer</h3>
+<blockquote>
+<p>driver.Execer是一个Conn可选择实现的接口。</p>
+</blockquote>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">type</span> Execer <span style="color:#069;font-weight:bold">interface</span> {
+   <span style="color:#c0f">Exec</span>(query <span style="color:#078;font-weight:bold">string</span>, args []Value) (Result, <span style="color:#078;font-weight:bold">error</span>)
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>如果第三方数据库驱动没有实现driver.Execer接口，调用DB.Exec会首先调用Prepare返回Stmt，然后执行Stmt的Exec，然后关闭Stmt。</p>
+<h3 id="7driverresult">7、driver.Result</h3>
+<blockquote>
+<p>driver.Result是执行Update/Insert等操作返回的结果接口。</p>
+</blockquote>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">type</span> Result <span style="color:#069;font-weight:bold">interface</span> {
+   <span style="color:#c0f">LastInsertId</span>() (<span style="color:#078;font-weight:bold">int64</span>, <span style="color:#078;font-weight:bold">error</span>)
+   <span style="color:#c0f">RowsAffected</span>() (<span style="color:#078;font-weight:bold">int64</span>, <span style="color:#078;font-weight:bold">error</span>)
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>LastInsertId函数返回由数据库执行插入操作得到的自增ID号。<br>
+RowsAffected函数返回query操作影响的数据条目数。</p>
+<h3 id="8driverrows">8、driver.Rows</h3>
+<blockquote>
+<p>driver.Rows是执行查询返回的结果集接口。</p>
+</blockquote>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">type</span> Rows <span style="color:#069;font-weight:bold">interface</span> {
+   <span style="color:#c0f">Columns</span>() []<span style="color:#078;font-weight:bold">string</span>
+   <span style="color:#c0f">Close</span>() <span style="color:#078;font-weight:bold">error</span>
+   <span style="color:#c0f">Next</span>(dest []Value) <span style="color:#078;font-weight:bold">error</span>
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>Columns函数返回查询数据库表的字段信息，这个返回的slice和sql查询的字段一一对应，而不是返回整个表的所有字段。<br>
+Close函数用来关闭Rows迭代器。<br>
+Next函数用来返回下一条数据，把数据赋值给dest。dest里面的元素必须是driver.Value的值除了string，返回的数据里面所有的string都必须要转换成[]byte。如果最后没数据了，Next函数最后返回io.EOF。</p>
+<h3 id="9driverrowsaffected">9、driver.RowsAffected</h3>
+<blockquote>
+<p>driver.RowsAffected是int64的别名，但实现了Result接口，用来底层实现Result的表示方式。</p>
+</blockquote>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">type</span> RowsAffected <span style="color:#078;font-weight:bold">int64</span>
+
+<span style="color:#069;font-weight:bold">var</span> _ Result = <span style="color:#c0f">RowsAffected</span>(<span style="color:#f60">0</span>)
+
+<span style="color:#069;font-weight:bold">func</span> (RowsAffected) <span style="color:#c0f">LastInsertId</span>() (<span style="color:#078;font-weight:bold">int64</span>, <span style="color:#078;font-weight:bold">error</span>) {
+   <span style="color:#069;font-weight:bold">return</span> <span style="color:#f60">0</span>, errors.<span style="color:#c0f">New</span>(<span style="color:#c30">&#34;no LastInsertId available&#34;</span>)
+}
+
+<span style="color:#069;font-weight:bold">func</span> (v RowsAffected) <span style="color:#c0f">RowsAffected</span>() (<span style="color:#078;font-weight:bold">int64</span>, <span style="color:#078;font-weight:bold">error</span>) {
+   <span style="color:#069;font-weight:bold">return</span> <span style="color:#366">int64</span>(v), <span style="color:#069;font-weight:bold">nil</span>
+}
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="10drivervalue">10、driver.Value</h3>
+<blockquote>
+<p>driver.Value是空接口，是数据库驱动必须能够操作的Value，Value可以是nil，int64，float64，bool，[]bytestring，time.Time。<br>
+<code>type Value interface{}</code></p>
+</blockquote>
+<h3 id="11drivervalueconverter">11、driver.ValueConverter</h3>
+<blockquote>
+<p>driver.ValueConverter接口定义了如何把一个普通的值转化成driver.Value的接口</p>
+</blockquote>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">type</span> ValueConverter <span style="color:#069;font-weight:bold">interface</span> {
+   <span style="color:#09f;font-style:italic">// ConvertValue converts a value to a driver Value.
+</span><span style="color:#09f;font-style:italic"></span>   <span style="color:#c0f">ConvertValue</span>(v <span style="color:#069;font-weight:bold">interface</span>{}) (Value, <span style="color:#078;font-weight:bold">error</span>)
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>driver.ValueConverter接口实现如下：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">type</span> stringType <span style="color:#069;font-weight:bold">struct</span>{}
+
+<span style="color:#069;font-weight:bold">func</span> (stringType) <span style="color:#c0f">ConvertValue</span>(v <span style="color:#069;font-weight:bold">interface</span>{}) (Value, <span style="color:#078;font-weight:bold">error</span>) {
+   <span style="color:#069;font-weight:bold">switch</span> v.(<span style="color:#069;font-weight:bold">type</span>) {
+   <span style="color:#069;font-weight:bold">case</span> <span style="color:#078;font-weight:bold">string</span>, []<span style="color:#078;font-weight:bold">byte</span>:
+      <span style="color:#069;font-weight:bold">return</span> v, <span style="color:#069;font-weight:bold">nil</span>
+   }
+   <span style="color:#069;font-weight:bold">return</span> fmt.<span style="color:#c0f">Sprintf</span>(<span style="color:#c30">&#34;%v&#34;</span>, v), <span style="color:#069;font-weight:bold">nil</span>
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>数据库驱动开发中，ConvertValue方法用途广泛：<br>
+（1）转化driver.value到数据库表相应的字段，例如int64的数据如何转化成数据库表uint16字段。<br>
+（2）把数据库查询结果转化成driver.Value值<br>
+（3）在scan函数里面如何把driver.Value值转化成用户定义的值</p>
+<h3 id="12drivervaluer">12、driver.Valuer</h3>
+<blockquote>
+<p>driver.Valuer接口定义一个返回driver.Value的方法。</p>
+</blockquote>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">type</span> Valuer <span style="color:#069;font-weight:bold">interface</span> {
+   <span style="color:#09f;font-style:italic">// Value returns a driver Value.
+</span><span style="color:#09f;font-style:italic"></span>   <span style="color:#c0f">Value</span>() (Value, <span style="color:#078;font-weight:bold">error</span>)
+}
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="13sqlopen">13、sql.Open</h3>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">Open</span>(driverName, dataSourceName <span style="color:#078;font-weight:bold">string</span>) (<span style="color:#555">*</span>DB, <span style="color:#078;font-weight:bold">error</span>) {
+   driversMu.<span style="color:#c0f">RLock</span>()
+   driveri, ok <span style="color:#555">:=</span> drivers[driverName]
+   driversMu.<span style="color:#c0f">RUnlock</span>()
+   <span style="color:#069;font-weight:bold">if</span> !ok {
+      <span style="color:#069;font-weight:bold">return</span> <span style="color:#069;font-weight:bold">nil</span>, fmt.<span style="color:#c0f">Errorf</span>(<span style="color:#c30">&#34;sql: unknown driver %q (forgotten import?)&#34;</span>, driverName)
+   }
+
+   <span style="color:#069;font-weight:bold">if</span> driverCtx, ok <span style="color:#555">:=</span> driveri.(driver.DriverContext); ok {
+      connector, err <span style="color:#555">:=</span> driverCtx.<span style="color:#c0f">OpenConnector</span>(dataSourceName)
+      <span style="color:#069;font-weight:bold">if</span> err <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span> {
+         <span style="color:#069;font-weight:bold">return</span> <span style="color:#069;font-weight:bold">nil</span>, err
+      }
+      <span style="color:#069;font-weight:bold">return</span> <span style="color:#c0f">OpenDB</span>(connector), <span style="color:#069;font-weight:bold">nil</span>
+   }
+
+   <span style="color:#069;font-weight:bold">return</span> <span style="color:#c0f">OpenDB</span>(dsnConnector{dsn: dataSourceName, driver: driveri}), <span style="color:#069;font-weight:bold">nil</span>
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>Open函数返回DB对象，</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">type</span> DB <span style="color:#069;font-weight:bold">struct</span> {
+   connector driver.Connector
+   numClosed <span style="color:#078;font-weight:bold">uint64</span>
+
+   mu           sync.Mutex <span style="color:#09f;font-style:italic">// protects following fields
+</span><span style="color:#09f;font-style:italic"></span>   freeConn     []<span style="color:#555">*</span>driverConn
+   connRequests <span style="color:#069;font-weight:bold">map</span>[<span style="color:#078;font-weight:bold">uint64</span>]<span style="color:#069;font-weight:bold">chan</span> connRequest
+   nextRequest  <span style="color:#078;font-weight:bold">uint64</span> <span style="color:#09f;font-style:italic">// Next key to use in connRequests.
+</span><span style="color:#09f;font-style:italic"></span>   numOpen      <span style="color:#078;font-weight:bold">int</span>    <span style="color:#09f;font-style:italic">// number of opened and pending open connections
+</span><span style="color:#09f;font-style:italic"></span>   openerCh    <span style="color:#069;font-weight:bold">chan</span> <span style="color:#069;font-weight:bold">struct</span>{}
+   resetterCh  <span style="color:#069;font-weight:bold">chan</span> <span style="color:#555">*</span>driverConn
+   closed      <span style="color:#078;font-weight:bold">bool</span>
+   dep         <span style="color:#069;font-weight:bold">map</span>[finalCloser]depSet
+   lastPut     <span style="color:#069;font-weight:bold">map</span>[<span style="color:#555">*</span>driverConn]<span style="color:#078;font-weight:bold">string</span> <span style="color:#09f;font-style:italic">// stacktrace of last conn&#39;s put; debug only
+</span><span style="color:#09f;font-style:italic"></span>   maxIdle     <span style="color:#078;font-weight:bold">int</span>                    <span style="color:#09f;font-style:italic">// zero means defaultMaxIdleConns; negative means 0
+</span><span style="color:#09f;font-style:italic"></span>   maxOpen     <span style="color:#078;font-weight:bold">int</span>                    <span style="color:#09f;font-style:italic">// &lt;= 0 means unlimited
+</span><span style="color:#09f;font-style:italic"></span>   maxLifetime time.Duration          <span style="color:#09f;font-style:italic">// maximum amount of time a connection may be reused
+</span><span style="color:#09f;font-style:italic"></span>   cleanerCh   <span style="color:#069;font-weight:bold">chan</span> <span style="color:#069;font-weight:bold">struct</span>{}
+
+   stop <span style="color:#069;font-weight:bold">func</span>() <span style="color:#09f;font-style:italic">// stop cancels the connection opener and the session resetter.
+</span><span style="color:#09f;font-style:italic"></span>}
+</code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>freeConn是简易的连接池。当执行db.prepare -&gt; db.prepareDC时会defer  dc.releaseConn，然后调用db.putConn，把连接放入连接池，每次调用db.conn的时候会先判断freeConn的长度是否大于0，大于0说明有可以复用的conn，如果不大于0，则创建一个conn，然后返回。</p>
+</blockquote>
+<h2 id="预处理sql">预处理SQL</h2>
+<p><a href="https://www.cnblogs.com/geaozhang/p/9891338.html">https://www.cnblogs.com/geaozhang/p/9891338.html</a></p>
+<h2 id="参考链接">参考链接</h2>
+<blockquote>
+<p><a href="https://blog.51cto.com/9291927/2344747">https://blog.51cto.com/9291927/2344747</a></p>
+</blockquote>
+
+                
+                
+                <hr> 
+
+<div class="entry-shang text-center">
+    
+    <p> 「真诚赞赏，手留余香」</p>
+    
+    <button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+    <div class="zs-modal-head">
+        <button type="button" class="close">×</button>
+        <span class="author">
+            <a href="http://www.mafool.com">
+                <img src="http://www.mafool.com/img/reward/hollson.png" alt="史布斯" />码夫庄园
+            </a>
+        </span>
+        
+        <p class="tip"><i></i><span>嗯，我的梦想是被读者的稿费包养~</span></p>
+        
+
+    </div>
+    <div class="zs-modal-body">
+        <div class="zs-modal-btns">
+            <button class="btn btn-blink" data-num="2">2元</button>
+            <button class="btn btn-blink" data-num="5">5元</button>
+            <button class="btn btn-blink" data-num="10">10元</button>
+            <button class="btn btn-blink" data-num="50">50元</button>
+            <button class="btn btn-blink" data-num="100">100元</button>
+            <button class="btn btn-blink" data-num="1">任意金额</button>
+        </div>
+        <div class="zs-modal-pay">
+            <button class="btn btn-bred" id="pay-text">2元</button>
+            <p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+            <img src="http://www.mafool.com/img/reward/wechat-2.png" alt="史布斯" id="pay-image" />
+        </div>
+    </div>
+    <div class="zs-modal-footer">
+        <label>
+            <span class="zs-wechat"></span>
+            <input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked">
+            <img src="http://www.mafool.com/img/reward/wechat-btn.png" alt="史布斯" />
+            </span>&nbsp;
+            <span>
+                <input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay">
+                <img src="http://www.mafool.com/img/reward/alipay-btn.png" alt="史布斯" />
+            </span>
+        </label>
+    </div>
+</div>
+
+ 
+
+                <br>
+                <br>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="column is-3">
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">最近发布</h2>
+        
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/0742b474a643d63a774461726a6201203/">Go语言中的原子操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年12月2日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/1600330472/">Go基础笔记 - 2.3 常量</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月10日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/15996311192/">Go - Gin框架快速入门</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月9日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480249/">Gorm快速指南</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480218/">18. Go语言MySQL数据库操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+    </div>
+</div>
+<br>
+        
+
+
+
+
+<div class="card">
+  <div class="card-content">
+    <h2 class="title is-6">相关文章</h2>
+    
+    
+    <h2><a href="http://www.mafool.com/post/1597480218/">18. Go语言MySQL数据库操作</a></h2>
+    <time class="has-text-grey-light is-size-7">14 August 2020</time>
+    
+  </div>
+</div>
+<br>
+
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">标签</h2>
+        <div>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/atomic">atomic</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/blog">blog</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cgo">cgo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cloud">cloud</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/config">config</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/copy">copy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/docker">docker</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/exam">exam</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/gin">gin</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/git">git</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/golang">golang</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/hugo">hugo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/install">install</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/istio">istio</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/jenkins">jenkins</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/kubernetes">kubernetes</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/map">map</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/microservice">microservice</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/mycat">mycat</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/nginx">nginx</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/plan9">plan9</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/posix">posix</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/proxy">proxy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/raft">raft</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ssh">ssh</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/tips">tips</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ymal">ymal</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%B8%BB%E4%BB%8E">主从</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BA%8B%E5%8A%A1">事务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BB%A3%E7%90%86">代理</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BD%9C%E7%94%A8%E5%9F%9F">作用域</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%86%85%E5%AD%98">内存</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%8B%E7%BC%A9">压缩</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%88%9B">原创</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%AD%90">原子</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%91%BD%E4%BB%A4%E8%A1%8C">命令行</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%93%A8%E5%85%B5">哨兵</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%AD%98%E5%82%A8">存储</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B8%B8%E9%87%8F">常量</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B9%B6%E5%8F%91">并发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BC%82%E5%B8%B8">异常</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1">微服务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%88%E6%9D%83%E8%AE%A4%E8%AF%81">授权认证</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%92%E5%BA%8F">排序</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%A5%E5%8F%A3">接口</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%97%A5%E5%BF%97">日志</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%9D%83%E9%99%90">权限</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE1">标签1</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE2">标签2</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%AD%A3%E5%88%99">正则</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%81%E9%87%8F%E5%88%86%E5%8F%91">流量分发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%8B%E8%AF%95">测试</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%BA%90%E7%A0%81">源码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%8A%B6%E6%80%81%E7%A0%81">状态码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%AE%97%E6%B3%95">算法</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%BC%8F">编程模式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%80%81%E5%A6%96%E7%AC%94%E8%AE%B0">老妖笔记</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%BF%87%E6%BB%A4%E5%99%A8">过滤器</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%80%83%E9%80%B8">逃逸</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%85%8D%E7%BD%AE">配置</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%86%99">重写</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%AE%9A%E5%90%91">重定向</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9B%86%E7%BE%A4">集群</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9D%A2%E8%AF%95">面试</a>
+            </span>
+            
+        </div>
+    </div>
+</div>
+<br>
+    </div>
+</div>
+
+        </div>
+    </div>
+
+    
+    <footer class="footer has-background-grey-darker has-text-white">
+    <div class="content has-text-centered">
+        <p>
+            <span class="icon is-large">
+                <a href="https://twitter.com/" class="mysocial" rel="me">
+                    <i class="fab fa-twitter fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://www.youtube.com/" class="mysocial" rel="me">
+                    <i class="fab fa-youtube fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://github.com/" class="mysocial" rel="me">
+                    <i class="fab fa-github fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <br><br>
+            友情链接：
+            
+            <a class="mysocial" href="http://www.mafool.com" target="_blank">Mafool</a>
+            
+            <a class="mysocial" href="https://gohugo.io/documentation/" target="_blank">Hugo</a>
+            
+            <a class="mysocial" href="https://bulma.io/" target="_blank">Bulma</a>
+            
+            <a class="mysocial" href="https://bootstrapious.com/" target="_blank">Bootstrapious</a>
+            
+            <a class="mysocial" href="https://youzhixueyuan.com/" target="_blank">Youzhixueyuan</a>
+            
+            <br><br />
+            版权所有 &copy; 码夫庄园 2021
+            - <a class="mysocial" href="https://github.com/hollson/hugo-theme-dooz">Hugo Theme</a>
+        </p>
+    </div>
+</footer>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='http://www.mafool.com/js/dooz.totop.js?v=0.0.0' async=""></script>
+
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = 'https://hm.baidu.com/hm.js?f185359ec6b829a6a93e1e1f2597f6d9';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DK042XSJ2J"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-DK042XSJ2J');
+</script>
+
+    
+    
+<script type="text/javascript" src="http://www.mafool.com/js/reward.js"></script>
+
+    
+    <script defer src="https://cdn.staticfile.org/font-awesome/5.13.0/js/all.min.js"></script>
+</body>
+
+</html>

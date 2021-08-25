@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>码夫庄园-</title>
+    <meta name="keywords"
+        content='码农,hugo,theme,blog,coder,geek,github,golang,技术,源码,代码,编程,程序员,主题,个人,博客,微服务,容器'>
+    <meta name="description" content="" />
+
+    
+    <meta name="baidu-site-verification" content="v9szEmQLra" />
+    <meta name="360-site-verification" content="d8e961f98fb655e4b8cf9439cfd9ac7f" />
+    <meta name="sogou_site_verification" content="40NC9EdZDC" />
+    <meta name="shenma-site-verification" content="3200e3042e92157713a3b0aceeecb20a_1586020187" />
+    <meta name="google-site-verification" content="r8987bkunZHJeKut3ocu5NIJ5QEu53NA6Q_r7RrZ46c" />
+    <meta name="msvalidate.01" content="893A2865ABC54AC2782D118536831056" />
+
+    
+    <link rel="shortcut icon" href="http://www.mafool.com/img/res/favicon.ico">
+    
+
+    
+
+    <link crossorigin="anonymous" integrity="sha384-5kGFOAqgEKnuF6c2jk2JANKHZgYVt38Wn2dVJENtq1EBCP54/1uzXU5mpxqL8WjN"
+        href="https://lib.baomitu.com/bulma/0.8.0/css/bulma.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="http://www.mafool.com/css/dooz.blog.css" />
+    <script crossorigin="anonymous" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh"
+        src="https://lib.baomitu.com/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/jquery.share.min.js"></script>
+    
+
+    
+
+    
+    
+<link rel="stylesheet" href="http://www.mafool.com/css/reward.css">
+
+
+    <link href="http://www.mafool.com/css/fonts.googleapi.css" rel="stylesheet">
+    <script src=http://www.mafool.com/js/dooz.blog.js></script>
+
+    
+    <script>
+        $(document).ready(function () {
+            $('.content a[href^="http"]').each(function () {
+                $(this).attr('target', '_blank');
+            });
+        });
+
+        $(document).on('click', '.modal-wechat', function () {
+            $(".modal").addClass("is-active");
+        });
+
+        $(document).on('click', '.modal-background', function () {
+            $(".modal").removeClass("is-active");
+        });
+    </script>
+</head>
+
+<body>
+    
+    
+<section class="hero is-info is-medium"
+    style="background-image: url('/img/res/hero.jpg');">
+    <div class="hero-head">
+        <nav class="navbar is-transparent container has-text-white">
+    <div class="navbar-brand">
+        <div class="navbar-item">
+            <a class="title is-5 is-white" href="http://www.mafool.com/">码夫庄园</a>
+        </div>
+
+        
+        <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <div id="navbarExampleTransparentExample" class="navbar-menu has-text-dark">
+        
+
+        <div class="navbar-end">
+            <a class="navbar-item" href='http://www.mafool.com/'>首页</a>
+            <a class="navbar-item" href='http://www.mafool.com/archives'>归档 </a>
+            <a class="navbar-item" href='http://www.mafool.com/about'>关于</a>
+            <span class="navbar-item">
+                <a class="button is-primary is-inverted" href="https://github.com/hollson/hugo-theme-dooz">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>主题</span>
+                </a>
+            </span>
+        </div>
+    </div>
+</nav>
+    </div>
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <div class='container has-text-left column is-7'>
+                
+                <h1 class="title is-size-2" style="margin-bottom:0.2rem;">
+                    
+                    
+                    
+                </h1>
+                
+                <span class="title is-size-6" style="font-style: italic;"> </span><br>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    
+    <div class="container">
+        <div class="section">
+            
+<div class="columns">
+    <div class="column is-9">
+        <div class="tile is-child box">
+            <div class="content">
+                
+                <nav class="level">
+                    
+                    <div class="level-left">
+                        <div class="level-item">
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     0001年1月1日,
+    星期一 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 5分钟阅读
+</p>
+                        </div>
+                    </div>
+
+                    
+                    
+                    <div class="share-component level-right" data-disabled="google,diandian,tencent,qzone"
+                        data-description="Share.js - 一键分享到微博，QQ空间，腾讯微博，人人，豆瓣"
+                        data-mobile-sites="weibo,qq,qzone,tencent">
+                    </div>
+                    
+                </nav>
+                <hr>
+                
+                <header>
+                    <h2>目录</h2>
+                </header>
+                <nav id="TableOfContents">
+  <ul>
+    <li><a href="#1编写目的">1.编写目的</a></li>
+    <li><a href="#2项目背景">2.项目背景</a></li>
+    <li><a href="#3测试目标">3.测试目标</a></li>
+    <li><a href="#4专业术语">4.专业术语</a></li>
+    <li><a href="#5测试方法">5.测试方法</a></li>
+    <li><a href="#6测试范围">6.测试范围</a></li>
+    <li><a href="#7参考文档">7.参考文档</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#1生产环境配置信息">1.生产环境配置信息</a>
+      <ul>
+        <li><a href="#11-应用服务器配置">1.1 应用服务器配置</a></li>
+        <li><a href="#12-数据库服务器配置">1.2 数据库服务器配置</a></li>
+      </ul>
+    </li>
+    <li><a href="#2测试环境配置信息">2.测试环境配置信息</a>
+      <ul>
+        <li><a href="#21-应用服务器配置">2.1 应用服务器配置</a></li>
+        <li><a href="#22-数据库服务器">2.2 数据库服务器</a></li>
+        <li><a href="#23-压力机">2.3 压力机</a></li>
+        <li><a href="#24-测试数据存储服务器">2.4 测试数据存储服务器</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li><a href="#41-测试方案">4.1 测试方案</a>
+      <ul>
+        <li><a href="#411-基准测试">4.1.1 基准测试</a></li>
+        <li><a href="#412-容量测试">4.1.2 容量测试</a></li>
+        <li><a href="#423-稳定性测试">4.2.3 稳定性测试</a></li>
+        <li><a href="#444-异常测试">4.4.4 异常测试</a></li>
+        <li><a href="#42-测试用例">4.2 测试用例</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li><a href="#61-测试结论">6.1 测试结论</a></li>
+    <li><a href="#62-风险">6.2 风险</a></li>
+  </ul>
+</nav>
+                
+                <hr>
+                <p>[TOC]</p>
+<h1 id="xxx性能测试报告">XXX性能测试报告</h1>
+<table>
+<thead>
+<tr>
+<th>版本</th>
+<th>作者</th>
+<th>日期</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Server_V1.0.0</td>
+<td>王凤伟</td>
+<td>2020-01-16</td>
+</tr>
+</tbody>
+</table>
+<h1 id="一-概述">一． 概述</h1>
+<h2 id="1编写目的">1.编写目的</h2>
+<p>编写该性能测试报告的目的主要用于说明系统性能的评估，为线上推广提供参考依<br>
+据</p>
+<h2 id="2项目背景">2.项目背景</h2>
+<h2 id="3测试目标">3.测试目标</h2>
+<p>服务器处理能力满足性能需求文档的约定（ 日增 5000 连续 30 天）</p>
+<h2 id="4专业术语">4.专业术语</h2>
+<p>在线用户数:系统目前存在的用户数(或未来一定时间内系统可能达到的用户数)<br>
+并发度:在线用户数/操作业务的用户数<br>
+TPS:整个系统 1 秒内能够处理的事物数<br>
+TPS=(1000ms/RT/ms)*压力机线程数<br>
+并发数:压力机线程的数量<br>
+在线用户数=TPS/并发度（ 评估并发用户数或在线用户数）<br>
+RT(响应时间):请求发出去到接收完最后一个字符的时间</p>
+<h2 id="5测试方法">5.测试方法</h2>
+<p>通过测试工具模拟一定量的用户对服务器约定的请求数并接收服务器的响应，<br>
+通过性能监控平台收集服务器响应结果及应用服务器， 数据库服务器， 数据库的处理能<br>
+力并进行指标统计</p>
+<h2 id="6测试范围">6.测试范围</h2>
+<p>主要测试产品主流程业务包含注册后进行登录并从首页选择游戏到详情页开始游<br>
+戏以及玩游戏后对游戏发表自己的感受</p>
+<h2 id="7参考文档">7.参考文档</h2>
+<ol>
+<li>性能需求文档</li>
+<li>产品需求文档</li>
+<li>服务器架构图</li>
+</ol>
+<h1 id="二-环境配置与数据">二． 环境配置与数据</h1>
+<h2 id="1生产环境配置信息">1.生产环境配置信息</h2>
+<h3 id="11-应用服务器配置">1.1 应用服务器配置</h3>
+<pre><code>服务器
+名称 应用服务器（ 4 台）
+硬件配置
+CPU： Intel(R) Xeon(R) Gold 6148 CPU @ 2.40GHz 4 核
+内存： 8G
+磁盘：
+软件配置 操作系统： CentOS Linux release 7.6.1810 (Core)
+</code></pre>
+<h3 id="12-数据库服务器配置">1.2 数据库服务器配置</h3>
+<pre><code>服务器
+名称 数据库服务器（ 4 台）
+硬件配置
+CPU： Intel(R) Xeon(R) Gold 6148 CPU @ 2.40GHz 4 核
+内存： 8G*3+16G*1
+磁盘：
+软件配置 操作系统： CentOS Linux release 7.6.1810 (Core)
+</code></pre>
+<h2 id="2测试环境配置信息">2.测试环境配置信息</h2>
+<h3 id="21-应用服务器配置">2.1 应用服务器配置</h3>
+<pre><code>服务器
+名称 应用服务器（ 2 台）
+硬件配置
+CPU： Intel(R) Xeon(R) Gold 6148 CPU @ 2.40GHz 4 核
+内存： 8G
+磁盘：
+软件配置 操作系统： CentOS Linux release 7.6.1810 (Core)
+</code></pre>
+<h3 id="22-数据库服务器">2.2 数据库服务器</h3>
+<pre><code>服务器
+名称 数据库服务器（ 1 台）
+硬件配置
+CPU： Intel(R) Xeon(R) Gold 6148 CPU @ 2.40GHz 4 核
+内存： 16G
+磁盘：
+软件配置 操作系统： CentOS Linux release 7.6.1810 (Core)
+</code></pre>
+<h3 id="23-压力机">2.3 压力机</h3>
+<pre><code>服务器
+名称 压力机（ 1 台）
+硬件配置
+CPU： Int el(R) Xeon(R) Gold 6148 CPU @ 2.40GHz 4 核
+内存： 8G
+磁盘：
+软件配置 操作系统： CentOS Linux release 7.6.1810 (Core)
+</code></pre>
+<h3 id="24-测试数据存储服务器">2.4 测试数据存储服务器</h3>
+<pre><code>服务器
+名称 测试数据存储服务器（ 1 台）
+硬件配置
+CPU： Intel(R) Xeon(R) Gold 6148 CPU @ 2.40GHz 4 核
+内存： 8G
+磁盘：
+软件配置 操作系统： CentOS Linux release 7.6.1810 (Core)
+2.3 数据量
+表名 基础数据量 压测数据量
+c1_users 30 万 30 万基础上压测
+t_account 30 万 30 万基础上压测
+t_account_info 30 万 30 万基础上压测
+t_profile 30 万 30 万基础上压测
+t_game_comment 同线上数据一致 同线上数据一致
+g_map 同线上数据一致 同线上数据一致
+</code></pre>
+<h1 id="三-性能监控架构">三． 性能监控架构</h1>
+<h1 id="四-测试策略">四． 测试策略</h1>
+<h2 id="41-测试方案">4.1 测试方案</h2>
+<h3 id="411-基准测试">4.1.1 基准测试</h3>
+<pre><code>通过模拟用户梯度递增的场景对单业务进行发送请求， 最终测试出单业务的最
+大容量(例如:TPS)， 以便在混合场景中判断哪个业务对整体的容量最有影响
+业务名称 业务比例 备注
+注册
+登录
+访问首页
+访问详情页
+开始游戏
+评论
+初始化
+</code></pre>
+<h3 id="412-容量测试">4.1.2 容量测试</h3>
+<pre><code>通过模拟用户梯度递增的场景对流程性的业务进行发送请求， 最终测试出服务
+器处理流程业务的最大容量， 为后期系统扩容， 性能优化提供参考
+业务名称 业务比例
+初始化
+注册
+登录
+访问首页
+访问详情页
+开始游戏
+对游戏进行评论
+</code></pre>
+<h3 id="423-稳定性测试">4.2.3 稳定性测试</h3>
+<pre><code>通过模拟用户梯度递增的场景， 直到用户增至容量性能测试中的最大容量为止，
+进行长时间的发送请求， 最终测试出服务器的情况
+稳定性测试时间=最大业务量/容量测试 TPS 总和
+业务名称 业务比例
+初始化
+游客登录
+注册
+登录
+访问首页
+访问详情页
+开始游戏
+对游戏进行评论
+</code></pre>
+<h3 id="444-异常测试">4.4.4 异常测试</h3>
+<pre><code>通过模拟部分应用服务器， 数据库服务器异常终端或停服的场景， 最终测试
+出服务器的处理情况(采用最大 TPS 的 50%进行测试)
+例如： 停一台应用服务器， N 分钟后再停一台数据库服务器， N 分钟后重启应
+用服务器， 再重启数据库服务器， 查看服务器处理能力(TPS， 其他服务器的压力情
+况)等等
+</code></pre>
+<h3 id="42-测试用例">4.2 测试用例</h3>
+<pre><code>4.2.1 基准测试用例
+4.2.2 容量测试用例
+4.2.3 稳定性测试用例
+4.2.4 异常测试用例
+</code></pre>
+<h1 id="五-测试结果">五． 测试结果</h1>
+<pre><code>说明:以下为重要指标， 详情见测试用例附件， 需使用以下用户名密码登录查看
+username:test
+password:123456
+1.基准测试结果
+基准测试_TPS 及 mysql 情况
+业务名称 优化前性能情况 优化后性能情况
+TPS/s 慢查询 TPS/s 慢查询
+初始化 318 无
+注册 &lt;10 有 60 无
+登录 &lt;30 有 216 无
+首页 20 无 108 无
+详情页 RT&gt;2min 有 175 无
+开始游戏 260 无
+评论游戏 &lt;60 有 200 无
+2.容量测试结果
+对应参数说明：
+Lable： 业务名称
+样本： 对应的业务总请求数量
+99%百分比： 99%请求的响应时间
+异常： 对应业务的失败率
+吞吐量： TPS
+2.1 场景 1 测试结果： 各业务比例都为 12.5%
+2.2 场景 2 测试结果： 各业务比例如下
+业务比例：
+游客登录： 5%
+初始化： 25%
+注册： 5%
+登录： 10%
+首页： 25%
+详情页： 13%
+开始游戏： 12%
+评论游戏： 5%
+3.稳定性测试结果： 各业务占比都为 12.5%
+</code></pre>
+<h1 id="六-测试结论及风险">六． 测试结论及风险</h1>
+<h2 id="61-测试结论">6.1 测试结论</h2>
+<pre><code>本次测试一共测试了 3 种场景， 结果总结如下：
+基准测试场景： 对各主要业务进行了单业务的性能测试， 所有业务没有报错情况
+出现， 应用服务器资源得到了充分的利用， 所有的慢查询都进行了优化， 优化后的
+服务器 TPS 情况有了非常大的提升
+容量测试场景：对各业务分配了不同的操作比例，在整个过程中无报错情况出现，
+同等比例的情况下 TPS 能达到接近 100， 不同比例 TPS 能达到 200 以上， 目前压测环
+境对应的生产服务器每秒可以至少处理 100 个请求
+稳定性测试场景： 采用同等比例对不同的业务进行操作， 持续操作时间&gt;10 小时，
+期间无内泄漏出现象出现， 数据库无死锁等情况暴露， TPS 无较大波动， 服务运行稳
+定， 目前压测环境对应的生产服务器同等业务可以持续操作 10 小时以上， 但游戏详
+情页及注册的相应时间相对来说会稍慢， 后期需要进行优化， 但不影响整体服务的稳
+定运行
+</code></pre>
+<h2 id="62-风险">6.2 风险</h2>
+<ol>
+<li>带宽方面后期随着用户数不断增加可能会出现应用服务器带宽占满的情况，<br>
+运维要进行线上观察</li>
+<li>应用服务器资源方面随着操作业务频率及时间的增加可能会导致应用服务<br>
+器资源占满的情况， 服务端技术后期要优化一下</li>
+</ol>
+
+                
+                
+                <hr> 
+
+<div class="entry-shang text-center">
+    
+    <p> 「真诚赞赏，手留余香」</p>
+    
+    <button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+    <div class="zs-modal-head">
+        <button type="button" class="close">×</button>
+        <span class="author">
+            <a href="http://www.mafool.com">
+                <img src="http://www.mafool.com/img/reward/hollson.png" alt="史布斯" />码夫庄园
+            </a>
+        </span>
+        
+        <p class="tip"><i></i><span>嗯，我的梦想是被读者的稿费包养~</span></p>
+        
+
+    </div>
+    <div class="zs-modal-body">
+        <div class="zs-modal-btns">
+            <button class="btn btn-blink" data-num="2">2元</button>
+            <button class="btn btn-blink" data-num="5">5元</button>
+            <button class="btn btn-blink" data-num="10">10元</button>
+            <button class="btn btn-blink" data-num="50">50元</button>
+            <button class="btn btn-blink" data-num="100">100元</button>
+            <button class="btn btn-blink" data-num="1">任意金额</button>
+        </div>
+        <div class="zs-modal-pay">
+            <button class="btn btn-bred" id="pay-text">2元</button>
+            <p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+            <img src="http://www.mafool.com/img/reward/wechat-2.png" alt="史布斯" id="pay-image" />
+        </div>
+    </div>
+    <div class="zs-modal-footer">
+        <label>
+            <span class="zs-wechat"></span>
+            <input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked">
+            <img src="http://www.mafool.com/img/reward/wechat-btn.png" alt="史布斯" />
+            </span>&nbsp;
+            <span>
+                <input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay">
+                <img src="http://www.mafool.com/img/reward/alipay-btn.png" alt="史布斯" />
+            </span>
+        </label>
+    </div>
+</div>
+
+ 
+
+                <br>
+                <br>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="column is-3">
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">最近发布</h2>
+        
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/0742b474a643d63a774461726a6201203/">Go语言中的原子操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年12月2日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/1600330472/">Go基础笔记 - 2.3 常量</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月10日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/15996311192/">Go - Gin框架快速入门</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月9日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480249/">Gorm快速指南</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480218/">18. Go语言MySQL数据库操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+    </div>
+</div>
+<br>
+        
+
+
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">标签</h2>
+        <div>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/atomic">atomic</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/blog">blog</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cgo">cgo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cloud">cloud</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/config">config</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/copy">copy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/docker">docker</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/exam">exam</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/gin">gin</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/git">git</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/golang">golang</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/hugo">hugo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/install">install</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/istio">istio</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/jenkins">jenkins</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/kubernetes">kubernetes</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/map">map</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/microservice">microservice</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/mycat">mycat</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/nginx">nginx</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/plan9">plan9</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/posix">posix</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/proxy">proxy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/raft">raft</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ssh">ssh</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/tips">tips</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ymal">ymal</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%B8%BB%E4%BB%8E">主从</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BA%8B%E5%8A%A1">事务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BB%A3%E7%90%86">代理</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BD%9C%E7%94%A8%E5%9F%9F">作用域</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%86%85%E5%AD%98">内存</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%8B%E7%BC%A9">压缩</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%88%9B">原创</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%AD%90">原子</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%91%BD%E4%BB%A4%E8%A1%8C">命令行</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%93%A8%E5%85%B5">哨兵</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%AD%98%E5%82%A8">存储</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B8%B8%E9%87%8F">常量</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B9%B6%E5%8F%91">并发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BC%82%E5%B8%B8">异常</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1">微服务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%88%E6%9D%83%E8%AE%A4%E8%AF%81">授权认证</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%92%E5%BA%8F">排序</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%A5%E5%8F%A3">接口</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%97%A5%E5%BF%97">日志</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%9D%83%E9%99%90">权限</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE1">标签1</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE2">标签2</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%AD%A3%E5%88%99">正则</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%81%E9%87%8F%E5%88%86%E5%8F%91">流量分发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%8B%E8%AF%95">测试</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%BA%90%E7%A0%81">源码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%8A%B6%E6%80%81%E7%A0%81">状态码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%AE%97%E6%B3%95">算法</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%BC%8F">编程模式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%80%81%E5%A6%96%E7%AC%94%E8%AE%B0">老妖笔记</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%BF%87%E6%BB%A4%E5%99%A8">过滤器</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%80%83%E9%80%B8">逃逸</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%85%8D%E7%BD%AE">配置</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%86%99">重写</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%AE%9A%E5%90%91">重定向</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9B%86%E7%BE%A4">集群</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9D%A2%E8%AF%95">面试</a>
+            </span>
+            
+        </div>
+    </div>
+</div>
+<br>
+    </div>
+</div>
+
+        </div>
+    </div>
+
+    
+    <footer class="footer has-background-grey-darker has-text-white">
+    <div class="content has-text-centered">
+        <p>
+            <span class="icon is-large">
+                <a href="https://twitter.com/" class="mysocial" rel="me">
+                    <i class="fab fa-twitter fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://www.youtube.com/" class="mysocial" rel="me">
+                    <i class="fab fa-youtube fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://github.com/" class="mysocial" rel="me">
+                    <i class="fab fa-github fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <br><br>
+            友情链接：
+            
+            <a class="mysocial" href="http://www.mafool.com" target="_blank">Mafool</a>
+            
+            <a class="mysocial" href="https://gohugo.io/documentation/" target="_blank">Hugo</a>
+            
+            <a class="mysocial" href="https://bulma.io/" target="_blank">Bulma</a>
+            
+            <a class="mysocial" href="https://bootstrapious.com/" target="_blank">Bootstrapious</a>
+            
+            <a class="mysocial" href="https://youzhixueyuan.com/" target="_blank">Youzhixueyuan</a>
+            
+            <br><br />
+            版权所有 &copy; 码夫庄园 2021
+            - <a class="mysocial" href="https://github.com/hollson/hugo-theme-dooz">Hugo Theme</a>
+        </p>
+    </div>
+</footer>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='http://www.mafool.com/js/dooz.totop.js?v=0.0.0' async=""></script>
+
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = 'https://hm.baidu.com/hm.js?f185359ec6b829a6a93e1e1f2597f6d9';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DK042XSJ2J"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-DK042XSJ2J');
+</script>
+
+    
+    
+<script type="text/javascript" src="http://www.mafool.com/js/reward.js"></script>
+
+    
+    <script defer src="https://cdn.staticfile.org/font-awesome/5.13.0/js/all.min.js"></script>
+</body>
+
+</html>

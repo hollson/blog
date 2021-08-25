@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>码夫庄园-Go并发3-Channel进程通信</title>
+    <meta name="keywords"
+        content='channel,多线程,通信'>
+    <meta name="description" content="Do not communicate by sharing memory; instead, share memory by communicating." />
+
+    
+    <meta name="baidu-site-verification" content="v9szEmQLra" />
+    <meta name="360-site-verification" content="d8e961f98fb655e4b8cf9439cfd9ac7f" />
+    <meta name="sogou_site_verification" content="40NC9EdZDC" />
+    <meta name="shenma-site-verification" content="3200e3042e92157713a3b0aceeecb20a_1586020187" />
+    <meta name="google-site-verification" content="r8987bkunZHJeKut3ocu5NIJ5QEu53NA6Q_r7RrZ46c" />
+    <meta name="msvalidate.01" content="893A2865ABC54AC2782D118536831056" />
+
+    
+    <link rel="shortcut icon" href="http://www.mafool.com/img/res/favicon.ico">
+    
+
+    
+
+    <link crossorigin="anonymous" integrity="sha384-5kGFOAqgEKnuF6c2jk2JANKHZgYVt38Wn2dVJENtq1EBCP54/1uzXU5mpxqL8WjN"
+        href="https://lib.baomitu.com/bulma/0.8.0/css/bulma.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="http://www.mafool.com/css/dooz.blog.css" />
+    <script crossorigin="anonymous" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh"
+        src="https://lib.baomitu.com/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/jquery.share.min.js"></script>
+    
+
+    
+
+    
+    
+<link rel="stylesheet" href="http://www.mafool.com/css/reward.css">
+
+
+    <link href="http://www.mafool.com/css/fonts.googleapi.css" rel="stylesheet">
+    <script src=http://www.mafool.com/js/dooz.blog.js></script>
+
+    
+    <script>
+        $(document).ready(function () {
+            $('.content a[href^="http"]').each(function () {
+                $(this).attr('target', '_blank');
+            });
+        });
+
+        $(document).on('click', '.modal-wechat', function () {
+            $(".modal").addClass("is-active");
+        });
+
+        $(document).on('click', '.modal-background', function () {
+            $(".modal").removeClass("is-active");
+        });
+    </script>
+</head>
+
+<body>
+    
+    
+<section class="hero is-info is-medium"
+    style="background-image: url('/img/res/blog.jpg');">
+    <div class="hero-head">
+        <nav class="navbar is-transparent container has-text-white">
+    <div class="navbar-brand">
+        <div class="navbar-item">
+            <a class="title is-5 is-white" href="http://www.mafool.com/">码夫庄园</a>
+        </div>
+
+        
+        <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <div id="navbarExampleTransparentExample" class="navbar-menu has-text-dark">
+        
+
+        <div class="navbar-end">
+            <a class="navbar-item" href='http://www.mafool.com/'>首页</a>
+            <a class="navbar-item" href='http://www.mafool.com/archives'>归档 </a>
+            <a class="navbar-item" href='http://www.mafool.com/about'>关于</a>
+            <span class="navbar-item">
+                <a class="button is-primary is-inverted" href="https://github.com/hollson/hugo-theme-dooz">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>主题</span>
+                </a>
+            </span>
+        </div>
+    </div>
+</nav>
+    </div>
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <div class='container has-text-left column is-7'>
+                
+                <span>
+                    <a class="bar_tag" href="http://www.mafool.com/tags/%E5%B9%B6%E5%8F%91" title="并发">并发</a>
+                </span>
+                
+                <h1 class="title is-size-2" style="margin-bottom:0.2rem;">
+                    
+                    Go并发3-Channel进程通信
+                    
+                </h1>
+                
+                <span class="title is-size-6" style="font-style: italic;"> </span><br>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    
+    <div class="container">
+        <div class="section">
+            
+<div class="columns">
+    <div class="column is-9">
+        <div class="tile is-child box">
+            <div class="content">
+                
+                <nav class="level">
+                    
+                    <div class="level-left">
+                        <div class="level-item">
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2019年10月8日,
+    星期二 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 6分钟阅读
+</p>
+                        </div>
+                    </div>
+
+                    
+                    
+                    <div class="share-component level-right" data-disabled="google,diandian,tencent,qzone"
+                        data-description="Share.js - 一键分享到微博，QQ空间，腾讯微博，人人，豆瓣"
+                        data-mobile-sites="weibo,qq,qzone,tencent">
+                    </div>
+                    
+                </nav>
+                <hr>
+                
+                <header>
+                    <h2>目录</h2>
+                </header>
+                <nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-非缓冲信道">1. 非缓冲信道</a></li>
+    <li><a href="#2-缓冲信道">2. 缓冲信道</a></li>
+    <li><a href="#3-单向信道">3. 单向信道</a></li>
+    <li><a href="#4-多路复用">4. 多路复用</a></li>
+    <li><a href="#5-超时控制">5. 超时控制</a></li>
+    <li><a href="#6-并发控制">6. 并发控制</a></li>
+    <li><a href="#7-时间通道">7. 时间通道</a></li>
+    <li><a href="#8-优雅退出">8. 优雅退出</a></li>
+    <li><a href="#9-feature模式">9. Feature模式</a></li>
+    <li><a href="#10-斐波那契">10. 斐波那契</a></li>
+  </ul>
+</nav>
+                
+                <hr>
+                <p><strong>不同于传统的多线程并发模型使用共享内存来实现线程间通信的方式，golang 的哲学是通过 channel 进行协程(goroutine)之间的通信来实现数据共享：</strong></p>
+<blockquote>
+<p>Do not communicate by sharing memory; instead, share memory by communicating.</p>
+</blockquote>
+<p>这种方式的优点是通过提供原子的通信原语，<code>避免了竞态情形(race condition)下复杂的锁机制</code>。<br>
+channel 可以看成一个<code>FIFO 队列</code>，对 FIFO 队列的读写都是<code>原子操作</code>，不需要加锁。对 channel 的操作行为结果总结如下：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">操作</th>
+<th style="text-align:left">nil channel</th>
+<th style="text-align:left">closed channel</th>
+<th style="text-align:left">not-closed non-nil channel</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">close</td>
+<td style="text-align:left">panic</td>
+<td style="text-align:left">panic</td>
+<td style="text-align:left">成功 close</td>
+</tr>
+<tr>
+<td style="text-align:left">写 ch &lt;-</td>
+<td style="text-align:left">一直阻塞</td>
+<td style="text-align:left">panic</td>
+<td style="text-align:left">阻塞或成功写入数据</td>
+</tr>
+<tr>
+<td style="text-align:left">读 &lt;- ch</td>
+<td style="text-align:left">一直阻塞</td>
+<td style="text-align:left">读取对应类型零值</td>
+<td style="text-align:left">阻塞或成功读取数据</td>
+</tr>
+</tbody>
+</table>
+<!-- raw HTML omitted -->
+<h2 id="1-非缓冲信道">1. 非缓冲信道</h2>
+<ul>
+<li>通道变量没有字面量，必须使用make创建。</li>
+<li>非缓冲信道就是<code>缓冲大小为0</code>的通道</li>
+<li><strong>生产过量</strong>会<code>死锁</code>，消费过量会<code>阻塞</code>。</li>
+<li>channel可以接收**<code>一个或两个返回参数</code>**。</li>
+<li><code>range-close</code>(推荐)：以阻塞的方式遍历通道。</li>
+<li>为了避免读到closed的channel的零值，建议使用，可以使用<code>v,ok := &lt;-ch</code>接收值。</li>
+</ul>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+   <span style="color:#c0f">withRev</span>()
+   <span style="color:#c0f">nobufFoo</span>()
+   <span style="color:#c0f">nobufBar</span>()
+}
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">withRev</span>() {
+   <span style="color:#069;font-weight:bold">var</span> ch = <span style="color:#366">make</span>(<span style="color:#069;font-weight:bold">chan</span> <span style="color:#078;font-weight:bold">int</span>)
+   <span style="color:#069;font-weight:bold">go</span> <span style="color:#069;font-weight:bold">func</span>() {
+      ch <span style="color:#555">&lt;-</span> <span style="color:#f60">1</span>
+   }()
+   ret, ok <span style="color:#555">:=</span> <span style="color:#555">&lt;-</span>ch
+   <span style="color:#09f;font-style:italic">//ret= &lt;-ch //接收一个或两个返回参数。
+</span><span style="color:#09f;font-style:italic"></span>   fmt.<span style="color:#c0f">Println</span>(ret, ok)
+}
+
+<span style="color:#09f;font-style:italic">// 非缓冲信道: 就是缓冲大小为0的通道
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">nobufFoo</span>() {
+   ch <span style="color:#555">:=</span> <span style="color:#366">make</span>(<span style="color:#069;font-weight:bold">chan</span> <span style="color:#078;font-weight:bold">int</span>)
+   <span style="color:#069;font-weight:bold">go</span> <span style="color:#069;font-weight:bold">func</span>() {
+      fmt.<span style="color:#c0f">Println</span>(<span style="color:#555">&lt;-</span>ch)
+   }()
+
+   <span style="color:#09f;font-style:italic">//main作为生产者
+</span><span style="color:#09f;font-style:italic"></span>   ch <span style="color:#555">&lt;-</span> <span style="color:#f60">1</span>
+   time.<span style="color:#c0f">Sleep</span>(time.Second)
+}
+
+<span style="color:#09f;font-style:italic">// range-close：以阻塞的方式遍历通道
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">nobufBar</span>() {
+   ch <span style="color:#555">:=</span> <span style="color:#366">make</span>(<span style="color:#069;font-weight:bold">chan</span> <span style="color:#078;font-weight:bold">string</span>)
+   <span style="color:#069;font-weight:bold">go</span> <span style="color:#069;font-weight:bold">func</span>() {
+      ch <span style="color:#555">&lt;-</span> <span style="color:#c30">&#34;A&#34;</span>
+      ch <span style="color:#555">&lt;-</span> <span style="color:#c30">&#34;B&#34;</span>
+      <span style="color:#366">close</span>(ch)
+   }()
+
+   <span style="color:#09f;font-style:italic">//main作为消费者
+</span><span style="color:#09f;font-style:italic"></span>   <span style="color:#069;font-weight:bold">for</span> c <span style="color:#555">:=</span> <span style="color:#069;font-weight:bold">range</span> ch {
+      fmt.<span style="color:#c0f">Println</span>(c)
+   }
+}
+</code></pre></td></tr></table>
+</div>
+</div><!-- raw HTML omitted -->
+<h2 id="2-缓冲信道">2. 缓冲信道</h2>
+<ul>
+<li>缓冲信道，<code>超容或未关闭</code>都会引发<code>死锁异常</code></li>
+</ul>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#09f;font-style:italic">// 缓冲通道是非阻塞通道
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+   ch <span style="color:#555">:=</span> <span style="color:#366">make</span>(<span style="color:#069;font-weight:bold">chan</span> <span style="color:#078;font-weight:bold">string</span>, <span style="color:#f60">3</span>)
+   ch <span style="color:#555">&lt;-</span> <span style="color:#c30">&#34;A&#34;</span>
+   ch <span style="color:#555">&lt;-</span> <span style="color:#c30">&#34;B&#34;</span>
+   <span style="color:#09f;font-style:italic">// 避免生产过量
+</span><span style="color:#09f;font-style:italic"></span>   <span style="color:#366">close</span>(ch)
+
+   <span style="color:#069;font-weight:bold">for</span> val <span style="color:#555">:=</span> <span style="color:#069;font-weight:bold">range</span> ch {
+      fmt.<span style="color:#c0f">Println</span>(val)
+   }
+}
+</code></pre></td></tr></table>
+</div>
+</div><!-- raw HTML omitted -->
+<h2 id="3-单向信道">3. 单向信道</h2>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#09f;font-style:italic">// 生产者
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">producer</span>(c <span style="color:#069;font-weight:bold">chan</span><span style="color:#555">&lt;-</span> <span style="color:#078;font-weight:bold">int</span>) {
+   <span style="color:#069;font-weight:bold">for</span> i <span style="color:#555">:=</span> <span style="color:#f60">0</span>; i &lt; <span style="color:#f60">10</span>; i<span style="color:#555">++</span> {
+      fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;send:&#34;</span>, i)
+      c <span style="color:#555">&lt;-</span> i
+   }
+   <span style="color:#366">close</span>(c)
+}
+
+<span style="color:#09f;font-style:italic">// 消费者
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">consumer</span>(c <span style="color:#555">&lt;-</span><span style="color:#069;font-weight:bold">chan</span> <span style="color:#078;font-weight:bold">int</span>) {
+   <span style="color:#069;font-weight:bold">for</span> v <span style="color:#555">:=</span> <span style="color:#069;font-weight:bold">range</span> c {
+      fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;receive:&#34;</span>, v)
+   }
+}
+
+<span style="color:#09f;font-style:italic">// 单项通道用于约束参数，双向通道是通用通道
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+   ch <span style="color:#555">:=</span> <span style="color:#366">make</span>(<span style="color:#069;font-weight:bold">chan</span> <span style="color:#078;font-weight:bold">int</span>)    <span style="color:#09f;font-style:italic">//1.阻塞式
+</span><span style="color:#09f;font-style:italic"></span>   ch = <span style="color:#366">make</span>(<span style="color:#069;font-weight:bold">chan</span> <span style="color:#078;font-weight:bold">int</span>, <span style="color:#f60">10</span>) <span style="color:#09f;font-style:italic">//2.非阻塞式
+</span><span style="color:#09f;font-style:italic"></span>   <span style="color:#069;font-weight:bold">go</span> <span style="color:#c0f">producer</span>(ch)
+   <span style="color:#069;font-weight:bold">go</span> <span style="color:#c0f">consumer</span>(ch)
+
+   <span style="color:#069;font-weight:bold">var</span> quit <span style="color:#078;font-weight:bold">string</span>
+   fmt.<span style="color:#c0f">Scanln</span>(<span style="color:#555">&amp;</span>quit)
+}
+</code></pre></td></tr></table>
+</div>
+</div><!-- raw HTML omitted -->
+<h2 id="4-多路复用">4. 多路复用</h2>
+<ul>
+<li>select就是用来监听和<code>channel有关的IO操作(包括关闭)</code>。</li>
+<li>用来监听Goroutine下的多个Channel，每个case必须是一个IO操作</li>
+<li>多个Channel都无数据时，Select会一直等待到其中一个有数据为止。</li>
+<li>多个Channel都有数据时，Select会随机选择一个case执行。</li>
+<li>多个Channel都无数据时,且default子语句存在时，default会被执行</li>
+<li>持续监听多个Channel，可用for语句协助。</li>
+<li>Select可以在接收端监听，也可以在发送端监听。</li>
+<li>尽量避免default而引发的循环消耗资源,</li>
+</ul>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#09f;font-style:italic">// select-default是非阻塞模式，应尽量避免
+</span><span style="color:#09f;font-style:italic"></span>
+<span style="color:#09f;font-style:italic">// 监听【收、发、关】
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+   <span style="color:#c0f">ListenClose</span>()
+   <span style="color:#c0f">Generator</span>()
+}
+
+<span style="color:#09f;font-style:italic">// 监听close
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">ListenClose</span>() {
+   ch <span style="color:#555">:=</span> <span style="color:#366">make</span>(<span style="color:#069;font-weight:bold">chan</span> <span style="color:#069;font-weight:bold">struct</span>{})
+   <span style="color:#069;font-weight:bold">go</span> <span style="color:#069;font-weight:bold">func</span>() {
+      time.<span style="color:#c0f">Sleep</span>(time.Second <span style="color:#555">*</span> <span style="color:#f60">3</span>)
+      <span style="color:#366">close</span>(ch)
+   }()
+
+   <span style="color:#069;font-weight:bold">select</span> {
+   <span style="color:#069;font-weight:bold">case</span> <span style="color:#555">&lt;-</span>ch:
+      fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;closed...&#34;</span>)
+   }
+}
+
+<span style="color:#09f;font-style:italic">// 一个channel就是一个被激活的通道信号发生器
+</span><span style="color:#09f;font-style:italic">// channel发生器
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">Generator</span>() {
+   timeBeat <span style="color:#555">:=</span> <span style="color:#069;font-weight:bold">func</span>() <span style="color:#069;font-weight:bold">chan</span> <span style="color:#078;font-weight:bold">int</span> {
+      out <span style="color:#555">:=</span> <span style="color:#366">make</span>(<span style="color:#069;font-weight:bold">chan</span> <span style="color:#078;font-weight:bold">int</span>)
+      <span style="color:#069;font-weight:bold">go</span> <span style="color:#069;font-weight:bold">func</span>() {
+         <span style="color:#069;font-weight:bold">for</span> {
+            time.<span style="color:#c0f">Sleep</span>(time.Second)
+            out <span style="color:#555">&lt;-</span> time.<span style="color:#c0f">Now</span>().<span style="color:#c0f">Second</span>()
+         }
+      }()
+      <span style="color:#069;font-weight:bold">return</span> out
+   }
+
+   ch1, ch2 <span style="color:#555">:=</span> <span style="color:#c0f">timeBeat</span>(), <span style="color:#c0f">timeBeat</span>()
+   <span style="color:#09f;font-style:italic">// 循环阻塞
+</span><span style="color:#09f;font-style:italic"></span>   <span style="color:#069;font-weight:bold">for</span> {
+      <span style="color:#069;font-weight:bold">select</span> {
+      <span style="color:#069;font-weight:bold">case</span> val <span style="color:#555">:=</span> <span style="color:#555">&lt;-</span>ch1:
+         fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;ch1:&#34;</span>, val)
+      <span style="color:#069;font-weight:bold">case</span> val <span style="color:#555">:=</span> <span style="color:#555">&lt;-</span>ch2:
+         fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;ch2:&#34;</span>, val)
+      }
+   }
+}
+</code></pre></td></tr></table>
+</div>
+</div><!-- raw HTML omitted -->
+<h2 id="5-超时控制">5. 超时控制</h2>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+   err <span style="color:#555">:=</span> <span style="color:#c0f">ConnectServer</span>(time.Second <span style="color:#555">*</span> <span style="color:#f60">3</span>)
+   fmt.<span style="color:#c0f">Println</span>(err)
+
+   <span style="color:#09f;font-style:italic">// 尽量避免非幂等端超时操作
+</span><span style="color:#09f;font-style:italic"></span>   err = <span style="color:#c0f">OrderHandler</span>(time.Second <span style="color:#555">*</span> <span style="color:#f60">3</span>)
+   fmt.<span style="color:#c0f">Println</span>(err)
+
+   <span style="color:#069;font-weight:bold">var</span> quit <span style="color:#078;font-weight:bold">string</span>
+   fmt.<span style="color:#c0f">Scanln</span>(<span style="color:#555">&amp;</span>quit)
+}
+
+<span style="color:#09f;font-style:italic">// 幂等案例 ：超时后并没有终止工作的子协程
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">ConnectServer</span>(timeout time.Duration) (err <span style="color:#078;font-weight:bold">error</span>) {
+   <span style="color:#069;font-weight:bold">var</span> done = <span style="color:#366">make</span>(<span style="color:#069;font-weight:bold">chan</span> <span style="color:#078;font-weight:bold">bool</span>)
+   <span style="color:#09f;font-style:italic">// 异步连接
+</span><span style="color:#09f;font-style:italic"></span>   <span style="color:#069;font-weight:bold">go</span> <span style="color:#069;font-weight:bold">func</span>() {
+      fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;连接到远程服务器中...&#34;</span>)
+      time.<span style="color:#c0f">Sleep</span>(time.Second <span style="color:#555">*</span> <span style="color:#f60">5</span>)
+      done <span style="color:#555">&lt;-</span> <span style="color:#069;font-weight:bold">true</span>
+   }()
+
+   <span style="color:#09f;font-style:italic">// 阻塞：等待ok或超时信号
+</span><span style="color:#09f;font-style:italic"></span>   <span style="color:#069;font-weight:bold">select</span> {
+   <span style="color:#069;font-weight:bold">case</span> <span style="color:#555">&lt;-</span>time.<span style="color:#c0f">After</span>(timeout):
+      err = errors.<span style="color:#c0f">New</span>(<span style="color:#c30">&#34;连接超时...&#34;</span>)
+   <span style="color:#069;font-weight:bold">case</span> <span style="color:#555">&lt;-</span>done:
+      err = <span style="color:#069;font-weight:bold">nil</span>
+   }
+   <span style="color:#069;font-weight:bold">return</span>
+}
+
+<span style="color:#09f;font-style:italic">// 非幂等案例：订单处理，虽然客户端收到订单超时提示，但是服务端还是完成了流程操作
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">OrderHandler</span>(timeout time.Duration) (err <span style="color:#078;font-weight:bold">error</span>) {
+   <span style="color:#069;font-weight:bold">var</span> done = <span style="color:#366">make</span>(<span style="color:#069;font-weight:bold">chan</span> <span style="color:#078;font-weight:bold">bool</span>)
+   <span style="color:#069;font-weight:bold">go</span> <span style="color:#069;font-weight:bold">func</span>() {
+      time.<span style="color:#c0f">Sleep</span>(time.Second <span style="color:#555">*</span> <span style="color:#f60">5</span>)
+      fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;订单处理完成&#34;</span>)
+      done <span style="color:#555">&lt;-</span> <span style="color:#069;font-weight:bold">true</span>
+   }()
+
+   <span style="color:#069;font-weight:bold">select</span> {
+   <span style="color:#069;font-weight:bold">case</span> <span style="color:#555">&lt;-</span>time.<span style="color:#c0f">After</span>(timeout):
+      err = errors.<span style="color:#c0f">New</span>(<span style="color:#c30">&#34;订单处理超时...&#34;</span>)
+   <span style="color:#069;font-weight:bold">case</span> <span style="color:#555">&lt;-</span>done:
+      err = <span style="color:#069;font-weight:bold">nil</span>
+   }
+   <span style="color:#069;font-weight:bold">return</span>
+}
+</code></pre></td></tr></table>
+</div>
+</div><!-- raw HTML omitted -->
+<h2 id="6-并发控制">6. 并发控制</h2>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#09f;font-style:italic">//https://www.jianshu.com/p/42e89de33065
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">Run</span>(task_id, sleeptime, timeout <span style="color:#078;font-weight:bold">int</span>, ch <span style="color:#069;font-weight:bold">chan</span> <span style="color:#078;font-weight:bold">string</span>) {
+   ch_run <span style="color:#555">:=</span> <span style="color:#366">make</span>(<span style="color:#069;font-weight:bold">chan</span> <span style="color:#078;font-weight:bold">string</span>)
+   <span style="color:#069;font-weight:bold">go</span> <span style="color:#c0f">run</span>(task_id, sleeptime, ch_run)
+   <span style="color:#069;font-weight:bold">select</span> {
+   <span style="color:#069;font-weight:bold">case</span> re <span style="color:#555">:=</span> <span style="color:#555">&lt;-</span>ch_run:
+      ch <span style="color:#555">&lt;-</span> re
+   <span style="color:#069;font-weight:bold">case</span> <span style="color:#555">&lt;-</span>time.<span style="color:#c0f">After</span>(time.<span style="color:#c0f">Duration</span>(timeout) <span style="color:#555">*</span> time.Second):
+      re <span style="color:#555">:=</span> fmt.<span style="color:#c0f">Sprintf</span>(<span style="color:#c30">&#34;task id %d , timeout&#34;</span>, task_id)
+      ch <span style="color:#555">&lt;-</span> re
+   }
+}
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">run</span>(task_id, sleeptime <span style="color:#078;font-weight:bold">int</span>, ch <span style="color:#069;font-weight:bold">chan</span> <span style="color:#078;font-weight:bold">string</span>) {
+   time.<span style="color:#c0f">Sleep</span>(time.<span style="color:#c0f">Duration</span>(sleeptime) <span style="color:#555">*</span> time.Second)
+   ch <span style="color:#555">&lt;-</span> fmt.<span style="color:#c0f">Sprintf</span>(<span style="color:#c30">&#34;task id %d , sleep %d second&#34;</span>, task_id, sleeptime)
+   <span style="color:#069;font-weight:bold">return</span>
+}
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+   input <span style="color:#555">:=</span> []<span style="color:#078;font-weight:bold">int</span>{<span style="color:#f60">3</span>, <span style="color:#f60">2</span>, <span style="color:#f60">1</span>}
+   timeout <span style="color:#555">:=</span> <span style="color:#f60">2</span>
+   chLimit <span style="color:#555">:=</span> <span style="color:#366">make</span>(<span style="color:#069;font-weight:bold">chan</span> <span style="color:#078;font-weight:bold">bool</span>, <span style="color:#f60">1</span>)
+   chs <span style="color:#555">:=</span> <span style="color:#366">make</span>([]<span style="color:#069;font-weight:bold">chan</span> <span style="color:#078;font-weight:bold">string</span>, <span style="color:#366">len</span>(input))
+   limitFunc <span style="color:#555">:=</span> <span style="color:#069;font-weight:bold">func</span>(chLimit <span style="color:#069;font-weight:bold">chan</span> <span style="color:#078;font-weight:bold">bool</span>, ch <span style="color:#069;font-weight:bold">chan</span> <span style="color:#078;font-weight:bold">string</span>, task_id, sleeptime, timeout <span style="color:#078;font-weight:bold">int</span>) {
+      <span style="color:#c0f">Run</span>(task_id, sleeptime, timeout, ch)
+      <span style="color:#555">&lt;-</span>chLimit
+   }
+   startTime <span style="color:#555">:=</span> time.<span style="color:#c0f">Now</span>()
+   fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;Multirun start&#34;</span>)
+   <span style="color:#069;font-weight:bold">for</span> i, sleeptime <span style="color:#555">:=</span> <span style="color:#069;font-weight:bold">range</span> input {
+      chs[i] = <span style="color:#366">make</span>(<span style="color:#069;font-weight:bold">chan</span> <span style="color:#078;font-weight:bold">string</span>, <span style="color:#f60">1</span>)
+      chLimit <span style="color:#555">&lt;-</span> <span style="color:#069;font-weight:bold">true</span>
+      <span style="color:#069;font-weight:bold">go</span> <span style="color:#c0f">limitFunc</span>(chLimit, chs[i], i, sleeptime, timeout)
+   }
+
+   <span style="color:#069;font-weight:bold">for</span> _, ch <span style="color:#555">:=</span> <span style="color:#069;font-weight:bold">range</span> chs {
+      fmt.<span style="color:#c0f">Println</span>(<span style="color:#555">&lt;-</span>ch)
+   }
+   endTime <span style="color:#555">:=</span> time.<span style="color:#c0f">Now</span>()
+   fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;Multissh finished. Process time %s. Number of task is %d&#34;</span>, endTime.<span style="color:#c0f">Sub</span>(startTime), <span style="color:#366">len</span>(input))
+}
+</code></pre></td></tr></table>
+</div>
+</div><!-- raw HTML omitted -->
+<h2 id="7-时间通道">7. 时间通道</h2>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+   <span style="color:#09f;font-style:italic">//定时器(一次计时)：sleep、after、timer(推荐)
+</span><span style="color:#09f;font-style:italic"></span>   <span style="color:#c0f">After</span>()
+   <span style="color:#c0f">Timer</span>()
+
+   <span style="color:#09f;font-style:italic">// 计时器(周期计时)
+</span><span style="color:#09f;font-style:italic"></span>   <span style="color:#c0f">Ticker</span>()
+}
+
+<span style="color:#09f;font-style:italic">// 定时器
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">After</span>() {
+   fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;三秒倒计时开始 ：&#34;</span>)
+   at <span style="color:#555">:=</span> <span style="color:#555">&lt;-</span>time.<span style="color:#c0f">After</span>(time.Second <span style="color:#555">*</span> <span style="color:#f60">3</span>)
+   fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;[%s]引爆炸弹~~~ 💣 ~~~&#34;</span>, at.<span style="color:#c0f">Format</span>(<span style="color:#c30">&#34;20060102150405&#34;</span>))
+}
+
+<span style="color:#09f;font-style:italic">// 定时器 （Timer是可控的一种定时器）
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">Timer</span>() {
+   fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;三秒后引爆炸弹：&#34;</span>)
+   stoped <span style="color:#555">:=</span> <span style="color:#069;font-weight:bold">false</span>
+   timer <span style="color:#555">:=</span> time.<span style="color:#c0f">NewTimer</span>(time.Second <span style="color:#555">*</span> <span style="color:#f60">1</span>)
+   timer.<span style="color:#c0f">Reset</span>(<span style="color:#f60">3</span> <span style="color:#555">*</span> time.Second) <span style="color:#09f;font-style:italic">//重置(修改)为3秒
+</span><span style="color:#09f;font-style:italic"></span>   <span style="color:#09f;font-style:italic">//stoped = timer.Stop() //拆除定时器
+</span><span style="color:#09f;font-style:italic"></span>
+   <span style="color:#069;font-weight:bold">if</span> !stoped {
+      <span style="color:#555">&lt;-</span>timer.C
+      fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;炸弹💣引爆了~~~&#34;</span>)
+   } <span style="color:#069;font-weight:bold">else</span> {
+      fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;炸弹拆除了~~~&#34;</span>)
+   }
+}
+
+<span style="color:#09f;font-style:italic">// 计时器(周期计时)
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">Ticker</span>() {
+   <span style="color:#09f;font-style:italic">// 方式二: 返回时间(单)通道 &lt;-chan Time
+</span><span style="color:#09f;font-style:italic"></span>   tickers <span style="color:#555">:=</span> time.<span style="color:#c0f">Tick</span>(<span style="color:#f60">1</span> <span style="color:#555">*</span> time.Second)
+   <span style="color:#069;font-weight:bold">for</span> t <span style="color:#555">:=</span> <span style="color:#069;font-weight:bold">range</span> tickers {
+      fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;time beat: &#34;</span>, t.<span style="color:#c0f">Second</span>())
+   }
+}
+</code></pre></td></tr></table>
+</div>
+</div><!-- raw HTML omitted -->
+<h2 id="8-优雅退出">8. 优雅退出</h2>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#09f;font-style:italic">// https://blog.csdn.net/skh2015java/article/details/99468586
+</span></code></pre></td></tr></table>
+</div>
+</div><!-- raw HTML omitted -->
+<h2 id="9-feature模式">9. Feature模式</h2>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#09f;font-style:italic">//https://blog.csdn.net/weixin_33733810/article/details/89063283
+</span><span style="color:#09f;font-style:italic">//https://blog.csdn.net/htyu_0203_39/article/details/51523517
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">Future</span>(f <span style="color:#069;font-weight:bold">func</span>() (<span style="color:#069;font-weight:bold">interface</span>{}, <span style="color:#078;font-weight:bold">error</span>)) <span style="color:#069;font-weight:bold">func</span>() (<span style="color:#069;font-weight:bold">interface</span>{}, <span style="color:#078;font-weight:bold">error</span>) {
+   <span style="color:#069;font-weight:bold">var</span> result <span style="color:#069;font-weight:bold">interface</span>{}
+   <span style="color:#069;font-weight:bold">var</span> err <span style="color:#078;font-weight:bold">error</span>
+
+   c <span style="color:#555">:=</span> <span style="color:#366">make</span>(<span style="color:#069;font-weight:bold">chan</span> <span style="color:#069;font-weight:bold">struct</span>{}, <span style="color:#f60">1</span>)
+   <span style="color:#069;font-weight:bold">go</span> <span style="color:#069;font-weight:bold">func</span>() {
+      <span style="color:#069;font-weight:bold">defer</span> <span style="color:#366">close</span>(c)
+      result, err = <span style="color:#c0f">f</span>()
+   }()
+
+   <span style="color:#069;font-weight:bold">return</span> <span style="color:#069;font-weight:bold">func</span>() (<span style="color:#069;font-weight:bold">interface</span>{}, <span style="color:#078;font-weight:bold">error</span>) {
+      <span style="color:#555">&lt;-</span>c
+      <span style="color:#069;font-weight:bold">return</span> result, err
+   }
+}
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+   url <span style="color:#555">:=</span> <span style="color:#c30">&#34;http://labs.strava.com&#34;</span>
+   future <span style="color:#555">:=</span> <span style="color:#c0f">Future</span>(<span style="color:#069;font-weight:bold">func</span>() (<span style="color:#069;font-weight:bold">interface</span>{}, <span style="color:#078;font-weight:bold">error</span>) {
+      resp, err <span style="color:#555">:=</span> http.<span style="color:#c0f">Get</span>(url)
+      <span style="color:#069;font-weight:bold">if</span> err <span style="color:#555">!=</span> <span style="color:#069;font-weight:bold">nil</span> {
+         <span style="color:#069;font-weight:bold">return</span> <span style="color:#069;font-weight:bold">nil</span>, err
+      }
+      <span style="color:#069;font-weight:bold">defer</span> resp.Body.<span style="color:#c0f">Close</span>()
+      <span style="color:#069;font-weight:bold">return</span> ioutil.<span style="color:#c0f">ReadAll</span>(resp.Body)
+   })
+
+   <span style="color:#09f;font-style:italic">// do many other things
+</span><span style="color:#09f;font-style:italic"></span>   b, err <span style="color:#555">:=</span> <span style="color:#c0f">future</span>()
+   body, _ <span style="color:#555">:=</span> b.([]<span style="color:#078;font-weight:bold">byte</span>)
+
+   log.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;response length: %d&#34;</span>, <span style="color:#366">len</span>(body))
+   log.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;request error: %v&#34;</span>, err)
+}
+</code></pre></td></tr></table>
+</div>
+</div><!-- raw HTML omitted -->
+<h2 id="10-斐波那契">10. 斐波那契</h2>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">fibonacci</span>() <span style="color:#069;font-weight:bold">func</span>() <span style="color:#078;font-weight:bold">int</span> {
+    x, y <span style="color:#555">:=</span> <span style="color:#f60">1</span>, <span style="color:#f60">0</span>
+    <span style="color:#069;font-weight:bold">return</span> <span style="color:#069;font-weight:bold">func</span>() <span style="color:#078;font-weight:bold">int</span> {
+        x, y = y, x<span style="color:#555">+</span>y
+        <span style="color:#069;font-weight:bold">return</span> x
+    }
+}
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+    f <span style="color:#555">:=</span> <span style="color:#c0f">fibonacci</span>()
+    <span style="color:#069;font-weight:bold">for</span> i <span style="color:#555">:=</span> <span style="color:#f60">0</span>; i &lt; <span style="color:#f60">10</span>; i<span style="color:#555">++</span> {
+        fmt.<span style="color:#c0f">Println</span>(<span style="color:#c0f">f</span>())
+    }
+}
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">fibonacci2</span>(n <span style="color:#078;font-weight:bold">int</span>, c <span style="color:#069;font-weight:bold">chan</span> <span style="color:#078;font-weight:bold">int</span>) {
+    x, y <span style="color:#555">:=</span> <span style="color:#f60">1</span>, <span style="color:#f60">0</span>
+    <span style="color:#069;font-weight:bold">for</span> i <span style="color:#555">:=</span> <span style="color:#f60">0</span>; i &lt; n; i<span style="color:#555">++</span> {
+        x, y = y, x<span style="color:#555">+</span>y
+        c <span style="color:#555">&lt;-</span> x
+    }
+    <span style="color:#366">close</span>(c)
+}
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+    c <span style="color:#555">:=</span> <span style="color:#366">make</span>(<span style="color:#069;font-weight:bold">chan</span> <span style="color:#078;font-weight:bold">int</span>, <span style="color:#f60">10</span>)
+    <span style="color:#069;font-weight:bold">go</span> <span style="color:#c0f">fibonacci2</span>(<span style="color:#366">cap</span>(c), c)
+    <span style="color:#069;font-weight:bold">for</span> v <span style="color:#555">:=</span> <span style="color:#069;font-weight:bold">range</span> c {
+        fmt.<span style="color:#c0f">Println</span>(v)
+    }
+}
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">fibonacci3</span>(c, quit <span style="color:#069;font-weight:bold">chan</span> <span style="color:#078;font-weight:bold">int</span>) {
+    x, y <span style="color:#555">:=</span> <span style="color:#f60">0</span>, <span style="color:#f60">1</span>
+    <span style="color:#069;font-weight:bold">for</span> {
+        <span style="color:#069;font-weight:bold">select</span> {
+        <span style="color:#069;font-weight:bold">case</span> c <span style="color:#555">&lt;-</span> x:
+            x, y = y, x<span style="color:#555">+</span>y
+        <span style="color:#069;font-weight:bold">case</span> <span style="color:#555">&lt;-</span>quit:
+            fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;quit&#34;</span>)
+            <span style="color:#069;font-weight:bold">return</span>
+        }
+    }
+}
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+    c <span style="color:#555">:=</span> <span style="color:#366">make</span>(<span style="color:#069;font-weight:bold">chan</span> <span style="color:#078;font-weight:bold">int</span>)
+    quit <span style="color:#555">:=</span> <span style="color:#366">make</span>(<span style="color:#069;font-weight:bold">chan</span> <span style="color:#078;font-weight:bold">int</span>)
+    <span style="color:#069;font-weight:bold">go</span> <span style="color:#069;font-weight:bold">func</span>() {
+        <span style="color:#069;font-weight:bold">for</span> i <span style="color:#555">:=</span> <span style="color:#f60">0</span>; i &lt; <span style="color:#f60">10</span>; i<span style="color:#555">++</span> {
+            fmt.<span style="color:#c0f">Println</span>(<span style="color:#555">&lt;-</span>c)
+        }
+        quit <span style="color:#555">&lt;-</span> <span style="color:#f60">0</span>
+    }()
+
+    <span style="color:#c0f">fibonacci3</span>(c, quit)
+}
+
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">package</span> main
+
+<span style="color:#069;font-weight:bold">import</span> <span style="color:#c30">&#34;fmt&#34;</span>
+
+<span style="color:#09f;font-style:italic">// fibonacci 函数会返回一个返回 int 的函数。
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">fibonacci</span>() <span style="color:#069;font-weight:bold">func</span>() <span style="color:#078;font-weight:bold">int</span> {
+    x1, x2 <span style="color:#555">:=</span> <span style="color:#f60">0</span>, <span style="color:#f60">1</span>
+    sum <span style="color:#555">:=</span> <span style="color:#f60">0</span>
+    <span style="color:#069;font-weight:bold">return</span> <span style="color:#069;font-weight:bold">func</span>() <span style="color:#078;font-weight:bold">int</span> {
+        sum = x1 <span style="color:#555">+</span> x2
+        x1 = x2
+        x2 = sum
+        <span style="color:#069;font-weight:bold">return</span> sum
+    }
+}
+
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+    f <span style="color:#555">:=</span> <span style="color:#c0f">fibonacci</span>()
+    <span style="color:#069;font-weight:bold">for</span> i <span style="color:#555">:=</span> <span style="color:#f60">0</span>; i &lt; <span style="color:#f60">10</span>; i<span style="color:#555">++</span> {
+        fmt.<span style="color:#c0f">Print</span>(<span style="color:#c0f">f</span>(),<span style="color:#c30">&#34;, &#34;</span>)
+    }
+    fmt.<span style="color:#c0f">Println</span>(<span style="color:#c30">&#34;...&#34;</span>)
+}
+
+</code></pre></td></tr></table>
+</div>
+</div><!-- raw HTML omitted -->
+<blockquote>
+<p>参考：<br>
+<a href="https://blog.csdn.net/xieyun1977/article/details/73495885">https://blog.csdn.net/xieyun1977/article/details/73495885</a><br>
+<a href="https://studygolang.com/articles/2423">https://studygolang.com/articles/2423</a><br>
+<a href="https://blog.csdn.net/eventer123/article/details/97777695">https://blog.csdn.net/eventer123/article/details/97777695</a><br>
+<a href="https://blog.csdn.net/weixin_33883178/article/details/86246652">https://blog.csdn.net/weixin_33883178/article/details/86246652</a><br>
+<a href="https://www.cnblogs.com/piperck/p/6480198.html">https://www.cnblogs.com/piperck/p/6480198.html</a><br>
+<a href="https://blog.csdn.net/shenshouer/article/details/53401553">https://blog.csdn.net/shenshouer/article/details/53401553</a><br>
+<a href="https://www.cnblogs.com/tobycnblogs/p/9935465.html">https://www.cnblogs.com/tobycnblogs/p/9935465.html</a><br>
+<a href="https://blog.csdn.net/zg_hover/article/details/81453379">https://blog.csdn.net/zg_hover/article/details/81453379</a></p>
+</blockquote>
+
+                
+                
+                <hr> 
+
+<div class="entry-shang text-center">
+    
+    <p> 「真诚赞赏，手留余香」</p>
+    
+    <button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+    <div class="zs-modal-head">
+        <button type="button" class="close">×</button>
+        <span class="author">
+            <a href="http://www.mafool.com">
+                <img src="http://www.mafool.com/img/reward/hollson.png" alt="史布斯" />码夫庄园
+            </a>
+        </span>
+        
+        <p class="tip"><i></i><span>嗯，我的梦想是被读者的稿费包养~</span></p>
+        
+
+    </div>
+    <div class="zs-modal-body">
+        <div class="zs-modal-btns">
+            <button class="btn btn-blink" data-num="2">2元</button>
+            <button class="btn btn-blink" data-num="5">5元</button>
+            <button class="btn btn-blink" data-num="10">10元</button>
+            <button class="btn btn-blink" data-num="50">50元</button>
+            <button class="btn btn-blink" data-num="100">100元</button>
+            <button class="btn btn-blink" data-num="1">任意金额</button>
+        </div>
+        <div class="zs-modal-pay">
+            <button class="btn btn-bred" id="pay-text">2元</button>
+            <p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+            <img src="http://www.mafool.com/img/reward/wechat-2.png" alt="史布斯" id="pay-image" />
+        </div>
+    </div>
+    <div class="zs-modal-footer">
+        <label>
+            <span class="zs-wechat"></span>
+            <input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked">
+            <img src="http://www.mafool.com/img/reward/wechat-btn.png" alt="史布斯" />
+            </span>&nbsp;
+            <span>
+                <input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay">
+                <img src="http://www.mafool.com/img/reward/alipay-btn.png" alt="史布斯" />
+            </span>
+        </label>
+    </div>
+</div>
+
+ 
+
+                <br>
+                <br>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="column is-3">
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">最近发布</h2>
+        
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/0742b474a643d63a774461726a6201203/">Go语言中的原子操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年12月2日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/1600330472/">Go基础笔记 - 2.3 常量</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月10日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/15996311192/">Go - Gin框架快速入门</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月9日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480249/">Gorm快速指南</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480218/">18. Go语言MySQL数据库操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+    </div>
+</div>
+<br>
+        
+
+
+
+
+<div class="card">
+  <div class="card-content">
+    <h2 class="title is-6">相关文章</h2>
+    
+    
+    <h2><a href="http://www.mafool.com/posts/0742b474a643d63a774461726a6d328c/">「转」Go并发之优雅退出</a></h2>
+    <time class="has-text-grey-light is-size-7">10 April 2020</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585752015/">Mysql的乐观锁与悲观锁</a></h2>
+    <time class="has-text-grey-light is-size-7">1 April 2020</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585677184/">Go并发1-并发模型</a></h2>
+    <time class="has-text-grey-light is-size-7">19 December 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585677428/">Go并发2-同步编程</a></h2>
+    <time class="has-text-grey-light is-size-7">19 December 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585856050/">Go并发4-Context</a></h2>
+    <time class="has-text-grey-light is-size-7">7 October 2019</time>
+    
+  </div>
+</div>
+<br>
+
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">标签</h2>
+        <div>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/atomic">atomic</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/blog">blog</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cgo">cgo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cloud">cloud</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/config">config</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/copy">copy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/docker">docker</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/exam">exam</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/gin">gin</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/git">git</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/golang">golang</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/hugo">hugo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/install">install</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/istio">istio</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/jenkins">jenkins</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/kubernetes">kubernetes</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/map">map</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/microservice">microservice</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/mycat">mycat</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/nginx">nginx</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/plan9">plan9</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/posix">posix</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/proxy">proxy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/raft">raft</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ssh">ssh</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/tips">tips</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ymal">ymal</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%B8%BB%E4%BB%8E">主从</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BA%8B%E5%8A%A1">事务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BB%A3%E7%90%86">代理</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BD%9C%E7%94%A8%E5%9F%9F">作用域</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%86%85%E5%AD%98">内存</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%8B%E7%BC%A9">压缩</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%88%9B">原创</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%AD%90">原子</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%91%BD%E4%BB%A4%E8%A1%8C">命令行</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%93%A8%E5%85%B5">哨兵</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%AD%98%E5%82%A8">存储</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B8%B8%E9%87%8F">常量</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B9%B6%E5%8F%91">并发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BC%82%E5%B8%B8">异常</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1">微服务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%88%E6%9D%83%E8%AE%A4%E8%AF%81">授权认证</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%92%E5%BA%8F">排序</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%A5%E5%8F%A3">接口</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%97%A5%E5%BF%97">日志</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%9D%83%E9%99%90">权限</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE1">标签1</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE2">标签2</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%AD%A3%E5%88%99">正则</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%81%E9%87%8F%E5%88%86%E5%8F%91">流量分发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%8B%E8%AF%95">测试</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%BA%90%E7%A0%81">源码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%8A%B6%E6%80%81%E7%A0%81">状态码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%AE%97%E6%B3%95">算法</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%BC%8F">编程模式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%80%81%E5%A6%96%E7%AC%94%E8%AE%B0">老妖笔记</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%BF%87%E6%BB%A4%E5%99%A8">过滤器</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%80%83%E9%80%B8">逃逸</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%85%8D%E7%BD%AE">配置</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%86%99">重写</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%AE%9A%E5%90%91">重定向</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9B%86%E7%BE%A4">集群</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9D%A2%E8%AF%95">面试</a>
+            </span>
+            
+        </div>
+    </div>
+</div>
+<br>
+    </div>
+</div>
+
+        </div>
+    </div>
+
+    
+    <footer class="footer has-background-grey-darker has-text-white">
+    <div class="content has-text-centered">
+        <p>
+            <span class="icon is-large">
+                <a href="https://twitter.com/" class="mysocial" rel="me">
+                    <i class="fab fa-twitter fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://www.youtube.com/" class="mysocial" rel="me">
+                    <i class="fab fa-youtube fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://github.com/" class="mysocial" rel="me">
+                    <i class="fab fa-github fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <br><br>
+            友情链接：
+            
+            <a class="mysocial" href="http://www.mafool.com" target="_blank">Mafool</a>
+            
+            <a class="mysocial" href="https://gohugo.io/documentation/" target="_blank">Hugo</a>
+            
+            <a class="mysocial" href="https://bulma.io/" target="_blank">Bulma</a>
+            
+            <a class="mysocial" href="https://bootstrapious.com/" target="_blank">Bootstrapious</a>
+            
+            <a class="mysocial" href="https://youzhixueyuan.com/" target="_blank">Youzhixueyuan</a>
+            
+            <br><br />
+            版权所有 &copy; 码夫庄园 2021
+            - <a class="mysocial" href="https://github.com/hollson/hugo-theme-dooz">Hugo Theme</a>
+        </p>
+    </div>
+</footer>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='http://www.mafool.com/js/dooz.totop.js?v=0.0.0' async=""></script>
+
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = 'https://hm.baidu.com/hm.js?f185359ec6b829a6a93e1e1f2597f6d9';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DK042XSJ2J"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-DK042XSJ2J');
+</script>
+
+    
+    
+<script type="text/javascript" src="http://www.mafool.com/js/reward.js"></script>
+
+    
+    <script defer src="https://cdn.staticfile.org/font-awesome/5.13.0/js/all.min.js"></script>
+</body>
+
+</html>

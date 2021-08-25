@@ -1,0 +1,70 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Docker on 码夫庄园</title>
+    <link>http://www.mafool.com/categories/docker/</link>
+    <description>Recent content in Docker on 码夫庄园</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <copyright>版权所有</copyright>
+    <lastBuildDate>Thu, 09 Apr 2020 00:26:35 +0800</lastBuildDate>
+    
+        <atom:link href="http://www.mafool.com/categories/docker/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Docker之Dockerfile详解</title>
+      <link>http://www.mafool.com/posts/97029d3d3c08b182359e59ed692f17a4/</link>
+      <pubDate>Thu, 09 Apr 2020 00:26:35 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/posts/97029d3d3c08b182359e59ed692f17a4/</guid>
+      <description>一. 基础命令： 1. FROM：基础镜像 1 2 3 4 5 6 # 注释部分 FROM ubuntu:14.04 MAINTAINER Hollson &amp;#34;hollson@qq.com&amp;#34; RUN apt-get update RUN apt-get install -y nginx EXPOSE 80 2. MAINTAINER：作者信息 1 MAINTAINER Hollson &amp;#34;hollson@qq.com&amp;#34; 3. RUN：指定</description>
+    </item>
+    
+    <item>
+      <title>Docker搭建Harbor私有仓库</title>
+      <link>http://www.mafool.com/post/1585679557/</link>
+      <pubDate>Sun, 08 Sep 2019 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585679557/</guid>
+      <description>前言 Harbor是由VMware公司开源的企业级的Docker Registry管理项目，它包括权限管理(RBAC)、LDAP、日志审核、管理</description>
+    </item>
+    
+    <item>
+      <title>如何配置docker使用HTTP代理</title>
+      <link>http://www.mafool.com/post/KDCHSKIWJKJNVBOE/</link>
+      <pubDate>Tue, 13 Mar 2018 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.mafool.com/post/KDCHSKIWJKJNVBOE/</guid>
+      <description>&lt;h3 id=&#34;设置docker使用http-proxy&#34;&gt;设置docker使用http proxy&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div style=&#34;background-color:#f0f3f3&#34;&gt;
+&lt;table style=&#34;border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;&#34;&gt;&lt;tr&gt;&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;&#34;&gt;
+&lt;pre style=&#34;background-color:#f0f3f3&#34;&gt;&lt;code&gt;&lt;span style=&#34;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;1
+&lt;/span&gt;&lt;span style=&#34;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;2
+&lt;/span&gt;&lt;span style=&#34;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;3
+&lt;/span&gt;&lt;span style=&#34;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;4
+&lt;/span&gt;&lt;span style=&#34;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;5
+&lt;/span&gt;&lt;span style=&#34;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f&#34;&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style=&#34;vertical-align:top;padding:0;margin:0;border:0;;width:100%&#34;&gt;
+&lt;pre style=&#34;background-color:#f0f3f3&#34;&gt;&lt;code class=&#34;language-py&#34; data-lang=&#34;py&#34;&gt;sudo &lt;span style=&#34;color:#555&#34;&gt;/&lt;/span&gt;etc&lt;span style=&#34;color:#555&#34;&gt;/&lt;/span&gt;default&lt;span style=&#34;color:#555&#34;&gt;/&lt;/span&gt;docker
+
+export http_proxy&lt;span style=&#34;color:#555&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#c30&#34;&gt;&amp;#34;http://127.0.0.1:3128/&amp;#34;&lt;/span&gt;
+export https_proxy&lt;span style=&#34;color:#555&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#c30&#34;&gt;&amp;#34;http://127.0.0.1:3128/&amp;#34;&lt;/span&gt;
+export HTTP_PROXY&lt;span style=&#34;color:#555&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#c30&#34;&gt;&amp;#34;http://127.0.0.1:3128/&amp;#34;&lt;/span&gt;
+export HTTPS_PROXY&lt;span style=&#34;color:#555&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#c30&#34;&gt;&amp;#34;http://127.0.0.1:3128/&amp;#34;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;</description>
+    </item>
+    
+    <item>
+      <title>如何使用非root用户执行docker命令</title>
+      <link>http://www.mafool.com/2018/02/09/docker-without-sudo/</link>
+      <pubDate>Fri, 09 Feb 2018 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.mafool.com/2018/02/09/docker-without-sudo/</guid>
+      <description>Add the docker group if it doesn&amp;rsquo;t already exist: sudo groupadd docker Add the connected user &amp;ldquo;$USER&amp;rdquo; to the docker group. Change the user name to match your preferred user if you do not want to use your current user: sudo gpasswd -a $USER docker Either do a newgrp docker or log out/in to activate the changes to groups.</description>
+    </item>
+    
+  </channel>
+</rss>

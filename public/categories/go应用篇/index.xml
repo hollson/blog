@@ -1,0 +1,87 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Go应用篇 on 码夫庄园</title>
+    <link>http://www.mafool.com/categories/go%E5%BA%94%E7%94%A8%E7%AF%87/</link>
+    <description>Recent content in Go应用篇 on 码夫庄园</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <copyright>版权所有</copyright>
+    <lastBuildDate>Wed, 09 Sep 2020 00:00:00 +0000</lastBuildDate>
+    
+        <atom:link href="http://www.mafool.com/categories/go%E5%BA%94%E7%94%A8%E7%AF%87/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Go - Gin框架快速入门</title>
+      <link>http://www.mafool.com/posts/15996311192/</link>
+      <pubDate>Wed, 09 Sep 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.mafool.com/posts/15996311192/</guid>
+      <description>[TOC] 一. 路由 单路由 分组路由 自定义路由 二. 请求 Query参数 Body参数 Method 方法 安全性 说明 GET 安全、幂等 用于获取资源 HEAD 安全、幂等 只返回头部信息 POST 非安</description>
+    </item>
+    
+    <item>
+      <title>Go - 实现布隆过滤器</title>
+      <link>http://www.mafool.com/posts/6f1ada1f5080f30710343b9d9c36592f/</link>
+      <pubDate>Mon, 13 Apr 2020 00:49:27 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/posts/6f1ada1f5080f30710343b9d9c36592f/</guid>
+      <description>1. 概念 布隆过滤器（Bloom Filter） 是由 Howard Bloom在1970年提出的二进制向量数据结构，它具有很好的空间和时间效率，被用来检测一个元</description>
+    </item>
+    
+    <item>
+      <title>Go中的正则表达式</title>
+      <link>http://www.mafool.com/post/1585727755/</link>
+      <pubDate>Wed, 01 Apr 2020 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585727755/</guid>
+      <description>一. 正则规范 Go正则表达式语法与Perl、Python等语言一样，都采用了RE2语法规范。RE2的目标是能够处理来自不受信任用户的正则表达式</description>
+    </item>
+    
+    <item>
+      <title>Go之Logrus日志框架</title>
+      <link>http://www.mafool.com/2020/03/go%E4%B9%8Blogrus%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6/</link>
+      <pubDate>Thu, 19 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.mafool.com/2020/03/go%E4%B9%8Blogrus%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6/</guid>
+      <description>logrus介绍 golang标准库的日志框架非常简单，仅仅提供了print，panic和fatal三个函数。对于更精细的日志级别、日志文件分</description>
+    </item>
+    
+    <item>
+      <title>JWT实现认证授权</title>
+      <link>http://www.mafool.com/post/1585829952/</link>
+      <pubDate>Thu, 02 Jan 2020 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585829952/</guid>
+      <description>一. JWT是什么 JSON Web Token（JWT）是目前最流行的跨域身份验证解决方案。简单说，OAuth 就是一种授权机制, 数据的所有者告诉系统，同意授</description>
+    </item>
+    
+    <item>
+      <title>Go Mod依赖管理</title>
+      <link>http://www.mafool.com/post/1585676161/</link>
+      <pubDate>Wed, 14 Aug 2019 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585676161/</guid>
+      <description>一. 发展历史 GOPATH时代：所有代码都放到GOPATH下，对于没有任何外部依赖管理（淘汰） Vendor时代：vendor目录下的包会被优先</description>
+    </item>
+    
+    <item>
+      <title>Gomock单元测试</title>
+      <link>http://www.mafool.com/posts/2f086c092ed75ec827a508d5daea97cd/</link>
+      <pubDate>Sat, 13 Apr 2019 00:31:46 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/posts/2f086c092ed75ec827a508d5daea97cd/</guid>
+      <description>使用 Gomock 进行单元测试 在实际项目中，需要进行单元测试的时候。却往往发现有一大堆依赖项。这时候就是 Gomock 大显身手的时候了 Gomock 是 Go 语言的一个 mock 框架，官方的</description>
+    </item>
+    
+    <item>
+      <title>TOML配置文件管理</title>
+      <link>http://www.mafool.com/posts/d8411bdf00046a3195c31dd15e76a472/</link>
+      <pubDate>Fri, 15 Feb 2019 01:07:06 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/posts/d8411bdf00046a3195c31dd15e76a472/</guid>
+      <description>配置工具的选择 一个项目通常是有很多配置的，比如PHP的php.ini文件、Nginx的server.conf文件，那么Golang的项目又适</description>
+    </item>
+    
+  </channel>
+</rss>

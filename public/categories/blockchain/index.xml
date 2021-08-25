@@ -1,0 +1,24 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>BlockChain on 码夫庄园</title>
+    <link>http://www.mafool.com/categories/blockchain/</link>
+    <description>Recent content in BlockChain on 码夫庄园</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <copyright>版权所有</copyright>
+    <lastBuildDate>Tue, 26 Mar 2019 00:00:00 +0800</lastBuildDate>
+    
+        <atom:link href="http://www.mafool.com/categories/blockchain/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>区块链分布式存储：生态大数据的存储新模式</title>
+      <link>http://www.mafool.com/post/1585834756/</link>
+      <pubDate>Tue, 26 Mar 2019 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585834756/</guid>
+      <description>前言 区块链，当之无愧的2019最靓的词，在科技领域闪闪发亮，在实体行业星光熠熠。 2019年的1024讲话，让区块链这个词焕然一新，以前它总是</description>
+    </item>
+    
+  </channel>
+</rss>

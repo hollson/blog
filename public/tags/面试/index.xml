@@ -1,0 +1,51 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>面试 on 码夫庄园</title>
+    <link>http://www.mafool.com/tags/%E9%9D%A2%E8%AF%95/</link>
+    <description>Recent content in 面试 on 码夫庄园</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <copyright>版权所有</copyright>
+    <lastBuildDate>Tue, 31 Mar 2020 00:00:00 +0800</lastBuildDate>
+    
+        <atom:link href="http://www.mafool.com/tags/%E9%9D%A2%E8%AF%95/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Go语言之细节决定成败</title>
+      <link>http://www.mafool.com/post/1585588756/</link>
+      <pubDate>Tue, 31 Mar 2020 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585588756/</guid>
+      <description>[TOC] 1.变量 全局变量不能使用类型推导 2.常量 常量属于硬编码(即当作指令数据)，所以不能取地址 1 2 3 4 const a = 100 func main() { fmt.Println(&amp;amp;a,a) } 1 2 3 4 5 6 7 8 9 10 11 const</description>
+    </item>
+    
+    <item>
+      <title>Redis面试汇总</title>
+      <link>http://www.mafool.com/post/1585724939/</link>
+      <pubDate>Wed, 08 May 2019 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585724939/</guid>
+      <description>1、什么是Redis？ Redis本质上是一个Key-Value类型的内存数据库。很像memcached，整个数据库统统加载在内存当中进行操作</description>
+    </item>
+    
+    <item>
+      <title>Mysql面试题收录</title>
+      <link>http://www.mafool.com/post/1585726446/</link>
+      <pubDate>Tue, 09 Apr 2019 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585726446/</guid>
+      <description>事务四大特性 原子性(Atomicity) ：一个事务中的所有操作，要么全部完成，要么全部不完成。事务在执行过程中发生错误，会被回滚（Rollb</description>
+    </item>
+    
+    <item>
+      <title>Go经典编程练习题</title>
+      <link>http://www.mafool.com/post/1585633378/</link>
+      <pubDate>Sun, 18 Feb 2018 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585633378/</guid>
+      <description>1.排列组合 题目：有1、2、3、4个数字，能组成多少个互不相同且无重复数字的三位数？都是多少？ 分析：三层嵌套循环，时间复杂度为O(n^3) 1</description>
+    </item>
+    
+  </channel>
+</rss>

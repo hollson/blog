@@ -1,0 +1,1841 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>码夫庄园-Go中的正则表达式</title>
+    <meta name="keywords"
+        content='正则,表达式'>
+    <meta name="description" content="Go正则表达式语法与Perl、Python等语言一样，都采用了RE2语法规范。RE2的目标是能够处理来自不受信任用户的正则表达式，而不存在风险。它的特点是匹配时间与输入字符串的长度呈线性关系。考虑到生产方面，解析器、编译器和执行引擎通过在可配置的预算内工作来限制内存使用量（耗尽时会优雅地失败），并且通过避免递归来避免堆栈溢出 。实现Perl，PCRE等引擎提供的所有功能不是Golang的目标，它在某些方面也进行了一些取舍，如Go正则不支持反向引用和环顾断言。" />
+
+    
+    <meta name="baidu-site-verification" content="v9szEmQLra" />
+    <meta name="360-site-verification" content="d8e961f98fb655e4b8cf9439cfd9ac7f" />
+    <meta name="sogou_site_verification" content="40NC9EdZDC" />
+    <meta name="shenma-site-verification" content="3200e3042e92157713a3b0aceeecb20a_1586020187" />
+    <meta name="google-site-verification" content="r8987bkunZHJeKut3ocu5NIJ5QEu53NA6Q_r7RrZ46c" />
+    <meta name="msvalidate.01" content="893A2865ABC54AC2782D118536831056" />
+
+    
+    <link rel="shortcut icon" href="http://www.mafool.com/img/res/favicon.ico">
+    
+
+    
+
+    <link crossorigin="anonymous" integrity="sha384-5kGFOAqgEKnuF6c2jk2JANKHZgYVt38Wn2dVJENtq1EBCP54/1uzXU5mpxqL8WjN"
+        href="https://lib.baomitu.com/bulma/0.8.0/css/bulma.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="http://www.mafool.com/css/dooz.blog.css" />
+    <script crossorigin="anonymous" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh"
+        src="https://lib.baomitu.com/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/jquery.share.min.js"></script>
+    
+
+    
+
+    
+    
+<link rel="stylesheet" href="http://www.mafool.com/css/reward.css">
+
+
+    <link href="http://www.mafool.com/css/fonts.googleapi.css" rel="stylesheet">
+    <script src=http://www.mafool.com/js/dooz.blog.js></script>
+
+    
+    <script>
+        $(document).ready(function () {
+            $('.content a[href^="http"]').each(function () {
+                $(this).attr('target', '_blank');
+            });
+        });
+
+        $(document).on('click', '.modal-wechat', function () {
+            $(".modal").addClass("is-active");
+        });
+
+        $(document).on('click', '.modal-background', function () {
+            $(".modal").removeClass("is-active");
+        });
+    </script>
+</head>
+
+<body>
+    
+    
+<section class="hero is-info is-medium"
+    style="background-image: url('/img/res/coder.jpg');">
+    <div class="hero-head">
+        <nav class="navbar is-transparent container has-text-white">
+    <div class="navbar-brand">
+        <div class="navbar-item">
+            <a class="title is-5 is-white" href="http://www.mafool.com/">码夫庄园</a>
+        </div>
+
+        
+        <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <div id="navbarExampleTransparentExample" class="navbar-menu has-text-dark">
+        
+
+        <div class="navbar-end">
+            <a class="navbar-item" href='http://www.mafool.com/'>首页</a>
+            <a class="navbar-item" href='http://www.mafool.com/archives'>归档 </a>
+            <a class="navbar-item" href='http://www.mafool.com/about'>关于</a>
+            <span class="navbar-item">
+                <a class="button is-primary is-inverted" href="https://github.com/hollson/hugo-theme-dooz">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>主题</span>
+                </a>
+            </span>
+        </div>
+    </div>
+</nav>
+    </div>
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <div class='container has-text-left column is-7'>
+                
+                <span>
+                    <a class="bar_tag" href="http://www.mafool.com/tags/%E6%AD%A3%E5%88%99" title="正则">正则</a>
+                </span>
+                
+                <h1 class="title is-size-2" style="margin-bottom:0.2rem;">
+                    
+                    Go中的正则表达式
+                    
+                </h1>
+                
+                <span class="title is-size-6" style="font-style: italic;"> </span><br>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    
+    <div class="container">
+        <div class="section">
+            
+<div class="columns">
+    <div class="column is-9">
+        <div class="tile is-child box">
+            <div class="content">
+                
+                <nav class="level">
+                    
+                    <div class="level-left">
+                        <div class="level-item">
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2020年4月1日,
+    星期三 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 10分钟阅读
+</p>
+                        </div>
+                    </div>
+
+                    
+                    
+                    <div class="share-component level-right" data-disabled="google,diandian,tencent,qzone"
+                        data-description="Share.js - 一键分享到微博，QQ空间，腾讯微博，人人，豆瓣"
+                        data-mobile-sites="weibo,qq,qzone,tencent">
+                    </div>
+                    
+                </nav>
+                <hr>
+                
+                <header>
+                    <h2>目录</h2>
+                </header>
+                <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一-正则规范">一. 正则规范</a></li>
+    <li><a href="#二-正则基础">二. 正则基础</a>
+      <ul>
+        <li><a href="#1-语法规则">1. 语法规则</a></li>
+        <li><a href="#2-参考标识">2. 参考标识</a></li>
+      </ul>
+    </li>
+    <li><a href="#三-源码解析">三. 源码解析</a></li>
+    <li><a href="#四-示例代码">四. 示例代码</a>
+      <ul>
+        <li><a href="#查找方式">查找方式</a></li>
+        <li><a href="#正则规则">正则规则</a></li>
+      </ul>
+    </li>
+    <li><a href="#参考链接">参考链接</a></li>
+  </ul>
+</nav>
+                
+                <hr>
+                <h2 id="一-正则规范">一. 正则规范</h2>
+<p><a href="http://docscn.studygolang.com/pkg/regexp/"><strong>Go正则表达式</strong></a>语法与Perl、Python等语言一样，都采用了<a href="https://github.com/google/re2/wiki/Syntax">RE2语法规范</a>。RE2的目标是能够处理来自不受信任用户的正则表达式，而不存在风险。它的特点是<code>匹配时间与输入字符串的长度呈线性关系</code>。考虑到生产方面，<strong>解析器、编译器和执行引擎通过在可配置的预算内工作来限制内存使用量（耗尽时会优雅地失败），并且通过避免递归来避免堆栈溢出</strong> 。<br>
+实现Perl，PCRE等引擎提供的所有功能不是Golang的目标，它在某些方面也进行了一些取舍，如Go正则<code>不支持反向引用和环顾断言</code>。</p>
+<!-- raw HTML omitted -->
+<h2 id="二-正则基础">二. 正则基础</h2>
+<p>这里是对RE2语法对简单归纳，具体可参考：<a href="https://github.com/google/re2/wiki/Syntax">维基百科:RE2语法</a></p>
+<h3 id="1-语法规则">1. 语法规则</h3>
+<p><strong>字符：</strong> 包括<code>点</code>、<code>枚举</code>、<code>ASCII</code>、<code>Perl</code>类和<code>Unicode</code>类</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">.                <span style="color:#09f;font-style:italic"># 任意字符</span>
+
+<span style="color:#555">[</span>字符类<span style="color:#555">]</span>          <span style="color:#09f;font-style:italic"># 匹配给定的任一字符，如：^[a-z]+$</span>
+<span style="color:#555">[</span>^字符类<span style="color:#555">]</span>         <span style="color:#09f;font-style:italic"># 匹配给定的非任一字符</span>
+
+<span style="color:#555">[</span>:ASCII类名:<span style="color:#555">]</span>    <span style="color:#09f;font-style:italic"># 类型如：ascii、alpha、digit，upper、word等</span>
+<span style="color:#555">[</span>:^ASCII类名:<span style="color:#555">]</span>   <span style="color:#09f;font-style:italic"># 取反</span>
+
+<span style="color:#c30;font-weight:bold">\小</span>写Perl类名      <span style="color:#09f;font-style:italic">#\d、\s、\w</span>
+<span style="color:#c30;font-weight:bold">\大</span>写Perl类名      <span style="color:#09f;font-style:italic">#\D、\S、\W </span>
+
+<span style="color:#c30;font-weight:bold">\p</span>Unicode标识    <span style="color:#09f;font-style:italic"># 匹配Unicode字符</span>
+<span style="color:#c30;font-weight:bold">\P</span>Unicode标识  
+
+<span style="color:#c30;font-weight:bold">\p</span><span style="color:#555">{</span>Unicode标识<span style="color:#555">}</span>   <span style="color:#09f;font-style:italic"># 匹配Unicode字符(特指)</span>
+<span style="color:#c30;font-weight:bold">\P</span><span style="color:#555">{</span>Unicode标识<span style="color:#555">}</span> 
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>数量：</strong><code>?</code>、 <code>+</code>、 <code>*</code>、 <code>{m}</code>、 <code>{m,n}</code>、 <code>exp?</code>(非贪)</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">x*          <span style="color:#09f;font-style:italic"># 匹配零个或多个 x，优先匹配更多(贪婪)</span>
+x+          <span style="color:#09f;font-style:italic"># 匹配一个或多个 x，优先匹配更多(贪婪)</span>
+x?          <span style="color:#09f;font-style:italic"># 匹配零个或一个 x，优先匹配一个(贪婪)</span>
+x<span style="color:#555">{</span>n,m<span style="color:#555">}</span>      <span style="color:#09f;font-style:italic"># 匹配 n 到 m 个 x，优先匹配更多(贪婪)</span>
+x<span style="color:#555">{</span>n,<span style="color:#555">}</span>       <span style="color:#09f;font-style:italic"># 匹配 n 个或多个 x，优先匹配更多(贪婪)</span>
+x<span style="color:#555">{</span>n<span style="color:#555">}</span>        <span style="color:#09f;font-style:italic"># 只匹配 n 个 x</span>
+
+x*?         <span style="color:#09f;font-style:italic"># 匹配零个或多个 x，优先匹配更少(非贪婪)</span>
+x+?         <span style="color:#09f;font-style:italic"># 匹配一个或多个 x，优先匹配更少(非贪婪)</span>
+x??         <span style="color:#09f;font-style:italic"># 匹配零个或一个 x，优先匹配零个(非贪婪)</span>
+x<span style="color:#555">{</span>n,m<span style="color:#555">}</span>?     <span style="color:#09f;font-style:italic"># 匹配 n 到 m 个 x，优先匹配更少(非贪婪)</span>
+x<span style="color:#555">{</span>n,<span style="color:#555">}</span>?      <span style="color:#09f;font-style:italic"># 匹配 n 个或多个 x，优先匹配更少(非贪婪)</span>
+x<span style="color:#555">{</span>n<span style="color:#555">}</span>?       <span style="color:#09f;font-style:italic"># 只匹配 n 个 x</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>边界：</strong> <code>^</code>、<code>$</code>、<code>\A</code>、<code>\Z</code>、<code>\B</code>、<code>\b</code></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">^        <span style="color:#09f;font-style:italic"># 如果标记 m=true 则匹配行首，否则匹配整个文本的开头（m 默认为 false）</span>
+$        <span style="color:#09f;font-style:italic"># 如果标记 m=true 则匹配行尾，否则匹配整个文本的结尾（m 默认为 false）</span>
+<span style="color:#c30;font-weight:bold">\A</span>       <span style="color:#09f;font-style:italic"># 匹配整个文本的开头，忽略 m 标记</span>
+<span style="color:#c30;font-weight:bold">\b</span>       <span style="color:#09f;font-style:italic"># 匹配单词边界</span>
+<span style="color:#c30;font-weight:bold">\B</span>       <span style="color:#09f;font-style:italic"># 匹配非单词边界</span>
+<span style="color:#c30;font-weight:bold">\z</span>       <span style="color:#09f;font-style:italic"># 匹配整个文本的结尾，忽略 m 标记</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>分组：</strong> <code>|</code>、<code>()</code></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell"><span style="color:#555">(</span>子表达式<span style="color:#555">)</span>           <span style="color:#09f;font-style:italic"># 被捕获的组，该组被编号 (子匹配)</span>
+<span style="color:#555">(</span>?P&lt;命名&gt;子表达式<span style="color:#555">)</span>    <span style="color:#09f;font-style:italic"># 被捕获的组，该组被编号且被命名 (子匹配)</span>
+<span style="color:#555">(</span>?:子表达式<span style="color:#555">)</span>         <span style="color:#09f;font-style:italic"># 非捕获的组 (子匹配)</span>
+<span style="color:#555">(</span>?标记<span style="color:#555">)</span>             <span style="color:#09f;font-style:italic"># 在组内设置标记，非捕获，标记影响当前组后的正则表达式</span>
+<span style="color:#555">(</span>?标记:子表达式<span style="color:#555">)</span>      <span style="color:#09f;font-style:italic"># 在组内设置标记，非捕获，标记影响当前组内的子表达式</span>
+
+<span style="color:#09f;font-style:italic">## 标记的语法是：</span>
+xyz  <span style="color:#09f;font-style:italic">#(设置 xyz 标记)</span>
+-xyz <span style="color:#09f;font-style:italic">#(清除 xyz 标记)</span>
+xy-z <span style="color:#09f;font-style:italic">#(设置 xy 标记, 清除 z 标记)</span>
+
+<span style="color:#09f;font-style:italic">## 可以设置的标记有：</span>
+i       <span style="color:#09f;font-style:italic"># 不区分大小写 (默认为 false)</span>
+m       <span style="color:#09f;font-style:italic"># 多行模式：让 ^ 和 $ 匹配整个文本的开头和结尾，而非行首和行尾(默认为 false)</span>
+s       <span style="color:#09f;font-style:italic"># 让 . 匹配 \n (默认为 false)</span>
+U       <span style="color:#09f;font-style:italic"># 非贪婪模式：交换 x* 和 x*? 等的含义 (默认为 false)</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="2-参考标识">2. 参考标识</h3>
+<p><strong>转义</strong></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell"><span style="color:#c30;font-weight:bold">\a</span>            <span style="color:#09f;font-style:italic"># 匹配响铃符    （相当于 \x07）</span>
+              <span style="color:#09f;font-style:italic"># 注意：正则表达式中不能使用 \b 匹配退格符，因为 \b 被用来匹配单词边界，</span>
+              <span style="color:#09f;font-style:italic"># 可以使用 \x08 表示退格符。</span>
+<span style="color:#c30;font-weight:bold">\f</span>            <span style="color:#09f;font-style:italic"># 匹配换页符    （相当于 \x0C）</span>
+<span style="color:#c30;font-weight:bold">\t</span>            <span style="color:#09f;font-style:italic"># 匹配横向制表符（相当于 \x09）</span>
+<span style="color:#c30;font-weight:bold">\n</span>            <span style="color:#09f;font-style:italic"># 匹配换行符    （相当于 \x0A）</span>
+<span style="color:#c30;font-weight:bold">\r</span>            <span style="color:#09f;font-style:italic"># 匹配回车符    （相当于 \x0D）</span>
+<span style="color:#c30;font-weight:bold">\v</span>            <span style="color:#09f;font-style:italic"># 匹配纵向制表符（相当于 \x0B）</span>
+<span style="color:#c30;font-weight:bold">\1</span><span style="color:#f60">23</span>          <span style="color:#09f;font-style:italic"># 匹配 8  进制编码所代表的字符（必须是 3 位数字）</span>
+<span style="color:#c30;font-weight:bold">\x</span>7F          <span style="color:#09f;font-style:italic"># 匹配 16 进制编码所代表的字符（必须是 3 位数字）</span>
+<span style="color:#c30;font-weight:bold">\x</span><span style="color:#555">{</span>10FFFF<span style="color:#555">}</span>    <span style="color:#09f;font-style:italic"># 匹配 16 进制编码所代表的字符（最大值 10FFFF  ）</span>
+<span style="color:#c30;font-weight:bold">\Q</span>...<span style="color:#c30;font-weight:bold">\E</span>       <span style="color:#09f;font-style:italic"># 匹配 \Q 和 \E 之间的文本，忽略文本中的正则语法</span>
+<span style="color:#c30;font-weight:bold">\\</span>            <span style="color:#09f;font-style:italic"># 匹配字符 \</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>Perl标识符</strong></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell"><span style="color:#c30;font-weight:bold">\d</span>       <span style="color:#09f;font-style:italic"># 数字 (相当于 [0-9])</span>
+<span style="color:#c30;font-weight:bold">\D</span>       <span style="color:#09f;font-style:italic"># 非数字 (相当于 [^0-9])</span>
+<span style="color:#c30;font-weight:bold">\s</span>       <span style="color:#09f;font-style:italic"># 空白 (相当于 [\t\n\f\r ])</span>
+<span style="color:#c30;font-weight:bold">\S</span>       <span style="color:#09f;font-style:italic"># 非空白 (相当于[^\t\n\f\r ])</span>
+<span style="color:#c30;font-weight:bold">\w</span>       <span style="color:#09f;font-style:italic"># 单词字符 (相当于 [0-9A-Za-z_])</span>
+<span style="color:#c30;font-weight:bold">\W</span>       <span style="color:#09f;font-style:italic"># 非单词字符 (相当于 [^0-9A-Za-z_])</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>ASCII标识名</strong></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell"><span style="color:#555">[</span>:alnum:<span style="color:#555">]</span>      <span style="color:#09f;font-style:italic"># 字母数字 (相当于 [0-9A-Za-z])</span>
+<span style="color:#555">[</span>:alpha:<span style="color:#555">]</span>      <span style="color:#09f;font-style:italic"># 字母 (相当于 [A-Za-z])</span>
+<span style="color:#555">[</span>:ascii:<span style="color:#555">]</span>      <span style="color:#09f;font-style:italic"># ASCII 字符集 (相当于 [\x00-\x7F])</span>
+<span style="color:#555">[</span>:blank:<span style="color:#555">]</span>      <span style="color:#09f;font-style:italic"># 空白占位符 (相当于 [\t ])</span>
+<span style="color:#555">[</span>:cntrl:<span style="color:#555">]</span>      <span style="color:#09f;font-style:italic"># 控制字符 (相当于 [\x00-\x1F\x7F])</span>
+<span style="color:#555">[</span>:digit:<span style="color:#555">]</span>      <span style="color:#09f;font-style:italic"># 数字 (相当于 [0-9])</span>
+<span style="color:#555">[</span>:graph:<span style="color:#555">]</span>      <span style="color:#09f;font-style:italic"># 图形字符 (相当于 [!-~])</span>
+<span style="color:#555">[</span>:lower:<span style="color:#555">]</span>      <span style="color:#09f;font-style:italic"># 小写字母 (相当于 [a-z])</span>
+<span style="color:#555">[</span>:print:<span style="color:#555">]</span>      <span style="color:#09f;font-style:italic"># 可打印字符 (相当于 [ -~] 相当于 [ [:graph:]])</span>
+<span style="color:#555">[</span>:punct:<span style="color:#555">]</span>      <span style="color:#09f;font-style:italic"># 标点符号 (相当于 [!-/:-@[-反引号{-~])</span>
+<span style="color:#555">[</span>:space:<span style="color:#555">]</span>      <span style="color:#09f;font-style:italic"># 空白字符(相当于 [\t\n\v\f\r ])</span>
+<span style="color:#555">[</span>:upper:<span style="color:#555">]</span>      <span style="color:#09f;font-style:italic"># 大写字母(相当于 [A-Z])</span>
+<span style="color:#555">[</span>:word:<span style="color:#555">]</span>       <span style="color:#09f;font-style:italic"># 单词字符(相当于 [0-9A-Za-z_])</span>
+<span style="color:#555">[</span>:xdigit:<span style="color:#555">]</span>     <span style="color:#09f;font-style:italic"># 16进制字符集(相当于 [0-9A-Fa-f])</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>Unicode标识名</strong></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">C            <span style="color:#09f;font-style:italic"># -其他-          (other)</span>
+Cc           <span style="color:#09f;font-style:italic"># 控制字符        (control)</span>
+Cf           <span style="color:#09f;font-style:italic"># 格式            (format)</span>
+Co           <span style="color:#09f;font-style:italic"># 私人使用区      (private use)</span>
+Cs           <span style="color:#09f;font-style:italic"># 代理区          (surrogate)</span>
+L            <span style="color:#09f;font-style:italic"># -字母-          (letter)</span>
+Ll           <span style="color:#09f;font-style:italic"># 小写字母        (lowercase letter)</span>
+Lm           <span style="color:#09f;font-style:italic"># 修饰字母        (modifier letter)</span>
+Lo           <span style="color:#09f;font-style:italic"># 其它字母        (other letter)</span>
+Lt           <span style="color:#09f;font-style:italic"># 首字母大写字母  (titlecase letter)</span>
+Lu           <span style="color:#09f;font-style:italic"># 大写字母        (uppercase letter)</span>
+M            <span style="color:#09f;font-style:italic"># -标记-          (mark)</span>
+Mc           <span style="color:#09f;font-style:italic"># 间距标记        (spacing mark)</span>
+Me           <span style="color:#09f;font-style:italic"># 关闭标记        (enclosing mark)</span>
+Mn           <span style="color:#09f;font-style:italic"># 非间距标记      (non-spacing mark)</span>
+N            <span style="color:#09f;font-style:italic"># -数字-          (number)</span>
+Nd           <span style="color:#09f;font-style:italic"># 十進制数字      (decimal number)</span>
+Nl           <span style="color:#09f;font-style:italic"># 字母数字        (letter number)</span>
+No           <span style="color:#09f;font-style:italic"># 其它数字        (other number)</span>
+P            <span style="color:#09f;font-style:italic"># -标点-          (punctuation)</span>
+Pc           <span style="color:#09f;font-style:italic"># 连接符标点      (connector punctuation)</span>
+Pd           <span style="color:#09f;font-style:italic"># 破折号标点符号  (dash punctuation)</span>
+Pe           <span style="color:#09f;font-style:italic"># 关闭的标点符号  (close punctuation)</span>
+Pf           <span style="color:#09f;font-style:italic"># 最后的标点符号  (final punctuation)</span>
+Pi           <span style="color:#09f;font-style:italic"># 最初的标点符号  (initial punctuation)</span>
+Po           <span style="color:#09f;font-style:italic"># 其他标点符号    (other punctuation)</span>
+Ps           <span style="color:#09f;font-style:italic"># 开放的标点符号  (open punctuation)</span>
+S            <span style="color:#09f;font-style:italic"># -符号-          (symbol)</span>
+Sc           <span style="color:#09f;font-style:italic"># 货币符号        (currency symbol)</span>
+Sk           <span style="color:#09f;font-style:italic"># 修饰符号        (modifier symbol)</span>
+Sm           <span style="color:#09f;font-style:italic"># 数学符号        (math symbol)</span>
+So           <span style="color:#09f;font-style:italic"># 其他符号        (other symbol)</span>
+Z            <span style="color:#09f;font-style:italic"># -分隔符-        (separator)</span>
+Zl           <span style="color:#09f;font-style:italic"># 行分隔符        (line separator)</span>
+Zp           <span style="color:#09f;font-style:italic"># 段落分隔符      (paragraph separator)</span>
+Zs           <span style="color:#09f;font-style:italic"># 空白分隔符      (space separator)</span>
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">Arabic       <span style="color:#09f;font-style:italic"># 阿拉伯文</span>
+Bopomofo     <span style="color:#09f;font-style:italic"># 汉语拼音字母</span>
+Greek        <span style="color:#09f;font-style:italic"># 希腊</span>
+Georgian     <span style="color:#09f;font-style:italic"># 格鲁吉亚文</span>
+Han          <span style="color:#09f;font-style:italic"># 汉文</span>
+Hangul       <span style="color:#09f;font-style:italic"># 韩文</span>
+Hiragana     <span style="color:#09f;font-style:italic"># 平假名（日语）</span>
+Katakana     <span style="color:#09f;font-style:italic"># 片假名（日语）</span>
+Mongolian    <span style="color:#09f;font-style:italic"># 蒙古文</span>
+Shavian      <span style="color:#09f;font-style:italic"># 萧伯纳文</span>
+Sinhala      <span style="color:#09f;font-style:italic"># 僧伽罗文</span>
+Tamil        <span style="color:#09f;font-style:italic"># 泰米尔文</span>
+Tibetan      <span style="color:#09f;font-style:italic"># 藏文</span>
+...
+</code></pre></td></tr></table>
+</div>
+</div><!-- raw HTML omitted -->
+<h2 id="三-源码解析">三. 源码解析</h2>
+<ul>
+<li>regexp包中，分别由<code>包函数</code>和<code>类型方法</code> 提供了正则<code>校验</code>、<code>查找</code>、<code>替换</code>等最基本的方法，可参考<a href="http://docscn.studygolang.com/pkg/regexp/">regexp源码文档</a>。</li>
+</ul>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#09f;font-style:italic">// 包函数，共8个，包括Regexp结构体的4个
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">Match</span>(pattern <span style="color:#078;font-weight:bold">string</span>, b []<span style="color:#078;font-weight:bold">byte</span>) (matched <span style="color:#078;font-weight:bold">bool</span>, err <span style="color:#078;font-weight:bold">error</span>)
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">MatchReader</span>(pattern <span style="color:#078;font-weight:bold">string</span>, r io.RuneReader) (matched <span style="color:#078;font-weight:bold">bool</span>, err <span style="color:#078;font-weight:bold">error</span>)
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">MatchString</span>(pattern <span style="color:#078;font-weight:bold">string</span>, s <span style="color:#078;font-weight:bold">string</span>) (matched <span style="color:#078;font-weight:bold">bool</span>, err <span style="color:#078;font-weight:bold">error</span>)
+<span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">QuoteMeta</span>(s <span style="color:#078;font-weight:bold">string</span>) <span style="color:#078;font-weight:bold">string</span>
+<span style="color:#069;font-weight:bold">type</span> Regexp
+    <span style="color:#09f;font-style:italic">// 创建表达式
+</span><span style="color:#09f;font-style:italic"></span>    <span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">Compile</span>(expr <span style="color:#078;font-weight:bold">string</span>) (<span style="color:#555">*</span>Regexp, <span style="color:#078;font-weight:bold">error</span>)
+    <span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">CompilePOSIX</span>(expr <span style="color:#078;font-weight:bold">string</span>) (<span style="color:#555">*</span>Regexp, <span style="color:#078;font-weight:bold">error</span>)
+    <span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">MustCompile</span>(str <span style="color:#078;font-weight:bold">string</span>) <span style="color:#555">*</span>Regexp
+    <span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">MustCompilePOSIX</span>(str <span style="color:#078;font-weight:bold">string</span>) <span style="color:#555">*</span>Regexp
+
+    <span style="color:#09f;font-style:italic">// 扩展
+</span><span style="color:#09f;font-style:italic"></span>    <span style="color:#069;font-weight:bold">func</span> (re <span style="color:#555">*</span>Regexp) <span style="color:#c0f">Expand</span>(dst []<span style="color:#078;font-weight:bold">byte</span>, template []<span style="color:#078;font-weight:bold">byte</span>, src []<span style="color:#078;font-weight:bold">byte</span>, match []<span style="color:#078;font-weight:bold">int</span>) []<span style="color:#078;font-weight:bold">byte</span>
+    <span style="color:#069;font-weight:bold">func</span> (re <span style="color:#555">*</span>Regexp) <span style="color:#c0f">ExpandString</span>(dst []<span style="color:#078;font-weight:bold">byte</span>, template <span style="color:#078;font-weight:bold">string</span>, src <span style="color:#078;font-weight:bold">string</span>, match []<span style="color:#078;font-weight:bold">int</span>) []<span style="color:#078;font-weight:bold">byte</span>
+
+    <span style="color:#09f;font-style:italic">// 查找
+</span><span style="color:#09f;font-style:italic"></span>    <span style="color:#069;font-weight:bold">func</span> (re <span style="color:#555">*</span>Regexp) <span style="color:#c0f">Find</span>(b []<span style="color:#078;font-weight:bold">byte</span>) []<span style="color:#078;font-weight:bold">byte</span>
+    <span style="color:#069;font-weight:bold">func</span> (re <span style="color:#555">*</span>Regexp) <span style="color:#c0f">FindAll</span>(b []<span style="color:#078;font-weight:bold">byte</span>, n <span style="color:#078;font-weight:bold">int</span>) [][]<span style="color:#078;font-weight:bold">byte</span>
+    <span style="color:#069;font-weight:bold">func</span> (re <span style="color:#555">*</span>Regexp) <span style="color:#c0f">FindAllIndex</span>(b []<span style="color:#078;font-weight:bold">byte</span>, n <span style="color:#078;font-weight:bold">int</span>) [][]<span style="color:#078;font-weight:bold">int</span>
+    <span style="color:#069;font-weight:bold">func</span> (re <span style="color:#555">*</span>Regexp) <span style="color:#c0f">FindAllString</span>(s <span style="color:#078;font-weight:bold">string</span>, n <span style="color:#078;font-weight:bold">int</span>) []<span style="color:#078;font-weight:bold">string</span>
+    <span style="color:#069;font-weight:bold">func</span> (re <span style="color:#555">*</span>Regexp) <span style="color:#c0f">FindAllStringIndex</span>(s <span style="color:#078;font-weight:bold">string</span>, n <span style="color:#078;font-weight:bold">int</span>) [][]<span style="color:#078;font-weight:bold">int</span>
+    <span style="color:#069;font-weight:bold">func</span> (re <span style="color:#555">*</span>Regexp) <span style="color:#c0f">FindAllStringSubmatch</span>(s <span style="color:#078;font-weight:bold">string</span>, n <span style="color:#078;font-weight:bold">int</span>) [][]<span style="color:#078;font-weight:bold">string</span>
+    <span style="color:#069;font-weight:bold">func</span> (re <span style="color:#555">*</span>Regexp) <span style="color:#c0f">FindAllStringSubmatchIndex</span>(s <span style="color:#078;font-weight:bold">string</span>, n <span style="color:#078;font-weight:bold">int</span>) [][]<span style="color:#078;font-weight:bold">int</span>
+    <span style="color:#069;font-weight:bold">func</span> (re <span style="color:#555">*</span>Regexp) <span style="color:#c0f">FindAllSubmatch</span>(b []<span style="color:#078;font-weight:bold">byte</span>, n <span style="color:#078;font-weight:bold">int</span>) [][][]<span style="color:#078;font-weight:bold">byte</span>
+    <span style="color:#069;font-weight:bold">func</span> (re <span style="color:#555">*</span>Regexp) <span style="color:#c0f">FindAllSubmatchIndex</span>(b []<span style="color:#078;font-weight:bold">byte</span>, n <span style="color:#078;font-weight:bold">int</span>) [][]<span style="color:#078;font-weight:bold">int</span>
+    <span style="color:#069;font-weight:bold">func</span> (re <span style="color:#555">*</span>Regexp) <span style="color:#c0f">FindIndex</span>(b []<span style="color:#078;font-weight:bold">byte</span>) (loc []<span style="color:#078;font-weight:bold">int</span>)
+    <span style="color:#069;font-weight:bold">func</span> (re <span style="color:#555">*</span>Regexp) <span style="color:#c0f">FindReaderIndex</span>(r io.RuneReader) (loc []<span style="color:#078;font-weight:bold">int</span>)
+    <span style="color:#069;font-weight:bold">func</span> (re <span style="color:#555">*</span>Regexp) <span style="color:#c0f">FindReaderSubmatchIndex</span>(r io.RuneReader) []<span style="color:#078;font-weight:bold">int</span>
+    <span style="color:#069;font-weight:bold">func</span> (re <span style="color:#555">*</span>Regexp) <span style="color:#c0f">FindString</span>(s <span style="color:#078;font-weight:bold">string</span>) <span style="color:#078;font-weight:bold">string</span>
+    <span style="color:#069;font-weight:bold">func</span> (re <span style="color:#555">*</span>Regexp) <span style="color:#c0f">FindStringIndex</span>(s <span style="color:#078;font-weight:bold">string</span>) (loc []<span style="color:#078;font-weight:bold">int</span>)
+    <span style="color:#069;font-weight:bold">func</span> (re <span style="color:#555">*</span>Regexp) <span style="color:#c0f">FindStringSubmatch</span>(s <span style="color:#078;font-weight:bold">string</span>) []<span style="color:#078;font-weight:bold">string</span>
+    <span style="color:#069;font-weight:bold">func</span> (re <span style="color:#555">*</span>Regexp) <span style="color:#c0f">FindStringSubmatchIndex</span>(s <span style="color:#078;font-weight:bold">string</span>) []<span style="color:#078;font-weight:bold">int</span>
+    <span style="color:#069;font-weight:bold">func</span> (re <span style="color:#555">*</span>Regexp) <span style="color:#c0f">FindSubmatch</span>(b []<span style="color:#078;font-weight:bold">byte</span>) [][]<span style="color:#078;font-weight:bold">byte</span>
+    <span style="color:#069;font-weight:bold">func</span> (re <span style="color:#555">*</span>Regexp) <span style="color:#c0f">FindSubmatchIndex</span>(b []<span style="color:#078;font-weight:bold">byte</span>) []<span style="color:#078;font-weight:bold">int</span>
+
+    <span style="color:#09f;font-style:italic">// 校验
+</span><span style="color:#09f;font-style:italic"></span>    <span style="color:#069;font-weight:bold">func</span> (re <span style="color:#555">*</span>Regexp) <span style="color:#c0f">LiteralPrefix</span>() (prefix <span style="color:#078;font-weight:bold">string</span>, complete <span style="color:#078;font-weight:bold">bool</span>)
+    <span style="color:#069;font-weight:bold">func</span> (re <span style="color:#555">*</span>Regexp) <span style="color:#c0f">Match</span>(b []<span style="color:#078;font-weight:bold">byte</span>) <span style="color:#078;font-weight:bold">bool</span>
+    <span style="color:#069;font-weight:bold">func</span> (re <span style="color:#555">*</span>Regexp) <span style="color:#c0f">MatchReader</span>(r io.RuneReader) <span style="color:#078;font-weight:bold">bool</span>
+    <span style="color:#069;font-weight:bold">func</span> (re <span style="color:#555">*</span>Regexp) <span style="color:#c0f">MatchString</span>(s <span style="color:#078;font-weight:bold">string</span>) <span style="color:#078;font-weight:bold">bool</span>
+
+    <span style="color:#09f;font-style:italic">// 替换
+</span><span style="color:#09f;font-style:italic"></span>    <span style="color:#069;font-weight:bold">func</span> (re <span style="color:#555">*</span>Regexp) <span style="color:#c0f">ReplaceAll</span>(src, repl []<span style="color:#078;font-weight:bold">byte</span>) []<span style="color:#078;font-weight:bold">byte</span>
+    <span style="color:#069;font-weight:bold">func</span> (re <span style="color:#555">*</span>Regexp) <span style="color:#c0f">ReplaceAllFunc</span>(src []<span style="color:#078;font-weight:bold">byte</span>, repl <span style="color:#069;font-weight:bold">func</span>([]<span style="color:#078;font-weight:bold">byte</span>) []<span style="color:#078;font-weight:bold">byte</span>) []<span style="color:#078;font-weight:bold">byte</span>
+    <span style="color:#069;font-weight:bold">func</span> (re <span style="color:#555">*</span>Regexp) <span style="color:#c0f">ReplaceAllLiteral</span>(src, repl []<span style="color:#078;font-weight:bold">byte</span>) []<span style="color:#078;font-weight:bold">byte</span>
+    <span style="color:#069;font-weight:bold">func</span> (re <span style="color:#555">*</span>Regexp) <span style="color:#c0f">ReplaceAllLiteralString</span>(src, repl <span style="color:#078;font-weight:bold">string</span>) <span style="color:#078;font-weight:bold">string</span>
+    <span style="color:#069;font-weight:bold">func</span> (re <span style="color:#555">*</span>Regexp) <span style="color:#c0f">ReplaceAllString</span>(src, repl <span style="color:#078;font-weight:bold">string</span>) <span style="color:#078;font-weight:bold">string</span>
+    <span style="color:#069;font-weight:bold">func</span> (re <span style="color:#555">*</span>Regexp) <span style="color:#c0f">ReplaceAllStringFunc</span>(src <span style="color:#078;font-weight:bold">string</span>, repl <span style="color:#069;font-weight:bold">func</span>(<span style="color:#078;font-weight:bold">string</span>) <span style="color:#078;font-weight:bold">string</span>) <span style="color:#078;font-weight:bold">string</span>
+
+    <span style="color:#09f;font-style:italic">// 其他
+</span><span style="color:#09f;font-style:italic"></span>    <span style="color:#069;font-weight:bold">func</span> (re <span style="color:#555">*</span>Regexp) <span style="color:#c0f">NumSubexp</span>() <span style="color:#078;font-weight:bold">int</span>
+    <span style="color:#069;font-weight:bold">func</span> (re <span style="color:#555">*</span>Regexp) <span style="color:#c0f">Longest</span>()
+    <span style="color:#069;font-weight:bold">func</span> (re <span style="color:#555">*</span>Regexp) <span style="color:#c0f">Split</span>(s <span style="color:#078;font-weight:bold">string</span>, n <span style="color:#078;font-weight:bold">int</span>) []<span style="color:#078;font-weight:bold">string</span>
+    <span style="color:#069;font-weight:bold">func</span> (re <span style="color:#555">*</span>Regexp) <span style="color:#c0f">String</span>() <span style="color:#078;font-weight:bold">string</span>
+    <span style="color:#069;font-weight:bold">func</span> (re <span style="color:#555">*</span>Regexp) <span style="color:#c0f">SubexpNames</span>() []<span style="color:#078;font-weight:bold">string</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>源码示例：</strong></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 58
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 59
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 60
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 61
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 62
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 63
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 64
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 65
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 66
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 67
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 68
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 69
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 70
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 71
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 72
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 73
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 74
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 75
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 76
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 77
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 78
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 79
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 80
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 81
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 82
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 83
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 84
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 85
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 86
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 87
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 88
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 89
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 90
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 91
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 92
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 93
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 94
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 95
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 96
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 97
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 98
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 99
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">100
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">101
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">102
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">103
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">104
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">105
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">106
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">107
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">108
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">109
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">110
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">111
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">112
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">113
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">114
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">115
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">116
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">117
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">118
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">119
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">120
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">121
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">122
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">123
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">124
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">125
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">126
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">127
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">128
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">129
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">130
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">131
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">132
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">133
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">134
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">135
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">136
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">137
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">138
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">139
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">140
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">141
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">142
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">143
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">144
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">145
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">146
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">147
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">148
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">149
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">150
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">151
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">152
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">153
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">154
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">155
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">156
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">157
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">158
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">159
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">160
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">161
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">162
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">163
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">164
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">165
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">166
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">167
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">168
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">169
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">170
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">171
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">172
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">173
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">174
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">175
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">176
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">177
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">178
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">179
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">180
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">181
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">182
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">183
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">184
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">185
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">186
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">187
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">188
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">189
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">190
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">191
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">192
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">193
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">194
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">195
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">196
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">197
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">198
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">199
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">200
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">201
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">202
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">203
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">204
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">205
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">206
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+   <span style="color:#c0f">PkgFunc</span>()
+   <span style="color:#c0f">Compiles</span>()
+   <span style="color:#c0f">FindContent</span>()
+   <span style="color:#c0f">FindIndex</span>()
+   <span style="color:#c0f">FindMatch</span>()
+
+   <span style="color:#c0f">Match</span>()
+   <span style="color:#c0f">Replace</span>()
+   <span style="color:#c0f">Expand</span>()
+   <span style="color:#c0f">Prefix</span>()
+   <span style="color:#c0f">Longest</span>()
+}
+
+<span style="color:#09f;font-style:italic">// 1. 包函数
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">PkgFunc</span>() {
+   <span style="color:#09f;font-style:italic">// Match：匹配字节数组
+</span><span style="color:#09f;font-style:italic"></span>   fmt.<span style="color:#c0f">Println</span>(regexp.<span style="color:#c0f">Match</span>(<span style="color:#c30">&#34;H.* &#34;</span>, []<span style="color:#366">byte</span>(<span style="color:#c30">&#34;Hello World!&#34;</span>)))
+
+   <span style="color:#09f;font-style:italic">// MatchString：匹配字符串
+</span><span style="color:#09f;font-style:italic"></span>   fmt.<span style="color:#c0f">Println</span>(regexp.<span style="color:#c0f">MatchString</span>(<span style="color:#c30">&#34;H.* &#34;</span>, <span style="color:#c30">&#34;Hello World!&#34;</span>))
+
+   <span style="color:#09f;font-style:italic">// MatchReader：实现了io.RuneReader(io.Reader)接口
+</span><span style="color:#09f;font-style:italic"></span>   r <span style="color:#555">:=</span> bytes.<span style="color:#c0f">NewReader</span>([]<span style="color:#366">byte</span>(<span style="color:#c30">&#34;Hello World!&#34;</span>))
+   fmt.<span style="color:#c0f">Println</span>(regexp.<span style="color:#c0f">MatchReader</span>(<span style="color:#c30">&#34;H.* &#34;</span>, r))
+
+   <span style="color:#09f;font-style:italic">//QuoteMeta：将字符串 s 中的“特殊字符”转换为其“转义格式”
+</span><span style="color:#09f;font-style:italic"></span>   fmt.<span style="color:#c0f">Println</span>(regexp.<span style="color:#c0f">QuoteMeta</span>(<span style="color:#c30">&#34;(?P:Hello) [a-z]&#34;</span>))
+}
+
+<span style="color:#09f;font-style:italic">// 2. 构建正则对象
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">Compiles</span>() {
+   reg, err <span style="color:#555">:=</span> regexp.<span style="color:#c0f">Compile</span>(<span style="color:#c30">`\w+`</span>)
+   fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;%q,%v\n&#34;</span>, reg.<span style="color:#c0f">FindString</span>(<span style="color:#c30">&#34;Hello World!&#34;</span>), err)
+
+   <span style="color:#09f;font-style:italic">// 将正则表达式限制为POSIX ERE(egrep)语法，并将匹配语义更改为最左最长
+</span><span style="color:#09f;font-style:italic"></span>   <span style="color:#09f;font-style:italic">// 同时，它采用最左最长方式搜索，而Compile采用最左最短方式搜索
+</span><span style="color:#09f;font-style:italic"></span>   <span style="color:#09f;font-style:italic">// POSIX 语法不支持 Perl 的语法格式：\d、\D、\s、\S、\w、\W
+</span><span style="color:#09f;font-style:italic"></span>   reg, err = regexp.<span style="color:#c0f">CompilePOSIX</span>(<span style="color:#c30">`[[:word:]]+`</span>)
+   fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;%q,%v\n&#34;</span>, reg.<span style="color:#c0f">FindString</span>(<span style="color:#c30">&#34;Hello World!&#34;</span>), err)
+
+   reg = regexp.<span style="color:#c0f">MustCompile</span>(<span style="color:#c30">`\w+`</span>)
+   fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;%q\n&#34;</span>, reg.<span style="color:#c0f">FindString</span>(<span style="color:#c30">&#34;Hello World!&#34;</span>))
+
+   reg = regexp.<span style="color:#c0f">MustCompilePOSIX</span>(<span style="color:#c30">`[[:word:]]+`</span>)
+   fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;%q\n&#34;</span>, reg.<span style="color:#c0f">FindString</span>(<span style="color:#c30">&#34;Hello World&#34;</span>))
+}
+
+<span style="color:#09f;font-style:italic">// 3. 查找匹配内容
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">FindContent</span>() {
+   reg <span style="color:#555">:=</span> regexp.<span style="color:#c0f">MustCompile</span>(<span style="color:#c30">`\w+`</span>)
+
+   <span style="color:#09f;font-style:italic">// 查找第一个匹配项
+</span><span style="color:#09f;font-style:italic"></span>   fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;%q\n&#34;</span>, reg.<span style="color:#c0f">Find</span>([]<span style="color:#366">byte</span>(<span style="color:#c30">&#34;Hello World!&#34;</span>)))
+   fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;%q\n&#34;</span>, reg.<span style="color:#c0f">FindString</span>(<span style="color:#c30">&#34;Hello World!&#34;</span>))
+
+   <span style="color:#09f;font-style:italic">// 查找所有匹配项
+</span><span style="color:#09f;font-style:italic"></span>   fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;%q\n&#34;</span>, reg.<span style="color:#c0f">FindAll</span>([]<span style="color:#366">byte</span>(<span style="color:#c30">&#34;Hello World!&#34;</span>), <span style="color:#555">-</span><span style="color:#f60">1</span>))
+   fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;%q\n&#34;</span>, reg.<span style="color:#c0f">FindAllString</span>(<span style="color:#c30">&#34;Hello World!&#34;</span>, <span style="color:#555">-</span><span style="color:#f60">1</span>))
+}
+
+<span style="color:#09f;font-style:italic">// 4. 查找起止索引位
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">FindIndex</span>() {
+   reg <span style="color:#555">:=</span> regexp.<span style="color:#c0f">MustCompile</span>(<span style="color:#c30">`\w+`</span>)
+
+   <span style="color:#09f;font-style:italic">// 查找第一个匹配项的起止位
+</span><span style="color:#09f;font-style:italic"></span>   fmt.<span style="color:#c0f">Println</span>(reg.<span style="color:#c0f">FindIndex</span>([]<span style="color:#366">byte</span>(<span style="color:#c30">&#34;Hello World!&#34;</span>)))
+
+   fmt.<span style="color:#c0f">Println</span>(reg.<span style="color:#c0f">FindStringIndex</span>(<span style="color:#c30">&#34;Hello World!&#34;</span>))
+
+   r <span style="color:#555">:=</span> bytes.<span style="color:#c0f">NewReader</span>([]<span style="color:#366">byte</span>(<span style="color:#c30">&#34;Hello World!&#34;</span>))
+   fmt.<span style="color:#c0f">Println</span>(reg.<span style="color:#c0f">FindReaderIndex</span>(r))
+
+   <span style="color:#09f;font-style:italic">// 查找所有匹配项的起止位
+</span><span style="color:#09f;font-style:italic"></span>   fmt.<span style="color:#c0f">Println</span>(reg.<span style="color:#c0f">FindAllIndex</span>([]<span style="color:#366">byte</span>(<span style="color:#c30">&#34;Hello World!&#34;</span>), <span style="color:#555">-</span><span style="color:#f60">1</span>))
+   fmt.<span style="color:#c0f">Println</span>(reg.<span style="color:#c0f">FindAllStringIndex</span>(<span style="color:#c30">&#34;Hello World!&#34;</span>, <span style="color:#555">-</span><span style="color:#f60">1</span>))
+}
+
+<span style="color:#09f;font-style:italic">// 5. 分组匹配(即{完整匹配项, 子匹配项, 子匹配项, ...})
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">FindMatch</span>() {
+   reg <span style="color:#555">:=</span> regexp.<span style="color:#c0f">MustCompile</span>(<span style="color:#c30">`(\w)(\w)+`</span>) <span style="color:#09f;font-style:italic">//两个分组匹配
+</span><span style="color:#09f;font-style:italic"></span>
+   <span style="color:#09f;font-style:italic">// 查找匹配项和子匹配项内容
+</span><span style="color:#09f;font-style:italic"></span>   fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;%q\n&#34;</span>, reg.<span style="color:#c0f">FindSubmatch</span>([]<span style="color:#366">byte</span>(<span style="color:#c30">&#34;Hello World!&#34;</span>)))
+   fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;%q\n&#34;</span>, reg.<span style="color:#c0f">FindStringSubmatch</span>(<span style="color:#c30">&#34;Hello World!&#34;</span>))
+
+   fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;%q\n&#34;</span>, reg.<span style="color:#c0f">FindAllSubmatch</span>([]<span style="color:#366">byte</span>(<span style="color:#c30">&#34;Hello World!&#34;</span>), <span style="color:#555">-</span><span style="color:#f60">1</span>))
+   fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;%q\n&#34;</span>, reg.<span style="color:#c0f">FindAllStringSubmatch</span>(<span style="color:#c30">&#34;Hello World!&#34;</span>, <span style="color:#555">-</span><span style="color:#f60">1</span>))
+
+   <span style="color:#09f;font-style:italic">// 查找匹配项和子匹配项的起止索引位
+</span><span style="color:#09f;font-style:italic"></span>   fmt.<span style="color:#c0f">Println</span>(reg.<span style="color:#c0f">FindSubmatchIndex</span>([]<span style="color:#366">byte</span>(<span style="color:#c30">&#34;Hello World!&#34;</span>)))
+   fmt.<span style="color:#c0f">Println</span>(reg.<span style="color:#c0f">FindAllStringSubmatchIndex</span>(<span style="color:#c30">&#34;Hello World!&#34;</span>, <span style="color:#555">-</span><span style="color:#f60">1</span>))
+   <span style="color:#09f;font-style:italic">//...
+</span><span style="color:#09f;font-style:italic"></span>}
+
+<span style="color:#09f;font-style:italic">// 6. 正则校验
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">Match</span>() {
+   <span style="color:#09f;font-style:italic">// Math
+</span><span style="color:#09f;font-style:italic"></span>   s <span style="color:#555">:=</span> []<span style="color:#366">byte</span>(<span style="color:#c30">`Hello World`</span>)
+   reg <span style="color:#555">:=</span> regexp.<span style="color:#c0f">MustCompile</span>(<span style="color:#c30">`Hello[\w\s]+`</span>)
+   fmt.<span style="color:#c0f">Println</span>(reg.<span style="color:#c0f">Match</span>(s)) <span style="color:#09f;font-style:italic">//true
+</span><span style="color:#09f;font-style:italic"></span>
+   <span style="color:#09f;font-style:italic">// MatchReader
+</span><span style="color:#09f;font-style:italic"></span>   reg = regexp.<span style="color:#c0f">MustCompile</span>(<span style="color:#c30">`Hello\w+`</span>)
+   r <span style="color:#555">:=</span> bytes.<span style="color:#c0f">NewReader</span>([]<span style="color:#366">byte</span>(<span style="color:#c30">`Hello World`</span>))
+   fmt.<span style="color:#c0f">Println</span>(reg.<span style="color:#c0f">MatchReader</span>(r)) <span style="color:#09f;font-style:italic">// false
+</span><span style="color:#09f;font-style:italic"></span>
+   <span style="color:#09f;font-style:italic">// MatchString
+</span><span style="color:#09f;font-style:italic"></span>   reg = regexp.<span style="color:#c0f">MustCompile</span>(<span style="color:#c30">`Hello[\w\s]+`</span>)
+   fmt.<span style="color:#c0f">Println</span>(reg.<span style="color:#c0f">MatchString</span>(<span style="color:#c30">&#34;Hello World&#34;</span>)) <span style="color:#09f;font-style:italic">//true
+</span><span style="color:#09f;font-style:italic"></span>}
+
+<span style="color:#09f;font-style:italic">// 7. 正则替换
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">Replace</span>() {
+   <span style="color:#09f;font-style:italic">// 将【源数据】替换成【模板格式】的数据
+</span><span style="color:#09f;font-style:italic"></span>   reg <span style="color:#555">:=</span> regexp.<span style="color:#c0f">MustCompile</span>(<span style="color:#c30">`(Hell|G)o`</span>)
+   src <span style="color:#555">:=</span> []<span style="color:#366">byte</span>(<span style="color:#c30">&#34;Hello World, 123 Go!&#34;</span>)
+   rep <span style="color:#555">:=</span> []<span style="color:#366">byte</span>(<span style="color:#c30">&#34;${1}ooo&#34;</span>)
+
+   <span style="color:#09f;font-style:italic">// 打印匹配结果
+</span><span style="color:#09f;font-style:italic"></span>   fmt.<span style="color:#c0f">Println</span>(reg.<span style="color:#c0f">FindAllStringSubmatch</span>(<span style="color:#366">string</span>(src), <span style="color:#555">-</span><span style="color:#f60">1</span>))
+   <span style="color:#09f;font-style:italic">//[[Hello Hell] [Go G]]
+</span><span style="color:#09f;font-style:italic"></span>
+   <span style="color:#09f;font-style:italic">// 1. ReplaceAll
+</span><span style="color:#09f;font-style:italic"></span>   fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;%q\n&#34;</span>, reg.<span style="color:#c0f">ReplaceAll</span>(src, rep))
+   <span style="color:#09f;font-style:italic">// &#34;Hellooo World, 123 Gooo!&#34;
+</span><span style="color:#09f;font-style:italic"></span>
+   <span style="color:#09f;font-style:italic">// 2. ReplaceAllString
+</span><span style="color:#09f;font-style:italic"></span>   fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;%q\n&#34;</span>, reg.<span style="color:#c0f">ReplaceAllString</span>(<span style="color:#366">string</span>(src), <span style="color:#366">string</span>(rep)))
+   <span style="color:#09f;font-style:italic">// &#34;Hellooo World, 123 Gooo!&#34;
+</span><span style="color:#09f;font-style:italic"></span>
+   <span style="color:#09f;font-style:italic">// 3. ReplaceAllLiteral 直接替换(不解析模板)
+</span><span style="color:#09f;font-style:italic"></span>   fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;%q\n&#34;</span>, reg.<span style="color:#c0f">ReplaceAllLiteral</span>(src, rep))
+   <span style="color:#09f;font-style:italic">// &#34;${1}ooo World, 123 ${1}ooo!&#34;
+</span><span style="color:#09f;font-style:italic"></span>
+   <span style="color:#09f;font-style:italic">// 4. ReplaceAllLiteralString
+</span><span style="color:#09f;font-style:italic"></span>   fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;%q\n&#34;</span>, reg.<span style="color:#c0f">ReplaceAllLiteralString</span>(<span style="color:#366">string</span>(src), <span style="color:#366">string</span>(rep)))
+   <span style="color:#09f;font-style:italic">// &#34;${1}ooo World, 123 ${1}ooo!&#34;
+</span><span style="color:#09f;font-style:italic"></span>
+   <span style="color:#09f;font-style:italic">// 5. ReplaceAll
+</span><span style="color:#09f;font-style:italic"></span>   reg = regexp.<span style="color:#c0f">MustCompile</span>(<span style="color:#c30">&#34;(H)ello&#34;</span>) <span style="color:#09f;font-style:italic">//Hello H
+</span><span style="color:#09f;font-style:italic"></span>   src = []<span style="color:#366">byte</span>(<span style="color:#c30">&#34;Hello World!&#34;</span>)
+   rep = []<span style="color:#366">byte</span>(<span style="color:#c30">&#34;$0$1&#34;</span>)
+   fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;%s\n&#34;</span>, reg.<span style="color:#c0f">ReplaceAll</span>(src, rep))
+   <span style="color:#09f;font-style:italic">// HelloH World!
+</span><span style="color:#09f;font-style:italic"></span>
+   <span style="color:#09f;font-style:italic">// 6. ReplaceAllFunc
+</span><span style="color:#09f;font-style:italic"></span>   fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;%s\n&#34;</span>, reg.<span style="color:#c0f">ReplaceAllFunc</span>(src,
+      <span style="color:#069;font-weight:bold">func</span>(b []<span style="color:#078;font-weight:bold">byte</span>) []<span style="color:#078;font-weight:bold">byte</span> {
+         rst <span style="color:#555">:=</span> []<span style="color:#078;font-weight:bold">byte</span>{}
+         rst = <span style="color:#366">append</span>(rst, b<span style="color:#555">...</span>)
+         rst = <span style="color:#366">append</span>(rst, <span style="color:#c30">&#34;$1&#34;</span><span style="color:#555">...</span>)
+         <span style="color:#069;font-weight:bold">return</span> rst
+      }))
+   <span style="color:#09f;font-style:italic">// Hello$1 World!
+</span><span style="color:#09f;font-style:italic"></span>
+   <span style="color:#09f;font-style:italic">//7. ReplaceAllString
+</span><span style="color:#09f;font-style:italic"></span>   fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;%s\n&#34;</span>, reg.<span style="color:#c0f">ReplaceAllString</span>(<span style="color:#c30">&#34;Hello World!&#34;</span>, <span style="color:#c30">&#34;$0$1&#34;</span>))
+   <span style="color:#09f;font-style:italic">// HelloH World!
+</span><span style="color:#09f;font-style:italic"></span>
+   <span style="color:#09f;font-style:italic">// 8. ReplaceAllStringFunc
+</span><span style="color:#09f;font-style:italic"></span>   fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;%s\n&#34;</span>, reg.<span style="color:#c0f">ReplaceAllStringFunc</span>(<span style="color:#c30">&#34;Hello World!&#34;</span>,
+      <span style="color:#069;font-weight:bold">func</span>(b <span style="color:#078;font-weight:bold">string</span>) <span style="color:#078;font-weight:bold">string</span> {
+         <span style="color:#069;font-weight:bold">return</span> b <span style="color:#555">+</span> <span style="color:#c30">&#34;$1&#34;</span>
+      }))
+   <span style="color:#09f;font-style:italic">// Hello$1 World!
+</span><span style="color:#09f;font-style:italic"></span>}
+
+<span style="color:#09f;font-style:italic">// 8. 正则追加（将模板追加到目标文本中）
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">Expand</span>() {
+   reg <span style="color:#555">:=</span> regexp.<span style="color:#c0f">MustCompile</span>(<span style="color:#c30">`(\w+),(\w+)`</span>)
+
+   src <span style="color:#555">:=</span> []<span style="color:#366">byte</span>(<span style="color:#c30">&#34;Golang,World!&#34;</span>)           <span style="color:#09f;font-style:italic">// 源文本
+</span><span style="color:#09f;font-style:italic"></span>   dst <span style="color:#555">:=</span> []<span style="color:#366">byte</span>(<span style="color:#c30">&#34;Say: &#34;</span>)                   <span style="color:#09f;font-style:italic">// 目标文本
+</span><span style="color:#09f;font-style:italic"></span>   template <span style="color:#555">:=</span> []<span style="color:#366">byte</span>(<span style="color:#c30">&#34;Hello $1, Hello $2&#34;</span>) <span style="color:#09f;font-style:italic">// 模板
+</span><span style="color:#09f;font-style:italic"></span>   match <span style="color:#555">:=</span> reg.<span style="color:#c0f">FindSubmatchIndex</span>(src)      <span style="color:#09f;font-style:italic">// 解析源文本
+</span><span style="color:#09f;font-style:italic"></span>
+   fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;%q\n&#34;</span>, reg.<span style="color:#c0f">Expand</span>(dst, template, src, match))
+   <span style="color:#09f;font-style:italic">// &#34;Say: Hello Golang, Hello World&#34;
+</span><span style="color:#09f;font-style:italic"></span>}
+
+<span style="color:#09f;font-style:italic">// 9. 前缀
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">Prefix</span>() {
+   <span style="color:#09f;font-style:italic">// LiteralPrefix 返回所有匹配项都共同拥有的前缀（去除可变元素）
+</span><span style="color:#09f;font-style:italic"></span>   <span style="color:#09f;font-style:italic">// prefix：共同拥有的前缀
+</span><span style="color:#09f;font-style:italic"></span>   <span style="color:#09f;font-style:italic">// complete：如果 prefix 就是正则表达式本身，则返回 true，否则返回 false
+</span><span style="color:#09f;font-style:italic"></span>
+   reg <span style="color:#555">:=</span> regexp.<span style="color:#c0f">MustCompile</span>(<span style="color:#c30">`Hello[\w\s]+`</span>)
+   fmt.<span style="color:#c0f">Println</span>(reg.<span style="color:#c0f">LiteralPrefix</span>()) <span style="color:#09f;font-style:italic">// Hello false
+</span><span style="color:#09f;font-style:italic"></span>
+   reg = regexp.<span style="color:#c0f">MustCompile</span>(<span style="color:#c30">`Hello`</span>)
+   fmt.<span style="color:#c0f">Println</span>(reg.<span style="color:#c0f">LiteralPrefix</span>()) <span style="color:#09f;font-style:italic">// Hello true
+</span><span style="color:#09f;font-style:italic"></span>}
+
+<span style="color:#09f;font-style:italic">// 10. 贪婪模式
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">Longest</span>() {
+   text <span style="color:#555">:=</span> <span style="color:#c30">`Hello World, 123 Go!`</span>
+   pattern <span style="color:#555">:=</span> <span style="color:#c30">`(?U)H[\w\s]+o`</span> <span style="color:#09f;font-style:italic">// 正则标记“非贪婪模式”(?U)
+</span><span style="color:#09f;font-style:italic"></span>   reg <span style="color:#555">:=</span> regexp.<span style="color:#c0f">MustCompile</span>(pattern)
+   fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;%q\n&#34;</span>, reg.<span style="color:#c0f">FindString</span>(text))
+   <span style="color:#09f;font-style:italic">// Hello
+</span><span style="color:#09f;font-style:italic"></span>
+   reg.<span style="color:#c0f">Longest</span>() <span style="color:#09f;font-style:italic">// 切换到“贪婪模式”
+</span><span style="color:#09f;font-style:italic"></span>   fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;%q\n&#34;</span>, reg.<span style="color:#c0f">FindString</span>(text))
+   <span style="color:#09f;font-style:italic">// Hello Wo
+</span><span style="color:#09f;font-style:italic"></span>}
+</code></pre></td></tr></table>
+</div>
+</div><!-- raw HTML omitted -->
+<h2 id="四-示例代码">四. 示例代码</h2>
+<h3 id="查找方式">查找方式</h3>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+   <span style="color:#069;font-weight:bold">var</span> text = <span style="color:#c30">`Hello World`</span>
+   reg <span style="color:#555">:=</span> regexp.<span style="color:#c0f">MustCompile</span>(<span style="color:#c30">`[a-z]+`</span>)
+
+   <span style="color:#09f;font-style:italic">// 查找整体(string)
+</span><span style="color:#09f;font-style:italic"></span>   fas <span style="color:#555">:=</span> reg.<span style="color:#c0f">FindAllString</span>(text, <span style="color:#555">-</span><span style="color:#f60">1</span>) 
+   fmt.<span style="color:#c0f">Println</span>(fas)                   <span style="color:#09f;font-style:italic">//[ello orld]
+</span><span style="color:#09f;font-style:italic"></span>
+   <span style="color:#09f;font-style:italic">// 查找索引(string)
+</span><span style="color:#09f;font-style:italic"></span>   fai <span style="color:#555">:=</span> reg.<span style="color:#c0f">FindAllStringIndex</span>(text, <span style="color:#555">-</span><span style="color:#f60">1</span>)
+   fmt.<span style="color:#c0f">Println</span>(fai) <span style="color:#09f;font-style:italic">//[[1 5] [7 11]]
+</span><span style="color:#09f;font-style:italic"></span>
+   <span style="color:#09f;font-style:italic">// 查找子项(match)
+</span><span style="color:#09f;font-style:italic"></span>   fass <span style="color:#555">:=</span> reg.<span style="color:#c0f">FindAllStringSubmatch</span>(text, <span style="color:#555">-</span><span style="color:#f60">1</span>)
+   fmt.<span style="color:#c0f">Println</span>(fass) <span style="color:#09f;font-style:italic">//[[ello] [orld]]
+</span><span style="color:#09f;font-style:italic"></span>
+   <span style="color:#09f;font-style:italic">// 查找索引(match)
+</span><span style="color:#09f;font-style:italic"></span>   fasi <span style="color:#555">:=</span> reg.<span style="color:#c0f">FindAllStringSubmatchIndex</span>(text, <span style="color:#555">-</span><span style="color:#f60">1</span>)
+   fmt.<span style="color:#c0f">Println</span>(fasi) <span style="color:#09f;font-style:italic">//[[1 5] [7 11]]
+</span><span style="color:#09f;font-style:italic"></span>
+   <span style="color:#09f;font-style:italic">// 汉字索引(按字节)
+</span><span style="color:#09f;font-style:italic"></span>   text = <span style="color:#c30">&#34;你好 World&#34;</span>
+   fai = reg.<span style="color:#c0f">FindAllStringIndex</span>(text, <span style="color:#555">-</span><span style="color:#f60">1</span>)
+   fmt.<span style="color:#c0f">Println</span>(fai) <span style="color:#09f;font-style:italic">//[[8 12]]
+</span><span style="color:#09f;font-style:italic"></span>}
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="正则规则">正则规则</h3>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+   <span style="color:#09f;font-style:italic">//这个测试一个字符串是否符合一个表达式。
+</span><span style="color:#09f;font-style:italic"></span>   match, _ <span style="color:#555">:=</span> regexp.<span style="color:#c0f">MatchString</span>(<span style="color:#c30">&#34;p([a-z]+)ch&#34;</span>, <span style="color:#c30">&#34;peach&#34;</span>)
+   fmt.<span style="color:#c0f">Println</span>(match)
+
+   <span style="color:#09f;font-style:italic">//上面我们是直接使用字符串，但是对于一些其他的正则任务，你需要使用 Compile 一个优化的 Regexp 结构体。
+</span><span style="color:#09f;font-style:italic"></span>   r, _ <span style="color:#555">:=</span> regexp.<span style="color:#c0f">Compile</span>(<span style="color:#c30">&#34;p([a-z]+)ch&#34;</span>)
+
+   <span style="color:#09f;font-style:italic">//这个结构体有很多方法。这里是类似我们前面看到的一个匹配测试。
+</span><span style="color:#09f;font-style:italic"></span>   fmt.<span style="color:#c0f">Println</span>(r.<span style="color:#c0f">MatchString</span>(<span style="color:#c30">&#34;peach&#34;</span>))
+
+   <span style="color:#09f;font-style:italic">//这是查找匹配字符串的。
+</span><span style="color:#09f;font-style:italic"></span>   fmt.<span style="color:#c0f">Println</span>(r.<span style="color:#c0f">FindString</span>(<span style="color:#c30">&#34;peach punch&#34;</span>))
+
+   <span style="color:#09f;font-style:italic">//这个也是查找第一次匹配的字符串的，但是返回的匹配开始和结束位置索引，而不是匹配的内容。
+</span><span style="color:#09f;font-style:italic"></span>   fmt.<span style="color:#c0f">Println</span>(r.<span style="color:#c0f">FindStringIndex</span>(<span style="color:#c30">&#34;peach punch&#34;</span>))
+
+   <span style="color:#09f;font-style:italic">//Submatch 返回完全匹配和局部匹配的字符串。例如，这里会返回 p([a-z]+)ch 和 `([a-z]+) 的信息。
+</span><span style="color:#09f;font-style:italic"></span>   fmt.<span style="color:#c0f">Println</span>(r.<span style="color:#c0f">FindStringSubmatch</span>(<span style="color:#c30">&#34;peach punch&#34;</span>))
+
+   <span style="color:#09f;font-style:italic">//类似的，这个会返回完全匹配和局部匹配的索引位置。
+</span><span style="color:#09f;font-style:italic"></span>   fmt.<span style="color:#c0f">Println</span>(r.<span style="color:#c0f">FindStringSubmatchIndex</span>(<span style="color:#c30">&#34;peach punch&#34;</span>))
+
+   <span style="color:#09f;font-style:italic">//带 All 的这个函数返回所有的匹配项，而不仅仅是首次匹配项。例如查找匹配表达式的所有项。
+</span><span style="color:#09f;font-style:italic"></span>   fmt.<span style="color:#c0f">Println</span>(r.<span style="color:#c0f">FindAllString</span>(<span style="color:#c30">&#34;peach punch pinch&#34;</span>, <span style="color:#555">-</span><span style="color:#f60">1</span>))
+
+   <span style="color:#09f;font-style:italic">//All 同样可以对应到上面的所有函数。
+</span><span style="color:#09f;font-style:italic"></span>   fmt.<span style="color:#c0f">Println</span>(r.<span style="color:#c0f">FindAllStringSubmatchIndex</span>(<span style="color:#c30">&#34;peach punch pinch&#34;</span>, <span style="color:#555">-</span><span style="color:#f60">1</span>))
+
+   <span style="color:#09f;font-style:italic">//这个函数提供一个正整数来限制匹配次数。
+</span><span style="color:#09f;font-style:italic"></span>   fmt.<span style="color:#c0f">Println</span>(r.<span style="color:#c0f">FindAllString</span>(<span style="color:#c30">&#34;peach punch pinch&#34;</span>, <span style="color:#f60">2</span>))
+
+   <span style="color:#09f;font-style:italic">//上面的例子中，我们使用了字符串作为参数，并使用了如 MatchString 这样的方法。我们也可以提供 []byte参数并将 String 从函数命中去掉。
+</span><span style="color:#09f;font-style:italic"></span>   fmt.<span style="color:#c0f">Println</span>(r.<span style="color:#c0f">Match</span>([]<span style="color:#366">byte</span>(<span style="color:#c30">&#34;peach&#34;</span>)))
+
+   <span style="color:#09f;font-style:italic">//创建正则表示式常量时，可以使用 Compile 的变体MustCompile 。因为 Compile 返回两个值，不能用语常量。
+</span><span style="color:#09f;font-style:italic"></span>   r = regexp.<span style="color:#c0f">MustCompile</span>(<span style="color:#c30">&#34;p([a-z]+)ch&#34;</span>)
+   fmt.<span style="color:#c0f">Println</span>(r)
+
+   <span style="color:#09f;font-style:italic">//regexp 包也可以用来替换部分字符串为其他值。
+</span><span style="color:#09f;font-style:italic"></span>   fmt.<span style="color:#c0f">Println</span>(r.<span style="color:#c0f">ReplaceAllString</span>(<span style="color:#c30">&#34;a peach&#34;</span>, <span style="color:#c30">&#34;&lt;fruit&gt;&#34;</span>))
+
+   <span style="color:#09f;font-style:italic">//Func 变量允许传递匹配内容到一个给定的函数中，
+</span><span style="color:#09f;font-style:italic"></span>   in <span style="color:#555">:=</span> []<span style="color:#366">byte</span>(<span style="color:#c30">&#34;a peach&#34;</span>)
+   out <span style="color:#555">:=</span> r.<span style="color:#c0f">ReplaceAllFunc</span>(in, bytes.ToUpper)
+   fmt.<span style="color:#c0f">Println</span>(<span style="color:#366">string</span>(out))
+}
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">58
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">59
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">60
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">61
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">62
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">63
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">64
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">65
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">66
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">67
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">68
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">69
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">70
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">71
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">72
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">73
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">74
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">75
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">76
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-go" data-lang="go"><span style="color:#069;font-weight:bold">func</span> <span style="color:#c0f">main</span>() {
+   text <span style="color:#555">:=</span> <span style="color:#c30">&#34;Hello World ,你好 GOLANG!&#34;</span>
+
+   <span style="color:#09f;font-style:italic">// 单词(大小字母、数字、下划线)
+</span><span style="color:#09f;font-style:italic"></span>   reg <span style="color:#555">:=</span> regexp.<span style="color:#c0f">MustCompile</span>(<span style="color:#c30">`[\w]+`</span>)
+   ret <span style="color:#555">:=</span> reg.<span style="color:#c0f">FindAllStringSubmatch</span>(text, <span style="color:#555">-</span><span style="color:#f60">1</span>)
+   fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;1. %q\n&#34;</span>, ret)
+
+   <span style="color:#09f;font-style:italic">// 大写字母
+</span><span style="color:#09f;font-style:italic"></span>   reg = regexp.<span style="color:#c0f">MustCompile</span>(<span style="color:#c30">`[[:upper:]]+`</span>)
+   ret = reg.<span style="color:#c0f">FindAllStringSubmatch</span>(text, <span style="color:#555">-</span><span style="color:#f60">1</span>)
+   fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;2. %q\n&#34;</span>, ret)
+
+   <span style="color:#09f;font-style:italic">// 非ASCII
+</span><span style="color:#09f;font-style:italic"></span>   reg = regexp.<span style="color:#c0f">MustCompile</span>(<span style="color:#c30">`[[:^ascii:]]+`</span>)
+   ret = reg.<span style="color:#c0f">FindAllStringSubmatch</span>(text, <span style="color:#555">-</span><span style="color:#f60">1</span>)
+   fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;3. %q\n&#34;</span>, ret)
+
+   <span style="color:#09f;font-style:italic">// 连续标点
+</span><span style="color:#09f;font-style:italic"></span>   reg = regexp.<span style="color:#c0f">MustCompile</span>(<span style="color:#c30">`[\pP]+`</span>)
+   <span style="color:#09f;font-style:italic">//reg = regexp.MustCompile(`[\PP]+`)  //非标点符号
+</span><span style="color:#09f;font-style:italic"></span>   ret = reg.<span style="color:#c0f">FindAllStringSubmatch</span>(text, <span style="color:#555">-</span><span style="color:#f60">1</span>)
+   fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;4. %q\n&#34;</span>, ret)
+
+   <span style="color:#09f;font-style:italic">// 连续汉字
+</span><span style="color:#09f;font-style:italic"></span>   reg = regexp.<span style="color:#c0f">MustCompile</span>(<span style="color:#c30">`[\p{Han}]+`</span>)
+   ret = reg.<span style="color:#c0f">FindAllStringSubmatch</span>(text, <span style="color:#555">-</span><span style="color:#f60">1</span>)
+   fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;5. %q\n&#34;</span>, ret)
+
+   <span style="color:#09f;font-style:italic">// 贪婪模式
+</span><span style="color:#09f;font-style:italic"></span>   reg = regexp.<span style="color:#c0f">MustCompile</span>(<span style="color:#c30">`^H.*\s`</span>)
+   ret = reg.<span style="color:#c0f">FindAllStringSubmatch</span>(text, <span style="color:#555">-</span><span style="color:#f60">1</span>)
+   fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;6. %q\n&#34;</span>, ret)
+
+   <span style="color:#09f;font-style:italic">// 非贪模式
+</span><span style="color:#09f;font-style:italic"></span>   reg = regexp.<span style="color:#c0f">MustCompile</span>(<span style="color:#c30">`(?U)^H.*\s`</span>)
+   ret = reg.<span style="color:#c0f">FindAllStringSubmatch</span>(text, <span style="color:#555">-</span><span style="color:#f60">1</span>)
+   fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;7. %q\n&#34;</span>, ret)
+
+   <span style="color:#09f;font-style:italic">// 区分大小写(默认)
+</span><span style="color:#09f;font-style:italic"></span>   reg = regexp.<span style="color:#c0f">MustCompile</span>(<span style="color:#c30">`[Hw]\w*\s`</span>)
+   ret = reg.<span style="color:#c0f">FindAllStringSubmatch</span>(text, <span style="color:#555">-</span><span style="color:#f60">1</span>)
+   fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;8. %q\n&#34;</span>, ret)
+
+   <span style="color:#09f;font-style:italic">// 忽略大小写
+</span><span style="color:#09f;font-style:italic"></span>   reg = regexp.<span style="color:#c0f">MustCompile</span>(<span style="color:#c30">`(?i:[hW])\w*\s`</span>)
+   ret = reg.<span style="color:#c0f">FindAllStringSubmatch</span>(text, <span style="color:#555">-</span><span style="color:#f60">1</span>)
+   fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;9. %q\n&#34;</span>, ret)
+
+   <span style="color:#09f;font-style:italic">// 单词边界
+</span><span style="color:#09f;font-style:italic"></span>   reg = regexp.<span style="color:#c0f">MustCompile</span>(<span style="color:#c30">`(?U)\b.+\b`</span>)
+   ret = reg.<span style="color:#c0f">FindAllStringSubmatch</span>(text, <span style="color:#555">-</span><span style="color:#f60">1</span>)
+   fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;10. %q\n&#34;</span>, ret)
+
+   <span style="color:#09f;font-style:italic">// 数量限定
+</span><span style="color:#09f;font-style:italic"></span>   reg = regexp.<span style="color:#c0f">MustCompile</span>(<span style="color:#c30">`[^ ]{1,4}o`</span>)
+   ret = reg.<span style="color:#c0f">FindAllStringSubmatch</span>(text, <span style="color:#555">-</span><span style="color:#f60">1</span>)
+   fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;11. %q\n&#34;</span>, ret)
+
+   <span style="color:#09f;font-style:italic">// 子表达式
+</span><span style="color:#09f;font-style:italic"></span>   reg = regexp.<span style="color:#c0f">MustCompile</span>(<span style="color:#c30">`(?:Hell|W)o`</span>)
+   <span style="color:#09f;font-style:italic">//reg = regexp.MustCompile(`(Hell|W)o`) // [[&#34;Hello&#34; &#34;Hell&#34;] [&#34;Wo&#34; &#34;W&#34;]]
+</span><span style="color:#09f;font-style:italic"></span>   ret = reg.<span style="color:#c0f">FindAllStringSubmatch</span>(text, <span style="color:#555">-</span><span style="color:#f60">1</span>)
+   fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;12. %q\n&#34;</span>, ret)
+
+   <span style="color:#09f;font-style:italic">// 模板替换
+</span><span style="color:#09f;font-style:italic"></span>   reg = regexp.<span style="color:#c0f">MustCompile</span>(<span style="color:#c30">`(Hello)(.*)(World)`</span>)
+   fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;13. %q\n&#34;</span>, reg.<span style="color:#c0f">ReplaceAllString</span>(text, <span style="color:#c30">&#34;$3$2$1&#34;</span>))
+
+   <span style="color:#09f;font-style:italic">// 多行模式
+</span><span style="color:#09f;font-style:italic"></span>   text=<span style="color:#c30">&#34;abc\nadc\naxy&#34;</span>
+   reg = regexp.<span style="color:#c0f">MustCompile</span>(<span style="color:#c30">`(?m:^a.*c$)`</span>)
+   <span style="color:#09f;font-style:italic">//reg = regexp.MustCompile(`(^a.*c$)`)
+</span><span style="color:#09f;font-style:italic"></span>   ret = reg.<span style="color:#c0f">FindAllStringSubmatch</span>(text, <span style="color:#555">-</span><span style="color:#f60">1</span>)
+   fmt.<span style="color:#c0f">Printf</span>(<span style="color:#c30">&#34;10. %q\n&#34;</span>, ret)
+}
+</code></pre></td></tr></table>
+</div>
+</div><!-- raw HTML omitted -->
+<h2 id="参考链接">参考链接</h2>
+<p><a href="https://blog.csdn.net/zfy1355/article/details/52959803">https://blog.csdn.net/zfy1355/article/details/52959803</a><br>
+<a href="http://www.zhangwenbing.com/blog/golang/BJu7QSkw4">http://www.zhangwenbing.com/blog/golang/BJu7QSkw4</a><br>
+<a href="http://www.cnblogs.com/jkko123/p/8329515.html">http://www.cnblogs.com/jkko123/p/8329515.html</a><br>
+<a href="https://studygolang.com/articles/7256">https://studygolang.com/articles/7256</a></p>
+
+                
+                
+                <hr> 
+
+<div class="entry-shang text-center">
+    
+    <p> 「真诚赞赏，手留余香」</p>
+    
+    <button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+    <div class="zs-modal-head">
+        <button type="button" class="close">×</button>
+        <span class="author">
+            <a href="http://www.mafool.com">
+                <img src="http://www.mafool.com/img/reward/hollson.png" alt="史布斯" />码夫庄园
+            </a>
+        </span>
+        
+        <p class="tip"><i></i><span>嗯，我的梦想是被读者的稿费包养~</span></p>
+        
+
+    </div>
+    <div class="zs-modal-body">
+        <div class="zs-modal-btns">
+            <button class="btn btn-blink" data-num="2">2元</button>
+            <button class="btn btn-blink" data-num="5">5元</button>
+            <button class="btn btn-blink" data-num="10">10元</button>
+            <button class="btn btn-blink" data-num="50">50元</button>
+            <button class="btn btn-blink" data-num="100">100元</button>
+            <button class="btn btn-blink" data-num="1">任意金额</button>
+        </div>
+        <div class="zs-modal-pay">
+            <button class="btn btn-bred" id="pay-text">2元</button>
+            <p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+            <img src="http://www.mafool.com/img/reward/wechat-2.png" alt="史布斯" id="pay-image" />
+        </div>
+    </div>
+    <div class="zs-modal-footer">
+        <label>
+            <span class="zs-wechat"></span>
+            <input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked">
+            <img src="http://www.mafool.com/img/reward/wechat-btn.png" alt="史布斯" />
+            </span>&nbsp;
+            <span>
+                <input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay">
+                <img src="http://www.mafool.com/img/reward/alipay-btn.png" alt="史布斯" />
+            </span>
+        </label>
+    </div>
+</div>
+
+ 
+
+                <br>
+                <br>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="column is-3">
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">最近发布</h2>
+        
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/0742b474a643d63a774461726a6201203/">Go语言中的原子操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年12月2日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/1600330472/">Go基础笔记 - 2.3 常量</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月10日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/15996311192/">Go - Gin框架快速入门</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月9日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480249/">Gorm快速指南</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480218/">18. Go语言MySQL数据库操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+    </div>
+</div>
+<br>
+        
+
+
+
+
+<div class="card">
+  <div class="card-content">
+    <h2 class="title is-6">相关文章</h2>
+    
+    
+    <h2><a href="http://www.mafool.com/post/1585727291/">日常工作中的正则表达式</a></h2>
+    <time class="has-text-grey-light is-size-7">1 April 2019</time>
+    
+  </div>
+</div>
+<br>
+
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">标签</h2>
+        <div>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/atomic">atomic</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/blog">blog</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cgo">cgo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cloud">cloud</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/config">config</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/copy">copy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/docker">docker</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/exam">exam</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/gin">gin</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/git">git</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/golang">golang</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/hugo">hugo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/install">install</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/istio">istio</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/jenkins">jenkins</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/kubernetes">kubernetes</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/map">map</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/microservice">microservice</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/mycat">mycat</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/nginx">nginx</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/plan9">plan9</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/posix">posix</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/proxy">proxy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/raft">raft</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ssh">ssh</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/tips">tips</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ymal">ymal</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%B8%BB%E4%BB%8E">主从</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BA%8B%E5%8A%A1">事务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BB%A3%E7%90%86">代理</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BD%9C%E7%94%A8%E5%9F%9F">作用域</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%86%85%E5%AD%98">内存</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%8B%E7%BC%A9">压缩</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%88%9B">原创</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%AD%90">原子</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%91%BD%E4%BB%A4%E8%A1%8C">命令行</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%93%A8%E5%85%B5">哨兵</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%AD%98%E5%82%A8">存储</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B8%B8%E9%87%8F">常量</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B9%B6%E5%8F%91">并发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BC%82%E5%B8%B8">异常</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1">微服务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%88%E6%9D%83%E8%AE%A4%E8%AF%81">授权认证</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%92%E5%BA%8F">排序</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%A5%E5%8F%A3">接口</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%97%A5%E5%BF%97">日志</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%9D%83%E9%99%90">权限</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE1">标签1</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE2">标签2</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%AD%A3%E5%88%99">正则</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%81%E9%87%8F%E5%88%86%E5%8F%91">流量分发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%8B%E8%AF%95">测试</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%BA%90%E7%A0%81">源码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%8A%B6%E6%80%81%E7%A0%81">状态码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%AE%97%E6%B3%95">算法</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%BC%8F">编程模式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%80%81%E5%A6%96%E7%AC%94%E8%AE%B0">老妖笔记</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%BF%87%E6%BB%A4%E5%99%A8">过滤器</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%80%83%E9%80%B8">逃逸</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%85%8D%E7%BD%AE">配置</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%86%99">重写</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%AE%9A%E5%90%91">重定向</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9B%86%E7%BE%A4">集群</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9D%A2%E8%AF%95">面试</a>
+            </span>
+            
+        </div>
+    </div>
+</div>
+<br>
+    </div>
+</div>
+
+        </div>
+    </div>
+
+    
+    <footer class="footer has-background-grey-darker has-text-white">
+    <div class="content has-text-centered">
+        <p>
+            <span class="icon is-large">
+                <a href="https://twitter.com/" class="mysocial" rel="me">
+                    <i class="fab fa-twitter fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://www.youtube.com/" class="mysocial" rel="me">
+                    <i class="fab fa-youtube fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://github.com/" class="mysocial" rel="me">
+                    <i class="fab fa-github fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <br><br>
+            友情链接：
+            
+            <a class="mysocial" href="http://www.mafool.com" target="_blank">Mafool</a>
+            
+            <a class="mysocial" href="https://gohugo.io/documentation/" target="_blank">Hugo</a>
+            
+            <a class="mysocial" href="https://bulma.io/" target="_blank">Bulma</a>
+            
+            <a class="mysocial" href="https://bootstrapious.com/" target="_blank">Bootstrapious</a>
+            
+            <a class="mysocial" href="https://youzhixueyuan.com/" target="_blank">Youzhixueyuan</a>
+            
+            <br><br />
+            版权所有 &copy; 码夫庄园 2021
+            - <a class="mysocial" href="https://github.com/hollson/hugo-theme-dooz">Hugo Theme</a>
+        </p>
+    </div>
+</footer>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='http://www.mafool.com/js/dooz.totop.js?v=0.0.0' async=""></script>
+
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = 'https://hm.baidu.com/hm.js?f185359ec6b829a6a93e1e1f2597f6d9';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DK042XSJ2J"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-DK042XSJ2J');
+</script>
+
+    
+    
+<script type="text/javascript" src="http://www.mafool.com/js/reward.js"></script>
+
+    
+    <script defer src="https://cdn.staticfile.org/font-awesome/5.13.0/js/all.min.js"></script>
+</body>
+
+</html>

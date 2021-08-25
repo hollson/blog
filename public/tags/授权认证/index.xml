@@ -1,0 +1,24 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>授权认证 on 码夫庄园</title>
+    <link>http://www.mafool.com/tags/%E6%8E%88%E6%9D%83%E8%AE%A4%E8%AF%81/</link>
+    <description>Recent content in 授权认证 on 码夫庄园</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <copyright>版权所有</copyright>
+    <lastBuildDate>Thu, 02 Jan 2020 00:00:00 +0800</lastBuildDate>
+    
+        <atom:link href="http://www.mafool.com/tags/%E6%8E%88%E6%9D%83%E8%AE%A4%E8%AF%81/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>JWT实现认证授权</title>
+      <link>http://www.mafool.com/post/1585829952/</link>
+      <pubDate>Thu, 02 Jan 2020 00:00:00 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/post/1585829952/</guid>
+      <description>一. JWT是什么 JSON Web Token（JWT）是目前最流行的跨域身份验证解决方案。简单说，OAuth 就是一种授权机制, 数据的所有者告诉系统，同意授</description>
+    </item>
+    
+  </channel>
+</rss>

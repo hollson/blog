@@ -1,0 +1,2005 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>码夫庄园-Mysql分表分库2 - Mycat实战演练</title>
+    <meta name="keywords"
+        content='mycat,分表,分库'>
+    <meta name="description" content="Mycat数据库分库分表中间件" />
+
+    
+    <meta name="baidu-site-verification" content="v9szEmQLra" />
+    <meta name="360-site-verification" content="d8e961f98fb655e4b8cf9439cfd9ac7f" />
+    <meta name="sogou_site_verification" content="40NC9EdZDC" />
+    <meta name="shenma-site-verification" content="3200e3042e92157713a3b0aceeecb20a_1586020187" />
+    <meta name="google-site-verification" content="r8987bkunZHJeKut3ocu5NIJ5QEu53NA6Q_r7RrZ46c" />
+    <meta name="msvalidate.01" content="893A2865ABC54AC2782D118536831056" />
+
+    
+    <link rel="shortcut icon" href="http://www.mafool.com/img/res/favicon.ico">
+    
+
+    
+
+    <link crossorigin="anonymous" integrity="sha384-5kGFOAqgEKnuF6c2jk2JANKHZgYVt38Wn2dVJENtq1EBCP54/1uzXU5mpxqL8WjN"
+        href="https://lib.baomitu.com/bulma/0.8.0/css/bulma.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="http://www.mafool.com/css/dooz.blog.css" />
+    <script crossorigin="anonymous" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh"
+        src="https://lib.baomitu.com/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/jquery.share.min.js"></script>
+    
+
+    
+
+    
+    
+<link rel="stylesheet" href="http://www.mafool.com/css/reward.css">
+
+
+    <link href="http://www.mafool.com/css/fonts.googleapi.css" rel="stylesheet">
+    <script src=http://www.mafool.com/js/dooz.blog.js></script>
+
+    
+    <script>
+        $(document).ready(function () {
+            $('.content a[href^="http"]').each(function () {
+                $(this).attr('target', '_blank');
+            });
+        });
+
+        $(document).on('click', '.modal-wechat', function () {
+            $(".modal").addClass("is-active");
+        });
+
+        $(document).on('click', '.modal-background', function () {
+            $(".modal").removeClass("is-active");
+        });
+    </script>
+</head>
+
+<body>
+    
+    
+<section class="hero is-info is-medium"
+    style="background-image: url('/img/res/bg8.jpg');">
+    <div class="hero-head">
+        <nav class="navbar is-transparent container has-text-white">
+    <div class="navbar-brand">
+        <div class="navbar-item">
+            <a class="title is-5 is-white" href="http://www.mafool.com/">码夫庄园</a>
+        </div>
+
+        
+        <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <div id="navbarExampleTransparentExample" class="navbar-menu has-text-dark">
+        
+
+        <div class="navbar-end">
+            <a class="navbar-item" href='http://www.mafool.com/'>首页</a>
+            <a class="navbar-item" href='http://www.mafool.com/archives'>归档 </a>
+            <a class="navbar-item" href='http://www.mafool.com/about'>关于</a>
+            <span class="navbar-item">
+                <a class="button is-primary is-inverted" href="https://github.com/hollson/hugo-theme-dooz">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>主题</span>
+                </a>
+            </span>
+        </div>
+    </div>
+</nav>
+    </div>
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <div class='container has-text-left column is-7'>
+                
+                <span>
+                    <a class="bar_tag" href="http://www.mafool.com/tags/mycat" title="mycat">mycat</a>
+                </span>
+                
+                <h1 class="title is-size-2" style="margin-bottom:0.2rem;">
+                    
+                    Mysql分表分库2 - Mycat实战演练
+                    
+                </h1>
+                
+                <span class="title is-size-6" style="font-style: italic;"> </span><br>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    
+    <div class="container">
+        <div class="section">
+            
+<div class="columns">
+    <div class="column is-9">
+        <div class="tile is-child box">
+            <div class="content">
+                
+                <nav class="level">
+                    
+                    <div class="level-left">
+                        <div class="level-item">
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2019年7月13日,
+    星期六 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 10分钟阅读
+</p>
+                        </div>
+                    </div>
+
+                    
+                    
+                    <div class="share-component level-right" data-disabled="google,diandian,tencent,qzone"
+                        data-description="Share.js - 一键分享到微博，QQ空间，腾讯微博，人人，豆瓣"
+                        data-mobile-sites="weibo,qq,qzone,tencent">
+                    </div>
+                    
+                </nav>
+                <hr>
+                
+                <header>
+                    <h2>目录</h2>
+                </header>
+                <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一-配置规则">一. 配置规则</a>
+      <ul>
+        <li><a href="#1-分片方式">1. 分片方式</a></li>
+        <li><a href="#2-配置规则">2. 配置规则</a></li>
+      </ul>
+    </li>
+    <li><a href="#二-连续分片">二. 连续分片</a>
+      <ul>
+        <li><a href="#1-自定义数字范围分片">1. 自定义数字范围分片</a></li>
+        <li><a href="#2-按日期分片">2. 按日期分片</a></li>
+        <li><a href="#3-按单月小时分片">3. 按单月小时分片</a></li>
+        <li><a href="#4-按自然月分片">4. 按自然月分片</a></li>
+      </ul>
+    </li>
+    <li><a href="#三-离散分片">三. 离散分片</a>
+      <ul>
+        <li><a href="#1-枚举分片">1. 枚举分片</a></li>
+        <li><a href="#2-程序指定分区的分片">2. 程序指定分区的分片</a></li>
+        <li><a href="#3-十进制求模分片">3. 十进制求模分片</a></li>
+        <li><a href="#4-字符串hash解析分片">4. 字符串hash解析分片</a></li>
+        <li><a href="#5-一致性哈希分片">5. 一致性哈希分片</a></li>
+      </ul>
+    </li>
+    <li><a href="#四-综合分片">四. 综合分片</a>
+      <ul>
+        <li><a href="#1-范围求模分片">1. 范围求模分片</a></li>
+        <li><a href="#2-日期范围hash分片">2. 日期范围hash分片</a></li>
+        <li><a href="#3-取模范围约束分片">3. 取模范围约束分片</a></li>
+        <li><a href="#4-ascii码求模范围约束字符串">4. ASCII码求模范围约束（字符串）</a></li>
+        <li><a href="#5-固定分片hash二进制">5. 固定分片hash（二进制）</a></li>
+      </ul>
+    </li>
+    <li><a href="#五-分片策略">五. 分片策略</a></li>
+    <li><a href="#参考链接">参考链接</a></li>
+  </ul>
+</nav>
+                
+                <hr>
+                <h2 id="一-配置规则">一. 配置规则</h2>
+<h3 id="1-分片方式">1. 分片方式</h3>
+<table>
+<thead>
+<tr>
+<th>分片</th>
+<th>连续分片</th>
+<th>离散分片</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>优点</td>
+<td>扩容无需迁移数据<!-- raw HTML omitted -->范围条件查询消耗资源少</td>
+<td>并发访问能力增强<!-- raw HTML omitted -->范围条件查询性能提升</td>
+</tr>
+<tr>
+<td>缺点</td>
+<td>存在数据热点的可能性<!-- raw HTML omitted -->并发访问能力受限于单一或少量DataNode</td>
+<td>数据扩容比较困难，涉及到数据迁移问题<!-- raw HTML omitted -->数据库连接消耗比较多</td>
+</tr>
+</tbody>
+</table>
+<h3 id="2-配置规则">2. 配置规则</h3>
+<p><strong>TableRule :</strong></p>
+<ul>
+<li>name：分片规则<code>标识名称</code>(唯一)。</li>
+<li>columns：分片表的列名。</li>
+<li>algorithm：算法的名称。</li>
+</ul>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-xml" data-lang="xml"><span style="color:#309;font-weight:bold">&lt;tableRule</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;auto-sharding-long&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;rule&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;columns&gt;</span>id<span style="color:#309;font-weight:bold">&lt;/columns&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;algorithm&gt;</span>rang-long<span style="color:#309;font-weight:bold">&lt;/algorithm&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;/rule&gt;</span>
+<span style="color:#309;font-weight:bold">&lt;/tableRule&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>Function :</strong></p>
+<ul>
+<li>name：算法名称(唯一)。</li>
+<li>class：具体的分片算法(需要指定算法的具体类)。</li>
+<li>property：属性根据要求指定。</li>
+</ul>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-xml" data-lang="xml"><span style="color:#309;font-weight:bold">&lt;function</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;rang-long&#34;</span> <span style="color:#309">class=</span><span style="color:#c30">&#34;io.mycat.route.function.AutoPartitionByLong&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;property</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;mapFile&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>autopartition-long.txt<span style="color:#309;font-weight:bold">&lt;/property&gt;</span>
+<span style="color:#309;font-weight:bold">&lt;/function&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><!-- raw HTML omitted -->
+<h2 id="二-连续分片">二. 连续分片</h2>
+<h3 id="1-自定义数字范围分片">1. 自定义数字范围分片</h3>
+<ul>
+<li><strong>适用于明确知道分片字段的某个范围属于哪个分片，其字段为数字类型。</strong></li>
+</ul>
+<p><em>schema.xml</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-xml" data-lang="xml"><span style="color:#099">&lt;?xml version=&#34;1.0&#34;?&gt;</span>
+<span style="color:#099">&lt;!DOCTYPE mycat:schema SYSTEM &#34;schema.dtd&#34;&gt;</span>
+<span style="color:#309;font-weight:bold">&lt;mycat:schema</span> <span style="color:#309">xmlns:mycat=</span><span style="color:#c30">&#34;http://io.mycat/&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+    <span style="color:#09f;font-style:italic">&lt;!--逻辑数据库设置--&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;schema</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;luckcat&#34;</span> <span style="color:#309">checkSQLschema=</span><span style="color:#c30">&#34;false&#34;</span> <span style="color:#309">sqlMaxLimit=</span><span style="color:#c30">&#34;100&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+        <span style="color:#09f;font-style:italic">&lt;!--指定切分表和分表规则--&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;table</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;auto_sharding_long&#34;</span> <span style="color:#309">primaryKey=</span><span style="color:#c30">&#34;id&#34;</span> <span style="color:#309">dataNode=</span><span style="color:#c30">&#34;dn0,dn1,dn2&#34;</span> <span style="color:#309">rule=</span><span style="color:#c30">&#34;auto-sharding-long&#34;</span><span style="color:#309;font-weight:bold">/&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;/schema&gt;</span>
+
+    <span style="color:#09f;font-style:italic">&lt;!--逻辑节点与物理主机映射--&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;dataNode</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;dn0&#34;</span> <span style="color:#309">dataHost=</span><span style="color:#c30">&#34;dh-1&#34;</span> <span style="color:#309">database=</span><span style="color:#c30">&#34;db0&#34;</span><span style="color:#309;font-weight:bold">/&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;dataNode</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;dn1&#34;</span> <span style="color:#309">dataHost=</span><span style="color:#c30">&#34;dh-1&#34;</span> <span style="color:#309">database=</span><span style="color:#c30">&#34;db1&#34;</span><span style="color:#309;font-weight:bold">/&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;dataNode</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;dn2&#34;</span> <span style="color:#309">dataHost=</span><span style="color:#c30">&#34;dh-1&#34;</span> <span style="color:#309">database=</span><span style="color:#c30">&#34;db2&#34;</span><span style="color:#309;font-weight:bold">/&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;dataNode</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;dn3&#34;</span> <span style="color:#309">dataHost=</span><span style="color:#c30">&#34;dh-1&#34;</span> <span style="color:#309">database=</span><span style="color:#c30">&#34;db3&#34;</span><span style="color:#309;font-weight:bold">/&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;dataNode</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;dn4&#34;</span> <span style="color:#309">dataHost=</span><span style="color:#c30">&#34;dh-1&#34;</span> <span style="color:#309">database=</span><span style="color:#c30">&#34;db4&#34;</span><span style="color:#309;font-weight:bold">/&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;dataNode</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;dn5&#34;</span> <span style="color:#309">dataHost=</span><span style="color:#c30">&#34;dh-1&#34;</span> <span style="color:#309">database=</span><span style="color:#c30">&#34;db5&#34;</span><span style="color:#309;font-weight:bold">/&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;dataNode</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;dn6&#34;</span> <span style="color:#309">dataHost=</span><span style="color:#c30">&#34;dh-1&#34;</span> <span style="color:#309">database=</span><span style="color:#c30">&#34;db6&#34;</span><span style="color:#309;font-weight:bold">/&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;dataNode</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;dn7&#34;</span> <span style="color:#309">dataHost=</span><span style="color:#c30">&#34;dh-1&#34;</span> <span style="color:#309">database=</span><span style="color:#c30">&#34;db7&#34;</span><span style="color:#309;font-weight:bold">/&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;dataNode</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;dn8&#34;</span> <span style="color:#309">dataHost=</span><span style="color:#c30">&#34;dh-1&#34;</span> <span style="color:#309">database=</span><span style="color:#c30">&#34;db8&#34;</span><span style="color:#309;font-weight:bold">/&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;dataNode</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;dn9&#34;</span> <span style="color:#309">dataHost=</span><span style="color:#c30">&#34;dh-1&#34;</span> <span style="color:#309">database=</span><span style="color:#c30">&#34;db9&#34;</span><span style="color:#309;font-weight:bold">/&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;dataNode</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;dn10&#34;</span> <span style="color:#309">dataHost=</span><span style="color:#c30">&#34;dh-1&#34;</span> <span style="color:#309">database=</span><span style="color:#c30">&#34;db10&#34;</span><span style="color:#309;font-weight:bold">/&gt;</span>
+
+    <span style="color:#09f;font-style:italic">&lt;!--物理主机--&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;dataHost</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;dh-1&#34;</span> <span style="color:#309">maxCon=</span><span style="color:#c30">&#34;1000&#34;</span> <span style="color:#309">minCon=</span><span style="color:#c30">&#34;10&#34;</span> <span style="color:#309">balance=</span><span style="color:#c30">&#34;0&#34;</span> <span style="color:#309">writeType=</span><span style="color:#c30">&#34;0&#34;</span> <span style="color:#309">dbType=</span><span style="color:#c30">&#34;mysql&#34;</span> <span style="color:#309">dbDriver=</span><span style="color:#c30">&#34;native&#34;</span>
+              <span style="color:#309">switchType=</span><span style="color:#c30">&#34;1&#34;</span> <span style="color:#309">slaveThreshold=</span><span style="color:#c30">&#34;100&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;heartbeat&gt;</span>select user()<span style="color:#309;font-weight:bold">&lt;/heartbeat&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;writeHost</span> <span style="color:#309">host=</span><span style="color:#c30">&#34;hostM1&#34;</span> <span style="color:#309">url=</span><span style="color:#c30">&#34;localhost:3306&#34;</span> <span style="color:#309">user=</span><span style="color:#c30">&#34;root&#34;</span> <span style="color:#309">password=</span><span style="color:#c30">&#34;123456&#34;</span><span style="color:#309;font-weight:bold">/&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;/dataHost&gt;</span>
+<span style="color:#309;font-weight:bold">&lt;/mycat:schema&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><em>rule.xml</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-xml" data-lang="xml"><span style="color:#099">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+<span style="color:#099">&lt;!DOCTYPE mycat:rule SYSTEM &#34;rule.dtd&#34;&gt;</span>
+<span style="color:#309;font-weight:bold">&lt;mycat:rule</span> <span style="color:#309">xmlns:mycat=</span><span style="color:#c30">&#34;http://io.mycat/&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;tableRule</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;auto-sharding-long&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;rule&gt;</span>
+            <span style="color:#309;font-weight:bold">&lt;columns&gt;</span>age<span style="color:#309;font-weight:bold">&lt;/columns&gt;</span> <span style="color:#09f;font-style:italic">&lt;!--分表字段--&gt;</span>
+            <span style="color:#309;font-weight:bold">&lt;algorithm&gt;</span>rang-long<span style="color:#309;font-weight:bold">&lt;/algorithm&gt;</span> <span style="color:#09f;font-style:italic">&lt;!--算法--&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;/rule&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;/tableRule&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;function</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;rang-long&#34;</span> <span style="color:#309">class=</span><span style="color:#c30">&#34;io.mycat.route.function.AutoPartitionByLong&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;property</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;mapFile&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>autopartition-long.txt<span style="color:#309;font-weight:bold">&lt;/property&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;property</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;defaultNode&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>0<span style="color:#309;font-weight:bold">&lt;/property&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;/function&gt;</span>
+<span style="color:#309;font-weight:bold">&lt;/mycat:rule&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><em>autopartition-long.txt</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-txt" data-lang="txt"># range start-end ,data node index
+# K=1000,M=10000.
+0-2M=0
+2M-3M=1
+3M-6M=2
+</code></pre></td></tr></table>
+</div>
+</div><p><em>test.sql</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-sql" data-lang="sql"><span style="color:#069;font-weight:bold">CREATE</span> <span style="color:#069;font-weight:bold">TABLE</span>  auto_sharding_long  (<span style="color:#555">`</span>age<span style="color:#555">`</span>  <span style="color:#366">int</span> <span style="color:#069;font-weight:bold">NOT</span> <span style="color:#069;font-weight:bold">NULL</span> ,<span style="color:#555">`</span>db_nm<span style="color:#555">`</span>  <span style="color:#366">varchar</span>(<span style="color:#f60">20</span>) <span style="color:#069;font-weight:bold">NULL</span>);
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> auto_sharding_long (age,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">20000</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> auto_sharding_long (age,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">25000</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> auto_sharding_long (age,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">35000</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">select</span> <span style="color:#555">*</span> <span style="color:#069;font-weight:bold">from</span> auto_sharding_long;
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="2-按日期分片">2. 按日期分片</h3>
+<p><em>schema.xml</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-xml" data-lang="xml"><span style="color:#309;font-weight:bold">&lt;table</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;sharding_by_day&#34;</span> <span style="color:#309">primaryKey=</span><span style="color:#c30">&#34;id&#34;</span> <span style="color:#309">dataNode=</span><span style="color:#c30">&#34;dn$0-2&#34;</span> <span style="color:#309">rule=</span><span style="color:#c30">&#34;sharding-by-day&#34;</span> <span style="color:#309;font-weight:bold">/&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><em>rule.xml</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-xml" data-lang="xml"><span style="color:#099">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+<span style="color:#099">&lt;!DOCTYPE mycat:rule SYSTEM &#34;rule.dtd&#34;&gt;</span>
+<span style="color:#309;font-weight:bold">&lt;mycat:rule</span> <span style="color:#309">xmlns:mycat=</span><span style="color:#c30">&#34;http://io.mycat/&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;tableRule</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;sharding-by-day&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;rule&gt;</span>
+            <span style="color:#309;font-weight:bold">&lt;columns&gt;</span>create_time<span style="color:#309;font-weight:bold">&lt;/columns&gt;</span>
+            <span style="color:#309;font-weight:bold">&lt;algorithm&gt;</span>part-by-day<span style="color:#309;font-weight:bold">&lt;/algorithm&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;/rule&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;/tableRule&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;function</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;part-by-day&#34;</span>
+              <span style="color:#309">class=</span><span style="color:#c30">&#34;io.mycat.route.function.PartitionByDate&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;property</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;dateFormat&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>yyyy-MM-dd<span style="color:#309;font-weight:bold">&lt;/property&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;property</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;sBeginDate&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>2017-10-01<span style="color:#309;font-weight:bold">&lt;/property&gt;</span>
+        <span style="color:#09f;font-style:italic">&lt;!--默认从开始日期算起，每隔10天一个分区。--&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;property</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;sPartionDay&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>10<span style="color:#309;font-weight:bold">&lt;/property&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;/function&gt;</span>
+<span style="color:#309;font-weight:bold">&lt;/mycat:rule&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><em>test.sql</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-sql" data-lang="sql"><span style="color:#069;font-weight:bold">CREATE</span> <span style="color:#069;font-weight:bold">TABLE</span>  sharding_by_day  (create_time   <span style="color:#069;font-weight:bold">timestamp</span> <span style="color:#069;font-weight:bold">NULL</span> <span style="color:#069;font-weight:bold">ON</span> <span style="color:#069;font-weight:bold">UPDATE</span> <span style="color:#069;font-weight:bold">CURRENT_TIMESTAMP</span>  ,<span style="color:#555">`</span>db_nm<span style="color:#555">`</span>  <span style="color:#366">varchar</span>(<span style="color:#f60">20</span>) <span style="color:#069;font-weight:bold">NULL</span>);
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> sharding_by_day (create_time,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#c30">&#39;2017-10-01&#39;</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> sharding_by_day (create_time,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#c30">&#39;2017-10-10&#39;</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> sharding_by_day (create_time,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#c30">&#39;2017-10-11&#39;</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> sharding_by_day (create_time,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#c30">&#39;2017-10-21&#39;</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> sharding_by_day (create_time,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#c30">&#39;2017-10-31&#39;</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">select</span> <span style="color:#555">*</span> <span style="color:#069;font-weight:bold">from</span> sharding_by_day;
+
+<span style="color:#09f;font-style:italic">-- 以上测试结果中有个错误，因为配置的dataNode节点数为3，而2017-10-31为2017-10-01后的第四个10天中的第一天，因此需要至少4个dataNode，节点不够就报如上错误了。
+</span></code></pre></td></tr></table>
+</div>
+</div><h3 id="3-按单月小时分片">3. 按单月小时分片</h3>
+<p><em>schema.xml</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-xml" data-lang="xml"><span style="color:#309;font-weight:bold">&lt;table</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;sharding_by_hour&#34;</span> <span style="color:#309">primaryKey=</span><span style="color:#c30">&#34;id&#34;</span> <span style="color:#309">dataNode=</span><span style="color:#c30">&#34;dn$0-2&#34;</span> <span style="color:#309">rule=</span><span style="color:#c30">&#34;sharding-by-hour&#34;</span> <span style="color:#309;font-weight:bold">/&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><em>rule.xml</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-xml" data-lang="xml"><span style="color:#309;font-weight:bold">&lt;mycat:rule</span> <span style="color:#309">xmlns:mycat=</span><span style="color:#c30">&#34;http://io.mycat/&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;tableRule</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;sharding-by-hour&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;rule&gt;</span>
+            <span style="color:#309;font-weight:bold">&lt;columns&gt;</span>sharding_col<span style="color:#309;font-weight:bold">&lt;/columns&gt;</span>
+            <span style="color:#309;font-weight:bold">&lt;algorithm&gt;</span>sharding-by-hour<span style="color:#309;font-weight:bold">&lt;/algorithm&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;/rule&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;/tableRule&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;function</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;sharding-by-hour&#34;</span> <span style="color:#309">class=</span><span style="color:#c30">&#34;io.mycat.route.function.LatestMonthPartion&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;property</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;splitOneDay&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>3<span style="color:#309;font-weight:bold">&lt;/property&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;/function&gt;</span>
+<span style="color:#309;font-weight:bold">&lt;/mycat:rule&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><em>test.sql</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-sql" data-lang="sql"><span style="color:#09f;font-style:italic">-- 单月内按照小时拆分，最小粒度是小时，一天最多可以有24个分片，最少1个分片，下个月从头开始循环，每个月末需要手工清理数据。
+</span><span style="color:#09f;font-style:italic">-- 字段为字符串类型，yyyymmddHH 10位。
+</span><span style="color:#09f;font-style:italic"></span>
+<span style="color:#069;font-weight:bold">CREATE</span> <span style="color:#069;font-weight:bold">TABLE</span>  sharding_by_hour  (create_time   <span style="color:#069;font-weight:bold">timestamp</span> <span style="color:#069;font-weight:bold">NULL</span> <span style="color:#069;font-weight:bold">ON</span> <span style="color:#069;font-weight:bold">UPDATE</span> <span style="color:#069;font-weight:bold">CURRENT_TIMESTAMP</span>  ,<span style="color:#555">`</span>db_nm<span style="color:#555">`</span>  <span style="color:#366">varchar</span>(<span style="color:#f60">20</span>) <span style="color:#069;font-weight:bold">NULL</span>,sharding_col <span style="color:#366">varchar</span>(<span style="color:#f60">10</span>) <span style="color:#069;font-weight:bold">null</span>);
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> sharding_by_hour (sharding_col,create_time,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#c30">&#39;2017100101&#39;</span>,<span style="color:#c30">&#39;2017-10-01&#39;</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> sharding_by_hour (sharding_col,create_time,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#c30">&#39;2017100108&#39;</span>,<span style="color:#c30">&#39;2017-10-01&#39;</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> sharding_by_hour (sharding_col,create_time,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#c30">&#39;2017100109&#39;</span>,<span style="color:#c30">&#39;2017-10-01&#39;</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> sharding_by_hour (sharding_col,create_time,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#c30">&#39;2017100116&#39;</span>,<span style="color:#c30">&#39;2017-10-01&#39;</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> sharding_by_hour (sharding_col,create_time,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#c30">&#39;2017100117&#39;</span>,<span style="color:#c30">&#39;2017-10-01&#39;</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> sharding_by_hour (sharding_col,create_time,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#c30">&#39;2017100123&#39;</span>,<span style="color:#c30">&#39;2017-10-01&#39;</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">select</span> <span style="color:#555">*</span> <span style="color:#069;font-weight:bold">from</span> sharding_by_hour;
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="4-按自然月分片">4. 按自然月分片</h3>
+<p><em>schema.xml</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-xml" data-lang="xml"><span style="color:#309;font-weight:bold">&lt;table</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;sharding_by_month&#34;</span> <span style="color:#309">primaryKey=</span><span style="color:#c30">&#34;id&#34;</span> <span style="color:#309">dataNode=</span><span style="color:#c30">&#34;dn$0-2&#34;</span> <span style="color:#309">rule=</span><span style="color:#c30">&#34;sharding-by-month&#34;</span> <span style="color:#309;font-weight:bold">/&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><em>rule.xml</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-xml" data-lang="xml"><span style="color:#309;font-weight:bold">&lt;mycat:rule</span> <span style="color:#309">xmlns:mycat=</span><span style="color:#c30">&#34;http://io.mycat/&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;tableRule</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;sharding-by-month&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;rule&gt;</span>
+            <span style="color:#309;font-weight:bold">&lt;columns&gt;</span>create_time<span style="color:#309;font-weight:bold">&lt;/columns&gt;</span>
+            <span style="color:#309;font-weight:bold">&lt;algorithm&gt;</span>sharding-by-month<span style="color:#309;font-weight:bold">&lt;/algorithm&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;/rule&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;/tableRule&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;function</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;sharding-by-month&#34;</span> <span style="color:#309">class=</span><span style="color:#c30">&#34;io.mycat.route.function.PartitionByMonth&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;property</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;dateFormat&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>yyyy-MM-dd<span style="color:#309;font-weight:bold">&lt;/property&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;property</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;sBeginDate&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>2017-10-01<span style="color:#309;font-weight:bold">&lt;/property&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;property</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;sEndDate&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>2017-12-30<span style="color:#309;font-weight:bold">&lt;/property&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;/function&gt;</span>
+<span style="color:#309;font-weight:bold">&lt;/mycat:rule&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><em>test.sql</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-sql" data-lang="sql"><span style="color:#069;font-weight:bold">CREATE</span> <span style="color:#069;font-weight:bold">TABLE</span>  sharding_by_month  (create_time   <span style="color:#069;font-weight:bold">timestamp</span> <span style="color:#069;font-weight:bold">NULL</span> <span style="color:#069;font-weight:bold">ON</span> <span style="color:#069;font-weight:bold">UPDATE</span> <span style="color:#069;font-weight:bold">CURRENT_TIMESTAMP</span>  ,<span style="color:#555">`</span>db_nm<span style="color:#555">`</span>  <span style="color:#366">varchar</span>(<span style="color:#f60">20</span>) <span style="color:#069;font-weight:bold">NULL</span>);  
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> sharding_by_month (create_time,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#c30">&#39;2017-10-01&#39;</span>, <span style="color:#069;font-weight:bold">database</span>());  
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> sharding_by_month (create_time,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#c30">&#39;2017-10-30&#39;</span>, <span style="color:#069;font-weight:bold">database</span>());  
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> sharding_by_month (create_time,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#c30">&#39;2017-11-11&#39;</span>, <span style="color:#069;font-weight:bold">database</span>());  
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> sharding_by_month (create_time,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#c30">&#39;2017-11-21&#39;</span>, <span style="color:#069;font-weight:bold">database</span>());  
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> sharding_by_month (create_time,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#c30">&#39;2017-12-01&#39;</span>, <span style="color:#069;font-weight:bold">database</span>());  
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> sharding_by_month (create_time,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#c30">&#39;2017-12-31&#39;</span>, <span style="color:#069;font-weight:bold">database</span>());  
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> sharding_by_month (create_time,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#c30">&#39;2018-01-01&#39;</span>, <span style="color:#069;font-weight:bold">database</span>());  
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> sharding_by_month (create_time,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#c30">&#39;2018-01-31&#39;</span>, <span style="color:#069;font-weight:bold">database</span>());  
+<span style="color:#069;font-weight:bold">select</span> <span style="color:#555">*</span> <span style="color:#069;font-weight:bold">from</span> sharding_by_month
+
+<span style="color:#09f;font-style:italic">-- 注意
+</span><span style="color:#09f;font-style:italic">-- * schema里的table的dataNode节点数必须：大于rule的开始时间按照分片数计算到现在的个数
+</span><span style="color:#09f;font-style:italic">-- * 按照自然月计算（无论是28、30、31天都是一个月的）
+</span><span style="color:#09f;font-style:italic">-- * 分片节点个数可以后增加，但是必须符合第一点说明。
+</span></code></pre></td></tr></table>
+</div>
+</div><!-- raw HTML omitted -->
+<h2 id="三-离散分片">三. 离散分片</h2>
+<h3 id="1-枚举分片">1. 枚举分片</h3>
+<p><em>schema.xml</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-xml" data-lang="xml"><span style="color:#309;font-weight:bold">&lt;table</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;sharding_by_intfile&#34;</span> <span style="color:#309">primaryKey=</span><span style="color:#c30">&#34;id&#34;</span> <span style="color:#309">dataNode=</span><span style="color:#c30">&#34;dn$0-2&#34;</span> <span style="color:#309">rule=</span><span style="color:#c30">&#34;sharding-by-intfile&#34;</span> <span style="color:#309;font-weight:bold">/&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><em>rule.xml</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-xml" data-lang="xml"><span style="color:#309;font-weight:bold">&lt;mycat:rule</span> <span style="color:#309">xmlns:mycat=</span><span style="color:#c30">&#34;http://io.mycat/&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;tableRule</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;sharding-by-intfile&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;rule&gt;</span>
+            <span style="color:#309;font-weight:bold">&lt;columns&gt;</span>age<span style="color:#309;font-weight:bold">&lt;/columns&gt;</span>
+            <span style="color:#309;font-weight:bold">&lt;algorithm&gt;</span>hash-int<span style="color:#309;font-weight:bold">&lt;/algorithm&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;/rule&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;/tableRule&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;function</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;hash-int&#34;</span> <span style="color:#309">class=</span><span style="color:#c30">&#34;io.mycat.route.function.PartitionByFileMap&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;property</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;mapFile&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>partition-hash-int.txt<span style="color:#309;font-weight:bold">&lt;/property&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;property</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;type&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>0<span style="color:#309;font-weight:bold">&lt;/property&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;property</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;defaultNode&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>0<span style="color:#309;font-weight:bold">&lt;/property&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;/function&gt;</span>
+<span style="color:#309;font-weight:bold">&lt;/mycat:rule&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><em>partition-hash-int.txt</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-txt" data-lang="txt"># 枚举项=节点标识，枚举项可以是数字和字符（非汉字）
+11=1
+12=2
+</code></pre></td></tr></table>
+</div>
+</div><p><em>test.sql</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-sql" data-lang="sql"><span style="color:#09f;font-style:italic">-- 通过在配置文件中配置可能的枚举id，指定数据分布到不同的物理节点上，本规则适用于按照省份或区县来拆分数据类业务。
+</span><span style="color:#09f;font-style:italic"></span>
+<span style="color:#069;font-weight:bold">CREATE</span> <span style="color:#069;font-weight:bold">TABLE</span> sharding_by_intfile  (<span style="color:#555">`</span>age<span style="color:#555">`</span>  <span style="color:#366">int</span> <span style="color:#069;font-weight:bold">NOT</span> <span style="color:#069;font-weight:bold">NULL</span> ,<span style="color:#555">`</span>db_nm<span style="color:#555">`</span>  <span style="color:#366">varchar</span>(<span style="color:#f60">20</span>) <span style="color:#069;font-weight:bold">NULL</span>);
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_intfile<span style="color:#555">`</span> (age,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">10</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_intfile<span style="color:#555">`</span> (age,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">11</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_intfile<span style="color:#555">`</span> (age,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">12</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">select</span> <span style="color:#555">*</span> <span style="color:#069;font-weight:bold">from</span> <span style="color:#555">`</span>sharding_by_intfile<span style="color:#555">`</span>;
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="2-程序指定分区的分片">2. 程序指定分区的分片</h3>
+<p><em>schema.xml</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-xml" data-lang="xml"><span style="color:#309;font-weight:bold">&lt;table</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;sharding_by_substring&#34;</span> <span style="color:#309">primaryKey=</span><span style="color:#c30">&#34;id&#34;</span> <span style="color:#309">dataNode=</span><span style="color:#c30">&#34;dn$0-2&#34;</span> <span style="color:#309">rule=</span><span style="color:#c30">&#34;sharding-by-substring&#34;</span> <span style="color:#309;font-weight:bold">/&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><em>rule.xml</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-xml" data-lang="xml"><span style="color:#309;font-weight:bold">&lt;mycat:rule</span> <span style="color:#309">xmlns:mycat=</span><span style="color:#c30">&#34;http://io.mycat/&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;tableRule</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;sharding-by-substring&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;rule&gt;</span>
+            <span style="color:#309;font-weight:bold">&lt;columns&gt;</span>user_id<span style="color:#309;font-weight:bold">&lt;/columns&gt;</span>
+            <span style="color:#309;font-weight:bold">&lt;algorithm&gt;</span>sharding-by-substring<span style="color:#309;font-weight:bold">&lt;/algorithm&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;/rule&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;/tableRule&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;function</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;sharding-by-substring&#34;</span> <span style="color:#309">class=</span><span style="color:#c30">&#34;io.mycat.route.function.PartitionDirectBySubString&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;property</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;startIndex&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>0<span style="color:#309;font-weight:bold">&lt;/property&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;property</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;size&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>2<span style="color:#309;font-weight:bold">&lt;/property&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;property</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;partitionCount&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>3<span style="color:#309;font-weight:bold">&lt;/property&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;property</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;defaultPartition&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>0<span style="color:#309;font-weight:bold">&lt;/property&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;/function&gt;</span>
+<span style="color:#309;font-weight:bold">&lt;/mycat:rule&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><em>test.sql</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-sql" data-lang="sql"><span style="color:#09f;font-style:italic">-- 在程序运行阶段，由程序自主决定路由到哪个分片。
+</span><span style="color:#09f;font-style:italic"></span>
+<span style="color:#069;font-weight:bold">CREATE</span> <span style="color:#069;font-weight:bold">TABLE</span> sharding_by_substring  (<span style="color:#555">`</span>user_id<span style="color:#555">`</span>  <span style="color:#366">varchar</span>(<span style="color:#f60">20</span>) <span style="color:#069;font-weight:bold">NOT</span> <span style="color:#069;font-weight:bold">NULL</span> ,<span style="color:#555">`</span>db_nm<span style="color:#555">`</span>  <span style="color:#366">varchar</span>(<span style="color:#f60">20</span>) <span style="color:#069;font-weight:bold">NULL</span>);
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_substring<span style="color:#555">`</span> (user_id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#c30">&#39;05-10000&#39;</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_substring<span style="color:#555">`</span> (user_id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#c30">&#39;02-10001&#39;</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_substring<span style="color:#555">`</span> (user_id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#c30">&#39;03-10002&#39;</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">select</span> <span style="color:#555">*</span> <span style="color:#069;font-weight:bold">from</span> <span style="color:#555">`</span>sharding_by_substring<span style="color:#555">`</span>;
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="3-十进制求模分片">3. 十进制求模分片</h3>
+<p><em>schema.xml</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-xml" data-lang="xml"><span style="color:#309;font-weight:bold">&lt;table</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;sharding_by_mod&#34;</span> <span style="color:#309">primaryKey=</span><span style="color:#c30">&#34;id&#34;</span> <span style="color:#309">dataNode=</span><span style="color:#c30">&#34;dn$0-2&#34;</span> <span style="color:#309">rule=</span><span style="color:#c30">&#34;sharding-mod-long&#34;</span> <span style="color:#309;font-weight:bold">/&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><em>rule.xml</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-xml" data-lang="xml"><span style="color:#309;font-weight:bold">&lt;mycat:rule</span> <span style="color:#309">xmlns:mycat=</span><span style="color:#c30">&#34;http://io.mycat/&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;tableRule</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;sharding-mod-long&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;rule&gt;</span>
+            <span style="color:#309;font-weight:bold">&lt;columns&gt;</span>id<span style="color:#309;font-weight:bold">&lt;/columns&gt;</span>
+            <span style="color:#309;font-weight:bold">&lt;algorithm&gt;</span>mod-long<span style="color:#309;font-weight:bold">&lt;/algorithm&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;/rule&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;/tableRule&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;function</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;mod-long&#34;</span> <span style="color:#309">class=</span><span style="color:#c30">&#34;io.mycat.route.function.PartitionByMod&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;property</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;count&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>3<span style="color:#309;font-weight:bold">&lt;/property&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;/function&gt;</span>
+<span style="color:#309;font-weight:bold">&lt;/mycat:rule&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><em>test.sql</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-sql" data-lang="sql"><span style="color:#069;font-weight:bold">CREATE</span> <span style="color:#069;font-weight:bold">TABLE</span> <span style="color:#555">`</span>sharding_by_mod<span style="color:#555">`</span> (id <span style="color:#366">int</span>(<span style="color:#f60">10</span>) <span style="color:#069;font-weight:bold">null</span>,<span style="color:#555">`</span>db_nm<span style="color:#555">`</span> <span style="color:#366">varchar</span>(<span style="color:#f60">20</span>) <span style="color:#069;font-weight:bold">NULL</span>);
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_mod<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">1</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_mod<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">2</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_mod<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">3</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_mod<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">10</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">select</span> <span style="color:#555">*</span> <span style="color:#069;font-weight:bold">from</span> sharding_by_mod;
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="4-字符串hash解析分片">4. 字符串hash解析分片</h3>
+<p><em>schema.xml</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-xml" data-lang="xml"><span style="color:#309;font-weight:bold">&lt;table</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;sharding_by_stringhash&#34;</span> <span style="color:#309">primaryKey=</span><span style="color:#c30">&#34;ord_no&#34;</span> <span style="color:#309">dataNode=</span><span style="color:#c30">&#34;dn$0-2&#34;</span> <span style="color:#309">rule=</span><span style="color:#c30">&#34;sharding-by-stringhash&#34;</span> <span style="color:#309;font-weight:bold">/&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><em>rule.xml</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-xml" data-lang="xml"><span style="color:#309;font-weight:bold">&lt;mycat:rule</span> <span style="color:#309">xmlns:mycat=</span><span style="color:#c30">&#34;http://io.mycat/&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;tableRule</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;sharding-by-stringhash&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;rule&gt;</span>
+            <span style="color:#309;font-weight:bold">&lt;columns&gt;</span>ord_no<span style="color:#309;font-weight:bold">&lt;/columns&gt;</span>
+            <span style="color:#309;font-weight:bold">&lt;algorithm&gt;</span>sharding-by-stringhash<span style="color:#309;font-weight:bold">&lt;/algorithm&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;/rule&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;/tableRule&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;function</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;sharding-by-stringhash&#34;</span> <span style="color:#309">class=</span><span style="color:#c30">&#34;io.mycat.route.function.PartitionByString&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;property</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;partitionLength&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>512<span style="color:#309;font-weight:bold">&lt;/property&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;property</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;partitionCount&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>2<span style="color:#309;font-weight:bold">&lt;/property&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;property</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;hashSlice&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>-6:0<span style="color:#309;font-weight:bold">&lt;/property&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;/function&gt;</span>
+<span style="color:#309;font-weight:bold">&lt;/mycat:rule&gt;</span>
+
+        <span style="color:#09f;font-style:italic">&lt;!-- 配置说明：--&gt;</span>
+        <span style="color:#09f;font-style:italic">&lt;!-- * columns标识将要分片的表字段。--&gt;</span>
+        <span style="color:#09f;font-style:italic">&lt;!-- * algorithm为分片函数。--&gt;</span>
+        <span style="color:#09f;font-style:italic">&lt;!-- * partitionLength为字符串hash的求模基数。--&gt;</span>
+        <span style="color:#09f;font-style:italic">&lt;!-- * partitionCount为分区数。其中partitionLength*partitionCount=1024--&gt;</span>
+        <span style="color:#09f;font-style:italic">&lt;!-- * hashSlice为预算位，即根据子字符串中的int值进行hash运算。--&gt;</span>
+        <span style="color:#09f;font-style:italic">&lt;!-- 0 代表 str.length(), -1 代表 str.length()-1，大于0只代表数字自身--&gt;</span>
+        <span style="color:#09f;font-style:italic">&lt;!-- 可以理解为substring（start，end），start为0则只表示0--&gt;</span>
+        <span style="color:#09f;font-style:italic">&lt;!-- 例1：值“45abc”，hash预算位0:2 ，取其中45进行计算--&gt;</span>
+        <span style="color:#09f;font-style:italic">&lt;!-- 例2：值“aaaabbb2345”，hash预算位-4:0 ，取其中2345进行计算--&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><em>test.sql</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-sql" data-lang="sql"><span style="color:#09f;font-style:italic">-- 此规则是截取字符串中的int数值的hash分片。
+</span><span style="color:#09f;font-style:italic"></span>
+<span style="color:#069;font-weight:bold">CREATE</span> <span style="color:#069;font-weight:bold">TABLE</span> sharding_by_stringhash (ord_no <span style="color:#366">varchar</span>(<span style="color:#f60">20</span>) <span style="color:#069;font-weight:bold">NULL</span>,<span style="color:#555">`</span>db_nm<span style="color:#555">`</span>  <span style="color:#366">varchar</span>(<span style="color:#f60">20</span>) <span style="color:#069;font-weight:bold">NULL</span>);
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_stringhash<span style="color:#555">`</span> (ord_no,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">171022237582</span>, <span style="color:#069;font-weight:bold">database</span>());  
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_stringhash<span style="color:#555">`</span> (ord_no,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">171022553756</span>, <span style="color:#069;font-weight:bold">database</span>());  
+<span style="color:#069;font-weight:bold">select</span> <span style="color:#555">*</span> <span style="color:#069;font-weight:bold">from</span> sharding_by_stringhash;  
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="5-一致性哈希分片">5. 一致性哈希分片</h3>
+<p><em>schema.xml</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-xml" data-lang="xml"><span style="color:#309;font-weight:bold">&lt;table</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;sharding_by_murmurhash&#34;</span> <span style="color:#309">primaryKey=</span><span style="color:#c30">&#34;id&#34;</span> <span style="color:#309">dataNode=</span><span style="color:#c30">&#34;dn$0-2&#34;</span> <span style="color:#309">rule=</span><span style="color:#c30">&#34;sharding-by-murmurhash&#34;</span> <span style="color:#309;font-weight:bold">/&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><em>rule.xml</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-xml" data-lang="xml"><span style="color:#309;font-weight:bold">&lt;mycat:rule</span> <span style="color:#309">xmlns:mycat=</span><span style="color:#c30">&#34;http://io.mycat/&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;tableRule</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;sharding-by-murmurhash&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;rule&gt;</span>
+            <span style="color:#309;font-weight:bold">&lt;columns&gt;</span>id<span style="color:#309;font-weight:bold">&lt;/columns&gt;</span>
+            <span style="color:#309;font-weight:bold">&lt;algorithm&gt;</span>sharding-by-murmurhash<span style="color:#309;font-weight:bold">&lt;/algorithm&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;/rule&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;/tableRule&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;function</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;sharding-by-murmurhash&#34;</span> <span style="color:#309">class=</span><span style="color:#c30">&#34;io.mycat.route.function.PartitionByMurmurHash&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;property</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;seed&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>0<span style="color:#309;font-weight:bold">&lt;/property&gt;</span><span style="color:#09f;font-style:italic">&lt;!-- 默认是0 --&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;property</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;count&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>2<span style="color:#309;font-weight:bold">&lt;/property&gt;</span><span style="color:#09f;font-style:italic">&lt;!-- 要分片的数据库节点数量，必须指定，否则没法分片 --&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;property</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;virtualBucketTimes&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>160<span style="color:#309;font-weight:bold">&lt;/property&gt;</span>
+        <span style="color:#09f;font-style:italic">&lt;!-- 一个实际的数据库节点被映射为这么多虚拟节点，默认是160倍，也就是虚拟节点数是物理节点数的160倍--&gt;</span>
+        <span style="color:#09f;font-style:italic">&lt;!-- &lt;property name=&#34;weightMapFile&#34;&gt;weightMapFile&lt;/property&gt; 节点的权重，没有指定权重的节点默认是1。
+</span><span style="color:#09f;font-style:italic">        以properties文件的格式填写，以从0开始到count-1的整数值也就是节点索引为key，以节点权重值为值。所有权重值必须是正整数，否则以1代替 --&gt;</span>
+        <span style="color:#09f;font-style:italic">&lt;!-- &lt;property name=&#34;bucketMapPath&#34;&gt;/etc/mycat/bucketMapPath&lt;/property&gt;
+</span><span style="color:#09f;font-style:italic">        用于测试时观察各物理节点与虚拟节点的分布情况，如果指定了这个属性，会把虚拟节点的murmur hash值与物理节点的映射按行输出到
+</span><span style="color:#09f;font-style:italic">        这个文件，没有默认值&gt;，如果不指定，就不会输出任何东西 --&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;/function&gt;</span>
+<span style="color:#309;font-weight:bold">&lt;/mycat:rule&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><em>test.sql</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-sql" data-lang="sql"><span style="color:#09f;font-style:italic">-- 一致性hash算法有效解决了分布式数据的扩容问题。因为此规则优点在于扩容时迁移数据量比较少，前提是分片节点比较多，虚拟节点分配多些。
+</span><span style="color:#09f;font-style:italic">-- 虚拟节点分配的少就会造成数据分布不够均匀。但如果实际分片数据比较少，迁移量也会比较多。
+</span><span style="color:#09f;font-style:italic"></span>
+<span style="color:#069;font-weight:bold">CREATE</span> <span style="color:#069;font-weight:bold">TABLE</span> sharding_by_murmurhash (id <span style="color:#366">int</span>(<span style="color:#f60">10</span>) <span style="color:#069;font-weight:bold">null</span>,<span style="color:#555">`</span>db_nm<span style="color:#555">`</span>  <span style="color:#366">varchar</span>(<span style="color:#f60">20</span>) <span style="color:#069;font-weight:bold">NULL</span>);
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_murmurhash<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">1</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_murmurhash<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">2</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_murmurhash<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">3</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_murmurhash<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">4</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_murmurhash<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">5</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_murmurhash<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">6</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_murmurhash<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">7</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_murmurhash<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">8</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_murmurhash<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">9</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_murmurhash<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">10</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">select</span> <span style="color:#555">*</span> <span style="color:#069;font-weight:bold">from</span> sharding_by_murmurhash;
+</code></pre></td></tr></table>
+</div>
+</div><!-- raw HTML omitted -->
+<h2 id="四-综合分片">四. 综合分片</h2>
+<h3 id="1-范围求模分片">1. 范围求模分片</h3>
+<p><em>schema.xml</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-xml" data-lang="xml"><span style="color:#309;font-weight:bold">&lt;table</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;sharding_by_rang_mod&#34;</span> <span style="color:#309">primaryKey=</span><span style="color:#c30">&#34;id&#34;</span> <span style="color:#309">dataNode=</span><span style="color:#c30">&#34;dn$0-10&#34;</span> <span style="color:#309">rule=</span><span style="color:#c30">&#34;sharding-by-rang-mod&#34;</span> <span style="color:#309;font-weight:bold">/&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><em>rule.xml</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-xml" data-lang="xml"><span style="color:#309;font-weight:bold">&lt;mycat:rule</span> <span style="color:#309">xmlns:mycat=</span><span style="color:#c30">&#34;http://io.mycat/&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;tableRule</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;sharding-by-rang-mod&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;rule&gt;</span>
+            <span style="color:#309;font-weight:bold">&lt;columns&gt;</span>id<span style="color:#309;font-weight:bold">&lt;/columns&gt;</span>
+            <span style="color:#309;font-weight:bold">&lt;algorithm&gt;</span>sharding-by-rang-mod<span style="color:#309;font-weight:bold">&lt;/algorithm&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;/rule&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;/tableRule&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;function</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;sharding-by-rang-mod&#34;</span> <span style="color:#309">class=</span><span style="color:#c30">&#34;io.mycat.route.function.PartitionByRangeMod&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+        <span style="color:#09f;font-style:italic">&lt;!--指定分片规则的配置文件--&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;property</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;mapFile&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>partition-range-mod.txt<span style="color:#309;font-weight:bold">&lt;/property&gt;</span>
+        <span style="color:#09f;font-style:italic">&lt;!--未包含以上规则的数据存储节点，节点从0开始。--&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;property</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;defaultNode&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>0<span style="color:#309;font-weight:bold">&lt;/property&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;/function&gt;</span>
+<span style="color:#309;font-weight:bold">&lt;/mycat:rule&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><em>partition-range-mod.txt</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-txt" data-lang="txt"># range start-end ,data node group size
+0-200M=3
+200M1-400M=1
+400M1-600M=4
+600M1-800M=2
+</code></pre></td></tr></table>
+</div>
+</div><p><em>test.sql</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-sql" data-lang="sql"><span style="color:#09f;font-style:italic">-- 该算法先进行范围分片，计算出分片组，组内再求模，综合了范围分片和求模分片的优点。分片组内使用求模可以保证组内的数据分布比较均匀，
+</span><span style="color:#09f;font-style:italic">-- 分片组之间采用范围分片可以兼顾范围分片的特点。事先规定好分片的数量，数据扩容时按分片组扩容，则原有分片组的数据不需要迁移。由于
+</span><span style="color:#09f;font-style:italic">-- 分片组内的数据分布比较均匀，所以分片组内可以避免热点数据问题。
+</span><span style="color:#09f;font-style:italic"></span>
+<span style="color:#069;font-weight:bold">CREATE</span> <span style="color:#069;font-weight:bold">TABLE</span> sharding_by_rang_mod (id <span style="color:#366">bigint</span> <span style="color:#069;font-weight:bold">null</span>,<span style="color:#555">`</span>db_nm<span style="color:#555">`</span>  <span style="color:#366">varchar</span>(<span style="color:#f60">20</span>) <span style="color:#069;font-weight:bold">NULL</span>);
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_rang_mod<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">1000</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_rang_mod<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">1002</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_rang_mod<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">30000</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_rang_mod<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">30004</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_rang_mod<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">40000</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_rang_mod<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">40005</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_rang_mod<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">60005</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_rang_mod<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">60006</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_rang_mod<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">80006</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_rang_mod<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">60008</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">select</span> <span style="color:#555">*</span> <span style="color:#069;font-weight:bold">from</span> sharding_by_rang_mod;
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="2-日期范围hash分片">2. 日期范围hash分片</h3>
+<p><em>schema.xml</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-xml" data-lang="xml"><span style="color:#309;font-weight:bold">&lt;table</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;sharding_by_date_hash&#34;</span> <span style="color:#309">primaryKey=</span><span style="color:#c30">&#34;id&#34;</span> <span style="color:#309">dataNode=</span><span style="color:#c30">&#34;dn$0-10&#34;</span> <span style="color:#309">rule=</span><span style="color:#c30">&#34;sharding-by-range-date-hash&#34;</span> <span style="color:#309;font-weight:bold">/&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><em>rule.xml</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-xml" data-lang="xml"><span style="color:#309;font-weight:bold">&lt;mycat:rule</span> <span style="color:#309">xmlns:mycat=</span><span style="color:#c30">&#34;http://io.mycat/&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;tableRule</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;sharding-by-range-date-hash&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;rule&gt;</span>
+            <span style="color:#309;font-weight:bold">&lt;columns&gt;</span>create_time<span style="color:#309;font-weight:bold">&lt;/columns&gt;</span>
+            <span style="color:#309;font-weight:bold">&lt;algorithm&gt;</span>sharding-by-range-date-hash<span style="color:#309;font-weight:bold">&lt;/algorithm&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;/rule&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;/tableRule&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;function</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;sharding-by-range-date-hash&#34;</span> <span style="color:#309">class=</span><span style="color:#c30">&#34;io.mycat.route.function.PartitionByRangeDateHash&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;property</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;dateFormat&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>yyyy-MM-dd HH:mm:ss<span style="color:#309;font-weight:bold">&lt;/property&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;property</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;sBeginDate&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>2018-01-31 00:00:00<span style="color:#309;font-weight:bold">&lt;/property&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;property</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;sPartionDay&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>30<span style="color:#309;font-weight:bold">&lt;/property&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;property</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;groupPartionSize&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>10<span style="color:#309;font-weight:bold">&lt;/property&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;/function&gt;</span>
+<span style="color:#309;font-weight:bold">&lt;/mycat:rule&gt;</span>
+
+<span style="color:#09f;font-style:italic">&lt;!--        sPartionDay：代表多少天分一个分片；--&gt;</span>
+<span style="color:#09f;font-style:italic">&lt;!--        groupPartionSize：代表分片组的大小。--&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><em>test.sql</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-sql" data-lang="sql"><span style="color:#09f;font-style:italic">-- 其思想与范围求模一致，由于日期取模方法会出现数据热点问题，所以先根据日期分组，再根据时间hash使得短期内数据分布得更均匀。
+</span><span style="color:#09f;font-style:italic">-- 其优点是可以避免扩容时的数据迁移，又可以在一定程度上避免范围分片的热点问题，要求日期格式尽量精确，不然达不到局部均匀的目的。
+</span><span style="color:#09f;font-style:italic"></span>
+<span style="color:#069;font-weight:bold">CREATE</span> <span style="color:#069;font-weight:bold">TABLE</span> <span style="color:#555">`</span>sharding_by_date_hash<span style="color:#555">`</span> (<span style="color:#555">`</span>create_time<span style="color:#555">`</span> datetime <span style="color:#069;font-weight:bold">NOT</span> <span style="color:#069;font-weight:bold">NULL</span>,<span style="color:#555">`</span>db_nm<span style="color:#555">`</span> <span style="color:#366">varchar</span>(<span style="color:#f60">20</span>) <span style="color:#069;font-weight:bold">NULL</span>) ENGINE<span style="color:#555">=</span>InnoDB <span style="color:#069;font-weight:bold">DEFAULT</span> CHARSET<span style="color:#555">=</span>utf8;
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_date_hash<span style="color:#555">`</span> (create_time,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#c30">&#39;2018-01-12 00:01:02&#39;</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_date_hash<span style="color:#555">`</span> (create_time,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#c30">&#39;2018-01-21 01:02:09&#39;</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_date_hash<span style="color:#555">`</span> (create_time,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#c30">&#39;2018-01-28 12:00:12&#39;</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_date_hash<span style="color:#555">`</span> (create_time,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#c30">&#39;2018-01-02 11:00:00&#39;</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_date_hash<span style="color:#555">`</span> (create_time,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#c30">&#39;2018-02-26 10:00:09&#39;</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_date_hash<span style="color:#555">`</span> (create_time,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#c30">&#39;2018-03-01 22:01:02&#39;</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_date_hash<span style="color:#555">`</span> (create_time,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#c30">&#39;2018-02-02 17:09:08&#39;</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_date_hash<span style="color:#555">`</span> (create_time,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#c30">&#39;2018-02-23 11:00:04&#39;</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_date_hash<span style="color:#555">`</span> (create_time,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#c30">&#39;2018-02-24 18:12:09&#39;</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_date_hash<span style="color:#555">`</span> (create_time,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#c30">&#39;2018-02-21 07:12:00&#39;</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">select</span> <span style="color:#555">*</span> <span style="color:#069;font-weight:bold">from</span> sharding_by_date_hash;
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="3-取模范围约束分片">3. 取模范围约束分片</h3>
+<p><em>schema.xml</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-xml" data-lang="xml"><span style="color:#309;font-weight:bold">&lt;table</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;sharding_by_pattern&#34;</span> <span style="color:#309">primaryKey=</span><span style="color:#c30">&#34;id&#34;</span> <span style="color:#309">dataNode=</span><span style="color:#c30">&#34;dn$0-10&#34;</span> <span style="color:#309">rule=</span><span style="color:#c30">&#34;sharding-by-pattern&#34;</span> <span style="color:#309;font-weight:bold">/&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><em>rule.xml</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-xml" data-lang="xml"><span style="color:#309;font-weight:bold">&lt;mycat:rule</span> <span style="color:#309">xmlns:mycat=</span><span style="color:#c30">&#34;http://io.mycat/&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;tableRule</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;sharding-by-pattern&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;rule&gt;</span>
+            <span style="color:#309;font-weight:bold">&lt;columns&gt;</span>id<span style="color:#309;font-weight:bold">&lt;/columns&gt;</span>
+            <span style="color:#309;font-weight:bold">&lt;algorithm&gt;</span>sharding-by-pattern<span style="color:#309;font-weight:bold">&lt;/algorithm&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;/rule&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;/tableRule&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;function</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;sharding-by-pattern&#34;</span> <span style="color:#309">class=</span><span style="color:#c30">&#34;io.mycat.route.function.PartitionByPattern&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;property</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;mapFile&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>partition-pattern.txt<span style="color:#309;font-weight:bold">&lt;/property&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;property</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;defaultNode&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>0<span style="color:#309;font-weight:bold">&lt;/property&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;property</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;patternValue&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>256<span style="color:#309;font-weight:bold">&lt;/property&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;/function&gt;</span>
+<span style="color:#309;font-weight:bold">&lt;/mycat:rule&gt;</span>
+
+<span style="color:#09f;font-style:italic">&lt;!--        配置说明：--&gt;</span>
+<span style="color:#09f;font-style:italic">&lt;!--        * 1-32即代表id%256后分布的范围，如果在1-32则分区在0，其他类推。--&gt;</span>
+<span style="color:#09f;font-style:italic">&lt;!--        * 如果id非数字，则会分配在defaultNode默认节点。--&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><em>partition-pattern.txt</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-txt" data-lang="txt"># id patition range start-end, data node index
+### first host configuration
+1-32=0
+33-64=1
+65-96=2
+97-128=3
+### second host configuration
+129-160=4
+161-192=5
+193-224=6
+225-256=7
+0-0=7
+</code></pre></td></tr></table>
+</div>
+</div><p><em>test.sql</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-sql" data-lang="sql"><span style="color:#069;font-weight:bold">CREATE</span> <span style="color:#069;font-weight:bold">TABLE</span> sharding_by_pattern (id <span style="color:#366">varchar</span>(<span style="color:#f60">20</span>) <span style="color:#069;font-weight:bold">null</span>,<span style="color:#555">`</span>db_nm<span style="color:#555">`</span>  <span style="color:#366">varchar</span>(<span style="color:#f60">20</span>) <span style="color:#069;font-weight:bold">NULL</span>);  
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_pattern<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">1000</span>, <span style="color:#069;font-weight:bold">database</span>());  
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_pattern<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">1002</span>, <span style="color:#069;font-weight:bold">database</span>());  
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_pattern<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">30000</span>, <span style="color:#069;font-weight:bold">database</span>());  
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_pattern<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">30004</span>, <span style="color:#069;font-weight:bold">database</span>());  
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_pattern<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">40000</span>, <span style="color:#069;font-weight:bold">database</span>());  
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_pattern<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">40005</span>, <span style="color:#069;font-weight:bold">database</span>());  
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_pattern<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">60005</span>, <span style="color:#069;font-weight:bold">database</span>());  
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_pattern<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">60006</span>, <span style="color:#069;font-weight:bold">database</span>());  
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_pattern<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">80006</span>, <span style="color:#069;font-weight:bold">database</span>());  
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_pattern<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#c30">&#34;abcd0&#34;</span>, <span style="color:#069;font-weight:bold">database</span>());  
+<span style="color:#069;font-weight:bold">select</span> <span style="color:#555">*</span> <span style="color:#069;font-weight:bold">from</span> sharding_by_pattern;  
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="4-ascii码求模范围约束字符串">4. ASCII码求模范围约束（字符串）</h3>
+<p><em>schema.xml</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-xml" data-lang="xml"><span style="color:#309;font-weight:bold">&lt;table</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;sharding_by_ascii&#34;</span> <span style="color:#309">primaryKey=</span><span style="color:#c30">&#34;id&#34;</span> <span style="color:#309">dataNode=</span><span style="color:#c30">&#34;dn$0-10&#34;</span> <span style="color:#309">rule=</span><span style="color:#c30">&#34;partition-by-ascii&#34;</span> <span style="color:#309;font-weight:bold">/&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><em>rule.xml</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-xml" data-lang="xml"><span style="color:#309;font-weight:bold">&lt;mycat:rule</span> <span style="color:#309">xmlns:mycat=</span><span style="color:#c30">&#34;http://io.mycat/&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;tableRule</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;partition-by-ascii&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;rule&gt;</span>
+            <span style="color:#309;font-weight:bold">&lt;columns&gt;</span>id<span style="color:#309;font-weight:bold">&lt;/columns&gt;</span>
+            <span style="color:#309;font-weight:bold">&lt;algorithm&gt;</span>sharding-by-pattern-ascii<span style="color:#309;font-weight:bold">&lt;/algorithm&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;/rule&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;/tableRule&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;function</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;sharding-by-pattern-ascii&#34;</span> <span style="color:#309">class=</span><span style="color:#c30">&#34;io.mycat.route.function.PartitionByPrefixPattern&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;property</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;mapFile&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>partition-pattern-ascii.txt<span style="color:#309;font-weight:bold">&lt;/property&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;property</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;patternValue&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>256<span style="color:#309;font-weight:bold">&lt;/property&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;property</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;prefixLength&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>5<span style="color:#309;font-weight:bold">&lt;/property&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;/function&gt;</span>
+<span style="color:#309;font-weight:bold">&lt;/mycat:rule&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><em>partition-pattern-ascii.txt</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-txt" data-lang="txt"># id patition range start-end, data node index
+### first host configuration
+1-32=0
+33-64=1
+65-96=2
+97-128=3
+### second host configuration
+129-160=4
+161-192=5
+193-224=6
+225-256=7
+0-0=7
+</code></pre></td></tr></table>
+</div>
+</div><p><em>test.sql</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-sql" data-lang="sql"><span style="color:#09f;font-style:italic">-- 此种规则类似于取模范围约束，此规则支持数据符号字母取模。
+</span><span style="color:#09f;font-style:italic"></span>
+<span style="color:#069;font-weight:bold">CREATE</span> <span style="color:#069;font-weight:bold">TABLE</span> sharding_by_ascii (id <span style="color:#366">varchar</span>(<span style="color:#f60">20</span>) <span style="color:#069;font-weight:bold">null</span>,<span style="color:#555">`</span>db_nm<span style="color:#555">`</span>  <span style="color:#366">varchar</span>(<span style="color:#f60">20</span>) <span style="color:#069;font-weight:bold">NULL</span>);
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_ascii<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#c30">&#34;1000a&#34;</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_ascii<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#c30">&#34;1002A&#34;</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_ascii<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">30000</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_ascii<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">30004</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_ascii<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#c30">&#34;4000B&#34;</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_ascii<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#c30">&#34;4000b&#34;</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_ascii<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">60007</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_ascii<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">60006</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_ascii<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">80006</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_ascii<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#c30">&#34;abcd0&#34;</span>, <span style="color:#069;font-weight:bold">database</span>());
+<span style="color:#069;font-weight:bold">select</span> <span style="color:#555">*</span> <span style="color:#069;font-weight:bold">from</span> sharding_by_ascii;
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="5-固定分片hash二进制">5. 固定分片hash（二进制）</h3>
+<p><em>schema.xml</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-xml" data-lang="xml"><span style="color:#309;font-weight:bold">&lt;table</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;sharding_by_long&#34;</span> <span style="color:#309">primaryKey=</span><span style="color:#c30">&#34;id&#34;</span> <span style="color:#309">dataNode=</span><span style="color:#c30">&#34;dn$0-10&#34;</span> <span style="color:#309">rule=</span><span style="color:#c30">&#34;sharding-by-long&#34;</span> <span style="color:#309;font-weight:bold">/&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><em>rule.xml</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-xml" data-lang="xml"><span style="color:#309;font-weight:bold">&lt;mycat:rule</span> <span style="color:#309">xmlns:mycat=</span><span style="color:#c30">&#34;http://io.mycat/&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;tableRule</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;sharding-by-long&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;rule&gt;</span>
+            <span style="color:#309;font-weight:bold">&lt;columns&gt;</span>id<span style="color:#309;font-weight:bold">&lt;/columns&gt;</span>
+            <span style="color:#309;font-weight:bold">&lt;algorithm&gt;</span>sharding-by-long<span style="color:#309;font-weight:bold">&lt;/algorithm&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;/rule&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;/tableRule&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;function</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;sharding-by-long&#34;</span> <span style="color:#309">class=</span><span style="color:#c30">&#34;io.mycat.route.function.PartitionByLong&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;property</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;partitionCount&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>2,1<span style="color:#309;font-weight:bold">&lt;/property&gt;</span>
+        <span style="color:#309;font-weight:bold">&lt;property</span> <span style="color:#309">name=</span><span style="color:#c30">&#34;partitionLength&#34;</span><span style="color:#309;font-weight:bold">&gt;</span>256,512<span style="color:#309;font-weight:bold">&lt;/property&gt;</span>
+    <span style="color:#309;font-weight:bold">&lt;/function&gt;</span>
+<span style="color:#309;font-weight:bold">&lt;/mycat:rule&gt;</span>
+
+<span style="color:#09f;font-style:italic">&lt;!--        配置说明：--&gt;</span>
+<span style="color:#09f;font-style:italic">&lt;!--        * partitionCount为指定分片个数列表。--&gt;</span>
+<span style="color:#09f;font-style:italic">&lt;!--        * partitionLength为分片范围列表。--&gt;</span>
+<span style="color:#09f;font-style:italic">&lt;!--        分区长度:默认为最大2^n=1024 ,即最大支持1024分区--&gt;</span>
+
+<span style="color:#09f;font-style:italic">&lt;!--        约束 :--&gt;</span>
+<span style="color:#09f;font-style:italic">&lt;!--        count,length两个数组的长度必须是一致的。--&gt;</span>
+<span style="color:#09f;font-style:italic">&lt;!--        1024 = sum((count[i]*length[i])). count和length两个向量的点积恒等于1024--&gt;</span>
+<span style="color:#09f;font-style:italic">&lt;!--        本例的分区策略：希望将数据水平分成3份，前两份各占25%，第三份占50%。（故本例非均匀分区）--&gt;</span>
+<span style="color:#09f;font-style:italic">&lt;!--        // |&lt;———————1024———————————&gt;|--&gt;</span>
+<span style="color:#09f;font-style:italic">&lt;!--        // |&lt;—-256—&gt;|&lt;—-256—&gt;|&lt;———-512————-&gt;|--&gt;</span>
+<span style="color:#09f;font-style:italic">&lt;!--        // | partition0 | partition1 | partition2 |--&gt;</span>
+<span style="color:#09f;font-style:italic">&lt;!--        // | 共2份,故count[0]=2 | 共1份，故count[1]=1 |--&gt;</span>
+<span style="color:#09f;font-style:italic">&lt;!--        int[] count = new int[] { 2, 1 };--&gt;</span>
+<span style="color:#09f;font-style:italic">&lt;!--        int[] length = new int[] { 256, 512 };--&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><em>test.sql</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-sql" data-lang="sql"><span style="color:#09f;font-style:italic">-- 本条规则类似于十进制的求模运算，区别在于是二进制的操作，是取id的二进制低10位，即id二进制&amp;1111111111。此算法的优点在
+</span><span style="color:#09f;font-style:italic">-- 于如果按照十进制取模运算，则在连续插入1~10时，1~10会被分到1~10个分片，增大了插入事务的控制难度。而此算法根据二进制则
+</span><span style="color:#09f;font-style:italic">-- 可能会分到连接的分片，降低了插入事务的控制难度。
+</span><span style="color:#09f;font-style:italic"></span>
+<span style="color:#069;font-weight:bold">CREATE</span> <span style="color:#069;font-weight:bold">TABLE</span> sharding_by_long (id <span style="color:#366">int</span>(<span style="color:#f60">10</span>) <span style="color:#069;font-weight:bold">null</span>,<span style="color:#555">`</span>db_nm<span style="color:#555">`</span>  <span style="color:#366">varchar</span>(<span style="color:#f60">20</span>) <span style="color:#069;font-weight:bold">NULL</span>);
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_long<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">1000</span>, <span style="color:#069;font-weight:bold">database</span>());  
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_long<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">1002</span>, <span style="color:#069;font-weight:bold">database</span>());  
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_long<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">30000</span>, <span style="color:#069;font-weight:bold">database</span>());  
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_long<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">30004</span>, <span style="color:#069;font-weight:bold">database</span>());  
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_long<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">4000</span>, <span style="color:#069;font-weight:bold">database</span>());  
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_long<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">4000</span>, <span style="color:#069;font-weight:bold">database</span>());  
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_long<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">60007</span>, <span style="color:#069;font-weight:bold">database</span>());  
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_long<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">60006</span>, <span style="color:#069;font-weight:bold">database</span>());  
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_long<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">80006</span>, <span style="color:#069;font-weight:bold">database</span>());  
+<span style="color:#069;font-weight:bold">INSERT</span> <span style="color:#069;font-weight:bold">INTO</span> <span style="color:#555">`</span>sharding_by_long<span style="color:#555">`</span> (id,db_nm) <span style="color:#069;font-weight:bold">VALUES</span> (<span style="color:#f60">0</span>, <span style="color:#069;font-weight:bold">database</span>());  
+<span style="color:#069;font-weight:bold">select</span> <span style="color:#555">*</span> <span style="color:#069;font-weight:bold">from</span> sharding_by_long;  
+</code></pre></td></tr></table>
+</div>
+</div><!-- raw HTML omitted -->
+<h2 id="五-分片策略">五. 分片策略</h2>
+<ul>
+<li>根据表数据量判断是否需要切分，确保切分后<code>单分片表数据量为1000W</code>左右。</li>
+<li>根据业务的情况选择合适的分片字段： <code>最频繁的或者最重要</code>的查询条件。</li>
+<li>需要考虑扩容数据<code>迁移问题</code>（范围类，范围取模类不需要迁移，哈希类需要迁移）。</li>
+<li>有<code>关联关系的表配置相同分片规则</code>（ER思想，为了应用join等复杂sql），一对多对应关系一般按<code>多的那一方切分</code>。</li>
+<li>如果配置类数据， 更新频率比较少，考虑<code>全局表</code>。</li>
+</ul>
+<!-- raw HTML omitted -->
+<p><strong>源码链接:</strong>  <a href="https://download.csdn.net/download/Gusand/12102557">https://download.csdn.net/download/Gusand/12102557</a></p>
+<!-- raw HTML omitted -->
+<h2 id="参考链接">参考链接</h2>
+<p>推荐博客： <a href="https://blog.csdn.net/ygqygq2/article/details/78390985">https://blog.csdn.net/ygqygq2/article/details/78390985</a><br>
+在线教程： <a href="http://www.mycat.io/document/mycat-definitive-guide.pdf">http://www.mycat.io/document/mycat-definitive-guide.pdf</a></p>
+
+                
+                
+                <hr> 
+
+<div class="entry-shang text-center">
+    
+    <p> 「真诚赞赏，手留余香」</p>
+    
+    <button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+    <div class="zs-modal-head">
+        <button type="button" class="close">×</button>
+        <span class="author">
+            <a href="http://www.mafool.com">
+                <img src="http://www.mafool.com/img/reward/hollson.png" alt="史布斯" />码夫庄园
+            </a>
+        </span>
+        
+        <p class="tip"><i></i><span>嗯，我的梦想是被读者的稿费包养~</span></p>
+        
+
+    </div>
+    <div class="zs-modal-body">
+        <div class="zs-modal-btns">
+            <button class="btn btn-blink" data-num="2">2元</button>
+            <button class="btn btn-blink" data-num="5">5元</button>
+            <button class="btn btn-blink" data-num="10">10元</button>
+            <button class="btn btn-blink" data-num="50">50元</button>
+            <button class="btn btn-blink" data-num="100">100元</button>
+            <button class="btn btn-blink" data-num="1">任意金额</button>
+        </div>
+        <div class="zs-modal-pay">
+            <button class="btn btn-bred" id="pay-text">2元</button>
+            <p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+            <img src="http://www.mafool.com/img/reward/wechat-2.png" alt="史布斯" id="pay-image" />
+        </div>
+    </div>
+    <div class="zs-modal-footer">
+        <label>
+            <span class="zs-wechat"></span>
+            <input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked">
+            <img src="http://www.mafool.com/img/reward/wechat-btn.png" alt="史布斯" />
+            </span>&nbsp;
+            <span>
+                <input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay">
+                <img src="http://www.mafool.com/img/reward/alipay-btn.png" alt="史布斯" />
+            </span>
+        </label>
+    </div>
+</div>
+
+ 
+
+                <br>
+                <br>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="column is-3">
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">最近发布</h2>
+        
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/0742b474a643d63a774461726a6201203/">Go语言中的原子操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年12月2日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/1600330472/">Go基础笔记 - 2.3 常量</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月10日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/15996311192/">Go - Gin框架快速入门</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月9日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480249/">Gorm快速指南</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480218/">18. Go语言MySQL数据库操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+    </div>
+</div>
+<br>
+        
+
+
+
+
+<div class="card">
+  <div class="card-content">
+    <h2 class="title is-6">相关文章</h2>
+    
+    
+    <h2><a href="http://www.mafool.com/post/1585906994/">Mysql分表分库1 - Mycat安装与配置</a></h2>
+    <time class="has-text-grey-light is-size-7">15 July 2019</time>
+    
+  </div>
+</div>
+<br>
+
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">标签</h2>
+        <div>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/atomic">atomic</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/blog">blog</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cgo">cgo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cloud">cloud</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/config">config</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/copy">copy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/docker">docker</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/exam">exam</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/gin">gin</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/git">git</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/golang">golang</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/hugo">hugo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/install">install</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/istio">istio</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/jenkins">jenkins</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/kubernetes">kubernetes</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/map">map</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/microservice">microservice</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/mycat">mycat</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/nginx">nginx</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/plan9">plan9</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/posix">posix</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/proxy">proxy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/raft">raft</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ssh">ssh</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/tips">tips</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ymal">ymal</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%B8%BB%E4%BB%8E">主从</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BA%8B%E5%8A%A1">事务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BB%A3%E7%90%86">代理</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BD%9C%E7%94%A8%E5%9F%9F">作用域</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%86%85%E5%AD%98">内存</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%8B%E7%BC%A9">压缩</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%88%9B">原创</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%AD%90">原子</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%91%BD%E4%BB%A4%E8%A1%8C">命令行</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%93%A8%E5%85%B5">哨兵</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%AD%98%E5%82%A8">存储</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B8%B8%E9%87%8F">常量</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B9%B6%E5%8F%91">并发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BC%82%E5%B8%B8">异常</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1">微服务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%88%E6%9D%83%E8%AE%A4%E8%AF%81">授权认证</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%92%E5%BA%8F">排序</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%A5%E5%8F%A3">接口</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%97%A5%E5%BF%97">日志</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%9D%83%E9%99%90">权限</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE1">标签1</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE2">标签2</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%AD%A3%E5%88%99">正则</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%81%E9%87%8F%E5%88%86%E5%8F%91">流量分发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%8B%E8%AF%95">测试</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%BA%90%E7%A0%81">源码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%8A%B6%E6%80%81%E7%A0%81">状态码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%AE%97%E6%B3%95">算法</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%BC%8F">编程模式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%80%81%E5%A6%96%E7%AC%94%E8%AE%B0">老妖笔记</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%BF%87%E6%BB%A4%E5%99%A8">过滤器</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%80%83%E9%80%B8">逃逸</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%85%8D%E7%BD%AE">配置</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%86%99">重写</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%AE%9A%E5%90%91">重定向</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9B%86%E7%BE%A4">集群</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9D%A2%E8%AF%95">面试</a>
+            </span>
+            
+        </div>
+    </div>
+</div>
+<br>
+    </div>
+</div>
+
+        </div>
+    </div>
+
+    
+    <footer class="footer has-background-grey-darker has-text-white">
+    <div class="content has-text-centered">
+        <p>
+            <span class="icon is-large">
+                <a href="https://twitter.com/" class="mysocial" rel="me">
+                    <i class="fab fa-twitter fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://www.youtube.com/" class="mysocial" rel="me">
+                    <i class="fab fa-youtube fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://github.com/" class="mysocial" rel="me">
+                    <i class="fab fa-github fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <br><br>
+            友情链接：
+            
+            <a class="mysocial" href="http://www.mafool.com" target="_blank">Mafool</a>
+            
+            <a class="mysocial" href="https://gohugo.io/documentation/" target="_blank">Hugo</a>
+            
+            <a class="mysocial" href="https://bulma.io/" target="_blank">Bulma</a>
+            
+            <a class="mysocial" href="https://bootstrapious.com/" target="_blank">Bootstrapious</a>
+            
+            <a class="mysocial" href="https://youzhixueyuan.com/" target="_blank">Youzhixueyuan</a>
+            
+            <br><br />
+            版权所有 &copy; 码夫庄园 2021
+            - <a class="mysocial" href="https://github.com/hollson/hugo-theme-dooz">Hugo Theme</a>
+        </p>
+    </div>
+</footer>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='http://www.mafool.com/js/dooz.totop.js?v=0.0.0' async=""></script>
+
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = 'https://hm.baidu.com/hm.js?f185359ec6b829a6a93e1e1f2597f6d9';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DK042XSJ2J"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-DK042XSJ2J');
+</script>
+
+    
+    
+<script type="text/javascript" src="http://www.mafool.com/js/reward.js"></script>
+
+    
+    <script defer src="https://cdn.staticfile.org/font-awesome/5.13.0/js/all.min.js"></script>
+</body>
+
+</html>

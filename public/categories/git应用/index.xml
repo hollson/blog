@@ -1,0 +1,60 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Git应用 on 码夫庄园</title>
+    <link>http://www.mafool.com/categories/git%E5%BA%94%E7%94%A8/</link>
+    <description>Recent content in Git应用 on 码夫庄园</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <copyright>版权所有</copyright>
+    <lastBuildDate>Thu, 21 May 2020 11:28:22 +0800</lastBuildDate>
+    
+        <atom:link href="http://www.mafool.com/categories/git%E5%BA%94%E7%94%A8/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Git入门</title>
+      <link>http://www.mafool.com/posts/36c29462cec19ee3cad6610506ea56dd/</link>
+      <pubDate>Thu, 21 May 2020 11:28:22 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/posts/36c29462cec19ee3cad6610506ea56dd/</guid>
+      <description>https://oscimg.oschina.net/oscnet/99c82f109b10b170870caff0690c69d2588.jpg Git 仓库 1.1Git 基本概念 ​ 在Git中，我们将需要进行版本控制的文件目录叫做一个仓库（repository），每个仓库可以简单理解成一个目录，这个目</description>
+    </item>
+    
+    <item>
+      <title>Jenkins- 构建Go项目</title>
+      <link>http://www.mafool.com/posts/199ea5b7cf7372f8ce9886fdbd3d6aae/</link>
+      <pubDate>Tue, 21 Apr 2020 01:44:07 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/posts/199ea5b7cf7372f8ce9886fdbd3d6aae/</guid>
+      <description>前言 Jenkins是一款流行的开源持续集成（Continuous Integration）工具，广泛用于项目开发，具有自动化构建、测试和部署等</description>
+    </item>
+    
+    <item>
+      <title>Git - 搭建Gitlab</title>
+      <link>http://www.mafool.com/posts/ac0ed12649b48c40b6bdaa9e07f11039/</link>
+      <pubDate>Thu, 12 Dec 2019 00:29:18 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/posts/ac0ed12649b48c40b6bdaa9e07f11039/</guid>
+      <description>Gitlab官网： https://about.gitlab.com/ Docker镜像： https://hub.docker.com/_/gitlab-community-edition 1. 创建GitLab目录 为了数据的操作安全，建议创建data、config、logs三个数据卷。 1 $ mkdir</description>
+    </item>
+    
+    <item>
+      <title>Git - 常用命令</title>
+      <link>http://www.mafool.com/posts/0d78ecbaabf7de26111f39aa46e471fe/</link>
+      <pubDate>Sat, 21 Apr 2018 01:25:50 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/posts/0d78ecbaabf7de26111f39aa46e471fe/</guid>
+      <description>[TOC] 1. 远程仓库 1 2 3 4 5 git clone git@xxxx.git -b develop #从develop分支克隆 git clone --branch [tags标签] [git地址] git remote -v #远程仓库 git remote set-url origin git@xxx:sybs/xxx.git #修改url git remote prune origin</description>
+    </item>
+    
+    <item>
+      <title>Git - 基础入门</title>
+      <link>http://www.mafool.com/posts/38cbcea795d75f092237689286080b6a/</link>
+      <pubDate>Sat, 21 Apr 2018 00:52:31 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/posts/38cbcea795d75f092237689286080b6a/</guid>
+      <description>推荐链接 Git官网 官方汉化教程 runoob教程 目录结构 创建一个work目录，并采用git init命令初始化git仓库。该命令会在工作目录下生</description>
+    </item>
+    
+  </channel>
+</rss>

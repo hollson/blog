@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>码夫庄园-Kafka面试自测系列3</title>
+    <meta name="keywords"
+        content='kafka,面试,基础'>
+    <meta name="description" content="Kafka是由Apache软件基金会开发的一个开源流处理平台，由Scala和Java编写。该项目的目标是为处理实时数据提供一个统一、高吞吐、低延迟的平台。其持久化层本质上是一个“按照分布式事务日志架构的大规模发布/订阅消息队列”，[3]这使它作为企业级基础设施来处理流式数据非常有价值。此外，Kafka可以通过Kafka Connect连接到外部系统（用于数据输入/输出），并提供了Kafka Streams——一个Java流式处理库。" />
+
+    
+    <meta name="baidu-site-verification" content="v9szEmQLra" />
+    <meta name="360-site-verification" content="d8e961f98fb655e4b8cf9439cfd9ac7f" />
+    <meta name="sogou_site_verification" content="40NC9EdZDC" />
+    <meta name="shenma-site-verification" content="3200e3042e92157713a3b0aceeecb20a_1586020187" />
+    <meta name="google-site-verification" content="r8987bkunZHJeKut3ocu5NIJ5QEu53NA6Q_r7RrZ46c" />
+    <meta name="msvalidate.01" content="893A2865ABC54AC2782D118536831056" />
+
+    
+    <link rel="shortcut icon" href="http://www.mafool.com/img/res/favicon.ico">
+    
+
+    
+
+    <link crossorigin="anonymous" integrity="sha384-5kGFOAqgEKnuF6c2jk2JANKHZgYVt38Wn2dVJENtq1EBCP54/1uzXU5mpxqL8WjN"
+        href="https://lib.baomitu.com/bulma/0.8.0/css/bulma.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="http://www.mafool.com/css/dooz.blog.css" />
+    <script crossorigin="anonymous" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh"
+        src="https://lib.baomitu.com/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/jquery.share.min.js"></script>
+    
+
+    
+
+    
+    
+<link rel="stylesheet" href="http://www.mafool.com/css/reward.css">
+
+
+    <link href="http://www.mafool.com/css/fonts.googleapi.css" rel="stylesheet">
+    <script src=http://www.mafool.com/js/dooz.blog.js></script>
+
+    
+    <script>
+        $(document).ready(function () {
+            $('.content a[href^="http"]').each(function () {
+                $(this).attr('target', '_blank');
+            });
+        });
+
+        $(document).on('click', '.modal-wechat', function () {
+            $(".modal").addClass("is-active");
+        });
+
+        $(document).on('click', '.modal-background', function () {
+            $(".modal").removeClass("is-active");
+        });
+    </script>
+</head>
+
+<body>
+    
+    
+<section class="hero is-info is-medium"
+    style="background-image: url('/img/res/bg5.jpg');">
+    <div class="hero-head">
+        <nav class="navbar is-transparent container has-text-white">
+    <div class="navbar-brand">
+        <div class="navbar-item">
+            <a class="title is-5 is-white" href="http://www.mafool.com/">码夫庄园</a>
+        </div>
+
+        
+        <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <div id="navbarExampleTransparentExample" class="navbar-menu has-text-dark">
+        
+
+        <div class="navbar-end">
+            <a class="navbar-item" href='http://www.mafool.com/'>首页</a>
+            <a class="navbar-item" href='http://www.mafool.com/archives'>归档 </a>
+            <a class="navbar-item" href='http://www.mafool.com/about'>关于</a>
+            <span class="navbar-item">
+                <a class="button is-primary is-inverted" href="https://github.com/hollson/hugo-theme-dooz">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>主题</span>
+                </a>
+            </span>
+        </div>
+    </div>
+</nav>
+    </div>
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <div class='container has-text-left column is-7'>
+                
+                <span>
+                    <a class="bar_tag" href="http://www.mafool.com/tags/exam" title="Exam">Exam</a>
+                </span>
+                
+                <h1 class="title is-size-2" style="margin-bottom:0.2rem;">
+                    
+                    Kafka面试自测系列3
+                    
+                </h1>
+                
+                <span class="title is-size-6" style="font-style: italic;"> </span><br>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    
+    <div class="container">
+        <div class="section">
+            
+<div class="columns">
+    <div class="column is-9">
+        <div class="tile is-child box">
+            <div class="content">
+                
+                <nav class="level">
+                    
+                    <div class="level-left">
+                        <div class="level-item">
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2019年5月8日,
+    星期三 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 12分钟阅读
+</p>
+                        </div>
+                    </div>
+
+                    
+                    
+                    <div class="share-component level-right" data-disabled="google,diandian,tencent,qzone"
+                        data-description="Share.js - 一键分享到微博，QQ空间，腾讯微博，人人，豆瓣"
+                        data-mobile-sites="weibo,qq,qzone,tencent">
+                    </div>
+                    
+                </nav>
+                <hr>
+                
+                <header>
+                    <h2>目录</h2>
+                </header>
+                <nav id="TableOfContents">
+  <ul>
+    <li><a href="#问题1什么是apache-kafka">问题1：什么是Apache Kafka?</a></li>
+    <li><a href="#问题2kafka中有哪几个组件">问题2：Kafka中有哪几个组件?</a></li>
+    <li><a href="#问题3解释偏移的作用">问题3：解释偏移的作用。</a></li>
+    <li><a href="#问题4什么是消费者组">问题4：什么是消费者组？</a></li>
+    <li><a href="#问题5zookeeper在kafka中的作用是什么">问题5：ZooKeeper在Kafka中的作用是什么？</a></li>
+    <li><a href="#问题6没有zookeeper可以使用kafka吗">问题6：没有ZooKeeper可以使用Kafka吗？</a></li>
+    <li><a href="#问题8为什么kafka技术很重要">问题8：为什么Kafka技术很重要？</a></li>
+    <li><a href="#问题9kafka的主要api有哪些">问题9：Kafka的主要API有哪些？</a></li>
+    <li><a href="#问题10什么是消费者或用户">问题10：什么是消费者或用户？</a></li>
+    <li><a href="#问题11解释领导者和追随者的概念">问题11：解释领导者和追随者的概念。</a></li>
+    <li><a href="#问题12是什么确保了kafka中服务器的负载平衡">问题12：是什么确保了Kafka中服务器的负载平衡？</a></li>
+    <li><a href="#问题13副本和isr扮演什么角色">问题13：副本和ISR扮演什么角色？</a></li>
+    <li><a href="#问题14为什么kafka的复制至关重要">问题14：为什么Kafka的复制至关重要？</a></li>
+    <li><a href="#问题15如果副本长时间不在isr中这意味着什么">问题15：如果副本长时间不在ISR中，这意味着什么？</a></li>
+    <li><a href="#问题16启动kafka服务器的过程是什么">问题16：启动Kafka服务器的过程是什么？</a></li>
+    <li><a href="#问题17在生产者中何时发生queuefullexception">问题17：在生产者中，何时发生QueueFullException？</a></li>
+    <li><a href="#问题18解释kafka-producer-api的作用">问题18：解释Kafka Producer API的作用。</a></li>
+    <li><a href="#问题19kafka和flume之间的主要区别是什么">问题19：Kafka和Flume之间的主要区别是什么？</a></li>
+    <li><a href="#问题20apache-kafka是分布式流处理平台吗如果是你能用它做什么">问题20：Apache Kafka是分布式流处理平台吗？如果是，你能用它做什么？</a></li>
+    <li><a href="#问题21你能用kafka做什么">问题21：你能用Kafka做什么？</a></li>
+    <li><a href="#问题22在kafka集群中保留期的目的是什么">问题22：在Kafka集群中保留期的目的是什么？</a></li>
+    <li><a href="#问题23解释kafka可以接收的消息最大为多少">问题23：解释Kafka可以接收的消息最大为多少？</a></li>
+    <li><a href="#问题24传统的消息传递方法有哪些类型">问题24：传统的消息传递方法有哪些类型？</a></li>
+    <li><a href="#问题25isr在kafka环境中代表什么">问题25：ISR在Kafka环境中代表什么？</a></li>
+    <li><a href="#问题26什么是kafka中的地域复制">问题26：什么是Kafka中的地域复制？</a></li>
+    <li><a href="#问题27解释多租户是什么">问题27：解释多租户是什么？</a></li>
+    <li><a href="#问题28消费者api的作用是什么">问题28：消费者API的作用是什么？</a></li>
+    <li><a href="#问题29解释流api的作用">问题29：解释流API的作用？</a></li>
+    <li><a href="#问题30连接器api的作用是什么">问题30：连接器API的作用是什么？</a></li>
+    <li><a href="#问题31解释生产者是什么">问题31：解释生产者是什么？</a></li>
+    <li><a href="#问题32比较rabbitmq与apache-kafka">问题32：比较RabbitMQ与Apache Kafka</a></li>
+    <li><a href="#问题33比较传统队列系统与apache-kafka">问题33：比较传统队列系统与Apache Kafka</a></li>
+    <li><a href="#问题34为什么要使用apache-kafka集群">问题34：为什么要使用Apache Kafka集群？</a></li>
+    <li><a href="#问题35解释术语log-anatomy">问题35：解释术语“Log Anatomy”</a></li>
+    <li><a href="#问题36kafka中的数据日志是什么">问题36：Kafka中的数据日志是什么？</a></li>
+    <li><a href="#问题37解释如何调整kafka以获得最佳性能">问题37：解释如何调整Kafka以获得最佳性能。</a></li>
+    <li><a href="#问题38apache-kafka的缺陷">问题38：Apache Kafka的缺陷</a></li>
+    <li><a href="#问题39列出所有apache-kafka业务">问题39：列出所有Apache Kafka业务</a></li>
+    <li><a href="#问题40解释apache-kafka用例">问题40：解释Apache Kafka用例？</a></li>
+    <li><a href="#问题41kafka的一些最显著的应用">问题41：Kafka的一些最显著的应用。</a></li>
+    <li><a href="#问题42kafka流的特点">问题42：Kafka流的特点。</a></li>
+    <li><a href="#问题43kafka的流处理是什么意思">问题43：Kafka的流处理是什么意思？</a></li>
+    <li><a href="#问题44系统工具有哪些类型">问题44：系统工具有哪些类型？</a></li>
+    <li><a href="#问题45什么是复制工具及其类型">问题45：什么是复制工具及其类型？</a></li>
+    <li><a href="#问题46java在apache-kafka中的重要性是什么">问题46：Java在Apache Kafka中的重要性是什么？</a></li>
+    <li><a href="#问题47说明kafka的一个最佳特征">问题47：说明Kafka的一个最佳特征。</a></li>
+    <li><a href="#问题48解释术语主题复制因子">问题48：解释术语“主题复制因子”。</a></li>
+    <li><a href="#问题49解释一些kafka流实时用例">问题49：解释一些Kafka流实时用例。</a></li>
+    <li><a href="#问题50kafka提供的保证是什么">问题50：Kafka提供的保证是什么？</a></li>
+  </ul>
+</nav>
+                
+                <hr>
+                <blockquote>
+<p>面试题，不仅是面试指南，更是自我知识检测手段</p>
+</blockquote>
+<h2 id="问题1什么是apache-kafka">问题1：什么是Apache Kafka?</h2>
+<p>答：Apache Kafka是一个发布 - 订阅开源消息代理应用程序。这个消息传递应用程序是用“scala”编码的。基本上，这个项目是由Apache软件启动的。Kafka的设计模式主要基于事务日志设计。</p>
+<h2 id="问题2kafka中有哪几个组件">问题2：Kafka中有哪几个组件?</h2>
+<p>答：Kafka最重要的元素是：</p>
+<p>主题：Kafka主题是一堆或一组消息。</p>
+<p>生产者：在Kafka，生产者发布通信以及向Kafka主题发布消息。</p>
+<p>消费者：Kafka消费者订阅了一个主题，并且还从主题中读取和处理消息。</p>
+<p>经纪人：在管理主题中的消息存储时，我们使用Kafka Brokers。</p>
+<h2 id="问题3解释偏移的作用">问题3：解释偏移的作用。</h2>
+<p>答：给分区中的消息提供了一个顺序ID号，我们称之为偏移量。因此，为了唯一地识别分区中的每条消息，我们使用这些偏移量。</p>
+<h2 id="问题4什么是消费者组">问题4：什么是消费者组？</h2>
+<p>答：消费者组的概念是Apache Kafka独有的。基本上，每个Kafka消费群体都由一个或多个共同消费一组订阅主题的消费者组成。</p>
+<h2 id="问题5zookeeper在kafka中的作用是什么">问题5：ZooKeeper在Kafka中的作用是什么？</h2>
+<p>答：Apache Kafka是一个使用Zookeeper构建的分布式系统。虽然，Zookeeper的主要作用是在集群中的不同节点之间建立协调。但是，如果任何节点失败，我们还使用Zookeeper从先前提交的偏移量中恢复，因为它做周期性提交偏移量工作。</p>
+<h2 id="问题6没有zookeeper可以使用kafka吗">问题6：没有ZooKeeper可以使用Kafka吗？</h2>
+<p>答：绕过Zookeeper并直接连接到Kafka服务器是不可能的，所以答案是否定的。如果以某种方式，使ZooKeeper关闭，则无法为任何客户端请求提供服务。</p>
+<h2 id="问题8为什么kafka技术很重要">问题8：为什么Kafka技术很重要？</h2>
+<p>答：Kafka有一些优点，因此使用起来很重要：</p>
+<p>高吞吐量：我们在Kafka中不需要任何大型硬件，因为它能够处理高速和大容量数据。此外，它还可以支持每秒数千条消息的消息吞吐量。</p>
+<p>低延迟：Kafka可以轻松处理这些消息，具有毫秒级的极低延迟，这是大多数新用例所要求的。</p>
+<p>容错：Kafka能够抵抗集群中的节点/机器故障。</p>
+<p>耐久性：由于Kafka支持消息复制，因此消息永远不会丢失。这是耐久性背后的原因之一。</p>
+<p>可扩展性：卡夫卡可以扩展，而不需要通过添加额外的节点而在运行中造成任何停机。</p>
+<h2 id="问题9kafka的主要api有哪些">问题9：Kafka的主要API有哪些？</h2>
+<p>答：Apache Kafka有4个主要API：</p>
+<p>生产者API</p>
+<p>消费者API</p>
+<p>流 API</p>
+<p>连接器API</p>
+<h2 id="问题10什么是消费者或用户">问题10：什么是消费者或用户？</h2>
+<p>答：Kafka消费者订阅一个主题，并读取和处理来自该主题的消息。此外，有了消费者组的名字，消费者就给自己贴上了标签。换句话说，在每个订阅使用者组中，发布到主题的每个记录都传递到一个使用者实例。确保使用者实例可能位于单独的进程或单独的计算机上。</p>
+<p>Apache Kafka对于新手的面试## 问题：1,2,4,7,8,9,10</p>
+<p>Apache Kafka对于有经验的人的面试## 问题：3,5,6</p>
+<h2 id="问题11解释领导者和追随者的概念">问题11：解释领导者和追随者的概念。</h2>
+<p>答：在Kafka的每个分区中，都有一个服务器充当领导者，0到多个服务器充当追随者的角色。</p>
+<h2 id="问题12是什么确保了kafka中服务器的负载平衡">问题12：是什么确保了Kafka中服务器的负载平衡？</h2>
+<p>答：由于领导者的主要角色是执行分区的所有读写请求的任务，而追随者被动地复制领导者。因此，在领导者失败时，其中一个追随者接管了领导者的角色。基本上，整个过程可确保服务器的负载平衡。</p>
+<h2 id="问题13副本和isr扮演什么角色">问题13：副本和ISR扮演什么角色？</h2>
+<p>答：基本上，复制日志的节点列表就是副本。特别是对于特定的分区。但是，无论他们是否扮演领导者的角色，他们都是如此。</p>
+<p>此外，ISR指的是同步副本。在定义ISR时，它是一组与领导者同步的消息副本。</p>
+<h2 id="问题14为什么kafka的复制至关重要">问题14：为什么Kafka的复制至关重要？</h2>
+<p>答：由于复制，我们可以确保发布的消息不会丢失，并且可以在发生任何机器错误、程序错误或频繁的软件升级时使用。</p>
+<h2 id="问题15如果副本长时间不在isr中这意味着什么">问题15：如果副本长时间不在ISR中，这意味着什么？</h2>
+<p>答：简单地说，这意味着跟随者不能像领导者收集数据那样快速地获取数据。</p>
+<h2 id="问题16启动kafka服务器的过程是什么">问题16：启动Kafka服务器的过程是什么？</h2>
+<p>答：初始化ZooKeeper服务器是非常重要的一步，因为Kafka使用ZooKeeper，所以启动Kafka服务器的过程是：</p>
+<p>要启动ZooKeeper服务器：&gt;bin/zooKeeper-server-start.sh config/zooKeeper.properties</p>
+<p>接下来，启动Kafka服务器：&gt;bin/kafka-server-start.sh config/server.properties</p>
+<h2 id="问题17在生产者中何时发生queuefullexception">问题17：在生产者中，何时发生QueueFullException？</h2>
+<p>答：每当Kafka生产者试图以代理的身份在当时无法处理的速度发送消息时，通常都会发生QueueFullException。但是，为了协作处理增加的负载，用户需要添加足够的代理，因为生产者不会阻止。</p>
+<h2 id="问题18解释kafka-producer-api的作用">问题18：解释Kafka Producer API的作用。</h2>
+<p>答：允许应用程序将记录流发布到一个或多个Kafka主题的API就是我们所说的Producer API。</p>
+<h2 id="问题19kafka和flume之间的主要区别是什么">问题19：Kafka和Flume之间的主要区别是什么？</h2>
+<p>答：Kafka和Flume之间的主要区别是：</p>
+<p>工具类型</p>
+<p>Apache Kafka——Kafka是面向多个生产商和消费者的通用工具。</p>
+<p>Apache Flume——Flume被认为是特定应用程序的专用工具。</p>
+<p>复制功能</p>
+<p>Apache Kafka——Kafka可以复制事件。</p>
+<p>Apache Flume——Flume不复制事件。</p>
+<h2 id="问题20apache-kafka是分布式流处理平台吗如果是你能用它做什么">问题20：Apache Kafka是分布式流处理平台吗？如果是，你能用它做什么？</h2>
+<p>答：毫无疑问，Kafka是一个流处理平台。它可以帮助：</p>
+<p>1.轻松推送记录</p>
+<p>2.可以存储大量记录，而不会出现任何存储## 问题</p>
+<p>3.它还可以在记录进入时对其进行处理。</p>
+<p>Apache Kafka对于新手的面试## 问题：11,13,14,16,17,18,19</p>
+<p>Apache Kafka对于有经验的人的面试## 问题：12,15,20</p>
+<h2 id="问题21你能用kafka做什么">问题21：你能用Kafka做什么？</h2>
+<p>答：它可以以多种方式执行，例如：</p>
+<p>为了在两个系统之间传输数据，我们可以用它构建实时的数据流管道。</p>
+<p>另外，我们可以用Kafka构建一个实时流处理平台，它可以对数据快速做出反应。</p>
+<h2 id="问题22在kafka集群中保留期的目的是什么">问题22：在Kafka集群中保留期的目的是什么？</h2>
+<p>答：保留期限保留了Kafka群集中的所有已发布记录。它不会检查它们是否已被消耗。此外，可以通过使用保留期的配置设置来丢弃记录。而且，它可以释放一些空间。</p>
+<h2 id="问题23解释kafka可以接收的消息最大为多少">问题23：解释Kafka可以接收的消息最大为多少？</h2>
+<p>答：Kafka可以接收的最大消息大小约为1000000字节。</p>
+<h2 id="问题24传统的消息传递方法有哪些类型">问题24：传统的消息传递方法有哪些类型？</h2>
+<p>答：基本上，传统的消息传递方法有两种，如：</p>
+<p>排队：这是一种消费者池可以从服务器读取消息并且每条消息转到其中一个消息的方法。</p>
+<p>发布-订阅：在发布-订阅中，消息被广播给所有消费者。</p>
+<h2 id="问题25isr在kafka环境中代表什么">问题25：ISR在Kafka环境中代表什么？</h2>
+<p>答：ISR指的是同步副本。这些通常被分类为一组消息副本，它们被同步为领导者。</p>
+<h2 id="问题26什么是kafka中的地域复制">问题26：什么是Kafka中的地域复制？</h2>
+<p>答：对于我们的集群，Kafka MirrorMaker提供地理复制。基本上，消息是通过MirrorMaker跨多个数据中心或云区域复制的。因此，它可以在主动/被动场景中用于备份和恢复；也可以将数据放在离用户更近的位置，或者支持数据位置要求。</p>
+<h2 id="问题27解释多租户是什么">问题27：解释多租户是什么？</h2>
+<p>答：我们可以轻松地将Kafka部署为多租户解决方案。但是，通过配置主题可以生成或使用数据，可以启用多租户。此外，它还为配额提供操作支持。</p>
+<h2 id="问题28消费者api的作用是什么">问题28：消费者API的作用是什么？</h2>
+<p>答：允许应用程序订阅一个或多个主题并处理生成给它们的记录流的API，我们称之为消费者API。</p>
+<h2 id="问题29解释流api的作用">问题29：解释流API的作用？</h2>
+<p>答：一种允许应用程序充当流处理器的API，它还使用一个或多个主题的输入流，并生成一个输出流到一个或多个输出主题，此外，有效地将输入流转换为输出流，我们称之为流API。</p>
+<h2 id="问题30连接器api的作用是什么">问题30：连接器API的作用是什么？</h2>
+<p>答：一个允许运行和构建可重用的生产者或消费者的API，将Kafka主题连接到现有的应用程序或数据系统，我们称之为连接器API。</p>
+<p>Apache Kafka对于新手的面试## 问题：21, 23, 25, 26, 27, 28, 29, 30</p>
+<p>Apache Kafka对于有经验的人的面试## 问题：24, 22</p>
+<h2 id="问题31解释生产者是什么">问题31：解释生产者是什么？</h2>
+<p>答：生产者的主要作用是将数据发布到他们选择的主题上。基本上，它的职责是选择要分配给主题内分区的记录。</p>
+<h2 id="问题32比较rabbitmq与apache-kafka">问题32：比较RabbitMQ与Apache Kafka</h2>
+<p>答：Apache Kafka的另一个选择是RabbitMQ。那么，让我们比较两者：</p>
+<p>功能</p>
+<p>Apache Kafka– Kafka是分布式的、持久的和高度可用的，这里共享和复制数据</p>
+<p>RabbitMQ中没有此类功能</p>
+<p>性能速度</p>
+<p>Apache Kafka–达到每秒100000条消息。</p>
+<p>RabbitMQ–每秒20000条消息。</p>
+<h2 id="问题33比较传统队列系统与apache-kafka">问题33：比较传统队列系统与Apache Kafka</h2>
+<p>答：让我们比较一下传统队列系统与Apache Kafka的功能：</p>
+<p>消息保留</p>
+<p>传统的队列系统 - 它通常从队列末尾处理完成后删除消息。</p>
+<p>Apache Kafka中，消息即使在处理后仍然存在。这意味着Kafka中的消息不会因消费者收到消息而被删除。</p>
+<p>基于逻辑的处理</p>
+<p>传统队列系统不允许基于类似消息或事件处理逻辑。</p>
+<p>Apache Kafka允许基于类似消息或事件处理逻辑。</p>
+<h2 id="问题34为什么要使用apache-kafka集群">问题34：为什么要使用Apache Kafka集群？</h2>
+<p>答：为了克服收集大量数据和分析收集数据的挑战，我们需要一个消息队列系统。因此Apache Kafka应运而生。其好处是：</p>
+<p>只需存储/发送事件以进行实时处理，就可以跟踪Web活动。</p>
+<p>通过这一点，我们可以发出警报并报告操作指标。</p>
+<p>此外，我们可以将数据转换为标准格式。</p>
+<p>此外，它允许对主题的流数据进行连续处理。</p>
+<p>由于它的广泛使用，它秒杀了竞品，如ActiveMQ，RabbitMQ等。</p>
+<h2 id="问题35解释术语log-anatomy">问题35：解释术语“Log Anatomy”</h2>
+<p>答：我们将日志视为分区。基本上，数据源将消息写入日志。其优点之一是，在任何时候，都有一个或多个消费者从他们选择的日志中读取数据。下面的图表显示，数据源正在写入一个日志，而用户正在以不同的偏移量读取该日志。</p>
+<h2 id="问题36kafka中的数据日志是什么">问题36：Kafka中的数据日志是什么？</h2>
+<p>答：我们知道，在Kafka中，消息会保留相当长的时间。此外，消费者还可以根据自己的方便进行阅读。尽管如此，有一种可能的情况是，如果将Kafka配置为将消息保留24小时，并且消费者可能停机超过24小时，则消费者可能会丢失这些消息。但是，我们仍然可以从上次已知的偏移中读取这些消息，但仅限于消费者的部分停机时间仅为60分钟的情况。此外，关于消费者从一个话题中读到什么，Kafka不会保持状态。</p>
+<h2 id="问题37解释如何调整kafka以获得最佳性能">问题37：解释如何调整Kafka以获得最佳性能。</h2>
+<p>答：因此，调优Apache Kafka的方法是调优它的几个组件：</p>
+<p>调整Kafka生产者</p>
+<p>Kafka代理调优</p>
+<p>调整Kafka消费者</p>
+<h2 id="问题38apache-kafka的缺陷">问题38：Apache Kafka的缺陷</h2>
+<p>答：Kafka的局限性是：</p>
+<p>没有完整的监控工具集</p>
+<p>消息调整的## 问题</p>
+<p>不支持通配符主题选择</p>
+<p>速度## 问题</p>
+<h2 id="问题39列出所有apache-kafka业务">问题39：列出所有Apache Kafka业务</h2>
+<p>答：Apache Kafka的业务包括：</p>
+<p>添加和删除Kafka主题</p>
+<p>如何修改Kafka主题</p>
+<p>如何关机</p>
+<p>在Kafka集群之间镜像数据</p>
+<p>找到消费者的位置</p>
+<p>扩展您的Kafka群集</p>
+<p>自动迁移数据</p>
+<p>退出服务器</p>
+<p>数据中心</p>
+<h2 id="问题40解释apache-kafka用例">问题40：解释Apache Kafka用例？</h2>
+<p>答：Apache Kafka有很多用例，例如：</p>
+<p>Kafka指标</p>
+<p>可以使用Kafka进行操作监测数据。此外，为了生成操作数据的集中提要，它涉及到从分布式应用程序聚合统计信息。</p>
+<p>Kafka日志聚合</p>
+<p>从组织中的多个服务收集日志。</p>
+<p>流处理</p>
+<p>在流处理过程中，Kafka的强耐久性非常有用。</p>
+<p>Apache Kafka对于新手的面试## 问题：31, 32, 33, 34, 38, 39, 40</p>
+<p>Apache Kafka对于有经验的人的面试## 问题：35, 36, 37</p>
+<h2 id="问题41kafka的一些最显著的应用">问题41：Kafka的一些最显著的应用。</h2>
+<p>答：Netflix，Mozilla，Oracle</p>
+<h2 id="问题42kafka流的特点">问题42：Kafka流的特点。</h2>
+<p>答：Kafka流的一些最佳功能是</p>
+<p>Kafka Streams具有高度可扩展性和容错性。</p>
+<p>Kafka部署到容器，VM，裸机，云。</p>
+<p>我们可以说，Kafka流对于小型，中型和大型用例同样可行。</p>
+<p>此外，它完全与Kafka安全集成。</p>
+<p>编写标准Java应用程序。</p>
+<p>完全一次处理语义。</p>
+<p>而且，不需要单独的处理集群。</p>
+<h2 id="问题43kafka的流处理是什么意思">问题43：Kafka的流处理是什么意思？</h2>
+<p>答：连续、实时、并发和以逐记录方式处理数据的类型，我们称之为Kafka流处理。</p>
+<h2 id="问题44系统工具有哪些类型">问题44：系统工具有哪些类型？</h2>
+<p>答：系统工具有三种类型：</p>
+<p>Kafka迁移工具：它有助于将代理从一个版本迁移到另一个版本。</p>
+<p>Mirror Maker：Mirror Maker工具有助于将一个Kafka集群的镜像提供给另一个。</p>
+<p>消费者检查:对于指定的主题集和消费者组，它显示主题，分区，所有者。</p>
+<h2 id="问题45什么是复制工具及其类型">问题45：什么是复制工具及其类型？</h2>
+<p>答：为了增强持久性和更高的可用性，这里提供了复制工具。其类型为</p>
+<p>创建主题工具</p>
+<p>列表主题工具</p>
+<p>添加分区工具</p>
+<h2 id="问题46java在apache-kafka中的重要性是什么">问题46：Java在Apache Kafka中的重要性是什么？</h2>
+<p>答：为了满足Kafka标准的高处理速率需求，我们可以使用java语言。此外，对于Kafka的消费者客户，Java也提供了良好的社区支持。所以，我们可以说在Java中实现Kafka是一个正确的选择。</p>
+<h2 id="问题47说明kafka的一个最佳特征">问题47：说明Kafka的一个最佳特征。</h2>
+<p>答：Kafka的最佳特性是“各种各样的用例”。</p>
+<p>这意味着Kafka能够管理各种各样的用例，这些用例对于数据湖来说非常常见。例如日志聚合、Web活动跟踪等。</p>
+<h2 id="问题48解释术语主题复制因子">问题48：解释术语“主题复制因子”。</h2>
+<p>答：在设计Kafka系统时，考虑主题复制是非常重要的。</p>
+<h2 id="问题49解释一些kafka流实时用例">问题49：解释一些Kafka流实时用例。</h2>
+<p>答：《纽约时报》：该公司使用它来实时存储和分发已发布的内容到各种应用程序和系统，使其可供读者使用。基本上，它使用Apache Kafka和Kafka流。</p>
+<p>Zalando：作为ESB（企业服务总线）作为欧洲领先的在线时尚零售商，Zalando使用Kafka。</p>
+<p>LINE：基本上，为了相互通信，LINE应用程序使用Apache Kafka作为其服务的中心数据中心。</p>
+<h2 id="问题50kafka提供的保证是什么">问题50：Kafka提供的保证是什么？</h2>
+<p>答：生产者向特定主题分区发送的消息的顺序相同。</p>
+<p>此外，消费者实例按照它们存储在日志中的顺序查看记录。</p>
+<p>此外，即使不丢失任何提交给日志的记录，我们也可以容忍最多N-1个服务器故障。</p>
+<p>Apache Kafka对于新手的面试## 问题：41, 42, 43, 44, 45, 47, 49</p>
+<p>Apache Kafka对于有经验的人的面试## 问题：46, 48</p>
+<p>最后，这便是关于Apache Kafka面试的## 问题和答案。</p>
+<p>希望你们看了我的文章能够有所收获。</p>
+
+                
+                
+                <hr> 
+
+<div class="entry-shang text-center">
+    
+    <p> 「真诚赞赏，手留余香」</p>
+    
+    <button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+    <div class="zs-modal-head">
+        <button type="button" class="close">×</button>
+        <span class="author">
+            <a href="http://www.mafool.com">
+                <img src="http://www.mafool.com/img/reward/hollson.png" alt="史布斯" />码夫庄园
+            </a>
+        </span>
+        
+        <p class="tip"><i></i><span>嗯，我的梦想是被读者的稿费包养~</span></p>
+        
+
+    </div>
+    <div class="zs-modal-body">
+        <div class="zs-modal-btns">
+            <button class="btn btn-blink" data-num="2">2元</button>
+            <button class="btn btn-blink" data-num="5">5元</button>
+            <button class="btn btn-blink" data-num="10">10元</button>
+            <button class="btn btn-blink" data-num="50">50元</button>
+            <button class="btn btn-blink" data-num="100">100元</button>
+            <button class="btn btn-blink" data-num="1">任意金额</button>
+        </div>
+        <div class="zs-modal-pay">
+            <button class="btn btn-bred" id="pay-text">2元</button>
+            <p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+            <img src="http://www.mafool.com/img/reward/wechat-2.png" alt="史布斯" id="pay-image" />
+        </div>
+    </div>
+    <div class="zs-modal-footer">
+        <label>
+            <span class="zs-wechat"></span>
+            <input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked">
+            <img src="http://www.mafool.com/img/reward/wechat-btn.png" alt="史布斯" />
+            </span>&nbsp;
+            <span>
+                <input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay">
+                <img src="http://www.mafool.com/img/reward/alipay-btn.png" alt="史布斯" />
+            </span>
+        </label>
+    </div>
+</div>
+
+ 
+
+                <br>
+                <br>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="column is-3">
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">最近发布</h2>
+        
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/0742b474a643d63a774461726a6201203/">Go语言中的原子操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年12月2日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/1600330472/">Go基础笔记 - 2.3 常量</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月10日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/15996311192/">Go - Gin框架快速入门</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月9日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480249/">Gorm快速指南</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480218/">18. Go语言MySQL数据库操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+    </div>
+</div>
+<br>
+        
+
+
+
+
+<div class="card">
+  <div class="card-content">
+    <h2 class="title is-6">相关文章</h2>
+    
+    
+    <h2><a href="http://www.mafool.com/post/1585721646/">Kafka面试自测系列1</a></h2>
+    <time class="has-text-grey-light is-size-7">8 May 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585721666/">Kafka面试自测系列2</a></h2>
+    <time class="has-text-grey-light is-size-7">8 May 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585725105/">Nginx自测 - 课后练习题</a></h2>
+    <time class="has-text-grey-light is-size-7">8 May 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585725111/">Nginx面试自测系列3</a></h2>
+    <time class="has-text-grey-light is-size-7">8 May 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585726239/">Go精编100道题</a></h2>
+    <time class="has-text-grey-light is-size-7">9 April 2019</time>
+    
+    <h2><a href="http://www.mafool.com/post/1585725972/">Go面试自测系列</a></h2>
+    <time class="has-text-grey-light is-size-7">9 April 2019</time>
+    
+    <h2><a href="http://www.mafool.com/posts/99a7e89b9b8052e68f39909ef7fc0fc1/">面试题汇总</a></h2>
+    <time class="has-text-grey-light is-size-7">11 August 2018</time>
+    
+  </div>
+</div>
+<br>
+
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">标签</h2>
+        <div>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/atomic">atomic</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/blog">blog</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cgo">cgo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cloud">cloud</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/config">config</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/copy">copy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/docker">docker</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/exam">exam</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/gin">gin</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/git">git</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/golang">golang</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/hugo">hugo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/install">install</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/istio">istio</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/jenkins">jenkins</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/kubernetes">kubernetes</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/map">map</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/microservice">microservice</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/mycat">mycat</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/nginx">nginx</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/plan9">plan9</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/posix">posix</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/proxy">proxy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/raft">raft</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ssh">ssh</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/tips">tips</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ymal">ymal</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%B8%BB%E4%BB%8E">主从</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BA%8B%E5%8A%A1">事务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BB%A3%E7%90%86">代理</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BD%9C%E7%94%A8%E5%9F%9F">作用域</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%86%85%E5%AD%98">内存</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%8B%E7%BC%A9">压缩</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%88%9B">原创</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%AD%90">原子</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%91%BD%E4%BB%A4%E8%A1%8C">命令行</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%93%A8%E5%85%B5">哨兵</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%AD%98%E5%82%A8">存储</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B8%B8%E9%87%8F">常量</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B9%B6%E5%8F%91">并发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BC%82%E5%B8%B8">异常</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1">微服务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%88%E6%9D%83%E8%AE%A4%E8%AF%81">授权认证</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%92%E5%BA%8F">排序</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%A5%E5%8F%A3">接口</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%97%A5%E5%BF%97">日志</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%9D%83%E9%99%90">权限</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE1">标签1</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE2">标签2</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%AD%A3%E5%88%99">正则</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%81%E9%87%8F%E5%88%86%E5%8F%91">流量分发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%8B%E8%AF%95">测试</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%BA%90%E7%A0%81">源码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%8A%B6%E6%80%81%E7%A0%81">状态码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%AE%97%E6%B3%95">算法</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%BC%8F">编程模式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%80%81%E5%A6%96%E7%AC%94%E8%AE%B0">老妖笔记</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%BF%87%E6%BB%A4%E5%99%A8">过滤器</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%80%83%E9%80%B8">逃逸</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%85%8D%E7%BD%AE">配置</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%86%99">重写</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%AE%9A%E5%90%91">重定向</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9B%86%E7%BE%A4">集群</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9D%A2%E8%AF%95">面试</a>
+            </span>
+            
+        </div>
+    </div>
+</div>
+<br>
+    </div>
+</div>
+
+        </div>
+    </div>
+
+    
+    <footer class="footer has-background-grey-darker has-text-white">
+    <div class="content has-text-centered">
+        <p>
+            <span class="icon is-large">
+                <a href="https://twitter.com/" class="mysocial" rel="me">
+                    <i class="fab fa-twitter fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://www.youtube.com/" class="mysocial" rel="me">
+                    <i class="fab fa-youtube fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://github.com/" class="mysocial" rel="me">
+                    <i class="fab fa-github fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <br><br>
+            友情链接：
+            
+            <a class="mysocial" href="http://www.mafool.com" target="_blank">Mafool</a>
+            
+            <a class="mysocial" href="https://gohugo.io/documentation/" target="_blank">Hugo</a>
+            
+            <a class="mysocial" href="https://bulma.io/" target="_blank">Bulma</a>
+            
+            <a class="mysocial" href="https://bootstrapious.com/" target="_blank">Bootstrapious</a>
+            
+            <a class="mysocial" href="https://youzhixueyuan.com/" target="_blank">Youzhixueyuan</a>
+            
+            <br><br />
+            版权所有 &copy; 码夫庄园 2021
+            - <a class="mysocial" href="https://github.com/hollson/hugo-theme-dooz">Hugo Theme</a>
+        </p>
+    </div>
+</footer>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='http://www.mafool.com/js/dooz.totop.js?v=0.0.0' async=""></script>
+
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = 'https://hm.baidu.com/hm.js?f185359ec6b829a6a93e1e1f2597f6d9';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DK042XSJ2J"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-DK042XSJ2J');
+</script>
+
+    
+    
+<script type="text/javascript" src="http://www.mafool.com/js/reward.js"></script>
+
+    
+    <script defer src="https://cdn.staticfile.org/font-awesome/5.13.0/js/all.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,24 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>日志 on 码夫庄园</title>
+    <link>http://www.mafool.com/tags/%E6%97%A5%E5%BF%97/</link>
+    <description>Recent content in 日志 on 码夫庄园</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <copyright>版权所有</copyright>
+    <lastBuildDate>Thu, 19 Mar 2020 00:00:00 +0000</lastBuildDate>
+    
+        <atom:link href="http://www.mafool.com/tags/%E6%97%A5%E5%BF%97/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Go之Logrus日志框架</title>
+      <link>http://www.mafool.com/2020/03/go%E4%B9%8Blogrus%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6/</link>
+      <pubDate>Thu, 19 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.mafool.com/2020/03/go%E4%B9%8Blogrus%E6%97%A5%E5%BF%97%E6%A1%86%E6%9E%B6/</guid>
+      <description>logrus介绍 golang标准库的日志框架非常简单，仅仅提供了print，panic和fatal三个函数。对于更精细的日志级别、日志文件分</description>
+    </item>
+    
+  </channel>
+</rss>

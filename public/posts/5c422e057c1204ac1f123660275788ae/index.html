@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>码夫庄园-Nginx笔记 - 基础配置</title>
+    <meta name="keywords"
+        content='nginx,配置'>
+    <meta name="description" content="" />
+
+    
+    <meta name="baidu-site-verification" content="v9szEmQLra" />
+    <meta name="360-site-verification" content="d8e961f98fb655e4b8cf9439cfd9ac7f" />
+    <meta name="sogou_site_verification" content="40NC9EdZDC" />
+    <meta name="shenma-site-verification" content="3200e3042e92157713a3b0aceeecb20a_1586020187" />
+    <meta name="google-site-verification" content="r8987bkunZHJeKut3ocu5NIJ5QEu53NA6Q_r7RrZ46c" />
+    <meta name="msvalidate.01" content="893A2865ABC54AC2782D118536831056" />
+
+    
+    <link rel="shortcut icon" href="http://www.mafool.com/img/res/favicon.ico">
+    
+
+    
+
+    <link crossorigin="anonymous" integrity="sha384-5kGFOAqgEKnuF6c2jk2JANKHZgYVt38Wn2dVJENtq1EBCP54/1uzXU5mpxqL8WjN"
+        href="https://lib.baomitu.com/bulma/0.8.0/css/bulma.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="http://www.mafool.com/css/dooz.blog.css" />
+    <script crossorigin="anonymous" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh"
+        src="https://lib.baomitu.com/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/jquery.share.min.js"></script>
+    
+
+    
+
+    
+    
+<link rel="stylesheet" href="http://www.mafool.com/css/reward.css">
+
+
+    <link href="http://www.mafool.com/css/fonts.googleapi.css" rel="stylesheet">
+    <script src=http://www.mafool.com/js/dooz.blog.js></script>
+
+    
+    <script>
+        $(document).ready(function () {
+            $('.content a[href^="http"]').each(function () {
+                $(this).attr('target', '_blank');
+            });
+        });
+
+        $(document).on('click', '.modal-wechat', function () {
+            $(".modal").addClass("is-active");
+        });
+
+        $(document).on('click', '.modal-background', function () {
+            $(".modal").removeClass("is-active");
+        });
+    </script>
+</head>
+
+<body>
+    
+    
+<section class="hero is-info is-medium"
+    style="background-image: url('/img/res/bg8.jpg');">
+    <div class="hero-head">
+        <nav class="navbar is-transparent container has-text-white">
+    <div class="navbar-brand">
+        <div class="navbar-item">
+            <a class="title is-5 is-white" href="http://www.mafool.com/">码夫庄园</a>
+        </div>
+
+        
+        <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <div id="navbarExampleTransparentExample" class="navbar-menu has-text-dark">
+        
+
+        <div class="navbar-end">
+            <a class="navbar-item" href='http://www.mafool.com/'>首页</a>
+            <a class="navbar-item" href='http://www.mafool.com/archives'>归档 </a>
+            <a class="navbar-item" href='http://www.mafool.com/about'>关于</a>
+            <span class="navbar-item">
+                <a class="button is-primary is-inverted" href="https://github.com/hollson/hugo-theme-dooz">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span>主题</span>
+                </a>
+            </span>
+        </div>
+    </div>
+</nav>
+    </div>
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <div class='container has-text-left column is-7'>
+                
+                <span>
+                    <a class="bar_tag" href="http://www.mafool.com/tags/%E9%85%8D%E7%BD%AE" title="配置">配置</a>
+                </span>
+                
+                <span>
+                    <a class="bar_tag" href="http://www.mafool.com/tags/%E7%8A%B6%E6%80%81%E7%A0%81" title="状态码">状态码</a>
+                </span>
+                
+                <span>
+                    <a class="bar_tag" href="http://www.mafool.com/tags/nginx" title="nginx">nginx</a>
+                </span>
+                
+                <h1 class="title is-size-2" style="margin-bottom:0.2rem;">
+                    
+                    Nginx笔记 - 基础配置
+                    
+                </h1>
+                
+                <span class="title is-size-6" style="font-style: italic;"> </span><br>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    
+    <div class="container">
+        <div class="section">
+            
+<div class="columns">
+    <div class="column is-9">
+        <div class="tile is-child box">
+            <div class="content">
+                
+                <nav class="level">
+                    
+                    <div class="level-left">
+                        <div class="level-item">
+                            <p class="subtitle is-size-6 has-text-grey-light" style="font-style: italic;">
+    
+     2019年1月13日,
+    星期日 &middot;
+    
+    <i class="far fa-clock"></i>&nbsp; 7分钟阅读
+</p>
+                        </div>
+                    </div>
+
+                    
+                    
+                    <div class="share-component level-right" data-disabled="google,diandian,tencent,qzone"
+                        data-description="Share.js - 一键分享到微博，QQ空间，腾讯微博，人人，豆瓣"
+                        data-mobile-sites="weibo,qq,qzone,tencent">
+                    </div>
+                    
+                </nav>
+                <hr>
+                
+                <header>
+                    <h2>目录</h2>
+                </header>
+                <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一-基本模块">一. 基本模块</a></li>
+    <li><a href="#二-服务配置">二. 服务配置</a>
+      <ul>
+        <li><a href="#1-配置监听">1. 配置监听</a></li>
+        <li><a href="#2-配置主机名">2. 配置主机名</a></li>
+        <li><a href="#3-配置location">3. 配置Location</a></li>
+      </ul>
+    </li>
+    <li><a href="#三-ssl配置">三. SSL配置</a></li>
+    <li><a href="#附1-配置说明">附1: 配置说明</a></li>
+    <li><a href="#附2-http状态码">附2: Http状态码</a></li>
+    <li><a href="#参考链接">参考链接</a></li>
+  </ul>
+</nav>
+                
+                <hr>
+                <h2 id="一-基本模块">一. 基本模块</h2>
+<ol>
+<li><strong><code>全局块：</code></strong> 配置影响nginx全局的指令。一般有运行nginx服务器的用户组，nginx进程pid存放路径，日志存放路径，配置文件引入，允许生成worker process数等。</li>
+<li><strong><code>events块：</code></strong> 配置影响nginx服务器或与用户的网络连接。有每个进程的最大连接数，选取哪种事件驱动模型处理连接请求，是否允许同时接受多个网路连接，开启多个网络连接序列化等。</li>
+<li><strong><code>http块：</code></strong> 可以嵌套多个server，配置代理，缓存，日志定义等绝大多数功能和第三方模块的配置。如文件引入，mime-type定义，日志自定义，是否使用sendfile传输文件，连接超时时间，单连接请求数等。</li>
+<li><strong><code>server块：</code></strong> 配置虚拟主机的相关参数，一个http中可以有多个server。</li>
+<li><strong><code>location块：</code></strong> 配置请求的路由，以及各种页面的处理情况。</li>
+</ol>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-nginx" data-lang="nginx"><span style="color:#09f;font-style:italic">#全局块
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">worker_processes</span>    <span style="color:#f60">1</span>;
+<span style="color:#069;font-weight:bold">error_log</span> <span style="color:#c30">log/error.log</span> <span style="color:#c30">debug</span>;
+
+<span style="color:#09f;font-style:italic">#events块
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">events</span> {
+    <span style="color:#069;font-weight:bold">worker_connections</span>  <span style="color:#f60">1024</span>;
+}
+
+<span style="color:#09f;font-style:italic">#http块
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">http</span> {
+    <span style="color:#069;font-weight:bold">include</span>             <span style="color:#c30">mime.types</span>;
+    <span style="color:#069;font-weight:bold">default_type</span>        <span style="color:#c30">application/octet-stream</span>;
+    <span style="color:#069;font-weight:bold">sendfile</span>            <span style="color:#360">on</span>;
+    <span style="color:#069;font-weight:bold">keepalive_timeout</span>   <span style="color:#f60">65</span>;
+
+    <span style="color:#09f;font-style:italic">#server块
+</span><span style="color:#09f;font-style:italic"></span>    <span style="color:#069;font-weight:bold">server</span> {
+        <span style="color:#069;font-weight:bold">listen</span>             <span style="color:#f60">8080</span>;
+        <span style="color:#069;font-weight:bold">server_name</span>        <span style="color:#c30">localhost</span>;
+
+        <span style="color:#09f;font-style:italic">#location块
+</span><span style="color:#09f;font-style:italic"></span>        <span style="color:#069;font-weight:bold">location</span> <span style="color:#c30">/</span> {
+            <span style="color:#069;font-weight:bold">root</span>              <span style="color:#c30">/data/www/demo</span>;
+            <span style="color:#069;font-weight:bold">index</span>             <span style="color:#c30">index.html</span>;
+        }
+        <span style="color:#069;font-weight:bold">error_page</span>         <span style="color:#f60">404</span> <span style="color:#c30">/error.html</span>;
+    }
+}
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="二-服务配置">二. 服务配置</h2>
+<h3 id="1-配置监听">1. 配置监听</h3>
+<p><strong>监听IP地址</strong></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">listen address<span style="color:#555">[</span>:port<span style="color:#555">]</span> <span style="color:#555">[</span>default_server<span style="color:#555">]</span> <span style="color:#555">[</span><span style="color:#033">setfib</span><span style="color:#555">=</span>number<span style="color:#555">]</span> <span style="color:#555">[</span><span style="color:#033">backlog</span><span style="color:#555">=</span>number<span style="color:#555">]</span> <span style="color:#555">[</span><span style="color:#033">rcvbuf</span><span style="color:#555">=</span>size<span style="color:#555">]</span> <span style="color:#555">[</span><span style="color:#033">sndbuf</span><span style="color:#555">=</span>size<span style="color:#555">]</span> <span style="color:#555">[</span>deferred<span style="color:#555">]</span> <span style="color:#555">[</span><span style="color:#033">accept_filter</span><span style="color:#555">=</span>filter<span style="color:#555">]</span> <span style="color:#555">[</span>bind<span style="color:#555">]</span> <span style="color:#555">[</span>ssl<span style="color:#555">]</span>;
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>配置端口</strong></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">listen port<span style="color:#555">[</span>default_server<span style="color:#555">]</span> <span style="color:#555">[</span><span style="color:#033">setfib</span><span style="color:#555">=</span>number<span style="color:#555">]</span> <span style="color:#555">[</span><span style="color:#033">backlog</span><span style="color:#555">=</span>number<span style="color:#555">]</span> <span style="color:#555">[</span><span style="color:#033">rcvbuf</span><span style="color:#555">=</span>size<span style="color:#555">]</span> <span style="color:#555">[</span><span style="color:#033">sndbuf</span><span style="color:#555">=</span>size<span style="color:#555">]</span> <span style="color:#555">[</span><span style="color:#033">accept_filter</span><span style="color:#555">=</span>filter<span style="color:#555">]</span> <span style="color:#555">[</span>deferred<span style="color:#555">]</span> <span style="color:#555">[</span>bind<span style="color:#555">]</span> <span style="color:#555">[</span><span style="color:#033">ipv6only</span><span style="color:#555">=</span>on|off<span style="color:#555">]</span> <span style="color:#555">[</span>ssl<span style="color:#555">]</span>;
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>UNIX Domain Socket</strong></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">listen unix:path <span style="color:#555">[</span>default_server<span style="color:#555">]</span> <span style="color:#555">[</span><span style="color:#033">backlog</span><span style="color:#555">=</span>number<span style="color:#555">]</span> <span style="color:#555">[</span><span style="color:#033">rcvbuf</span><span style="color:#555">=</span>size<span style="color:#555">]</span> <span style="color:#555">[</span><span style="color:#033">sndbuf</span><span style="color:#555">=</span>size<span style="color:#555">]</span> <span style="color:#555">[</span><span style="color:#033">accept_filter</span><span style="color:#555">=</span>filter<span style="color:#555">]</span> <span style="color:#555">[</span>deferred<span style="color:#555">]</span> <span style="color:#555">[</span>bind<span style="color:#555">]</span> <span style="color:#555">[</span>ssl<span style="color:#555">]</span>;
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>参数说明：</strong></p>
+<ol>
+<li><code>address</code>: IP地址，如果是 IPV6地址，需要使用中括号[] 括起来，比如[fe80::1]等。</li>
+<li><code>port</code>: 端口号，如果只定义了IP地址，没有定义端口号，那么就使用80端口。</li>
+<li><code>path</code>: socket文件路径，如 var/run/nginx.sock等。</li>
+<li><code>default_server</code>: 标识符，将此虚拟主机设置为 address:port 的默认主机。（在 nginx-0.8.21 之前使用的是 default 指令）</li>
+<li><code>setfib=number</code>: Nginx-0.8.44 中使用这个变量监听 socket 关联路由表，目前只对 FreeBSD 起作用，不常用。</li>
+<li><code>backlog=number</code>: 设置监听函数listen()最多允许多少网络连接同时处于挂起状态，在 FreeBSD 中默认为 -1,其他平台默认为511.</li>
+<li><code>rcvbuf=size</code>: 设置监听socket接收缓存区大小。</li>
+<li><code>sndbuf=size</code>: 设置监听socket发送缓存区大小。</li>
+<li><code>deferred</code>: 标识符，将accept()设置为Deferred模式。</li>
+<li><code>accept_filter=filter</code>: 设置监听端口对所有请求进行过滤，被过滤的内容不能被接收和处理，本指令只在 FreeBSD 和 NetBSD 5.0+ 平台下有效。filter 可以设置为 dataready 或 httpready 。</li>
+<li><code>bind</code>: 标识符，使用独立的bind() 处理此address:port，一般情况下，对于端口相同而IP地址不同的多个连接，Nginx 服务器将只使用一个监听指令，并使用 bind() 处理端口相同的所有连接。</li>
+<li><code>ssl</code>: 标识符，设置会话连接使用 SSL模式进行，此标识符和Nginx服务器提供的 HTTPS 服务有关。</li>
+</ol>
+<p><strong>监听示例：</strong></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">listen *:80 | *:8080;     <span style="color:#09f;font-style:italic">#监听所有80端口和8080端口</span>
+listen IP_address:port;   <span style="color:#09f;font-style:italic">#监听指定的地址和端口号</span>
+listen IP_address;        <span style="color:#09f;font-style:italic">#监听指定ip地址所有端口</span>
+listen port;              <span style="color:#09f;font-style:italic">#监听该端口的所有IP连接</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="2-配置主机名">2. 配置主机名</h3>
+<ul>
+<li>主机名可使用<code>IP地址</code>，<code>多个域名</code>、<code>通配符</code>、<code>正则表达式</code>方式配置。</li>
+</ul>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">server_name           192.168.1.100;        <span style="color:#09f;font-style:italic">#IP地址</span>
+server_name           aaa.com bbb.com;      <span style="color:#09f;font-style:italic">#多个主机名</span>
+server_name           w*.abc.com;           <span style="color:#09f;font-style:italic">#通配符</span>
+server_name           ~^www<span style="color:#c30;font-weight:bold">\d</span>+<span style="color:#c30;font-weight:bold">\.</span>123<span style="color:#c30;font-weight:bold">\.</span>com$;  <span style="color:#09f;font-style:italic">#正则表达式</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="3-配置location">3. 配置Location</h3>
+<p><strong>1. 匹配规则</strong></p>
+<ul>
+<li><code>=</code>：精确匹配</li>
+<li><code>^~</code>：uri以某个常规字符串开头,即匹配url路径即可</li>
+<li><code>~</code>：区分大小写的正则匹配</li>
+<li><code>~*</code>：不区分大小写的正则匹配</li>
+<li><code>!~</code>：区分大小写不匹配的正则</li>
+<li><code>!~*</code>：不区分大小写不匹配的正则</li>
+<li><code>/</code>：通用匹配，任何请求都会匹配到</li>
+</ul>
+<p><strong>2. 匹配顺序</strong></p>
+<ul>
+<li>首先匹配 <code>=</code>；其次匹配 <code>^~</code>, 其次<code>顺序匹配</code>，最后是<code>/</code>通用匹配。当有匹配成功时，停止匹配，按当前匹配规则处理请求。</li>
+</ul>
+<p><em>匹配规则示例:</em></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell"><span style="color:#033">location</span> <span style="color:#555">=</span> / <span style="color:#555">{</span>
+    <span style="color:#09f;font-style:italic">#规则A</span>
+<span style="color:#555">}</span>
+<span style="color:#033">location</span> <span style="color:#555">=</span> /login <span style="color:#555">{</span>
+    <span style="color:#09f;font-style:italic">#规则B</span>
+<span style="color:#555">}</span>
+location ^~ /static/ <span style="color:#555">{</span>
+    <span style="color:#09f;font-style:italic">#规则C</span>
+<span style="color:#555">}</span>
+location ~ <span style="color:#c30;font-weight:bold">\.</span><span style="color:#555">(</span>gif|jpg|png|js|css<span style="color:#555">)</span>$ <span style="color:#555">{</span>
+    <span style="color:#09f;font-style:italic">#规则D</span>
+<span style="color:#555">}</span>
+location ~* <span style="color:#c30;font-weight:bold">\.</span>png$ <span style="color:#555">{</span>
+    <span style="color:#09f;font-style:italic">#规则E</span>
+<span style="color:#555">}</span>
+location !~ <span style="color:#c30;font-weight:bold">\.</span>xhtml$ <span style="color:#555">{</span>
+    <span style="color:#09f;font-style:italic">#规则F</span>
+<span style="color:#555">}</span>
+location !~* <span style="color:#c30;font-weight:bold">\.</span>xhtml$ <span style="color:#555">{</span>
+    <span style="color:#09f;font-style:italic">#规则G</span>
+<span style="color:#555">}</span>
+location / <span style="color:#555">{</span>
+    <span style="color:#09f;font-style:italic">#规则H</span>
+<span style="color:#555">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><em>匹配结果：</em></p>
+<ul>
+<li><code>http://localhost/ </code> 将匹配规则A（访问根目录）</li>
+<li><code>http://localhost/login</code> 将匹配规则B</li>
+<li><code>http://localhost/register</code> 则匹配规则H</li>
+<li><code>http://localhost/static/a.html</code>   将匹配规则C</li>
+<li><code>http://localhost/a.gif</code> 将匹配D（顺序优先）</li>
+<li><code>http://localhost/static/c.png</code> 将匹配到规则C</li>
+<li><code>http://localhost/a.PNG</code> 将匹配规则E（不区分大小写）</li>
+<li><code>http://localhost/category/id/1111</code> 将匹配到规则H</li>
+</ul>
+<p><strong>3. 三个匹配规则</strong></p>
+<ul>
+<li>第一个必选规则：<code>直接匹配网站根</code> ,通过域名访问网站首页比较频繁，使用这个会加速处理</li>
+</ul>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell"><span style="color:#09f;font-style:italic">#直接转发给后端应用或一个静态首页</span>
+<span style="color:#033">location</span> <span style="color:#555">=</span> / <span style="color:#555">{</span>
+    proxy_pass http://localhost:8080/index
+<span style="color:#555">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>第二个必选规则：<code>静态文件请求</code>，这是nginx作为http服务器的强项</li>
+</ul>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell"><span style="color:#09f;font-style:italic"># 有两种配置模式，目录匹配或后缀匹配,任选其一或搭配使用</span>
+location ^~ /static/ <span style="color:#555">{</span>
+    root /webroot/static/;
+<span style="color:#555">}</span>
+location ~* <span style="color:#c30;font-weight:bold">\.</span><span style="color:#555">(</span>gif|jpg|jpeg|png|css|js|ico<span style="color:#555">)</span>$ <span style="color:#555">{</span>
+    root /webroot/res/;
+<span style="color:#555">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>第三个必须规则：<code>通用规则</code>，用来转发动态请求到后端应用服务器</li>
+</ul>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">location / <span style="color:#555">{</span>
+    proxy_pass http://localhost:8080/
+<span style="color:#555">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><!-- raw HTML omitted -->
+<h2 id="三-ssl配置">三. SSL配置</h2>
+<p><strong>1.安装证书：</strong> 确定机器安装了<a href="https://www.openssl.org/source/">OpenSSL</a>，然后执行以下命令：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">$ sudo openssl req <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span>  -x509 <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span>  -nodes <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span>  -days <span style="color:#f60">365</span> <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span>  -newkey rsa:2048 <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span>  -keyout example.key <span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span>  -out example.crt
+
+......要求填入问题......
+Country Name <span style="color:#555">(</span><span style="color:#f60">2</span> letter code<span style="color:#555">)</span> <span style="color:#555">[]</span>:cn          <span style="color:#09f;font-style:italic">#中国</span>
+State or Province Name <span style="color:#555">(</span>full name<span style="color:#555">)</span> <span style="color:#555">[]</span>:bj    <span style="color:#09f;font-style:italic">#北京</span>
+Locality Name <span style="color:#555">(</span>eg, city<span style="color:#555">)</span> <span style="color:#555">[]</span>:cy              <span style="color:#09f;font-style:italic">#朝阳</span>
+Organization Name <span style="color:#555">(</span>eg, company<span style="color:#555">)</span> <span style="color:#555">[]</span>:amo      <span style="color:#09f;font-style:italic">#组织</span>
+Organizational Unit Name <span style="color:#555">(</span>eg, section<span style="color:#555">)</span> <span style="color:#555">[]</span>:golang        <span style="color:#09f;font-style:italic">#组织单元</span>
+Common Name <span style="color:#555">(</span>eg, fully qualified host name<span style="color:#555">)</span> <span style="color:#555">[]</span>:kepler.cn  <span style="color:#09f;font-style:italic">#域名      </span>
+Email Address <span style="color:#555">[]</span>:kepler@qq.com    <span style="color:#09f;font-style:italic">#邮箱</span>
+
+<span style="color:#09f;font-style:italic"># 参数说明：</span>
+<span style="color:#09f;font-style:italic"># req：处理证书签署请求</span>
+<span style="color:#09f;font-style:italic"># -x509：生成自签名证书</span>
+<span style="color:#09f;font-style:italic"># -nodes：跳过为证书设置密码的阶段，这样Nginx才可以直接打开证书</span>
+<span style="color:#09f;font-style:italic"># -days 365：证书有效期为一年</span>
+<span style="color:#09f;font-style:italic"># -newkey rsa:2048：生成一个新的私钥，采用的算法是2048位的 RSA</span>
+<span style="color:#09f;font-style:italic"># -keyout：新生成的私钥文件为当前目录下的example.key</span>
+<span style="color:#09f;font-style:italic"># -out：新生成的证书文件为当前目录下的example.crt</span>
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell"><span style="color:#09f;font-style:italic"># 将生成的证书移动到“~/nginx/conf/certs”目录下</span>
+$ mkdir ~/nginx/conf/certs <span style="color:#555">&amp;&amp;</span> mv example.crt example.key ~/nginx/conf/certs
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>2.配置SSL：</strong> <code>vim conf/conf.d/default.conf </code>，文件末尾追加以下配置：</p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-nginx" data-lang="nginx"><span style="color:#069;font-weight:bold">server</span> {
+    <span style="color:#069;font-weight:bold">listen</span> <span style="color:#f60">443</span> <span style="color:#c30">ssl</span> <span style="color:#c30">http2</span>;
+    <span style="color:#069;font-weight:bold">server_name</span> <span style="color:#c30">localhost</span>;
+
+    <span style="color:#069;font-weight:bold">ssl</span> <span style="color:#360">on</span>;
+    <span style="color:#069;font-weight:bold">ssl_certificate</span> <span style="color:#c30">/etc/nginx/certs/example.crt</span>;
+    <span style="color:#069;font-weight:bold">ssl_certificate_key</span> <span style="color:#c30">/etc/nginx/certs/example.key</span>;
+
+    <span style="color:#069;font-weight:bold">ssl_session_timeout</span> <span style="color:#f60">5m</span>;
+
+    <span style="color:#069;font-weight:bold">ssl_ciphers</span> <span style="color:#c30">HIGH:!aNULL:!MD5</span>;
+    <span style="color:#069;font-weight:bold">ssl_protocols</span> <span style="color:#c30">SSLv3</span> <span style="color:#c30">TLSv1</span> <span style="color:#c30">TLSv1.1</span> <span style="color:#c30">TLSv1.2</span>;
+    <span style="color:#069;font-weight:bold">ssl_prefer_server_ciphers</span> <span style="color:#360">on</span>;
+
+    <span style="color:#069;font-weight:bold">location</span> <span style="color:#c30">/</span> {
+        <span style="color:#069;font-weight:bold">root</span> <span style="color:#c30">/usr/share/nginx/html</span>;
+        <span style="color:#069;font-weight:bold">index</span> <span style="color:#c30">index.html</span> <span style="color:#c30">index.htm</span>;
+    }
+}
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>3.重启Nginx</strong></p>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-shell" data-lang="shell">$ nginx -s reload
+
+<span style="color:#09f;font-style:italic"># 或重启容器</span>
+$ docker run -d --name nginx-test-web<span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span> -p 8082:80<span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span> -p 8443:443<span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span> -v ~/nginx/www:/usr/share/nginx/html<span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span> -v ~/nginx/conf/.:/etc/nginx/.<span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span> -v ~/nginx/logs:/var/log/nginx<span style="color:#c30;font-weight:bold">\
+</span><span style="color:#c30;font-weight:bold"></span> nginx
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>4.测试Https：</strong> <code>https://0.0.0.0:8443/</code>或<code>http://0.0.0.0:8002/</code></p>
+<!-- raw HTML omitted -->
+<h2 id="附1-配置说明">附1: 配置说明</h2>
+<div class="highlight"><div style="background-color:#f0f3f3">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#f0f3f3"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">58
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">59
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">60
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">61
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">62
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">63
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">64
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">65
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">66
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">67
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">68
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">69
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">70
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">71
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">72
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">73
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">74
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">75
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">76
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">77
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">78
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">79
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">80
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">81
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">82
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">83
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">84
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">85
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">86
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">87
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">88
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">89
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">90
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">91
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">92
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">93
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">94
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">95
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#f0f3f3"><code class="language-nginx" data-lang="nginx"><span style="color:#09f;font-style:italic"># ================================== 全局 ==================================
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">user</span> <span style="color:#c30">nobody</span> <span style="color:#c30">nobody</span>;            <span style="color:#09f;font-style:italic"># 运行用户或者组
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">worker_processes</span> <span style="color:#f60">1</span>;            <span style="color:#09f;font-style:italic"># 进程数(一般与逻辑CPU数相等）
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">pid</span> <span style="color:#c30">/nginx/pid/nginx.pid</span>;      <span style="color:#09f;font-style:italic"># 进程文件
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">error_log</span> <span style="color:#c30">log/error.log</span> <span style="color:#c30">debug</span>; <span style="color:#09f;font-style:italic"># 日志路径与级别(debug|info|notice|warn|error|crit|alert|emerg)，可设置全局块,http块,server块。
+</span><span style="color:#09f;font-style:italic"></span>
+
+<span style="color:#09f;font-style:italic"># ================================== 事件 ==================================
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">events</span> {
+    <span style="color:#069;font-weight:bold">worker_connections</span> <span style="color:#f60">1024</span>;  <span style="color:#09f;font-style:italic"># 最大连接数，默认512
+</span><span style="color:#09f;font-style:italic"></span>    <span style="color:#069;font-weight:bold">accept_mutex</span> <span style="color:#360">on</span>;          <span style="color:#09f;font-style:italic"># 设置网路连接序列化，防止惊群现象发生，默认on
+</span><span style="color:#09f;font-style:italic"></span>    <span style="color:#069;font-weight:bold">multi_accept</span> <span style="color:#360">on</span>;          <span style="color:#09f;font-style:italic"># 设置一个进程是否同时接受多个网络连接，默认off
+</span><span style="color:#09f;font-style:italic"></span>    <span style="color:#09f;font-style:italic">#use epoll;               # 事件驱动模型(select|poll|kqueue|epoll|resig|/dev/poll|eventport)
+</span><span style="color:#09f;font-style:italic"></span>}
+
+<span style="color:#09f;font-style:italic"># ================================== 服务 ==================================
+</span><span style="color:#09f;font-style:italic"></span><span style="color:#069;font-weight:bold">http</span> {
+    <span style="color:#069;font-weight:bold">include</span> <span style="color:#c30">/etc/nginx/mime.types</span>;          <span style="color:#09f;font-style:italic"># 文件类型映射表
+</span><span style="color:#09f;font-style:italic"></span>    <span style="color:#069;font-weight:bold">include</span> <span style="color:#c30">/etc/nginx/conf.d/*.conf</span>;
+
+    <span style="color:#069;font-weight:bold">default_type</span> <span style="color:#c30">application/octet-stream</span>;   <span style="color:#09f;font-style:italic"># 默认文件类型，默认为text/plain
+</span><span style="color:#09f;font-style:italic"></span>    <span style="color:#069;font-weight:bold">keepalive_timeout</span> <span style="color:#f60">60</span>;                    <span style="color:#09f;font-style:italic"># 连接超时（默认为75s）,可设置http,server,location块
+</span><span style="color:#09f;font-style:italic"></span>
+    <span style="color:#09f;font-style:italic"># 访问日志
+</span><span style="color:#09f;font-style:italic"></span>    <span style="color:#069;font-weight:bold">log_format</span> <span style="color:#c30">myFormat</span> <span style="color:#c30">&#39;</span><span style="color:#033">$remote_addr–$remote_user</span> <span style="color:#c30">[</span><span style="color:#033">$time_local]</span> <span style="color:#033">$request</span> <span style="color:#033">$status</span> <span style="color:#033">$body_bytes_sent</span> <span style="color:#033">$http_referer</span> <span style="color:#033">$http_user_agent</span> <span style="color:#033">$http_x_forwarded_for&#39;</span>;
+    <span style="color:#069;font-weight:bold">access_log</span> <span style="color:#c30">/var/log/nginx/access.log</span> <span style="color:#c30">myFormat</span>;
+
+    <span style="color:#069;font-weight:bold">sendfile</span> <span style="color:#360">on</span>;                    <span style="color:#09f;font-style:italic"># 允许sendfile，可设置http,server,location块
+</span><span style="color:#09f;font-style:italic"></span>    <span style="color:#069;font-weight:bold">sendfile_max_chunk</span> <span style="color:#f60">100k</span>;        <span style="color:#09f;font-style:italic"># sendfile最大值，默认为0，无上限
+</span><span style="color:#09f;font-style:italic"></span>
+
+    <span style="color:#09f;font-style:italic"># 连接超时时间
+</span><span style="color:#09f;font-style:italic"></span>    <span style="color:#09f;font-style:italic">#keepalive_timeout 0;
+</span><span style="color:#09f;font-style:italic"></span>    <span style="color:#069;font-weight:bold">keepalive_timeout</span> <span style="color:#f60">65</span>;
+    <span style="color:#069;font-weight:bold">tcp_nodelay</span>    <span style="color:#360">on</span>;
+
+    <span style="color:#09f;font-style:italic"># 数据压缩
+</span><span style="color:#09f;font-style:italic"></span>    <span style="color:#069;font-weight:bold">gzip</span> <span style="color:#360">on</span>;
+    <span style="color:#069;font-weight:bold">gzip_disable</span> <span style="color:#c30">&#34;MSIE</span> <span style="color:#c30">[1-6]\.(?!.*SV1)&#34;</span>;
+
+    <span style="color:#09f;font-style:italic"># 请求缓冲
+</span><span style="color:#09f;font-style:italic"></span>    <span style="color:#069;font-weight:bold">client_header_buffer_size</span>  <span style="color:#f60">1k</span>;
+    <span style="color:#069;font-weight:bold">large_client_header_buffers</span> <span style="color:#f60">4</span> <span style="color:#f60">4k</span>;
+
+    <span style="color:#069;font-weight:bold">upstream</span> <span style="color:#c30">myservices</span> {
+        <span style="color:#069;font-weight:bold">server</span> 192.168.1.11:<span style="color:#f60">8080</span> <span style="color:#c30">weight=1</span>;
+        <span style="color:#069;font-weight:bold">server</span> 192.168.1.12:<span style="color:#f60">8080</span> <span style="color:#c30">weight=1</span> ; <span style="color:#09f;font-style:italic">#热备
+</span><span style="color:#09f;font-style:italic"></span>    }
+
+    <span style="color:#069;font-weight:bold">server</span> {
+        <span style="color:#069;font-weight:bold">keepalive_requests</span> <span style="color:#f60">200</span>;      <span style="color:#09f;font-style:italic"># 连接上限
+</span><span style="color:#09f;font-style:italic"></span>        <span style="color:#069;font-weight:bold">listen</span>  <span style="color:#f60">4545</span>;                <span style="color:#09f;font-style:italic"># 监听端口
+</span><span style="color:#09f;font-style:italic"></span>        <span style="color:#069;font-weight:bold">server_name</span> <span style="color:#f60">127</span><span style="color:#c30">.0.0.1</span>;       <span style="color:#09f;font-style:italic"># 监听地址
+</span><span style="color:#09f;font-style:italic"></span>
+        <span style="color:#09f;font-style:italic"># ~为区分大小写，~*为不区分大小写。
+</span><span style="color:#09f;font-style:italic"></span>        <span style="color:#069;font-weight:bold">location</span> ~<span style="color:#3aa">*^.+$</span> {
+            <span style="color:#069;font-weight:bold">root</span>           <span style="color:#c30">path</span>;            <span style="color:#09f;font-style:italic"># 根目录
+</span><span style="color:#09f;font-style:italic"></span>            <span style="color:#069;font-weight:bold">index</span> <span style="color:#c30">index.html</span> <span style="color:#c30">index.php</span>;     <span style="color:#09f;font-style:italic"># 设置默认页
+</span><span style="color:#09f;font-style:italic"></span>            <span style="color:#069;font-weight:bold">proxy_pass</span> <span style="color:#c30">http://myservices</span>;   <span style="color:#09f;font-style:italic"># 服务列表
+</span><span style="color:#09f;font-style:italic"></span>            <span style="color:#069;font-weight:bold">deny</span> <span style="color:#f60">127</span><span style="color:#c30">.0.0.1</span>;                 <span style="color:#09f;font-style:italic"># 拒绝的ip
+</span><span style="color:#09f;font-style:italic"></span>            <span style="color:#069;font-weight:bold">allow</span> <span style="color:#f60">172</span><span style="color:#c30">.18.5.54</span>;              <span style="color:#09f;font-style:italic"># 允许的ip
+</span><span style="color:#09f;font-style:italic"></span>        }
+
+        <span style="color:#09f;font-style:italic"># 静态文件
+</span><span style="color:#09f;font-style:italic"></span>        <span style="color:#069;font-weight:bold">location</span> ~ <span style="color:#3aa">^/(images|javascript|js|css|flash|media|static)/</span> {
+            <span style="color:#069;font-weight:bold">root</span> <span style="color:#c30">/var/www/virtual/htdocs</span>;
+            <span style="color:#069;font-weight:bold">expires</span> <span style="color:#c30">7d</span>;   <span style="color:#09f;font-style:italic"># 7天过期
+</span><span style="color:#09f;font-style:italic"></span>        }
+
+        <span style="color:#09f;font-style:italic"># 转发到FastCGI处理
+</span><span style="color:#09f;font-style:italic"></span>        <span style="color:#069;font-weight:bold">location</span> ~ <span style="color:#3aa">\.php$</span> {
+            <span style="color:#069;font-weight:bold">root</span> <span style="color:#c30">/root</span>;
+            <span style="color:#069;font-weight:bold">fastcgi_pass</span> 127.0.0.1:<span style="color:#f60">9000</span>;
+            <span style="color:#069;font-weight:bold">fastcgi_index</span> <span style="color:#c30">index.php</span>;
+            <span style="color:#069;font-weight:bold">fastcgi_param</span> <span style="color:#c30">SCRIPT_FILENAME</span> <span style="color:#c30">/home/www/www</span><span style="color:#033">$fastcgi_script_name</span>;
+            <span style="color:#069;font-weight:bold">include</span> <span style="color:#c30">fastcgi_params</span>;
+        }
+
+        <span style="color:#09f;font-style:italic"># 查看Nginx状态
+</span><span style="color:#09f;font-style:italic"></span>        <span style="color:#069;font-weight:bold">location</span> <span style="color:#c30">/NginxStatus</span> {
+            <span style="color:#069;font-weight:bold">stub_status</span>      <span style="color:#360">on</span>;
+            <span style="color:#069;font-weight:bold">access_log</span>       <span style="color:#360">on</span>;
+            <span style="color:#069;font-weight:bold">auth_basic</span>       <span style="color:#c30">&#34;NginxStatus&#34;</span>;
+            <span style="color:#069;font-weight:bold">auth_basic_user_file</span> <span style="color:#c30">conf/htpasswd</span>;
+        }
+
+        <span style="color:#09f;font-style:italic"># 错误页面
+</span><span style="color:#09f;font-style:italic"></span>        <span style="color:#069;font-weight:bold">error_page</span>  <span style="color:#f60">500</span> <span style="color:#f60">502</span> <span style="color:#f60">503</span> <span style="color:#f60">504</span> <span style="color:#c30">/50x.html</span>;
+        <span style="color:#069;font-weight:bold">location</span> = <span style="color:#c30">/50x.html</span> {
+            <span style="color:#069;font-weight:bold">root</span>  <span style="color:#c30">/root</span>;
+        }
+    }
+
+    <span style="color:#069;font-weight:bold">error_page</span> <span style="color:#f60">404</span> <span style="color:#c30">https://www.xxx.com</span>;
+}
+</code></pre></td></tr></table>
+</div>
+</div><!-- raw HTML omitted -->
+<h2 id="附2-http状态码">附2: Http状态码</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">状态码</th>
+<th>状态值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><code>200</code></td>
+<td>OK</td>
+<td>请求正常</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>202</code></td>
+<td>Accepted</td>
+<td>已接受请求</td>
+</tr>
+<tr>
+<td style="text-align:center">204</td>
+<td>No Content</td>
+<td>请求正常，但无返回主体</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:center"><code>301</code></td>
+<td>Moved Permanently</td>
+<td>永久重定向</td>
+</tr>
+<tr>
+<td style="text-align:center">302</td>
+<td>Found</td>
+<td>临时重定向</td>
+</tr>
+<tr>
+<td style="text-align:center">303</td>
+<td>See Other</td>
+<td>明确跳转</td>
+</tr>
+<tr>
+<td style="text-align:center">304</td>
+<td>Not Modified</td>
+<td>条件不满足</td>
+</tr>
+<tr>
+<td style="text-align:center">307</td>
+<td>Temporary Redirect</td>
+<td>临时重定向，POST不会变成GET</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:center"><code>400</code></td>
+<td>Bad Request</td>
+<td>语法或参数错误</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>401</code></td>
+<td>Unauthorized</td>
+<td>认证失败</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>403</code></td>
+<td>Forbidden</td>
+<td>无访问权限</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>404</code></td>
+<td>Not Found</td>
+<td>无法找到请求资源</td>
+</tr>
+<tr>
+<td style="text-align:center">408</td>
+<td>Request Time-out</td>
+<td>请求超时</td>
+</tr>
+<tr>
+<td style="text-align:center">410</td>
+<td>Gone</td>
+<td>已被删除</td>
+</tr>
+<tr>
+<td style="text-align:center">413</td>
+<td>Request Entity Too Large</td>
+<td>请求的实体过大</td>
+</tr>
+<tr>
+<td style="text-align:center">414</td>
+<td>Request-URI Too Large</td>
+<td>请求的URI过长</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:center"><code>500</code></td>
+<td>Internal Server Error</td>
+<td>服务器内部错误</td>
+</tr>
+<tr>
+<td style="text-align:center">503</td>
+<td>Service Unavailable</td>
+<td>服务器超负载或停机维护</td>
+</tr>
+</tbody>
+</table>
+<!-- raw HTML omitted -->
+<h2 id="参考链接">参考链接</h2>
+<p><a href="https://www.jianshu.com/p/06e95028943e">https://www.jianshu.com/p/06e95028943e</a><br>
+<a href="https://www.w3cschool.cn/nginxsysc/">https://www.w3cschool.cn/nginxsysc/</a><br>
+<a href="https://blog.csdn.net/xiajun07061225/category_1461389.html">https://blog.csdn.net/xiajun07061225/category_1461389.html</a><br>
+<a href="https://blog.csdn.net/panleiaiying/article/details/85485389">https://blog.csdn.net/panleiaiying/article/details/85485389</a></p>
+
+                
+                
+                <hr> 
+
+<div class="entry-shang text-center">
+    
+    <p> 「真诚赞赏，手留余香」</p>
+    
+    <button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+    <div class="zs-modal-head">
+        <button type="button" class="close">×</button>
+        <span class="author">
+            <a href="http://www.mafool.com">
+                <img src="http://www.mafool.com/img/reward/hollson.png" alt="史布斯" />码夫庄园
+            </a>
+        </span>
+        
+        <p class="tip"><i></i><span>嗯，我的梦想是被读者的稿费包养~</span></p>
+        
+
+    </div>
+    <div class="zs-modal-body">
+        <div class="zs-modal-btns">
+            <button class="btn btn-blink" data-num="2">2元</button>
+            <button class="btn btn-blink" data-num="5">5元</button>
+            <button class="btn btn-blink" data-num="10">10元</button>
+            <button class="btn btn-blink" data-num="50">50元</button>
+            <button class="btn btn-blink" data-num="100">100元</button>
+            <button class="btn btn-blink" data-num="1">任意金额</button>
+        </div>
+        <div class="zs-modal-pay">
+            <button class="btn btn-bred" id="pay-text">2元</button>
+            <p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+            <img src="http://www.mafool.com/img/reward/wechat-2.png" alt="史布斯" id="pay-image" />
+        </div>
+    </div>
+    <div class="zs-modal-footer">
+        <label>
+            <span class="zs-wechat"></span>
+            <input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked">
+            <img src="http://www.mafool.com/img/reward/wechat-btn.png" alt="史布斯" />
+            </span>&nbsp;
+            <span>
+                <input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay">
+                <img src="http://www.mafool.com/img/reward/alipay-btn.png" alt="史布斯" />
+            </span>
+        </label>
+    </div>
+</div>
+
+ 
+
+                <br>
+                <br>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="column is-3">
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">最近发布</h2>
+        
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/0742b474a643d63a774461726a6201203/">Go语言中的原子操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年12月2日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/1600330472/">Go基础笔记 - 2.3 常量</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月10日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/posts/15996311192/">Go - Gin框架快速入门</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年9月9日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480249/">Gorm快速指南</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+        <h2><a class="is-size-6" href="http://www.mafool.com/post/1597480218/">18. Go语言MySQL数据库操作</a></h2>
+        
+        <time class="has-text-grey-light is-size-7">2020年8月14日 </time>
+         
+    </div>
+</div>
+<br>
+        
+
+
+
+
+<div class="card">
+  <div class="card-content">
+    <h2 class="title is-6">相关文章</h2>
+    
+    
+    <h2><a href="http://www.mafool.com/posts/6002acef2ec39912a9491a62a269c8bb/">Nginx笔记 - URL重写</a></h2>
+    <time class="has-text-grey-light is-size-7">13 January 2019</time>
+    
+    <h2><a href="http://www.mafool.com/posts/9988bc1712a93bf24869c8d46a841045/">Nginx笔记 - 反向代理</a></h2>
+    <time class="has-text-grey-light is-size-7">13 January 2019</time>
+    
+    <h2><a href="http://www.mafool.com/posts/6b6d0da4906b7118c0b6dc8611cc399c/">Nginx笔记 - 数据压缩</a></h2>
+    <time class="has-text-grey-light is-size-7">13 January 2019</time>
+    
+  </div>
+</div>
+<br>
+
+        <div class="card">
+    <div class="card-content">
+        <h2 class="title is-6">标签</h2>
+        <div>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/atomic">atomic</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/blog">blog</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cgo">cgo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/cloud">cloud</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/config">config</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/copy">copy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/docker">docker</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/exam">exam</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/gin">gin</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/git">git</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/golang">golang</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/hugo">hugo</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/install">install</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/istio">istio</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/jenkins">jenkins</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/kubernetes">kubernetes</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/map">map</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/microservice">microservice</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/mycat">mycat</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/nginx">nginx</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/plan9">plan9</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/posix">posix</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/proxy">proxy</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/raft">raft</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ssh">ssh</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/tips">tips</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/ymal">ymal</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%B8%BB%E4%BB%8E">主从</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BA%8B%E5%8A%A1">事务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BB%A3%E7%90%86">代理</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E4%BD%9C%E7%94%A8%E5%9F%9F">作用域</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%86%85%E5%AD%98">内存</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%8B%E7%BC%A9">压缩</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%88%9B">原创</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%8E%9F%E5%AD%90">原子</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%91%BD%E4%BB%A4%E8%A1%8C">命令行</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%93%A8%E5%85%B5">哨兵</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%AD%98%E5%82%A8">存储</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B8%B8%E9%87%8F">常量</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%B9%B6%E5%8F%91">并发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BC%82%E5%B8%B8">异常</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1">微服务</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%88%E6%9D%83%E8%AE%A4%E8%AF%81">授权认证</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%92%E5%BA%8F">排序</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%8E%A5%E5%8F%A3">接口</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%97%A5%E5%BF%97">日志</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%9D%83%E9%99%90">权限</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE1">标签1</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE2">标签2</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%AD%A3%E5%88%99">正则</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%81%E9%87%8F%E5%88%86%E5%8F%91">流量分发</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%B5%8B%E8%AF%95">测试</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E6%BA%90%E7%A0%81">源码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%8A%B6%E6%80%81%E7%A0%81">状态码</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%AE%97%E6%B3%95">算法</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%BC%8F">编程模式</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%80%81%E5%A6%96%E7%AC%94%E8%AE%B0">老妖笔记</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E8%BF%87%E6%BB%A4%E5%99%A8">过滤器</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%80%83%E9%80%B8">逃逸</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%85%8D%E7%BD%AE">配置</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%86%99">重写</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%87%8D%E5%AE%9A%E5%90%91">重定向</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9B%86%E7%BE%A4">集群</a>
+            </span>
+            
+            <span class="tag is-size-7">
+                <a href="http://www.mafool.com/tags/%E9%9D%A2%E8%AF%95">面试</a>
+            </span>
+            
+        </div>
+    </div>
+</div>
+<br>
+    </div>
+</div>
+
+        </div>
+    </div>
+
+    
+    <footer class="footer has-background-grey-darker has-text-white">
+    <div class="content has-text-centered">
+        <p>
+            <span class="icon is-large">
+                <a href="https://twitter.com/" class="mysocial" rel="me">
+                    <i class="fab fa-twitter fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://www.youtube.com/" class="mysocial" rel="me">
+                    <i class="fab fa-youtube fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <span class="icon is-large">
+                <a href="https://github.com/" class="mysocial" rel="me">
+                    <i class="fab fa-github fa-3x"></i></a>
+            </span>&nbsp;&nbsp;
+            <br><br>
+            友情链接：
+            
+            <a class="mysocial" href="http://www.mafool.com" target="_blank">Mafool</a>
+            
+            <a class="mysocial" href="https://gohugo.io/documentation/" target="_blank">Hugo</a>
+            
+            <a class="mysocial" href="https://bulma.io/" target="_blank">Bulma</a>
+            
+            <a class="mysocial" href="https://bootstrapious.com/" target="_blank">Bootstrapious</a>
+            
+            <a class="mysocial" href="https://youzhixueyuan.com/" target="_blank">Youzhixueyuan</a>
+            
+            <br><br />
+            版权所有 &copy; 码夫庄园 2021
+            - <a class="mysocial" href="https://github.com/hollson/hugo-theme-dooz">Hugo Theme</a>
+        </p>
+    </div>
+</footer>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='http://www.mafool.com/js/dooz.totop.js?v=0.0.0' async=""></script>
+
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = 'https://hm.baidu.com/hm.js?f185359ec6b829a6a93e1e1f2597f6d9';
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DK042XSJ2J"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-DK042XSJ2J');
+</script>
+
+    
+    
+<script type="text/javascript" src="http://www.mafool.com/js/reward.js"></script>
+
+    
+    <script defer src="https://cdn.staticfile.org/font-awesome/5.13.0/js/all.min.js"></script>
+</body>
+
+</html>

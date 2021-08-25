@@ -1,0 +1,42 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>plan9 on 码夫庄园</title>
+    <link>http://www.mafool.com/tags/plan9/</link>
+    <description>Recent content in plan9 on 码夫庄园</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <copyright>版权所有</copyright>
+    <lastBuildDate>Mon, 16 Dec 2019 18:17:06 +0800</lastBuildDate>
+    
+        <atom:link href="http://www.mafool.com/tags/plan9/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Go汇编笔记 - 3.1 汇编入门</title>
+      <link>http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch301/</link>
+      <pubDate>Mon, 16 Dec 2019 18:17:06 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch301/</guid>
+      <description>Go汇编程序 Go汇编程序无法独立使用,必须以Go包的方式组织;且至少要有一个Go文件指明当前包名等基本包信息；如果Go汇编代码中的变量和函数</description>
+    </item>
+    
+    <item>
+      <title>Go汇编笔记 - 3.2 计算机结构</title>
+      <link>http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch302/</link>
+      <pubDate>Mon, 16 Dec 2019 18:17:06 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch302/</guid>
+      <description>3.2 计算机结构 汇编语言是直面计算机的编程语言，因此理解计算机结构是掌握汇编语言的前提。当前流行的计算机基本采用的是冯·诺伊曼计算机体系结构（在</description>
+    </item>
+    
+    <item>
+      <title>Go汇编笔记 - 3.4 函数</title>
+      <link>http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch304/</link>
+      <pubDate>Mon, 16 Dec 2019 18:17:06 +0800</pubDate>
+      
+      <guid>http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch304/</guid>
+      <description>3.4 函数 终于到函数了！因为Go汇编语言中，可以也建议通过Go语言来定义全局变量，那么剩下的也就是函数了。只有掌握了汇编函数的基本用法，才能真正</description>
+    </item>
+    
+  </channel>
+</rss>
