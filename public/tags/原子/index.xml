@@ -1,22 +1,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>原子 on 码夫庄园</title>
-    <link>http://www.mafool.com/tags/%E5%8E%9F%E5%AD%90/</link>
+    <link>https://hollson.github.io/tags/%E5%8E%9F%E5%AD%90/</link>
     <description>Recent content in 原子 on 码夫庄园</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
     <copyright>版权所有</copyright>
     <lastBuildDate>Wed, 02 Dec 2020 22:03:06 +0800</lastBuildDate>
     
-        <atom:link href="http://www.mafool.com/tags/%E5%8E%9F%E5%AD%90/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://hollson.github.io/tags/%E5%8E%9F%E5%AD%90/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Go语言中的原子操作</title>
-      <link>http://www.mafool.com/posts/0742b474a643d63a774461726a6201203/</link>
+      <link>https://hollson.github.io/posts/0742b474a643d63a774461726a6201203/</link>
       <pubDate>Wed, 02 Dec 2020 22:03:06 +0800</pubDate>
       
-      <guid>http://www.mafool.com/posts/0742b474a643d63a774461726a6201203/</guid>
+      <guid>https://hollson.github.io/posts/0742b474a643d63a774461726a6201203/</guid>
       <description>原子操作 原子操作中，针对某个值的操作，CPU不会再去进行其他的操作。为了实现这样的严谨性，原子操作仅会由一个独立的CPU指令代表和完成。原子</description>
     </item>
     

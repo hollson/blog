@@ -1,22 +1,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>微服务 on 码夫庄园</title>
-    <link>http://www.mafool.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</link>
+    <link>https://hollson.github.io/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</link>
     <description>Recent content in 微服务 on 码夫庄园</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
     <copyright>版权所有</copyright>
     <lastBuildDate>Fri, 13 Mar 2020 00:00:00 +0000</lastBuildDate>
     
-        <atom:link href="http://www.mafool.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://hollson.github.io/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Etcd - 搭建伪集群</title>
-      <link>http://www.mafool.com/posts/aff3b81a3477dddf3a0e9115dd348b11/</link>
+      <link>https://hollson.github.io/posts/aff3b81a3477dddf3a0e9115dd348b11/</link>
       <pubDate>Fri, 13 Mar 2020 00:00:00 +0000</pubDate>
       
-      <guid>http://www.mafool.com/posts/aff3b81a3477dddf3a0e9115dd348b11/</guid>
+      <guid>https://hollson.github.io/posts/aff3b81a3477dddf3a0e9115dd348b11/</guid>
       <description>一. ETCD简介 Etcd是CoreOS团队于2013年6月发起的开源项目，它的目标是构建一个高可用的分布式键值(key-value)数据库。</description>
     </item>
     

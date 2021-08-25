@@ -1,49 +1,49 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Linux on 码夫庄园</title>
-    <link>http://www.mafool.com/categories/linux/</link>
+    <link>https://hollson.github.io/categories/linux/</link>
     <description>Recent content in Linux on 码夫庄园</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
     <copyright>版权所有</copyright>
     <lastBuildDate>Sat, 11 Apr 2020 17:22:24 +0800</lastBuildDate>
     
-        <atom:link href="http://www.mafool.com/categories/linux/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://hollson.github.io/categories/linux/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Linux - 四种IO模型简介</title>
-      <link>http://www.mafool.com/posts/4a72f077ca65b5f3952d202fa0edf421/</link>
+      <link>https://hollson.github.io/posts/4a72f077ca65b5f3952d202fa0edf421/</link>
       <pubDate>Sat, 11 Apr 2020 17:22:24 +0800</pubDate>
       
-      <guid>http://www.mafool.com/posts/4a72f077ca65b5f3952d202fa0edf421/</guid>
+      <guid>https://hollson.github.io/posts/4a72f077ca65b5f3952d202fa0edf421/</guid>
       <description>IO模型 服务器端编程经常需要构造高性能的IO模型，常见的IO模型有四种： 同步阻塞IO（Blocking IO）：即传统的IO模型。 同步非阻塞I</description>
     </item>
     
     <item>
       <title>POSIX - 可移植操作系统接口</title>
-      <link>http://www.mafool.com/posts/518ce644178d75ca09829c29bee8341b/</link>
+      <link>https://hollson.github.io/posts/518ce644178d75ca09829c29bee8341b/</link>
       <pubDate>Sat, 11 Apr 2020 12:09:16 +0800</pubDate>
       
-      <guid>http://www.mafool.com/posts/518ce644178d75ca09829c29bee8341b/</guid>
+      <guid>https://hollson.github.io/posts/518ce644178d75ca09829c29bee8341b/</guid>
       <description>什么是POSIX POSIX表示可移植操作系统接口（Portable Operating System Interface of UNIX，缩写为 POSIX ），POSIX标准定义了操作系统应该为应用程序提</description>
     </item>
     
     <item>
       <title>Linux Bash终端设置代理访问</title>
-      <link>http://www.mafool.com/posts/1585335064/</link>
+      <link>https://hollson.github.io/posts/1585335064/</link>
       <pubDate>Sat, 28 Mar 2020 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/posts/1585335064/</guid>
+      <guid>https://hollson.github.io/posts/1585335064/</guid>
       <description>Linux bash终端设置代理（proxy）访问 Linux是开源操作系统，有很多软件包需要从国外网站上下载，而其中大部分国外网站是被墙的，这时我们需</description>
     </item>
     
     <item>
       <title>Linux - 实现免密登录</title>
-      <link>http://www.mafool.com/posts/bdbe76b547376a30e6d68f62f36d397b/</link>
+      <link>https://hollson.github.io/posts/bdbe76b547376a30e6d68f62f36d397b/</link>
       <pubDate>Thu, 11 Apr 2019 13:19:13 +0800</pubDate>
       
-      <guid>http://www.mafool.com/posts/bdbe76b547376a30e6d68f62f36d397b/</guid>
+      <guid>https://hollson.github.io/posts/bdbe76b547376a30e6d68f62f36d397b/</guid>
       <description>一. 生成密钥对 如果本地已存在密钥文件，则可跳过该步骤（可与git等工具共享密钥文件）。 在本地生成~/.ssh/id_rsa(密钥)和~/.s</description>
     </item>
     

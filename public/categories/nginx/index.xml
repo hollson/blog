@@ -1,76 +1,76 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Nginx on 码夫庄园</title>
-    <link>http://www.mafool.com/categories/nginx/</link>
+    <link>https://hollson.github.io/categories/nginx/</link>
     <description>Recent content in Nginx on 码夫庄园</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
     <copyright>版权所有</copyright>
     <lastBuildDate>Mon, 30 Mar 2020 00:00:00 +0800</lastBuildDate>
     
-        <atom:link href="http://www.mafool.com/categories/nginx/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://hollson.github.io/categories/nginx/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Nginx实现301重定向</title>
-      <link>http://www.mafool.com/post/1585501895/</link>
+      <link>https://hollson.github.io/post/1585501895/</link>
       <pubDate>Mon, 30 Mar 2020 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585501895/</guid>
+      <guid>https://hollson.github.io/post/1585501895/</guid>
       <description>前言 在企业网站运维的过程中，如果遇到以下等情况，网站就需要做URL重定向了： 网站有www.ABC.com和ABC.com域名，为了SEO优化</description>
     </item>
     
     <item>
       <title>Nginx自测 - 课后练习题</title>
-      <link>http://www.mafool.com/post/1585725105/</link>
+      <link>https://hollson.github.io/post/1585725105/</link>
       <pubDate>Wed, 08 May 2019 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585725105/</guid>
+      <guid>https://hollson.github.io/post/1585725105/</guid>
       <description>1、什么是Nginx? Nginx是一款开源的、高性能的HTTP服务器、反向代理服务器和邮件代理服务器,具有负载均衡器和HTTP缓存的能力。 N</description>
     </item>
     
     <item>
       <title>Nginx面试自测系列3</title>
-      <link>http://www.mafool.com/post/1585725111/</link>
+      <link>https://hollson.github.io/post/1585725111/</link>
       <pubDate>Wed, 08 May 2019 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585725111/</guid>
+      <guid>https://hollson.github.io/post/1585725111/</guid>
       <description>Nginx有哪些功能 http代理和反向代理、负载均衡、web缓存。 1、负载均衡主要有轮询、加权轮询和IP Hash三种策略，扩展策略主要是通过</description>
     </item>
     
     <item>
       <title>Nginx笔记 - URL重写</title>
-      <link>http://www.mafool.com/posts/6002acef2ec39912a9491a62a269c8bb/</link>
+      <link>https://hollson.github.io/posts/6002acef2ec39912a9491a62a269c8bb/</link>
       <pubDate>Sun, 13 Jan 2019 14:34:59 +0800</pubDate>
       
-      <guid>http://www.mafool.com/posts/6002acef2ec39912a9491a62a269c8bb/</guid>
+      <guid>https://hollson.github.io/posts/6002acef2ec39912a9491a62a269c8bb/</guid>
       <description>URL重写 URL重写是指将一个URL请求重新写成网站可以处理的另一个URL的过程。如将http://www.demo.com/product</description>
     </item>
     
     <item>
       <title>Nginx笔记 - 反向代理</title>
-      <link>http://www.mafool.com/posts/9988bc1712a93bf24869c8d46a841045/</link>
+      <link>https://hollson.github.io/posts/9988bc1712a93bf24869c8d46a841045/</link>
       <pubDate>Sun, 13 Jan 2019 14:34:59 +0800</pubDate>
       
-      <guid>http://www.mafool.com/posts/9988bc1712a93bf24869c8d46a841045/</guid>
+      <guid>https://hollson.github.io/posts/9988bc1712a93bf24869c8d46a841045/</guid>
       <description>一. 正向代理 正向代理是一种客户端代理，即代理完成客户端请求的工作，如使用V P N科学上网，访问Google，就是正向代理，正向代理不是本文的重</description>
     </item>
     
     <item>
       <title>Nginx笔记 - 基础配置</title>
-      <link>http://www.mafool.com/posts/5c422e057c1204ac1f123660275788ae/</link>
+      <link>https://hollson.github.io/posts/5c422e057c1204ac1f123660275788ae/</link>
       <pubDate>Sun, 13 Jan 2019 14:34:59 +0800</pubDate>
       
-      <guid>http://www.mafool.com/posts/5c422e057c1204ac1f123660275788ae/</guid>
+      <guid>https://hollson.github.io/posts/5c422e057c1204ac1f123660275788ae/</guid>
       <description>一. 基本模块 全局块： 配置影响nginx全局的指令。一般有运行nginx服务器的用户组，nginx进程pid存放路径，日志存放路径，配置文件引</description>
     </item>
     
     <item>
       <title>Nginx笔记 - 数据压缩</title>
-      <link>http://www.mafool.com/posts/6b6d0da4906b7118c0b6dc8611cc399c/</link>
+      <link>https://hollson.github.io/posts/6b6d0da4906b7118c0b6dc8611cc399c/</link>
       <pubDate>Sun, 13 Jan 2019 14:34:59 +0800</pubDate>
       
-      <guid>http://www.mafool.com/posts/6b6d0da4906b7118c0b6dc8611cc399c/</guid>
+      <guid>https://hollson.github.io/posts/6b6d0da4906b7118c0b6dc8611cc399c/</guid>
       <description>前言 gzip是nginx服务器的ngx_http_gzip_module模块提供的在线实时数据压缩功能。通过开启gzip功能，可对服务器响应</description>
     </item>
     

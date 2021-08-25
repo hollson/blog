@@ -1,58 +1,58 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Sundry on 码夫庄园</title>
-    <link>http://www.mafool.com/categories/sundry/</link>
+    <link>https://hollson.github.io/categories/sundry/</link>
     <description>Recent content in Sundry on 码夫庄园</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
     <copyright>版权所有</copyright>
     <lastBuildDate>Mon, 01 Apr 2019 00:00:00 +0800</lastBuildDate>
     
-        <atom:link href="http://www.mafool.com/categories/sundry/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://hollson.github.io/categories/sundry/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>日常工作中的正则表达式</title>
-      <link>http://www.mafool.com/post/1585727291/</link>
+      <link>https://hollson.github.io/post/1585727291/</link>
       <pubDate>Mon, 01 Apr 2019 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585727291/</guid>
+      <guid>https://hollson.github.io/post/1585727291/</guid>
       <description>1. VS code替换行尾字符 替换行尾双星号 1 \*\*r?$</description>
     </item>
     
     <item>
       <title>Docker搭建Wordpress博客</title>
-      <link>http://www.mafool.com/post/1585730181/</link>
+      <link>https://hollson.github.io/post/1585730181/</link>
       <pubDate>Fri, 02 Nov 2018 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585730181/</guid>
+      <guid>https://hollson.github.io/post/1585730181/</guid>
       <description>前言 WordPress是一个以PHP和MySQL为平台的自由开源的博客软件和内容管理系统。WordPress具有插件架构和模板系统。截至20</description>
     </item>
     
     <item>
       <title>Java环境部署</title>
-      <link>http://www.mafool.com/post/1585671937/</link>
+      <link>https://hollson.github.io/post/1585671937/</link>
       <pubDate>Thu, 09 Aug 2018 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585671937/</guid>
+      <guid>https://hollson.github.io/post/1585671937/</guid>
       <description>安装JRE/JDK 官网 JRE： http://www.oracle.com/technetwork/java/javase/downloads/server-jre8-downloads-2133154.html 网盘 JDK： http://pan.baidu.com/s/1i4LeazV 网盘 JRE： http://pan.baidu.com/s/1i5p7NfR 需要点击Accept License Agreement ，获取临时授权下载地址 可选择通版本或服务器版的jre，J</description>
     </item>
     
     <item>
       <title>A syntax example for markdown</title>
-      <link>http://www.mafool.com/post/1585109288/</link>
+      <link>https://hollson.github.io/post/1585109288/</link>
       <pubDate>Fri, 15 Jun 2018 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585109288/</guid>
+      <guid>https://hollson.github.io/post/1585109288/</guid>
       <description>欢迎使用Markdown在线编辑器MdEditor Markdown是一种轻量级的「标记语言」 Markdown是一种可以使用普通文本编辑器编写</description>
     </item>
     
     <item>
       <title>Yaml基础语法示例</title>
-      <link>http://www.mafool.com/post/1585672788/</link>
+      <link>https://hollson.github.io/post/1585672788/</link>
       <pubDate>Tue, 01 May 2018 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585672788/</guid>
+      <guid>https://hollson.github.io/post/1585672788/</guid>
       <description>在线Demo： http://nodeca.github.io/js-yaml 语法规则 大小写敏感 符号加空格▲ 用缩进表示层级 左对齐表示同级 禁止制表符 井号表示注释 减号表示序列符 冒号表示键值符 大于号折行 双叹号</description>
     </item>
     

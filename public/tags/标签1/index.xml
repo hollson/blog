@@ -1,22 +1,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>标签1 on 码夫庄园</title>
-    <link>http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE1/</link>
+    <link>https://hollson.github.io/tags/%E6%A0%87%E7%AD%BE1/</link>
     <description>Recent content in 标签1 on 码夫庄园</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
     <copyright>版权所有</copyright>
     <lastBuildDate>Mon, 06 Jul 2020 17:32:52 +0800</lastBuildDate>
     
-        <atom:link href="http://www.mafool.com/tags/%E6%A0%87%E7%AD%BE1/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://hollson.github.io/tags/%E6%A0%87%E7%AD%BE1/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>PostgreSQL&#43;Pgpool实现HA主备切换</title>
-      <link>http://www.mafool.com/posts/4a08ebfa30e31cfbc6f0e1305fb21fdb/</link>
+      <link>https://hollson.github.io/posts/4a08ebfa30e31cfbc6f0e1305fb21fdb/</link>
       <pubDate>Mon, 06 Jul 2020 17:32:52 +0800</pubDate>
       
-      <guid>http://www.mafool.com/posts/4a08ebfa30e31cfbc6f0e1305fb21fdb/</guid>
+      <guid>https://hollson.github.io/posts/4a08ebfa30e31cfbc6f0e1305fb21fdb/</guid>
       <description></description>
     </item>
     

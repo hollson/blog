@@ -1,31 +1,31 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Zookeeper on 码夫庄园</title>
-    <link>http://www.mafool.com/categories/zookeeper/</link>
+    <link>https://hollson.github.io/categories/zookeeper/</link>
     <description>Recent content in Zookeeper on 码夫庄园</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
     <copyright>版权所有</copyright>
     <lastBuildDate>Wed, 08 Jan 2020 00:00:00 +0800</lastBuildDate>
     
-        <atom:link href="http://www.mafool.com/categories/zookeeper/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://hollson.github.io/categories/zookeeper/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Go操作Zookeeper</title>
-      <link>http://www.mafool.com/post/1585819046/</link>
+      <link>https://hollson.github.io/post/1585819046/</link>
       <pubDate>Wed, 08 Jan 2020 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585819046/</guid>
+      <guid>https://hollson.github.io/post/1585819046/</guid>
       <description>一. ZK集群连接对象 可以使用zk.WithXXX函数创建私有Option闭包对象，，然后以回调函数的方式传递(注入)给ZK连接方法。 With</description>
     </item>
     
     <item>
       <title>Zookeeper集群部署</title>
-      <link>http://www.mafool.com/post/1585818342/</link>
+      <link>https://hollson.github.io/post/1585818342/</link>
       <pubDate>Thu, 02 May 2019 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585818342/</guid>
+      <guid>https://hollson.github.io/post/1585818342/</guid>
       <description>一. Zookeeper要点 zookeeper开放源码的分布式协调服务框架 ； zookeeper功能包括：配置维护、域名服务、分布式锁、组服务等</description>
     </item>
     

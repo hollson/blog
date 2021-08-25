@@ -1,22 +1,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>blog on 码夫庄园</title>
-    <link>http://www.mafool.com/tags/blog/</link>
+    <link>https://hollson.github.io/tags/blog/</link>
     <description>Recent content in blog on 码夫庄园</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
     <copyright>版权所有</copyright>
     <lastBuildDate>Fri, 02 Nov 2018 00:00:00 +0800</lastBuildDate>
     
-        <atom:link href="http://www.mafool.com/tags/blog/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://hollson.github.io/tags/blog/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Docker搭建Wordpress博客</title>
-      <link>http://www.mafool.com/post/1585730181/</link>
+      <link>https://hollson.github.io/post/1585730181/</link>
       <pubDate>Fri, 02 Nov 2018 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585730181/</guid>
+      <guid>https://hollson.github.io/post/1585730181/</guid>
       <description>前言 WordPress是一个以PHP和MySQL为平台的自由开源的博客软件和内容管理系统。WordPress具有插件架构和模板系统。截至20</description>
     </item>
     

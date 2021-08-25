@@ -1,22 +1,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>About列表 on 码夫庄园</title>
-    <link>http://www.mafool.com/about/</link>
+    <link>https://hollson.github.io/about/</link>
     <description>Recent content in About列表 on 码夫庄园</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
     <copyright>版权所有</copyright>
     <lastBuildDate>Sat, 21 Mar 2020 00:00:00 +0000</lastBuildDate>
     
-        <atom:link href="http://www.mafool.com/about/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://hollson.github.io/about/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>码农的专属博客</title>
-      <link>http://www.mafool.com/about/</link>
+      <link>https://hollson.github.io/about/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://www.mafool.com/about/</guid>
+      <guid>https://hollson.github.io/about/</guid>
       <description>Hongsheng Shi Has more than a decade of Internet experience, including in e-commerce, smart finance and taxation, short video and other fields. Good at golang、dotnet field development, usually like to study docker, k8s, distributed storage, big data, etc., and have certain research on blockchain and artificial intelligence. He has also contributed to open source projects, such as Hugo,</description>
     </item>
     

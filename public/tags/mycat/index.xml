@@ -1,31 +1,31 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>mycat on 码夫庄园</title>
-    <link>http://www.mafool.com/tags/mycat/</link>
+    <link>https://hollson.github.io/tags/mycat/</link>
     <description>Recent content in mycat on 码夫庄园</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
     <copyright>版权所有</copyright>
     <lastBuildDate>Mon, 15 Jul 2019 00:00:00 +0800</lastBuildDate>
     
-        <atom:link href="http://www.mafool.com/tags/mycat/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://hollson.github.io/tags/mycat/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Mysql分表分库1 - Mycat安装与配置</title>
-      <link>http://www.mafool.com/post/1585906994/</link>
+      <link>https://hollson.github.io/post/1585906994/</link>
       <pubDate>Mon, 15 Jul 2019 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585906994/</guid>
+      <guid>https://hollson.github.io/post/1585906994/</guid>
       <description>一. Mycat安装 Mycat是一款数据库分库分表中间件。 1. 安装依赖项 安装JDK1.7+ 安装Mysql(略), 建议安装mysql8.0以下版本</description>
     </item>
     
     <item>
       <title>Mysql分表分库2 - Mycat实战演练</title>
-      <link>http://www.mafool.com/post/1585907144/</link>
+      <link>https://hollson.github.io/post/1585907144/</link>
       <pubDate>Sat, 13 Jul 2019 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585907144/</guid>
+      <guid>https://hollson.github.io/post/1585907144/</guid>
       <description>一. 配置规则 1. 分片方式 分片 连续分片 离散分片 优点 扩容无需迁移数据范围条件查询消耗资源少 并发访问能力增强范围条件查询性能提升 缺点 存在数据热点的可</description>
     </item>
     

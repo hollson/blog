@@ -1,202 +1,202 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Go高级篇 on 码夫庄园</title>
-    <link>http://www.mafool.com/categories/go%E9%AB%98%E7%BA%A7%E7%AF%87/</link>
+    <link>https://hollson.github.io/categories/go%E9%AB%98%E7%BA%A7%E7%AF%87/</link>
     <description>Recent content in Go高级篇 on 码夫庄园</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
     <copyright>版权所有</copyright>
     <lastBuildDate>Wed, 02 Dec 2020 22:03:06 +0800</lastBuildDate>
     
-        <atom:link href="http://www.mafool.com/categories/go%E9%AB%98%E7%BA%A7%E7%AF%87/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://hollson.github.io/categories/go%E9%AB%98%E7%BA%A7%E7%AF%87/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Go语言中的原子操作</title>
-      <link>http://www.mafool.com/posts/0742b474a643d63a774461726a6201203/</link>
+      <link>https://hollson.github.io/posts/0742b474a643d63a774461726a6201203/</link>
       <pubDate>Wed, 02 Dec 2020 22:03:06 +0800</pubDate>
       
-      <guid>http://www.mafool.com/posts/0742b474a643d63a774461726a6201203/</guid>
+      <guid>https://hollson.github.io/posts/0742b474a643d63a774461726a6201203/</guid>
       <description>原子操作 原子操作中，针对某个值的操作，CPU不会再去进行其他的操作。为了实现这样的严谨性，原子操作仅会由一个独立的CPU指令代表和完成。原子</description>
     </item>
     
     <item>
       <title>Go - 内存分配原理</title>
-      <link>http://www.mafool.com/posts/4f1b039fa5fd1a09e83a47bfac1fef0f/</link>
+      <link>https://hollson.github.io/posts/4f1b039fa5fd1a09e83a47bfac1fef0f/</link>
       <pubDate>Tue, 14 Apr 2020 16:53:27 +0800</pubDate>
       
-      <guid>http://www.mafool.com/posts/4f1b039fa5fd1a09e83a47bfac1fef0f/</guid>
+      <guid>https://hollson.github.io/posts/4f1b039fa5fd1a09e83a47bfac1fef0f/</guid>
       <description>深入理解GO语言之内存详解 一. 前言 Go语言内置运行时（就是runtime），抛弃了传统的内存分配方式，改为自主管理。这样可以自主地实现更好的</description>
     </item>
     
     <item>
       <title>「转」Go并发之优雅退出</title>
-      <link>http://www.mafool.com/posts/0742b474a643d63a774461726a6d328c/</link>
+      <link>https://hollson.github.io/posts/0742b474a643d63a774461726a6d328c/</link>
       <pubDate>Fri, 10 Apr 2020 22:03:06 +0800</pubDate>
       
-      <guid>http://www.mafool.com/posts/0742b474a643d63a774461726a6d328c/</guid>
+      <guid>https://hollson.github.io/posts/0742b474a643d63a774461726a6d328c/</guid>
       <description>前言 goroutine作为Golang并发的核心，我们不仅要关注它们的创建和管理，当然还要关注如何合理的退出这些协程，不（合理）退出不然可能</description>
     </item>
     
     <item>
       <title>深度解密Go语言之map</title>
-      <link>http://www.mafool.com/post/1585573653/</link>
+      <link>https://hollson.github.io/post/1585573653/</link>
       <pubDate>Mon, 30 Mar 2020 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585573653/</guid>
+      <guid>https://hollson.github.io/post/1585573653/</guid>
       <description>前言 Hash table 是计算机数据结构中一个最重要的设计。大部分hash table都实现了快速查找、添加、删除的功能，Go 语言内置的 map 实现了上述所有功能。</description>
     </item>
     
     <item>
       <title>深度解密Go语言之slice</title>
-      <link>http://www.mafool.com/post/1585577658/</link>
+      <link>https://hollson.github.io/post/1585577658/</link>
       <pubDate>Mon, 30 Mar 2020 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585577658/</guid>
+      <guid>https://hollson.github.io/post/1585577658/</guid>
       <description>源码 1 open -a goland $GOROOT/src/runtime/slice.go 源码简读 原型 1 2 3 4 5 type slice struct { array unsafe.Pointer len int cap int } make操作 经常被问到new和make读区别，来看一看到底干来啥 1 2 3 4 5 6 7 8 9</description>
     </item>
     
     <item>
       <title>用Go实现一个数学表达式计算引擎</title>
-      <link>http://www.mafool.com/2020/03/%E7%94%A8go%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E6%95%B0%E5%AD%A6%E8%A1%A8%E8%BE%BE%E5%BC%8F%E8%AE%A1%E7%AE%97%E5%BC%95%E6%93%8E/</link>
+      <link>https://hollson.github.io/2020/03/%E7%94%A8go%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E6%95%B0%E5%AD%A6%E8%A1%A8%E8%BE%BE%E5%BC%8F%E8%AE%A1%E7%AE%97%E5%BC%95%E6%93%8E/</link>
       <pubDate>Sun, 22 Mar 2020 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/2020/03/%E7%94%A8go%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E6%95%B0%E5%AD%A6%E8%A1%A8%E8%BE%BE%E5%BC%8F%E8%AE%A1%E7%AE%97%E5%BC%95%E6%93%8E/</guid>
+      <guid>https://hollson.github.io/2020/03/%E7%94%A8go%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E6%95%B0%E5%AD%A6%E8%A1%A8%E8%BE%BE%E5%BC%8F%E8%AE%A1%E7%AE%97%E5%BC%95%E6%93%8E/</guid>
       <description>用Go实现一个数学表达式计算引擎 deng-dev 发布在 10个月前 更新于 4个月前 算法计算引擎ASTGo math-engine-demo 导读 这篇文章将从头开始，使用 Go 语言来实现一个完整的数</description>
     </item>
     
     <item>
       <title>sync.errgroup 源码解读</title>
-      <link>http://www.mafool.com/posts/f0e1186f6b7f094003d14539f38425d6/</link>
+      <link>https://hollson.github.io/posts/f0e1186f6b7f094003d14539f38425d6/</link>
       <pubDate>Sun, 08 Mar 2020 21:38:42 +0800</pubDate>
       
-      <guid>http://www.mafool.com/posts/f0e1186f6b7f094003d14539f38425d6/</guid>
+      <guid>https://hollson.github.io/posts/f0e1186f6b7f094003d14539f38425d6/</guid>
       <description>前言 在启动多个Go协程并发的时候，处理子协程的异常是一件麻烦的事，你可能得需要通过多个类似&amp;lt;-error.New(...)向main协</description>
     </item>
     
     <item>
       <title>Go之接口解读</title>
-      <link>http://www.mafool.com/posts/09f6faa09d79344eba8fcef184997d68/</link>
+      <link>https://hollson.github.io/posts/09f6faa09d79344eba8fcef184997d68/</link>
       <pubDate>Sat, 07 Mar 2020 23:26:48 +0800</pubDate>
       
-      <guid>http://www.mafool.com/posts/09f6faa09d79344eba8fcef184997d68/</guid>
+      <guid>https://hollson.github.io/posts/09f6faa09d79344eba8fcef184997d68/</guid>
       <description>1.2 接口 Go 语言中的接口就是一组方法的签名，它是 Go 语言的重要组成部分。使用接口能够让我们更好地组织并写出易于测试的代码，然而很多工程师对 Go 的接口</description>
     </item>
     
     <item>
       <title>「转」图解go反射实现原理</title>
-      <link>http://www.mafool.com/posts/1f880505b15bc9af30837c3286fdd2c5/</link>
+      <link>https://hollson.github.io/posts/1f880505b15bc9af30837c3286fdd2c5/</link>
       <pubDate>Mon, 17 Feb 2020 01:38:43 +0800</pubDate>
       
-      <guid>http://www.mafool.com/posts/1f880505b15bc9af30837c3286fdd2c5/</guid>
+      <guid>https://hollson.github.io/posts/1f880505b15bc9af30837c3286fdd2c5/</guid>
       <description>https://i6448038.github.io/tags/golang/) Go反射的实现和interface和unsafe.Pointer密切相关。如果对golang的interface底层实现还没有理解，可以去</description>
     </item>
     
     <item>
       <title>Go并发1-并发模型</title>
-      <link>http://www.mafool.com/post/1585677184/</link>
+      <link>https://hollson.github.io/post/1585677184/</link>
       <pubDate>Thu, 19 Dec 2019 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585677184/</guid>
+      <guid>https://hollson.github.io/post/1585677184/</guid>
       <description>[TOC] 一. 并发概念 1. 多核CPU 单核CPU主频接近4GHz时遇到瓶颈(能耗和散热),所以2005年4月Intel推出第一次双核奔腾CPU。 多核CP</description>
     </item>
     
     <item>
       <title>Go并发2-同步编程</title>
-      <link>http://www.mafool.com/post/1585677428/</link>
+      <link>https://hollson.github.io/post/1585677428/</link>
       <pubDate>Thu, 19 Dec 2019 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585677428/</guid>
+      <guid>https://hollson.github.io/post/1585677428/</guid>
       <description>[TOC] Sync包简述： Package sync provides basic synchronization primitives such as mutual exclusion locks. Other than the Once and WaitGroup types, most are intended for use by low-level library &amp;gt; routines. Higher-level synchronization is better done via channels and communication. Values containing the types defined in this package should not be copied. Sync包同步提供基本的</description>
     </item>
     
     <item>
       <title>Go并发3-Channel进程通信</title>
-      <link>http://www.mafool.com/post/1585855719/</link>
+      <link>https://hollson.github.io/post/1585855719/</link>
       <pubDate>Tue, 08 Oct 2019 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585855719/</guid>
+      <guid>https://hollson.github.io/post/1585855719/</guid>
       <description>不同于传统的多线程并发模型使用共享内存来实现线程间通信的方式，golang 的哲学是通过 channel 进行协程(goroutine)之间的通信来实现数据共</description>
     </item>
     
     <item>
       <title>Go并发4-Context</title>
-      <link>http://www.mafool.com/post/1585856050/</link>
+      <link>https://hollson.github.io/post/1585856050/</link>
       <pubDate>Mon, 07 Oct 2019 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585856050/</guid>
+      <guid>https://hollson.github.io/post/1585856050/</guid>
       <description>关于Context： 在WebServer中，每个请求都对应一个goroutine，同时还会启动若干goroutine去处理后端业务，如数据库</description>
     </item>
     
     <item>
       <title>「转」Go之优雅代码之道</title>
-      <link>http://www.mafool.com/posts/d780d847caf0f29efb743f0ae0c8d2aa/</link>
+      <link>https://hollson.github.io/posts/d780d847caf0f29efb743f0ae0c8d2aa/</link>
       <pubDate>Wed, 07 Aug 2019 23:21:42 +0800</pubDate>
       
-      <guid>http://www.mafool.com/posts/d780d847caf0f29efb743f0ae0c8d2aa/</guid>
+      <guid>https://hollson.github.io/posts/d780d847caf0f29efb743f0ae0c8d2aa/</guid>
       <description>[TOC] 如何写出优雅的 Go 语言代码 2019-05-30GolangGo代码规范单元测试最佳实践接口 Go 语言是一门简单、易学的编程语言，对于有编程背景的</description>
     </item>
     
     <item>
       <title>「转」iface 和 eface 的区别是什么</title>
-      <link>http://www.mafool.com/post/1585590231003/</link>
+      <link>https://hollson.github.io/post/1585590231003/</link>
       <pubDate>Sat, 16 Mar 2019 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585590231003/</guid>
+      <guid>https://hollson.github.io/post/1585590231003/</guid>
       <description>iface 和 eface 都是 Go 中描述接口的底层结构体，区别在于 iface 描述的接口包含方法，而 eface 则是不包含任何方法的空接口：interface{}。 从源码层面看一下：</description>
     </item>
     
     <item>
       <title>「转」如何用 interface 实现多态</title>
-      <link>http://www.mafool.com/post/1585590231005/</link>
+      <link>https://hollson.github.io/post/1585590231005/</link>
       <pubDate>Sat, 16 Mar 2019 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585590231005/</guid>
+      <guid>https://hollson.github.io/post/1585590231005/</guid>
       <description>Go 语言并没有设计诸如虚函数、纯虚函数、继承、多重继承等概念，但它通过接口却非常优雅地支持了面向对象的特性。 多态是一种运行期的行为，它有以下几</description>
     </item>
     
     <item>
       <title>「转」接口的动态类型和动态值</title>
-      <link>http://www.mafool.com/post/1585590231006/</link>
+      <link>https://hollson.github.io/post/1585590231006/</link>
       <pubDate>Sat, 16 Mar 2019 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585590231006/</guid>
+      <guid>https://hollson.github.io/post/1585590231006/</guid>
       <description>从源码里可以看到：iface包含两个字段：tab 是接口表指针，指向类型信息；data 是数据指针，则指向具体的数据。它们分别被称为动态类型和动</description>
     </item>
     
     <item>
       <title>「转」接口的构造过程是怎样的</title>
-      <link>http://www.mafool.com/post/1585590231007/</link>
+      <link>https://hollson.github.io/post/1585590231007/</link>
       <pubDate>Sat, 16 Mar 2019 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585590231007/</guid>
+      <guid>https://hollson.github.io/post/1585590231007/</guid>
       <description>我们已经看过了 iface 和 eface 的源码，知道 iface 最重要的是 itab 和 _type。 为了研究清楚接口是如何构造的，接下来我会拿起汇编的武器，还原背后的真相。 来看一个</description>
     </item>
     
     <item>
       <title>值接收者和指针接收者的区别</title>
-      <link>http://www.mafool.com/post/1585590231004/</link>
+      <link>https://hollson.github.io/post/1585590231004/</link>
       <pubDate>Sat, 16 Mar 2019 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585590231004/</guid>
+      <guid>https://hollson.github.io/post/1585590231004/</guid>
       <description>方法 结构体变量和结构体对象，可以任意调用结构体(值接受者或指针接受者)方法。 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 type demo struct{} // 值接受 func (demo) foo() { fmt.Println(&amp;#34;FOO&amp;#34;) } // 指</description>
     </item>
     
     <item>
       <title>Go语言变量逃逸分析</title>
-      <link>http://www.mafool.com/posts/21a9dcd7220eb509dbc8e49fee882300/</link>
+      <link>https://hollson.github.io/posts/21a9dcd7220eb509dbc8e49fee882300/</link>
       <pubDate>Fri, 15 Mar 2019 00:59:07 +0800</pubDate>
       
-      <guid>http://www.mafool.com/posts/21a9dcd7220eb509dbc8e49fee882300/</guid>
+      <guid>https://hollson.github.io/posts/21a9dcd7220eb509dbc8e49fee882300/</guid>
       <description>Go 内存逃逸详细分析 Slice 怪异现象分析实例 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 package main import ( &amp;#34;fmt&amp;#34; ) func main(){ s := []byte(&amp;#34;&amp;#34;) s1 := append(s, &amp;#39;a&amp;#39;) s2 := append(s, &amp;#39;b&amp;#39;) // 如果有此行，打印的结果是 a b，否</description>
     </item>
     
     <item>
       <title>接口转换的原理</title>
-      <link>http://www.mafool.com/post/1585590232/</link>
+      <link>https://hollson.github.io/post/1585590232/</link>
       <pubDate>Mon, 31 Dec 2018 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585590232/</guid>
+      <guid>https://hollson.github.io/post/1585590232/</guid>
       <description>通过前面提到的 iface 的源码可以看到，实际上它包含接口的类型 interfacetype 和 实体类型的类型 _type，这两者都是 iface 的字段 itab 的成员。也就是说生成一个 itab 同时需要接</description>
     </item>
     

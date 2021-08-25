@@ -1,103 +1,103 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Cgo on 码夫庄园</title>
-    <link>http://www.mafool.com/tags/cgo/</link>
+    <link>https://hollson.github.io/tags/cgo/</link>
     <description>Recent content in Cgo on 码夫庄园</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
     <copyright>版权所有</copyright>
     <lastBuildDate>Mon, 16 Dec 2019 18:17:06 +0800</lastBuildDate>
     
-        <atom:link href="http://www.mafool.com/tags/cgo/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://hollson.github.io/tags/cgo/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Cgo编程笔记 - 2.1 快速入门</title>
-      <link>http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch201/</link>
+      <link>https://hollson.github.io/posts/c6f2df1d75efd06ab8cd9809a60975a4ch201/</link>
       <pubDate>Mon, 16 Dec 2019 18:17:06 +0800</pubDate>
       
-      <guid>http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch201/</guid>
+      <guid>https://hollson.github.io/posts/c6f2df1d75efd06ab8cd9809a60975a4ch201/</guid>
       <description>本文为Go学习笔记，感谢《Go语言高级编程》开源图书 2.1 快速入门 本节我们将通过一系列由浅入深的小例子来快速掌握CGO的基本用法。 2.1.1 最简CGO程</description>
     </item>
     
     <item>
       <title>Cgo编程笔记 - 2.10 编译和链接参数</title>
-      <link>http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch210/</link>
+      <link>https://hollson.github.io/posts/c6f2df1d75efd06ab8cd9809a60975a4ch210/</link>
       <pubDate>Mon, 16 Dec 2019 18:17:06 +0800</pubDate>
       
-      <guid>http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch210/</guid>
+      <guid>https://hollson.github.io/posts/c6f2df1d75efd06ab8cd9809a60975a4ch210/</guid>
       <description>本文为Go学习笔记，感谢《Go语言高级编程》开源图书 2.10 编译和链接参数 编译和链接参数是每一个C/C++程序员需要经常面对的问题。构建每一个C/</description>
     </item>
     
     <item>
       <title>Cgo编程笔记 - 2.2 CGO基础</title>
-      <link>http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch202/</link>
+      <link>https://hollson.github.io/posts/c6f2df1d75efd06ab8cd9809a60975a4ch202/</link>
       <pubDate>Mon, 16 Dec 2019 18:17:06 +0800</pubDate>
       
-      <guid>http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch202/</guid>
+      <guid>https://hollson.github.io/posts/c6f2df1d75efd06ab8cd9809a60975a4ch202/</guid>
       <description>本文为Go学习笔记，感谢《Go语言高级编程》开源图书 2.2 CGO基础 要使用CGO特性，需要安装C/C++构建工具链，在macOS和Linux下是</description>
     </item>
     
     <item>
       <title>Cgo编程笔记 - 2.3 类型转换</title>
-      <link>http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch203/</link>
+      <link>https://hollson.github.io/posts/c6f2df1d75efd06ab8cd9809a60975a4ch203/</link>
       <pubDate>Mon, 16 Dec 2019 18:17:06 +0800</pubDate>
       
-      <guid>http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch203/</guid>
+      <guid>https://hollson.github.io/posts/c6f2df1d75efd06ab8cd9809a60975a4ch203/</guid>
       <description>本文为Go学习笔记，感谢《Go语言高级编程》开源图书 2.3 类型转换 最初CGO是为了达到方便从Go语言函数调用C语言函数（用C语言实现Go语言声明</description>
     </item>
     
     <item>
       <title>Cgo编程笔记 - 2.4 函数调用</title>
-      <link>http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch204/</link>
+      <link>https://hollson.github.io/posts/c6f2df1d75efd06ab8cd9809a60975a4ch204/</link>
       <pubDate>Mon, 16 Dec 2019 18:17:06 +0800</pubDate>
       
-      <guid>http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch204/</guid>
+      <guid>https://hollson.github.io/posts/c6f2df1d75efd06ab8cd9809a60975a4ch204/</guid>
       <description>本文为Go学习笔记，感谢《Go语言高级编程》开源图书 2.4 函数调用 函数是C语言编程的核心，通过CGO技术我们不仅仅可以在Go语言中调用C语言函数</description>
     </item>
     
     <item>
       <title>Cgo编程笔记 - 2.5 内部机制</title>
-      <link>http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch205/</link>
+      <link>https://hollson.github.io/posts/c6f2df1d75efd06ab8cd9809a60975a4ch205/</link>
       <pubDate>Mon, 16 Dec 2019 18:17:06 +0800</pubDate>
       
-      <guid>http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch205/</guid>
+      <guid>https://hollson.github.io/posts/c6f2df1d75efd06ab8cd9809a60975a4ch205/</guid>
       <description>本文为Go学习笔记，感谢《Go语言高级编程》开源图书 2.5 内部机制 对于刚刚接触CGO用户来说，CGO的很多特性类似魔法。CGO特性主要是通过一个</description>
     </item>
     
     <item>
       <title>Cgo编程笔记 - 2.6 实战: 封装qsort</title>
-      <link>http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch206/</link>
+      <link>https://hollson.github.io/posts/c6f2df1d75efd06ab8cd9809a60975a4ch206/</link>
       <pubDate>Mon, 16 Dec 2019 18:17:06 +0800</pubDate>
       
-      <guid>http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch206/</guid>
+      <guid>https://hollson.github.io/posts/c6f2df1d75efd06ab8cd9809a60975a4ch206/</guid>
       <description>本文为Go学习笔记，感谢《Go语言高级编程》开源图书 2.6 实战: 封装qsort qsort快速排序函数是C语言的高阶函数，支持用于自定义排序比较函</description>
     </item>
     
     <item>
       <title>Cgo编程笔记 - 2.7 CGO内存模型</title>
-      <link>http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch207/</link>
+      <link>https://hollson.github.io/posts/c6f2df1d75efd06ab8cd9809a60975a4ch207/</link>
       <pubDate>Mon, 16 Dec 2019 18:17:06 +0800</pubDate>
       
-      <guid>http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch207/</guid>
+      <guid>https://hollson.github.io/posts/c6f2df1d75efd06ab8cd9809a60975a4ch207/</guid>
       <description>本文为Go学习笔记，感谢《Go语言高级编程》开源图书 2.7 CGO内存模型 CGO是架接Go语言和C语言的桥梁，它使二者在二进制接口层面实现了互通，</description>
     </item>
     
     <item>
       <title>Cgo编程笔记 - 2.8 C&#43;&#43; 类包装</title>
-      <link>http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch208/</link>
+      <link>https://hollson.github.io/posts/c6f2df1d75efd06ab8cd9809a60975a4ch208/</link>
       <pubDate>Mon, 16 Dec 2019 18:17:06 +0800</pubDate>
       
-      <guid>http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch208/</guid>
+      <guid>https://hollson.github.io/posts/c6f2df1d75efd06ab8cd9809a60975a4ch208/</guid>
       <description>本文为Go学习笔记，感谢《Go语言高级编程》开源图书 2.8 C++ 类包装 CGO是C语言和Go语言之间的桥梁，原则上无法直接支持C++的类。CGO不支持</description>
     </item>
     
     <item>
       <title>Cgo编程笔记 - 2.9 静态库和动态库</title>
-      <link>http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch209/</link>
+      <link>https://hollson.github.io/posts/c6f2df1d75efd06ab8cd9809a60975a4ch209/</link>
       <pubDate>Mon, 16 Dec 2019 18:17:06 +0800</pubDate>
       
-      <guid>http://www.mafool.com/posts/c6f2df1d75efd06ab8cd9809a60975a4ch209/</guid>
+      <guid>https://hollson.github.io/posts/c6f2df1d75efd06ab8cd9809a60975a4ch209/</guid>
       <description>本文为Go学习笔记，感谢《Go语言高级编程》开源图书 2.9 静态库和动态库 CGO在使用C/C++资源的时候一般有三种形式：直接使用源码；链接静态库</description>
     </item>
     

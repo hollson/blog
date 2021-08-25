@@ -1,31 +1,31 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>老妖笔记 on 码夫庄园</title>
-    <link>http://www.mafool.com/tags/%E8%80%81%E5%A6%96%E7%AC%94%E8%AE%B0/</link>
+    <link>https://hollson.github.io/tags/%E8%80%81%E5%A6%96%E7%AC%94%E8%AE%B0/</link>
     <description>Recent content in 老妖笔记 on 码夫庄园</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
     <copyright>版权所有</copyright>
     <lastBuildDate>Fri, 14 Aug 2020 00:00:00 +0800</lastBuildDate>
     
-        <atom:link href="http://www.mafool.com/tags/%E8%80%81%E5%A6%96%E7%AC%94%E8%AE%B0/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://hollson.github.io/tags/%E8%80%81%E5%A6%96%E7%AC%94%E8%AE%B0/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>17. Go语言database/sql接口</title>
-      <link>http://www.mafool.com/post/1597480217/</link>
+      <link>https://hollson.github.io/post/1597480217/</link>
       <pubDate>Fri, 14 Aug 2020 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1597480217/</guid>
+      <guid>https://hollson.github.io/post/1597480217/</guid>
       <description>[TOC] 一、database/sql接口 Go语言官方没有提供数据库驱动，而是为开发数据库驱动定义了标准数据库驱动接口database/sql，开发</description>
     </item>
     
     <item>
       <title>18. Go语言MySQL数据库操作</title>
-      <link>http://www.mafool.com/post/1597480218/</link>
+      <link>https://hollson.github.io/post/1597480218/</link>
       <pubDate>Fri, 14 Aug 2020 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1597480218/</guid>
+      <guid>https://hollson.github.io/post/1597480218/</guid>
       <description>[TOC] 一、MySQL安装驱动 Go官方没有提供数据库驱动，最常用的开源MySQL数据库驱动非Go-MySQL-Driver莫属: 维护比较好。 完全支</description>
     </item>
     

@@ -1,22 +1,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>config on 码夫庄园</title>
-    <link>http://www.mafool.com/tags/config/</link>
+    <link>https://hollson.github.io/tags/config/</link>
     <description>Recent content in config on 码夫庄园</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
     <copyright>版权所有</copyright>
     <lastBuildDate>Fri, 15 Feb 2019 01:07:06 +0800</lastBuildDate>
     
-        <atom:link href="http://www.mafool.com/tags/config/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://hollson.github.io/tags/config/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>TOML配置文件管理</title>
-      <link>http://www.mafool.com/posts/d8411bdf00046a3195c31dd15e76a472/</link>
+      <link>https://hollson.github.io/posts/d8411bdf00046a3195c31dd15e76a472/</link>
       <pubDate>Fri, 15 Feb 2019 01:07:06 +0800</pubDate>
       
-      <guid>http://www.mafool.com/posts/d8411bdf00046a3195c31dd15e76a472/</guid>
+      <guid>https://hollson.github.io/posts/d8411bdf00046a3195c31dd15e76a472/</guid>
       <description>配置工具的选择 一个项目通常是有很多配置的，比如PHP的php.ini文件、Nginx的server.conf文件，那么Golang的项目又适</description>
     </item>
     

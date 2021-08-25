@@ -1,22 +1,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>raft on 码夫庄园</title>
-    <link>http://www.mafool.com/tags/raft/</link>
+    <link>https://hollson.github.io/tags/raft/</link>
     <description>Recent content in raft on 码夫庄园</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
     <copyright>版权所有</copyright>
     <lastBuildDate>Wed, 27 Jun 2018 00:00:00 +0800</lastBuildDate>
     
-        <atom:link href="http://www.mafool.com/tags/raft/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://hollson.github.io/tags/raft/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>「转」Raft共识算法</title>
-      <link>http://www.mafool.com/post/1585750452/</link>
+      <link>https://hollson.github.io/post/1585750452/</link>
       <pubDate>Wed, 27 Jun 2018 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585750452/</guid>
+      <guid>https://hollson.github.io/post/1585750452/</guid>
       <description>Raft共识算法 多个拜占庭将军要如何在可能有叛徒、信使可能被策反或者暗杀的情况下达成是否要进攻的一致性决定？还不了解的先看看上一篇《拜占庭将</description>
     </item>
     

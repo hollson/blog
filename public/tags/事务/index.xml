@@ -1,22 +1,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>事务 on 码夫庄园</title>
-    <link>http://www.mafool.com/tags/%E4%BA%8B%E5%8A%A1/</link>
+    <link>https://hollson.github.io/tags/%E4%BA%8B%E5%8A%A1/</link>
     <description>Recent content in 事务 on 码夫庄园</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
     <copyright>版权所有</copyright>
     <lastBuildDate>Wed, 01 Apr 2020 00:00:00 +0800</lastBuildDate>
     
-        <atom:link href="http://www.mafool.com/tags/%E4%BA%8B%E5%8A%A1/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://hollson.github.io/tags/%E4%BA%8B%E5%8A%A1/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Mysql的乐观锁与悲观锁</title>
-      <link>http://www.mafool.com/post/1585752015/</link>
+      <link>https://hollson.github.io/post/1585752015/</link>
       <pubDate>Wed, 01 Apr 2020 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585752015/</guid>
+      <guid>https://hollson.github.io/post/1585752015/</guid>
       <description>一. 悲观锁(PCC) 悲观锁概念 在关系数据库管理系统里，悲观并发控制（又名“悲观锁”，Pessimistic Concurrency Control，缩写“PCC”）</description>
     </item>
     

@@ -1,22 +1,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>常量 on 码夫庄园</title>
-    <link>http://www.mafool.com/tags/%E5%B8%B8%E9%87%8F/</link>
+    <link>https://hollson.github.io/tags/%E5%B8%B8%E9%87%8F/</link>
     <description>Recent content in 常量 on 码夫庄园</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
     <copyright>版权所有</copyright>
     <lastBuildDate>Thu, 10 Sep 2020 21:36:02 +0800</lastBuildDate>
     
-        <atom:link href="http://www.mafool.com/tags/%E5%B8%B8%E9%87%8F/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://hollson.github.io/tags/%E5%B8%B8%E9%87%8F/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Go基础笔记 - 2.3 常量</title>
-      <link>http://www.mafool.com/posts/1600330472/</link>
+      <link>https://hollson.github.io/posts/1600330472/</link>
       <pubDate>Thu, 10 Sep 2020 21:36:02 +0800</pubDate>
       
-      <guid>http://www.mafool.com/posts/1600330472/</guid>
+      <guid>https://hollson.github.io/posts/1600330472/</guid>
       <description>[TOC] 一. 关于常量 常量有：显示常量、隐式常量、全局常量、局部常量、编译时常量。 常量只能是布尔型，数字型(整型，浮点型和复数)和字符串类型。 常量是</description>
     </item>
     

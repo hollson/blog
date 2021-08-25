@@ -1,130 +1,130 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Go基础篇 on 码夫庄园</title>
-    <link>http://www.mafool.com/categories/go%E5%9F%BA%E7%A1%80%E7%AF%87/</link>
+    <link>https://hollson.github.io/categories/go%E5%9F%BA%E7%A1%80%E7%AF%87/</link>
     <description>Recent content in Go基础篇 on 码夫庄园</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
     <copyright>版权所有</copyright>
     <lastBuildDate>Thu, 10 Sep 2020 21:36:02 +0800</lastBuildDate>
     
-        <atom:link href="http://www.mafool.com/categories/go%E5%9F%BA%E7%A1%80%E7%AF%87/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://hollson.github.io/categories/go%E5%9F%BA%E7%A1%80%E7%AF%87/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Go基础笔记 - 2.3 常量</title>
-      <link>http://www.mafool.com/posts/1600330472/</link>
+      <link>https://hollson.github.io/posts/1600330472/</link>
       <pubDate>Thu, 10 Sep 2020 21:36:02 +0800</pubDate>
       
-      <guid>http://www.mafool.com/posts/1600330472/</guid>
+      <guid>https://hollson.github.io/posts/1600330472/</guid>
       <description>[TOC] 一. 关于常量 常量有：显示常量、隐式常量、全局常量、局部常量、编译时常量。 常量只能是布尔型，数字型(整型，浮点型和复数)和字符串类型。 常量是</description>
     </item>
     
     <item>
       <title>17. Go语言database/sql接口</title>
-      <link>http://www.mafool.com/post/1597480217/</link>
+      <link>https://hollson.github.io/post/1597480217/</link>
       <pubDate>Fri, 14 Aug 2020 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1597480217/</guid>
+      <guid>https://hollson.github.io/post/1597480217/</guid>
       <description>[TOC] 一、database/sql接口 Go语言官方没有提供数据库驱动，而是为开发数据库驱动定义了标准数据库驱动接口database/sql，开发</description>
     </item>
     
     <item>
       <title>18. Go语言MySQL数据库操作</title>
-      <link>http://www.mafool.com/post/1597480218/</link>
+      <link>https://hollson.github.io/post/1597480218/</link>
       <pubDate>Fri, 14 Aug 2020 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1597480218/</guid>
+      <guid>https://hollson.github.io/post/1597480218/</guid>
       <description>[TOC] 一、MySQL安装驱动 Go官方没有提供数据库驱动，最常用的开源MySQL数据库驱动非Go-MySQL-Driver莫属: 维护比较好。 完全支</description>
     </item>
     
     <item>
       <title>Gorm快速指南</title>
-      <link>http://www.mafool.com/post/1597480249/</link>
+      <link>https://hollson.github.io/post/1597480249/</link>
       <pubDate>Fri, 14 Aug 2020 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1597480249/</guid>
+      <guid>https://hollson.github.io/post/1597480249/</guid>
       <description>[TOC] Gorm介绍 Github Gorm是一个使用Go语言编写的ORM框架。中文官方网站内含十分齐全的中文文档 ，对开发者友好，支持主流数据库。 安装Gorm：</description>
     </item>
     
     <item>
       <title>Go基础笔记 - 2.2 作用域</title>
-      <link>http://www.mafool.com/posts/1600334132/</link>
+      <link>https://hollson.github.io/posts/1600334132/</link>
       <pubDate>Sun, 10 May 2020 21:36:02 +0800</pubDate>
       
-      <guid>http://www.mafool.com/posts/1600334132/</guid>
+      <guid>https://hollson.github.io/posts/1600334132/</guid>
       <description>[TOC] 变量作用域 Golang有四个作用域：全局作用域、函数作用域、语句作用域和块内作用域。 1 2 3 4 5 6 7 8 9 var a string = &amp;#34;hello&amp;#34; //1.全局作用域（字符串</description>
     </item>
     
     <item>
       <title>Go语言之细节决定成败</title>
-      <link>http://www.mafool.com/post/1585588756/</link>
+      <link>https://hollson.github.io/post/1585588756/</link>
       <pubDate>Tue, 31 Mar 2020 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585588756/</guid>
+      <guid>https://hollson.github.io/post/1585588756/</guid>
       <description>[TOC] 1.变量 全局变量不能使用类型推导 2.常量 常量属于硬编码(即当作指令数据)，所以不能取地址 1 2 3 4 const a = 100 func main() { fmt.Println(&amp;amp;a,a) } 1 2 3 4 5 6 7 8 9 10 11 const</description>
     </item>
     
     <item>
       <title>Go之命令行工具教程</title>
-      <link>http://www.mafool.com/2020/03/go%E4%B9%8B%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7%E6%95%99%E7%A8%8B/</link>
+      <link>https://hollson.github.io/2020/03/go%E4%B9%8B%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7%E6%95%99%E7%A8%8B/</link>
       <pubDate>Thu, 19 Mar 2020 00:00:00 +0000</pubDate>
       
-      <guid>http://www.mafool.com/2020/03/go%E4%B9%8B%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7%E6%95%99%E7%A8%8B/</guid>
+      <guid>https://hollson.github.io/2020/03/go%E4%B9%8B%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7%E6%95%99%E7%A8%8B/</guid>
       <description>[TOC] 一. 命令行预览 Go命令行使用二级命令，格式go &amp;lt;command&amp;gt; [arguments] 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44</description>
     </item>
     
     <item>
       <title>Go精编100道题</title>
-      <link>http://www.mafool.com/post/1585726239/</link>
+      <link>https://hollson.github.io/post/1585726239/</link>
       <pubDate>Tue, 09 Apr 2019 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585726239/</guid>
+      <guid>https://hollson.github.io/post/1585726239/</guid>
       <description>Golang精编100题 能力模型 级别 模型 初级 primary 熟悉基本语法，能够看懂代码的意图； 在他人指导下能够完成用户故事的开发，编写的代码符合Clean</description>
     </item>
     
     <item>
       <title>Go面试自测系列</title>
-      <link>http://www.mafool.com/post/1585725972/</link>
+      <link>https://hollson.github.io/post/1585725972/</link>
       <pubDate>Tue, 09 Apr 2019 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585725972/</guid>
+      <guid>https://hollson.github.io/post/1585725972/</guid>
       <description>2、struct能不能比较 因为是强类型语言，所以不同类型的结构不能作比较，但是同一类型的实例值是可以比较的，实例不可以比较，因为是指针类型 4</description>
     </item>
     
     <item>
       <title>类型转换和断言的区别</title>
-      <link>http://www.mafool.com/post/1585590231/</link>
+      <link>https://hollson.github.io/post/1585590231/</link>
       <pubDate>Mon, 31 Dec 2018 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585590231/</guid>
+      <guid>https://hollson.github.io/post/1585590231/</guid>
       <description>Go 语言中不允许隐式类型转换，也就是说 = 两边，不允许出现类型不相同的变量。 类型转换、类型断言本质都是把一个类型转换成另外一个类型。不同之处在于</description>
     </item>
     
     <item>
       <title>编译器自动检测类型是否实现接口</title>
-      <link>http://www.mafool.com/post/1585590230/</link>
+      <link>https://hollson.github.io/post/1585590230/</link>
       <pubDate>Mon, 31 Dec 2018 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585590230/</guid>
+      <guid>https://hollson.github.io/post/1585590230/</guid>
       <description>经常看到一些开源库里会有一些类似下面这种奇怪的用法： 1 var _ io.Writer = (*myWriter)(nil) 这时候会有点懵，不知道作者想要干什么，实际上这就是此问题的答案。编译器会由此</description>
     </item>
     
     <item>
       <title>面试题汇总</title>
-      <link>http://www.mafool.com/posts/99a7e89b9b8052e68f39909ef7fc0fc1/</link>
+      <link>https://hollson.github.io/posts/99a7e89b9b8052e68f39909ef7fc0fc1/</link>
       <pubDate>Sat, 11 Aug 2018 00:13:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/posts/99a7e89b9b8052e68f39909ef7fc0fc1/</guid>
+      <guid>https://hollson.github.io/posts/99a7e89b9b8052e68f39909ef7fc0fc1/</guid>
       <description>[TOC] 1. Golang中除了加Mutex锁以外还有哪些方式安全读写共享变量？ Golang中Goroutine 可以通过 Channel 进行安全读写共享变量。 2. 无缓</description>
     </item>
     
     <item>
       <title>Go经典编程练习题</title>
-      <link>http://www.mafool.com/post/1585633378/</link>
+      <link>https://hollson.github.io/post/1585633378/</link>
       <pubDate>Sun, 18 Feb 2018 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585633378/</guid>
+      <guid>https://hollson.github.io/post/1585633378/</guid>
       <description>1.排列组合 题目：有1、2、3、4个数字，能组成多少个互不相同且无重复数字的三位数？都是多少？ 分析：三层嵌套循环，时间复杂度为O(n^3) 1</description>
     </item>
     

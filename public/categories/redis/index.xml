@@ -1,58 +1,58 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Redis on 码夫庄园</title>
-    <link>http://www.mafool.com/categories/redis/</link>
+    <link>https://hollson.github.io/categories/redis/</link>
     <description>Recent content in Redis on 码夫庄园</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
     <copyright>版权所有</copyright>
     <lastBuildDate>Wed, 01 Apr 2020 00:00:00 +0800</lastBuildDate>
     
-        <atom:link href="http://www.mafool.com/categories/redis/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://hollson.github.io/categories/redis/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>「转」服务器雪崩的场景与解决方案</title>
-      <link>http://www.mafool.com/post/1585745291/</link>
+      <link>https://hollson.github.io/post/1585745291/</link>
       <pubDate>Wed, 01 Apr 2020 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585745291/</guid>
+      <guid>https://hollson.github.io/post/1585745291/</guid>
       <description>什么是应用服务雪崩 雪崩问题 分布式系统都存在这样一个问题，由于网络的不稳定性，决定了任何一个服务的可用性都不是 100% 的。当网络不稳定的时候，作为服</description>
     </item>
     
     <item>
       <title>Redis为什么这么快</title>
-      <link>http://www.mafool.com/posts/ce39f185a4105efee0e4d06d943f2d28/</link>
+      <link>https://hollson.github.io/posts/ce39f185a4105efee0e4d06d943f2d28/</link>
       <pubDate>Sat, 11 Jan 2020 00:29:11 +0800</pubDate>
       
-      <guid>http://www.mafool.com/posts/ce39f185a4105efee0e4d06d943f2d28/</guid>
+      <guid>https://hollson.github.io/posts/ce39f185a4105efee0e4d06d943f2d28/</guid>
       <description>当然，将数据存储在内存中，读取的时候不需要进行磁盘的 IO，单线程也保证了系统没有线程的上下文切换。 但这两点只是 Redis 高性能原因的很小一部分，下面</description>
     </item>
     
     <item>
       <title>Redis哨兵模式和集群搭建</title>
-      <link>http://www.mafool.com/post/1585749845/</link>
+      <link>https://hollson.github.io/post/1585749845/</link>
       <pubDate>Fri, 01 Nov 2019 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585749845/</guid>
+      <guid>https://hollson.github.io/post/1585749845/</guid>
       <description>参考链接 https://zhangweisep.github.io/2018/09/26/Redis%E5%93%A8%E5%85%B5%E6%A8%A1%E5%BC%8F%E5%92%8C%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/ https://segmentfault.com/a/1190000021622469 https://phachon.com/redis/redis-2.html http://objcoding.com/2019/01/17/redis-sentinel/ http://www.throwable.club/2019/10/07/redis-server-sentinel-install-guide/</description>
     </item>
     
     <item>
       <title>Redis面试汇总</title>
-      <link>http://www.mafool.com/post/1585724939/</link>
+      <link>https://hollson.github.io/post/1585724939/</link>
       <pubDate>Wed, 08 May 2019 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585724939/</guid>
+      <guid>https://hollson.github.io/post/1585724939/</guid>
       <description>1、什么是Redis？ Redis本质上是一个Key-Value类型的内存数据库。很像memcached，整个数据库统统加载在内存当中进行操作</description>
     </item>
     
     <item>
       <title>Redis实现主从复制</title>
-      <link>http://www.mafool.com/post/1585819764/</link>
+      <link>https://hollson.github.io/post/1585819764/</link>
       <pubDate>Wed, 10 Apr 2019 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585819764/</guid>
+      <guid>https://hollson.github.io/post/1585819764/</guid>
       <description>一. 配置主从概述 主从复制(Replication)：也叫主从同步，它是将Redis主服务器的数据同步到任意数量的从服务器上，同步使用的是发布</description>
     </item>
     

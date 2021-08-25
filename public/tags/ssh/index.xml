@@ -1,22 +1,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>ssh on 码夫庄园</title>
-    <link>http://www.mafool.com/tags/ssh/</link>
+    <link>https://hollson.github.io/tags/ssh/</link>
     <description>Recent content in ssh on 码夫庄园</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
     <copyright>版权所有</copyright>
     <lastBuildDate>Thu, 11 Apr 2019 13:19:13 +0800</lastBuildDate>
     
-        <atom:link href="http://www.mafool.com/tags/ssh/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://hollson.github.io/tags/ssh/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Linux - 实现免密登录</title>
-      <link>http://www.mafool.com/posts/bdbe76b547376a30e6d68f62f36d397b/</link>
+      <link>https://hollson.github.io/posts/bdbe76b547376a30e6d68f62f36d397b/</link>
       <pubDate>Thu, 11 Apr 2019 13:19:13 +0800</pubDate>
       
-      <guid>http://www.mafool.com/posts/bdbe76b547376a30e6d68f62f36d397b/</guid>
+      <guid>https://hollson.github.io/posts/bdbe76b547376a30e6d68f62f36d397b/</guid>
       <description>一. 生成密钥对 如果本地已存在密钥文件，则可跳过该步骤（可与git等工具共享密钥文件）。 在本地生成~/.ssh/id_rsa(密钥)和~/.s</description>
     </item>
     

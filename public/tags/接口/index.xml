@@ -1,94 +1,94 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>接口 on 码夫庄园</title>
-    <link>http://www.mafool.com/tags/%E6%8E%A5%E5%8F%A3/</link>
+    <link>https://hollson.github.io/tags/%E6%8E%A5%E5%8F%A3/</link>
     <description>Recent content in 接口 on 码夫庄园</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
     <copyright>版权所有</copyright>
     <lastBuildDate>Sat, 07 Mar 2020 23:26:48 +0800</lastBuildDate>
     
-        <atom:link href="http://www.mafool.com/tags/%E6%8E%A5%E5%8F%A3/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://hollson.github.io/tags/%E6%8E%A5%E5%8F%A3/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Go之接口解读</title>
-      <link>http://www.mafool.com/posts/09f6faa09d79344eba8fcef184997d68/</link>
+      <link>https://hollson.github.io/posts/09f6faa09d79344eba8fcef184997d68/</link>
       <pubDate>Sat, 07 Mar 2020 23:26:48 +0800</pubDate>
       
-      <guid>http://www.mafool.com/posts/09f6faa09d79344eba8fcef184997d68/</guid>
+      <guid>https://hollson.github.io/posts/09f6faa09d79344eba8fcef184997d68/</guid>
       <description>1.2 接口 Go 语言中的接口就是一组方法的签名，它是 Go 语言的重要组成部分。使用接口能够让我们更好地组织并写出易于测试的代码，然而很多工程师对 Go 的接口</description>
     </item>
     
     <item>
       <title>「转」iface 和 eface 的区别是什么</title>
-      <link>http://www.mafool.com/post/1585590231003/</link>
+      <link>https://hollson.github.io/post/1585590231003/</link>
       <pubDate>Sat, 16 Mar 2019 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585590231003/</guid>
+      <guid>https://hollson.github.io/post/1585590231003/</guid>
       <description>iface 和 eface 都是 Go 中描述接口的底层结构体，区别在于 iface 描述的接口包含方法，而 eface 则是不包含任何方法的空接口：interface{}。 从源码层面看一下：</description>
     </item>
     
     <item>
       <title>「转」如何用 interface 实现多态</title>
-      <link>http://www.mafool.com/post/1585590231005/</link>
+      <link>https://hollson.github.io/post/1585590231005/</link>
       <pubDate>Sat, 16 Mar 2019 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585590231005/</guid>
+      <guid>https://hollson.github.io/post/1585590231005/</guid>
       <description>Go 语言并没有设计诸如虚函数、纯虚函数、继承、多重继承等概念，但它通过接口却非常优雅地支持了面向对象的特性。 多态是一种运行期的行为，它有以下几</description>
     </item>
     
     <item>
       <title>「转」接口的动态类型和动态值</title>
-      <link>http://www.mafool.com/post/1585590231006/</link>
+      <link>https://hollson.github.io/post/1585590231006/</link>
       <pubDate>Sat, 16 Mar 2019 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585590231006/</guid>
+      <guid>https://hollson.github.io/post/1585590231006/</guid>
       <description>从源码里可以看到：iface包含两个字段：tab 是接口表指针，指向类型信息；data 是数据指针，则指向具体的数据。它们分别被称为动态类型和动</description>
     </item>
     
     <item>
       <title>「转」接口的构造过程是怎样的</title>
-      <link>http://www.mafool.com/post/1585590231007/</link>
+      <link>https://hollson.github.io/post/1585590231007/</link>
       <pubDate>Sat, 16 Mar 2019 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585590231007/</guid>
+      <guid>https://hollson.github.io/post/1585590231007/</guid>
       <description>我们已经看过了 iface 和 eface 的源码，知道 iface 最重要的是 itab 和 _type。 为了研究清楚接口是如何构造的，接下来我会拿起汇编的武器，还原背后的真相。 来看一个</description>
     </item>
     
     <item>
       <title>值接收者和指针接收者的区别</title>
-      <link>http://www.mafool.com/post/1585590231004/</link>
+      <link>https://hollson.github.io/post/1585590231004/</link>
       <pubDate>Sat, 16 Mar 2019 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585590231004/</guid>
+      <guid>https://hollson.github.io/post/1585590231004/</guid>
       <description>方法 结构体变量和结构体对象，可以任意调用结构体(值接受者或指针接受者)方法。 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 type demo struct{} // 值接受 func (demo) foo() { fmt.Println(&amp;#34;FOO&amp;#34;) } // 指</description>
     </item>
     
     <item>
       <title>接口转换的原理</title>
-      <link>http://www.mafool.com/post/1585590232/</link>
+      <link>https://hollson.github.io/post/1585590232/</link>
       <pubDate>Mon, 31 Dec 2018 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585590232/</guid>
+      <guid>https://hollson.github.io/post/1585590232/</guid>
       <description>通过前面提到的 iface 的源码可以看到，实际上它包含接口的类型 interfacetype 和 实体类型的类型 _type，这两者都是 iface 的字段 itab 的成员。也就是说生成一个 itab 同时需要接</description>
     </item>
     
     <item>
       <title>类型转换和断言的区别</title>
-      <link>http://www.mafool.com/post/1585590231/</link>
+      <link>https://hollson.github.io/post/1585590231/</link>
       <pubDate>Mon, 31 Dec 2018 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585590231/</guid>
+      <guid>https://hollson.github.io/post/1585590231/</guid>
       <description>Go 语言中不允许隐式类型转换，也就是说 = 两边，不允许出现类型不相同的变量。 类型转换、类型断言本质都是把一个类型转换成另外一个类型。不同之处在于</description>
     </item>
     
     <item>
       <title>编译器自动检测类型是否实现接口</title>
-      <link>http://www.mafool.com/post/1585590230/</link>
+      <link>https://hollson.github.io/post/1585590230/</link>
       <pubDate>Mon, 31 Dec 2018 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585590230/</guid>
+      <guid>https://hollson.github.io/post/1585590230/</guid>
       <description>经常看到一些开源库里会有一些类似下面这种奇怪的用法： 1 var _ io.Writer = (*myWriter)(nil) 这时候会有点懵，不知道作者想要干什么，实际上这就是此问题的答案。编译器会由此</description>
     </item>
     

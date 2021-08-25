@@ -1,130 +1,130 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Algorithm on 码夫庄园</title>
-    <link>http://www.mafool.com/categories/algorithm/</link>
+    <link>https://hollson.github.io/categories/algorithm/</link>
     <description>Recent content in Algorithm on 码夫庄园</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
     <copyright>版权所有</copyright>
     <lastBuildDate>Fri, 10 Apr 2020 23:12:20 +0800</lastBuildDate>
     
-        <atom:link href="http://www.mafool.com/categories/algorithm/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://hollson.github.io/categories/algorithm/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>字典树详解与实现</title>
-      <link>http://www.mafool.com/posts/0aa0b471cae5bf3523c8de46d7f37c60/</link>
+      <link>https://hollson.github.io/posts/0aa0b471cae5bf3523c8de46d7f37c60/</link>
       <pubDate>Fri, 10 Apr 2020 23:12:20 +0800</pubDate>
       
-      <guid>http://www.mafool.com/posts/0aa0b471cae5bf3523c8de46d7f37c60/</guid>
+      <guid>https://hollson.github.io/posts/0aa0b471cae5bf3523c8de46d7f37c60/</guid>
       <description>前言 在计算机科学中，trie又称前缀树或字典树，是一种有序树，用于保存关联数组，其中的键通常是字符串。与二叉查找树不同，键不是直接保存在节点</description>
     </item>
     
     <item>
       <title>十大经典排序01 - 冒泡排序</title>
-      <link>http://www.mafool.com/2019/07/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F01-%E5%86%92%E6%B3%A1%E6%8E%92%E5%BA%8F/</link>
+      <link>https://hollson.github.io/2019/07/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F01-%E5%86%92%E6%B3%A1%E6%8E%92%E5%BA%8F/</link>
       <pubDate>Sun, 28 Jul 2019 00:00:00 +0000</pubDate>
       
-      <guid>http://www.mafool.com/2019/07/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F01-%E5%86%92%E6%B3%A1%E6%8E%92%E5%BA%8F/</guid>
+      <guid>https://hollson.github.io/2019/07/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F01-%E5%86%92%E6%B3%A1%E6%8E%92%E5%BA%8F/</guid>
       <description>算法介绍 冒泡排序（Bubble Sort）也是一种简单直观的排序算法。它重复地走访过要排序的数列，一次比较两个元素，如果他们的顺序错误就把他们</description>
     </item>
     
     <item>
       <title>十大经典排序02 - 选择排序</title>
-      <link>http://www.mafool.com/2019/07/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F02-%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F/</link>
+      <link>https://hollson.github.io/2019/07/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F02-%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F/</link>
       <pubDate>Sun, 28 Jul 2019 00:00:00 +0000</pubDate>
       
-      <guid>http://www.mafool.com/2019/07/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F02-%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F/</guid>
+      <guid>https://hollson.github.io/2019/07/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F02-%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F/</guid>
       <description>算法介绍 选择排序是一种简单直观的排序算法，无论什么数据进去都是 O(n²) 的时间复杂度。所以用到它的时候，数据规模越小越好。唯一的好处可能就是</description>
     </item>
     
     <item>
       <title>十大经典排序03 - 插入排序</title>
-      <link>http://www.mafool.com/2019/07/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F03-%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F/</link>
+      <link>https://hollson.github.io/2019/07/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F03-%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F/</link>
       <pubDate>Sun, 28 Jul 2019 00:00:00 +0000</pubDate>
       
-      <guid>http://www.mafool.com/2019/07/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F03-%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F/</guid>
+      <guid>https://hollson.github.io/2019/07/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F03-%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F/</guid>
       <description>算法介绍 插入排序的代码实现虽然没有冒泡排序和选择排序那么简单粗暴，但它的原理应该是最容易理解的了，因为只要打过扑克牌的人都应该能够秒懂。插入</description>
     </item>
     
     <item>
       <title>十大经典排序04 - 希尔排序</title>
-      <link>http://www.mafool.com/2019/07/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F04-%E5%B8%8C%E5%B0%94%E6%8E%92%E5%BA%8F/</link>
+      <link>https://hollson.github.io/2019/07/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F04-%E5%B8%8C%E5%B0%94%E6%8E%92%E5%BA%8F/</link>
       <pubDate>Sun, 28 Jul 2019 00:00:00 +0000</pubDate>
       
-      <guid>http://www.mafool.com/2019/07/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F04-%E5%B8%8C%E5%B0%94%E6%8E%92%E5%BA%8F/</guid>
+      <guid>https://hollson.github.io/2019/07/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F04-%E5%B8%8C%E5%B0%94%E6%8E%92%E5%BA%8F/</guid>
       <description>算法介绍 希尔排序，也称递减增量排序算法，是插入排序的一种更高效的改进版本。但希尔排序是非稳定排序算法。 希尔排序是基于插入排序的以下两点性质而</description>
     </item>
     
     <item>
       <title>十大经典排序05 - 归并排序</title>
-      <link>http://www.mafool.com/2019/07/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F05-%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F/</link>
+      <link>https://hollson.github.io/2019/07/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F05-%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F/</link>
       <pubDate>Sun, 28 Jul 2019 00:00:00 +0000</pubDate>
       
-      <guid>http://www.mafool.com/2019/07/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F05-%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F/</guid>
+      <guid>https://hollson.github.io/2019/07/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F05-%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F/</guid>
       <description>算法介绍 归并排序（Merge sort）是建立在归并操作上的一种有效的排序算法。该算法是采用分治法（Divide and Conquer）的一个非常典</description>
     </item>
     
     <item>
       <title>十大经典排序06 - 快速排序</title>
-      <link>http://www.mafool.com/2019/07/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F06-%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F/</link>
+      <link>https://hollson.github.io/2019/07/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F06-%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F/</link>
       <pubDate>Sun, 28 Jul 2019 00:00:00 +0000</pubDate>
       
-      <guid>http://www.mafool.com/2019/07/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F06-%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F/</guid>
+      <guid>https://hollson.github.io/2019/07/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F06-%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F/</guid>
       <description>算法介绍 快速排序是由东尼·霍尔所发展的一种排序算法。在平均状况下，排序 n 个项目要 Ο(nlogn) 次比较。在最坏状况下则需要 Ο(n2) 次比较，</description>
     </item>
     
     <item>
       <title>十大经典排序07 - 堆排序</title>
-      <link>http://www.mafool.com/2019/07/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F07-%E5%A0%86%E6%8E%92%E5%BA%8F/</link>
+      <link>https://hollson.github.io/2019/07/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F07-%E5%A0%86%E6%8E%92%E5%BA%8F/</link>
       <pubDate>Sun, 28 Jul 2019 00:00:00 +0000</pubDate>
       
-      <guid>http://www.mafool.com/2019/07/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F07-%E5%A0%86%E6%8E%92%E5%BA%8F/</guid>
+      <guid>https://hollson.github.io/2019/07/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F07-%E5%A0%86%E6%8E%92%E5%BA%8F/</guid>
       <description>算法介绍 堆排序（Heapsort）是指利用堆这种数据结构所设计的一种排序算法。堆积是一个近似完全二叉树的结构，并同时满足堆积的性质：即子结点</description>
     </item>
     
     <item>
       <title>十大经典排序08 - 计数排序</title>
-      <link>http://www.mafool.com/2019/07/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F08-%E8%AE%A1%E6%95%B0%E6%8E%92%E5%BA%8F/</link>
+      <link>https://hollson.github.io/2019/07/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F08-%E8%AE%A1%E6%95%B0%E6%8E%92%E5%BA%8F/</link>
       <pubDate>Sun, 28 Jul 2019 00:00:00 +0000</pubDate>
       
-      <guid>http://www.mafool.com/2019/07/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F08-%E8%AE%A1%E6%95%B0%E6%8E%92%E5%BA%8F/</guid>
+      <guid>https://hollson.github.io/2019/07/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F08-%E8%AE%A1%E6%95%B0%E6%8E%92%E5%BA%8F/</guid>
       <description>算法介绍 计数排序的核心在于将输入的数据值转化为键存储在额外开辟的数组空间中。作为一种线性时间复杂度的排序，计数排序要求输入的数据必须是有确定</description>
     </item>
     
     <item>
       <title>十大经典排序09 - 桶排序</title>
-      <link>http://www.mafool.com/2019/07/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F09-%E6%A1%B6%E6%8E%92%E5%BA%8F/</link>
+      <link>https://hollson.github.io/2019/07/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F09-%E6%A1%B6%E6%8E%92%E5%BA%8F/</link>
       <pubDate>Sun, 28 Jul 2019 00:00:00 +0000</pubDate>
       
-      <guid>http://www.mafool.com/2019/07/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F09-%E6%A1%B6%E6%8E%92%E5%BA%8F/</guid>
+      <guid>https://hollson.github.io/2019/07/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F09-%E6%A1%B6%E6%8E%92%E5%BA%8F/</guid>
       <description>算法介绍 桶排序是计数排序的升级版。它利用了函数的映射关系，高效与否的关键就在于这个映射函数的确定。为了使桶排序更加高效，我们需要做到这两点：</description>
     </item>
     
     <item>
       <title>十大经典排序10 - 基数排序</title>
-      <link>http://www.mafool.com/2019/07/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F10-%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F/</link>
+      <link>https://hollson.github.io/2019/07/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F10-%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F/</link>
       <pubDate>Sun, 28 Jul 2019 00:00:00 +0000</pubDate>
       
-      <guid>http://www.mafool.com/2019/07/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F10-%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F/</guid>
+      <guid>https://hollson.github.io/2019/07/%E5%8D%81%E5%A4%A7%E7%BB%8F%E5%85%B8%E6%8E%92%E5%BA%8F10-%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F/</guid>
       <description>算法介绍 基数排序是一种非比较型整数排序算法，其原理是将整数按位数切割成不同的数字，然后按每个位数分别比较。由于整数也可以表达字符串（比如名字</description>
     </item>
     
     <item>
       <title>数据排序之TopK问题</title>
-      <link>http://www.mafool.com/posts/d6bafcadfff4b121d2d6f4bad1f1a5cb/</link>
+      <link>https://hollson.github.io/posts/d6bafcadfff4b121d2d6f4bad1f1a5cb/</link>
       <pubDate>Mon, 10 Dec 2018 23:35:06 +0800</pubDate>
       
-      <guid>http://www.mafool.com/posts/d6bafcadfff4b121d2d6f4bad1f1a5cb/</guid>
+      <guid>https://hollson.github.io/posts/d6bafcadfff4b121d2d6f4bad1f1a5cb/</guid>
       <description>数据排序之TopK问题 前言 在大规模数据处理中，常遇到的一类问题是，在海量数据中找出出现频率最高的前K个数，或者从海量数据中找出最大的前K个数</description>
     </item>
     
     <item>
       <title>「转」Raft共识算法</title>
-      <link>http://www.mafool.com/post/1585750452/</link>
+      <link>https://hollson.github.io/post/1585750452/</link>
       <pubDate>Wed, 27 Jun 2018 00:00:00 +0800</pubDate>
       
-      <guid>http://www.mafool.com/post/1585750452/</guid>
+      <guid>https://hollson.github.io/post/1585750452/</guid>
       <description>Raft共识算法 多个拜占庭将军要如何在可能有叛徒、信使可能被策反或者暗杀的情况下达成是否要进攻的一致性决定？还不了解的先看看上一篇《拜占庭将</description>
     </item>
     
